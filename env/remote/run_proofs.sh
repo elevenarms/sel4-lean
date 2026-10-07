@@ -16,6 +16,7 @@ OUT=~/c0/sel4-lean/artifacts/c0
 # (ExecSpec | AInvs | HaskellKernel). Memory: each session <= ~10 GB ML heap + ~6 GB JVM, so 3 fit in 62 GB.
 THREADS=${THREADS:-$(nproc)}
 JOBS=${JOBS:-3}
+NAME=${NAME:-c0-proofs}   # container name; also names the JUnit report (run several side by side)
 TESTS=${*:-haskell-translator ASpec ExecSpec HaskellKernel AInvs Refine}
 mkdir -p "$OUT"
 
@@ -23,6 +24,9 @@ mkdir -p "$OUT"
 SCRIPT='
 set -euo pipefail
 cd /host/l4v
+# The image puts GHC/stack on PATH only in /root/.bashrc, which non-interactive shells skip
+source /opt/ghcup/.ghcup/env
+export STACK_ROOT=/etc/stack LANG=en_AU.UTF-8
 # One-time Isabelle setup (l4v docs/setup.md); persists in /scratch/c0/isabelle-home
 if [ ! -f ~/.isabelle/etc/settings ]; then
   mkdir -p ~/.isabelle/etc && cp misc/etc/settings ~/.isabelle/etc/settings
@@ -32,7 +36,7 @@ echo "== $(date -u) isabelle: $(/host/isabelle/bin/isabelle getenv -b ML_IDENTIF
 export L4V_ARCH=RISCV64
 export ISABELLE_BUILD_OPTS="-o threads='"$THREADS"'"
 echo "== $(date -u) run_tests -j '"$JOBS"' threads='"$THREADS"': '"$TESTS"'"
-./run_tests -j '"$JOBS"' -v --junit-report /out/junit-riscv64.xml '"$TESTS"'
+./run_tests -j '"$JOBS"' -v --junit-report /out/junit-riscv64-'"$NAME"'.xml '"$TESTS"'
 '
 
 nohup bash -c "
@@ -45,7 +49,7 @@ nohup bash -c "
       busy=\$(( (u2+n2+s2-u-n-s)*100 / (u2+n2+s2+i2+w2-u-n-s-i-w) ))
       echo \"stats: cpu \${busy}% busy, mem \$(free -g | awk '/Mem/{print \$3}')G used, load \$(cut -d' ' -f1 /proc/loadavg)\"
     done ) &
-  docker run --rm --name c0-proofs --hostname in-container \
+  docker run --rm --name $NAME --hostname in-container \
     -v /scratch/c0/verification:/host \
     -v /scratch/c0/isabelle-home:/root/.isabelle \
     -v $OUT:/out \
