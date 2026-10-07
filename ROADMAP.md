@@ -17,7 +17,7 @@ stage's exit criteria are met.
 
 ### C0. Reference environment
 - [ ] Build the l4v Docker image (seL4-CAmkES-L4v-dockerfiles). Confirm host architecture and RAM; images target x86_64.
-- [ ] Check out l4v and the seL4 sources at a pinned commit; record the commit hashes here.
+- [x] Check out l4v and the seL4 sources at a pinned commit (see `env/remote/verification-pinned.xml`, `notes/c0-environment.md`).
 - [ ] Check the RISCV64 proof sessions (at least `ExecSpec`, `AInvs`, `Refine`) and record build times.
 - [ ] Run the haskell-translator manually; read its output and the skeleton files in `spec/design/skel`.
 
