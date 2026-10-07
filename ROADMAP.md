@@ -23,7 +23,7 @@ stage's exit criteria are met.
 
 ### C1. Lean project setup
 - [x] Lean 4 + Lake project in `lean/` (lib `Sel4Lean`). **No Mathlib during crawl**: core Lean has `BitVec`, `omega`, `grind`, `simp`. Revisit in C2.
-- [x] Toolchain pinned (`leanprover/lean4:v4.34.1`); builds on the instance (`env/remote/lean_build.sh`, 15 s). GitHub Actions CI is pending: the gh token needs the `workflow` scope.
+- [x] Toolchain pinned (`leanprover/lean4:v4.34.1`); builds on the instance (`env/remote/lean_build.sh`, 15 s). **No GitHub Actions for now** (decision 2026-10-07): all builds run on the instance.
 
 ### C2. Lean foundations library (port of l4v `lib/Monads`)
 - [ ] Nondeterministic state monad (with failure) and its basic laws.
