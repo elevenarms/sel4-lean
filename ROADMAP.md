@@ -33,11 +33,12 @@ stage's exit criteria are met.
 
 ### C3. Translators, applied to one subsystem
 Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc_A`); first lemma `cancelSignal_corres`.
-- [ ] Haskell → Lean for the executable-spec slice. Use a real Haskell parser (e.g. `ghc-lib-parser`), not regexes.
-- [ ] Isabelle → Lean for the matching abstract-spec definitions (hand-assisted is fine).
-- [ ] Write down how each HOL feature is mapped: non-empty types → `Inhabited`, type classes and sorts,
-      locales, records, typedefs, `'a word` → `BitVec n`.
+- [x] Haskell → Lean for the executable-spec slice: `tools/hs2lean` (tree-sitter-haskell). All 13 functions of `Notification.lhs` + 3 types generated, compiling unedited.
+- [x] Isabelle → Lean for the matching abstract-spec definitions (by hand: `Abstract/IpcCancel.lean`).
+- [x] Write down how each HOL feature is mapped (`notes/c3-translators.md`). Type classes, locales and
+      type-level numerals not hit yet.
 - [ ] Testing: run the Lean executable spec and the Haskell model on the same inputs and compare.
+      **Deferred:** needs the kernel state model translated (stubs are opaque). Translator unit tests exist.
 
 ### C4. First proofs
 - [ ] Port one invariant-preservation lemma for the slice.
