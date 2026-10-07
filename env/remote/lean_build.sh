@@ -14,7 +14,9 @@ LOG=~/c0/lean-build.log
   cd ~/c0/sel4-lean/lean
   echo "toolchain: $(cat lean-toolchain)"
   start=$(date +%s)
-  lake build && rc=0 || rc=$?
+  # time limit: a looping tactic (e.g. repeat' in wp) must not hang the box
+  timeout ${LEAN_TIMEOUT:-300} lake build && rc=0 || rc=$?
+  [ "$rc" = 124 ] && echo "TIMEOUT after ${LEAN_TIMEOUT:-300}s"
   echo "lean: $(lean --version)"
   echo "EXIT=$rc wall=$(( $(date +%s) - start ))s"
 } >> "$LOG" 2>&1
