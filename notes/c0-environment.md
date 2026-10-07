@@ -1,12 +1,22 @@
 # C0: Reference environment
 
-Status: **in progress** (sources synced, image building; proof runs not started)
+Status: **in progress** (environment ready; proof runs not started)
 
 ## Machine
 
-Shared AWS scratch instance (Ubuntu 24.04, x86_64, 32 cores, 62 GB RAM, ~160 GB free).
-Docker is **rootless** (`~/.local/share/docker`), so `chown -R` steps in image builds are slow (~100 s each).
-Other projects' images live on this box. Keep everything under `~/c0`.
+Shared AWS scratch instance, `c5ad.8xlarge` (Ubuntu 24.04, x86_64, 32 cores, 62 GB RAM).
+Other projects' Docker images live on this box. Don't touch them.
+
+| Storage | What | Measured write |
+|---|---|---|
+| EBS root (`/`, 256 GB) | Docker images, `~/c0` logs, repo copy at `~/c0/sel4-lean` | 139 MB/s (looks like gp3 default) |
+| Local NVMe RAID0 (`/scratch`, 1.1 TB, `env/remote/scratch.sh`) | Sources, Isabelle heaps, build outputs | 474 MB/s (single stream) |
+
+`/scratch` is **wiped when the instance stops** (a reboot keeps it). `setup.sh` rebuilds it in about 15 s.
+
+Docker is **rootless**: container root maps to host `ubuntu`. So we run `trustworthysystems/l4v` directly
+(`env/remote/in_l4v.sh`) and skip upstream's per-user image. That image's `chown -R` layer is 6.5 GB, and
+building it took about 7.5 minutes, held back by EBS throughput.
 
 ## Pinned sources
 
@@ -48,3 +58,5 @@ and commit from the Mac. The instance holds no git credentials.
 ## Log
 
 - 2026-10-07: First image build failed (`make` missing on host). Installed it and rebuilt.
+- 2026-10-07: Build was slow because of disk throughput, not CPU (EBS 139 MB/s). Moved the work to local NVMe RAID0 and
+  dropped the per-user image. A fresh `setup.sh` (pinned sync) now takes 14 s.
