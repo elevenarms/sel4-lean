@@ -22,8 +22,8 @@ stage's exit criteria are met.
 - [x] Run the haskell-translator; read its output and the skeleton files in `spec/design/skel` (see notes).
 
 ### C1. Lean project setup
-- [ ] Lean 4 + Lake project; decide whether to depend on Mathlib.
-- [ ] Pin the toolchain; set up CI that builds the Lean project.
+- [x] Lean 4 + Lake project in `lean/` (lib `Sel4Lean`). **No Mathlib during crawl**: core Lean has `BitVec`, `omega`, `grind`, `simp`. Revisit in C2.
+- [x] Toolchain pinned (`leanprover/lean4:v4.34.1`); builds on the instance (`env/remote/lean_build.sh`, 15 s). GitHub Actions CI is pending: the gh token needs the `workflow` scope.
 
 ### C2. Lean foundations library (port of l4v `lib/Monads`)
 - [ ] Nondeterministic state monad (with failure) and its basic laws.
@@ -87,7 +87,7 @@ Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc
 |---|---|---|
 | Translate vs. re-prove proofs | End of crawl | Based on C4/C5 data |
 | Track upstream vs. pinned snapshot | End of crawl | Affects how the translators are built |
-| Mathlib dependency | C1 | Gets you `BitVec` lemmas and automation; costs build time and version churn |
+| Mathlib dependency | ~~C1~~ decided: not during crawl | Revisit in C2 if the monad library wants `Set` theory |
 | C semantics approach | Start of run | (a) vs (b) above |
 | Licensing of translated proofs | Before publishing anything | Believed mostly GPL-2.0 / BSD; confirm before publishing |
 

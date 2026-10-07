@@ -1,0 +1,9 @@
+name = "sel4lean"
+version = "0.1.0"
+defaultTargets = ["Sel4Lean"]
+
+# No Mathlib during crawl (decision C1, see ROADMAP.md): core Lean has BitVec, omega, grind, simp.
+# Revisit in C2 if the nondeterministic monad library wants Mathlib's Set theory.
+
+[[lean_lib]]
+name = "Sel4Lean"
