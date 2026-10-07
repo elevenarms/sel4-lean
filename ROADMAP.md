@@ -19,7 +19,7 @@ stage's exit criteria are met.
 - [x] Build the l4v Docker image (seL4-CAmkES-L4v-dockerfiles). Confirm host architecture and RAM; images target x86_64.
 - [x] Check out l4v and the seL4 sources at a pinned commit (see `env/remote/verification-pinned.xml`, `notes/c0-environment.md`).
 - [x] Check the RISCV64 proof sessions (at least `ExecSpec`, `AInvs`, `Refine`) and record build times. All pass; 36 min wall (`notes/c0-environment.md`).
-- [ ] Run the haskell-translator manually; read its output and the skeleton files in `spec/design/skel`.
+- [x] Run the haskell-translator; read its output and the skeleton files in `spec/design/skel` (see notes).
 
 ### C1. Lean project setup
 - [ ] Lean 4 + Lake project; decide whether to depend on Mathlib.
@@ -32,7 +32,7 @@ stage's exit criteria are met.
 - [ ] A minimal `wp` tactic, so you can find out early what porting the automation involves.
 
 ### C3. Translators, applied to one subsystem
-Candidate slice: capability / CSpace operations. Choose the final slice after reading the specs in C0.
+Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc_A`); first lemma `cancelSignal_corres`.
 - [ ] Haskell → Lean for the executable-spec slice. Use a real Haskell parser (e.g. `ghc-lib-parser`), not regexes.
 - [ ] Isabelle → Lean for the matching abstract-spec definitions (hand-assisted is fine).
 - [ ] Write down how each HOL feature is mapped: non-empty types → `Inhabited`, type classes and sorts,

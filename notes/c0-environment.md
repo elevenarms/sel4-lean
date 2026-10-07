@@ -1,6 +1,6 @@
 # C0: Reference environment
 
-Status: **reference proofs pass** (RISCV64 abstract ↔ executable stack checks in 36 min). C-side and translator read-through still open.
+Status: **C0 complete** (2026-10-07). RISCV64 abstract ↔ executable stack checks in 36 min; translator read through; C3 slice chosen.
 
 ## Machine
 
@@ -89,3 +89,60 @@ A Lean port with the same module structure would hit the same limit.
 - 2026-10-07: First image build failed (`make` missing on host). Installed it and rebuilt.
 - 2026-10-07: Build was slow because of disk throughput, not CPU (EBS 139 MB/s). Moved the work to local NVMe RAID0 and
   dropped the per-user image. A fresh `setup.sh` (pinned sync) now takes 14 s.
+
+## Translator read-through: one function, three forms
+
+Generated theories in `l4v/spec/design/*.thy` are committed upstream. Our run regenerated them byte-for-byte (clean `git status`).
+
+**Haskell** (`spec/haskell/src/SEL4/Object/Notification.lhs`):
+```haskell
+cancelSignal :: PPtr TCB -> PPtr Notification -> Kernel ()
+cancelSignal threadPtr ntfnPtr = do
+        ntfn <- getNotification ntfnPtr
+        assert (isWaiting (ntfnObj ntfn)) "cancelSignal: notification object must be waiting"
+        let queue' = delete threadPtr $ ntfnQueue $ ntfnObj ntfn
+        ntfn' <- case queue' of
+            [] -> return $ IdleNtfn
+            _ -> return $ (ntfnObj ntfn) { ntfnQueue = queue' }
+        setNotification ntfnPtr (ntfn { ntfnObj = ntfn' })
+        setThreadState Inactive threadPtr
+    where isWaiting ntfn = case ntfn of WaitingNtfn {} -> True; _ -> False
+```
+
+**Skeleton** (`spec/design/skel/Notification_H.thy`) is Isabelle text with an insertion marker:
+`#INCLUDE_HASKELL SEL4/Object/Notification.lhs bodies_only`. The directives are `bodies_only` (37 uses),
+`decls_only` (24) and `all_bits` (17). Declarations and bodies are split into separate theories (`*Decls_H`)
+because Isabelle needs things declared before use, and some of these functions call each other.
+
+**Generated Isabelle** (`spec/design/Notification_H.thy`). The translation is almost purely syntactic:
+`do … od`, `where` → `let`, record update → `⦇ ntfnQueue := queue' ⦈`, `assert` → `haskell_assert` (message dropped).
+
+**Abstract spec counterpart** (`spec/abstract/IpcCancel_A.thy:328`, `cancel_signal`), hand-written, same shape
+over different state types (`remove1` vs `delete`, `ntfn_set_obj`, `fail` instead of assert).
+
+**Refinement lemma** (`proof/refine/IpcCancel_R.thy:307`, `cancelSignal_corres`), about 35 lines of `apply`-style:
+`corres_guard_imp`, `corres_split[OF getNotification_corres]`, `corres_cases`, `setNotification_corres`,
+`setThreadState_corres`, `wp`. Preconditions are `invs` / `invs'`, the **full** abstract and executable invariants.
+
+### What this means for a Lean target
+
+- **Haskell → Lean is easier than Haskell → Isabelle.** Lean has `do`-notation, `where`, `{ s with f := v }`
+  structure update, and `match` with as-patterns (`x@(...)`). The translator's hand-written inputs are mostly
+  Isabelle workarounds. `caseconvs` (2352 lines of case-expression rewrites for patterns Isabelle can't
+  express) should mostly disappear. `primrecs` and `supplied` are effectively empty.
+- **The skeleton files still matter.** They carry imports, `arch_requalify` plumbing and hand-written glue.
+  A Lean retarget needs a Lean skeleton per theory (49 generic + about 25 RISCV64).
+- **Monads differ.** Haskell's `Kernel` is a deterministic state/exception monad. Isabelle models it in l4v's
+  *nondeterministic* state monad with failure, and `corres` is stated over that. C2's Lean monad must match
+  Isabelle's semantics, not Haskell's, or the refinement proofs won't carry over.
+- **The `invs` problem.** Even a 35-line `corres` lemma assumes the whole invariant set. For C4, either port
+  `invs`/`invs'` as definitions and take the facts the proof needs as axioms, or state a slice lemma with only
+  the conjuncts the proof actually uses. The second keeps crawl small.
+- **Scale.** `proof/refine` has 5,325 `lemma`s and 629 `crunch` invocations. `crunch` generates lemmas
+  automatically, so a Lean `crunch` equivalent is high leverage.
+
+### C3 slice: notifications
+
+Chosen: **notifications** (`Notification.lhs`, 216 lines, the smallest object module) plus their abstract
+counterparts in `IpcCancel_A.thy` / `Ipc_A.thy`. First C4 target: **`cancelSignal_corres`**.
+Self-contained, small, and it exercises `corres_split`, `wp` and the get/set object lemmas, which is all of C2.
