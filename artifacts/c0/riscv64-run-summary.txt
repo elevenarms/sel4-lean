@@ -1,0 +1,88 @@
+== Wed Oct  7 21:36:12 UTC 2026 start (host: 32 cores, 62 GB)
+EXIT=137 wall=126s
+== Wed Oct  7 21:38:18 UTC 2026 done
+== Wed Oct  7 21:38:21 UTC 2026 restarted with threads=32, -j3
+== Wed Oct  7 21:38:21 UTC 2026 start (host: 32 cores, 62 GB)
+== Wed 07 Oct 2026 21:39:03 UTC isabelle: 
+== Wed 07 Oct 2026 21:39:03 UTC run_tests -j 3 threads=32: haskell-translator ASpec ExecSpec HaskellKernel AInvs Refine
+Running 11 test(s)...
+  Finished HaskellKernel             FAILED    (0:00:00 real, 0:00:00 cpu,  0.00GB) [exit 2]
+  Finished kernel-config             passed    (0:00:01 real, 0:00:00 cpu,  0.05GB)
+Started at Wed Oct 7 21:39:51 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+  Finished haskell-translator        passed    (0:00:16 real, 0:00:06 cpu,  0.04GB)
+Finished Pure (0:00:22 elapsed time, 0:00:21 cpu time, factor 0.98)
+== Wed Oct  7 21:40:25 UTC 2026 start (host: 32 cores, 62 GB)
+== Wed 07 Oct 2026 21:40:25 UTC isabelle: 
+== Wed 07 Oct 2026 21:40:25 UTC run_tests -j 1 threads=32: HaskellKernel
+Running 1 test(s)...
+  Finished HaskellKernel             passed    (0:01:42 real, 0:01:10 cpu,  0.63GB)
+All tests passed.
+EXIT=0 wall=106s
+== Wed Oct  7 21:42:11 UTC 2026 done
+Finished HOL (0:04:17 elapsed time, 0:14:57 cpu time, factor 3.49)
+Finished Word_Lib/document (0:00:12 elapsed time)
+Finished Word_Lib (0:00:49 elapsed time, 0:04:14 cpu time, factor 5.12)
+Finished at Wed Oct 7 21:45:57 GMT 2026
+  Finished isabelle                  passed    (0:06:08 real, 0:29:56 cpu, 10.52GB)
+Started at Wed Oct 7 21:46:00 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Finished at Wed Oct 7 21:46:43 GMT 2026
+  Finished Lib                       TIMEOUT   (0:00:46 real, 0:10:24 cpu,  8.07GB)
+  Finished ASpec-files               SKIPPED   
+  Finished ASpec                     SKIPPED   
+  Finished AInvs                     SKIPPED   
+  Finished BaseRefine                SKIPPED   
+  Finished Refine                    SKIPPED   
+  Finished ExecSpec                  SKIPPED   
+TEST TIMEOUT: Lib
+TEST FAILED: HaskellKernel
+Tests failed.
+EXIT=1 wall=505s
+== Wed Oct  7 21:46:46 UTC 2026 done
+== Wed Oct  7 21:47:09 UTC 2026 restart: --scale-timeouts
+== Wed Oct  7 21:47:09 UTC 2026 start (host: 32 cores, 62 GB)
+== Wed 07 Oct 2026 21:47:09 UTC isabelle: 
+== Wed 07 Oct 2026 21:47:09 UTC run_tests -j 3 threads=32: haskell-translator ASpec ExecSpec HaskellKernel AInvs Refine
+Running 11 test(s)...
+Started at Wed Oct 7 21:47:13 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+  Finished haskell-translator        passed    (0:00:01 real, 0:00:00 cpu,  0.04GB)
+Finished at Wed Oct 7 21:47:20 GMT 2026
+  Finished isabelle                  passed    (0:00:09 real, 0:00:23 cpu,  2.24GB)
+Started at Wed Oct 7 21:47:22 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+  Finished HaskellKernel             passed    (0:01:02 real, 0:00:41 cpu,  0.75GB)
+Finished Lib (0:00:53 elapsed time, 0:09:42 cpu time, factor 10.88)
+Finished at Wed Oct 7 21:48:28 GMT 2026
+  Finished Lib                       passed    (0:01:08 real, 0:11:51 cpu,  7.15GB)
+  Finished ASpec-files               passed    (0:00:01 real, 0:00:00 cpu,  0.05GB)
+Started at Wed Oct 7 21:48:33 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Started at Wed Oct 7 21:48:33 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Finished ASpec/document (0:00:08 elapsed time)
+Finished ASpec (0:02:21 elapsed time, 0:06:07 cpu time, factor 2.59)
+Finished at Wed Oct 7 21:51:13 GMT 2026
+  Finished ASpec                     passed    (0:02:44 real, 0:07:37 cpu,  9.00GB)
+Started at Wed Oct 7 21:51:17 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Finished ExecSpec (0:03:02 elapsed time, 0:09:52 cpu time, factor 3.25)
+Finished at Wed Oct 7 21:51:46 GMT 2026
+  Finished ExecSpec                  passed    (0:03:17 real, 0:11:48 cpu,  9.27GB)
+Finished AInvs (0:08:20 elapsed time, 1:19:53 cpu time, factor 9.57)
+Finished at Wed Oct 7 21:59:53 GMT 2026
+  Finished AInvs                     passed    (0:08:39 real, 1:23:33 cpu, 18.63GB)
+Started at Wed Oct 7 21:59:57 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Finished BaseRefine (0:02:25 elapsed time, 0:04:42 cpu time, factor 1.94)
+Finished at Wed Oct 7 22:02:32 GMT 2026
+  Finished BaseRefine                passed    (0:02:39 real, 0:05:35 cpu,  7.93GB)
+Started at Wed Oct 7 22:02:37 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Finished Refine (0:20:30 elapsed time, 2:51:04 cpu time, factor 8.34)
+Finished at Wed Oct 7 22:23:22 GMT 2026
+  Finished Refine                    passed    (0:20:49 real, 2:55:22 cpu, 21.56GB)
+All tests passed.
+EXIT=0 wall=2175s
+== Wed Oct  7 22:23:24 UTC 2026 done
+Finished Pure (0:00:22 elapsed time, 0:00:21 cpu time, factor 0.98)
+Finished HOL (0:04:17 elapsed time, 0:14:57 cpu time, factor 3.49)
+Finished Word_Lib (0:00:49 elapsed time, 0:04:14 cpu time, factor 5.12)
+Finished Lib (0:00:53 elapsed time, 0:09:42 cpu time, factor 10.88)
+Finished ASpec (0:02:21 elapsed time, 0:06:07 cpu time, factor 2.59)
+Finished ExecSpec (0:03:02 elapsed time, 0:09:52 cpu time, factor 3.25)
+Finished AInvs (0:08:20 elapsed time, 1:19:53 cpu time, factor 9.57)
+Finished BaseRefine (0:02:25 elapsed time, 0:04:42 cpu time, factor 1.94)
+Finished Refine (0:20:30 elapsed time, 2:51:04 cpu time, factor 8.34)

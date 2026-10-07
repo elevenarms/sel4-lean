@@ -1,6 +1,6 @@
 # C0: Reference environment
 
-Status: **in progress** (environment ready; proof runs not started)
+Status: **reference proofs pass** (RISCV64 abstract ↔ executable stack checks in 36 min). C-side and translator read-through still open.
 
 ## Machine
 
@@ -44,6 +44,35 @@ Watch progress locally with `tail -f project.log` (`scripts/watch_remote.sh` mus
 
 Results produced remotely go to `~/c0/sel4-lean/artifacts/`. Pull them back with `scripts/remote_fetch.sh`
 and commit from the Mac. The instance holds no git credentials.
+
+## RISCV64 reference run (2026-10-07)
+
+`env/remote/run_proofs.sh` with the defaults: threads=32, `-j3`, `--scale-timeouts 8`.
+**All tests passed in 2175 s (36 min) wall time.** Reports are in [`artifacts/c0/`](../artifacts/c0/).
+
+| Session | Wall | CPU | Avg cores busy | Peak mem |
+|---|---|---|---|---|
+| Pure + HOL + Word_Lib | 6:08 | 29:56 | 4.9 (8 threads; before the threads fix) | 10.5 GB |
+| Lib | 0:53 | 9:42 | 10.9 | 7.2 GB |
+| ASpec (abstract spec) | 2:21 | 6:07 | 2.6 | 9.0 GB |
+| ExecSpec (translated Haskell spec) | 3:02 | 9:52 | 3.3 | 9.3 GB |
+| HaskellKernel (GHC build of the model) | 1:02 | 0:41 | n/a | 0.8 GB |
+| AInvs (abstract invariants) | 8:20 | 1:19:53 | 9.6 | 18.6 GB |
+| BaseRefine | 2:25 | 4:42 | 1.9 | 7.9 GB |
+| **Refine** (abstract ↔ executable) | **20:30** | **2:51:04** | **8.3** | **21.6 GB** |
+
+Times are from Isabelle's own `Finished` lines. The `run_tests` totals in the JUnit file add startup and heap loading.
+
+**Parallelism ceiling.** Even with 32 threads, the big sessions average 8–11 cores busy. l4v's theories form long
+import chains, so only a few proofs are available to run at once; more threads won't help. To fill the machine,
+run independent sessions side by side (e.g. the C chain: CParser → CSpec → CBaseRefine → CRefine).
+A Lean port with the same module structure would hit the same limit.
+
+### What went wrong on the way (all fixed in `run_proofs.sh`)
+1. Isabelle's default thread count is `min(cores, 8)` (`multithreading.ML:42`). Set via `ISABELLE_BUILD_OPTIONS` in the user
+   settings, because some tests call `isabelle build` directly and bypass the Makefile's `ISABELLE_BUILD_OPTS`.
+2. `run_tests` timeouts are **CPU-time** budgets. With 32 threads, Lib used its budget in 46 s of wall time. Fixed with `--scale-timeouts`.
+3. HaskellKernel failed with "command not found": the image only puts GHC and stack on PATH in `/root/.bashrc`.
 
 ## Haskell spec and translator (first look)
 
