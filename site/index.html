@@ -176,8 +176,8 @@ html { scroll-behavior: smooth; }
     </ul>
     <div class="box">
       <b>status</b>
-      <span class="ok">C0 complete</span><br>
-      next: C1 lean project<br>
+      <span class="ok">C0, C1 complete</span><br>
+      next: C2 monad library<br>
       <span class="stamp">updated 2026-10-07</span>
     </div>
     <div class="box">
@@ -190,11 +190,11 @@ html { scroll-behavior: smooth; }
   </aside>
 
   <main id="top">
-    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c0</p>
+    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c1</p>
     <p class="lede">
       seL4 is an operating-system kernel with a machine-checked proof, in Isabelle/HOL, that its C code does what
       its specification says. This project is moving that proof to Lean 4, one stage at a time.
-      Stage C0 is done: the original Isabelle proofs build and pass on our own machine, so we have a reference to port against.
+      Stages C0 and C1 are done: the original Isabelle proofs build and pass on our own machine, and a Lean 4 project builds next to them.
     </p>
 
     <div class="grid">
@@ -213,7 +213,8 @@ html { scroll-behavior: smooth; }
           <li><time>15:23</time><div><span class="ok">All RISCV64 reference proofs pass.</span> The abstract&nbsp;&harr;&nbsp;executable stack checks in <b>36 minutes</b>, and Refine alone takes 20:30. <span class="hood">(c0)</span></div></li>
           <li><time>15:41</time><div>Translator read through. Haskell maps to Lean more directly than it maps to Isabelle.
             Slice chosen for crawl: <b>notifications</b>, with first lemma <code>cancelSignal_corres</code>. <span class="ok">C0 closed.</span> <span class="hood">(c0)</span></div></li>
-          <li><time>next</time><div class="dim">C1: Lean project. C2: Lean versions of l4v's monad, <code>wp</code> and <code>corres</code>. C3: the first generated Lean, for notifications.</div></li>
+          <li><time>15:45</time><div>C1: Lean 4.34.1 project set up and building on the reference box in 15 s, with no Mathlib for now (core Lean already has <code>BitVec</code>, <code>omega</code> and <code>grind</code>). A smoke test checks RISCV64 word alignment by <code>decide</code>. <span class="ok">C1 closed.</span> <span class="hood">(c1)</span></div></li>
+          <li><time>next</time><div class="dim">C2: Lean versions of l4v's monad, <code>wp</code> and <code>corres</code>. C3: the first generated Lean, for notifications.</div></li>
         </ol>
       </section>
 
@@ -368,7 +369,7 @@ od</pre>
         <h3>crawl &middot; one slice, end to end</h3>
         <ul class="check">
           <li><span class="ok">[x]</span> C0 reference environment, proofs pass</li>
-          <li><span class="todo">[ ]</span> C1 Lean project and CI</li>
+          <li><span class="ok">[x]</span> C1 Lean project (CI pending)</li>
           <li><span class="todo">[ ]</span> C2 monad, <code>wp</code>, <code>corres</code> in Lean</li>
           <li><span class="todo">[ ]</span> C3 translators on notifications</li>
           <li><span class="todo">[ ]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
