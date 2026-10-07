@@ -48,18 +48,20 @@ echo "== $(date -u) run_tests -j '"$JOBS"' threads='"$THREADS"': '"$TESTS"'"
 nohup bash -c "
   echo \"== \$(date -u) start (host: \$(nproc) cores, \$(free -g | awk '/Mem/{print \$2}') GB)\"
   start=\$(date +%s)
-  # utilisation sampler: one line per minute while the run is alive
-  ( while sleep 60; do
-      docker ps -q --filter name=c0-proofs | grep -q . || break
-      read -r _ u n s i w _ < /proc/stat; sleep 1; read -r _ u2 n2 s2 i2 w2 _ < /proc/stat
-      busy=\$(( (u2+n2+s2-u-n-s)*100 / (u2+n2+s2+i2+w2-u-n-s-i-w) ))
-      echo \"stats: cpu \${busy}% busy, mem \$(free -g | awk '/Mem/{print \$3}')G used, load \$(cut -d' ' -f1 /proc/loadavg)\"
-    done ) &
   docker run --rm --name $NAME --hostname in-container \
     -v /scratch/c0/verification:/host \
     -v /scratch/c0/isabelle-home:/root/.isabelle \
     -v $OUT:/out \
-    -w /host trustworthysystems/l4v bash -c '$SCRIPT'
+    -w /host trustworthysystems/l4v bash -c '$SCRIPT' &
+  run=\$!
+  # utilisation sampler: one line per minute, tied to this run's docker process
+  while kill -0 \$run 2>/dev/null; do
+    read -r _ u n s i w _ < /proc/stat; sleep 60; read -r _ u2 n2 s2 i2 w2 _ < /proc/stat
+    kill -0 \$run 2>/dev/null || break
+    busy=\$(( (u2+n2+s2-u-n-s)*100 / (u2+n2+s2+i2+w2-u-n-s-i-w) ))
+    echo \"stats[$NAME]: cpu \${busy}% busy (60s avg), mem \$(free -g | awk '/Mem/{print \$3}')G used, load \$(cut -d' ' -f1 /proc/loadavg)\"
+  done
+  wait \$run
   rc=\$?
   echo \"EXIT=\$rc wall=\$(( \$(date +%s) - start ))s\"
   echo \"== \$(date -u) done\"
