@@ -1,4 +1,4 @@
-import Sel4Lean.Monad.VCG
+import Sel4Lean.Monad.Except
 
 /-! Tests: `wp` / `wpsimp` on `do`-blocks over `NondetM`. -/
 
@@ -34,5 +34,29 @@ def branch (b : Bool) : NondetM Nat Unit := do
 
 example (b : Bool) : ⟪fun s => s = 5⟫ (branch b) ⟪fun _ s => s ≥ 6⟫ := by
   unfold branch; wpsimp <;> omega
+
+end Sel4Lean.Test
+
+/-! Exception monad: a lookup that throws when the key is missing. -/
+namespace Sel4Lean.Test
+open NondetM
+
+def lookupE (k : Nat) : NondetM (List (Nat × Nat)) (Except String Nat) :=
+  bindE (liftE get) fun st =>
+    match st.lookup k with
+    | some v => returnOk v
+    | none => throwError "missing"
+
+/-- On a state where `k ↦ 7`, the lookup succeeds with 7 and never reaches the error branch. -/
+example : validE (fun st => st.lookup 3 = some 7) (lookupE 3) (fun r _ => r = 7) (fun _ _ => False) := by
+  unfold lookupE
+  refine bindE_wp (B := fun st s => st = s ∧ s.lookup 3 = some 7) ?_ ?_
+  · intro st
+    intro s ⟨hst, hk⟩ r s' hr
+    subst hst
+    rw [hk] at hr
+    cases hr
+    rfl
+  · exact liftE_wp _ (hoare_pre (get_wp _) (fun s h => ⟨rfl, h⟩))
 
 end Sel4Lean.Test

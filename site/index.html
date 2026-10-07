@@ -170,14 +170,15 @@ html { scroll-behavior: smooth; }
       <li><a href="#infra">how we run it</a></li>
       <li><a href="#results">c0 results</a></li>
       <li><a href="#translator">one function, three forms</a></li>
+      <li><a href="#lean">the lean side</a></li>
       <li><a href="#lessons">lessons</a></li>
       <li><a href="#roadmap">roadmap</a></li>
       <li><a href="#links">links</a></li>
     </ul>
     <div class="box">
       <b>status</b>
-      <span class="ok">C0, C1 complete</span><br>
-      next: C2 monad library<br>
+      <span class="ok">C0&ndash;C2 complete</span><br>
+      next: C3 notifications<br>
       <span class="stamp">updated 2026-10-07</span>
     </div>
     <div class="box">
@@ -190,11 +191,11 @@ html { scroll-behavior: smooth; }
   </aside>
 
   <main id="top">
-    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c1</p>
+    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c2</p>
     <p class="lede">
       seL4 is an operating-system kernel with a machine-checked proof, in Isabelle/HOL, that its C code does what
       its specification says. This project is moving that proof to Lean 4, one stage at a time.
-      Stages C0 and C1 are done: the original Isabelle proofs build and pass on our own machine, and a Lean 4 project builds next to them.
+      Stages C0&ndash;C2 are done: the original Isabelle proofs pass on our own machine, and Lean now has l4v&rsquo;s monad, Hoare logic and <code>corres</code>, all checked.
     </p>
 
     <div class="grid">
@@ -214,7 +215,9 @@ html { scroll-behavior: smooth; }
           <li><time>15:41</time><div>Translator read through. Haskell maps to Lean more directly than it maps to Isabelle.
             Slice chosen for crawl: <b>notifications</b>, with first lemma <code>cancelSignal_corres</code>. <span class="ok">C0 closed.</span> <span class="hood">(c0)</span></div></li>
           <li><time>15:45</time><div>C1: Lean 4.34.1 project set up and building on the reference box in 15 s, with no Mathlib for now (core Lean already has <code>BitVec</code>, <code>omega</code> and <code>grind</code>). A smoke test checks RISCV64 word alignment by <code>decide</code>. <span class="ok">C1 closed.</span> <span class="hood">(c1)</span></div></li>
-          <li><time>next</time><div class="dim">C2: Lean versions of l4v's monad, <code>wp</code> and <code>corres</code>. C3: the first generated Lean, for notifications.</div></li>
+          <li><time>16:10</time><div>C2: l4v&rsquo;s nondeterministic monad, Hoare triples, exception layer and <code>corres</code> ported to Lean (about 540 lines, 37 theorems), with first <code>wp</code>/<code>wpsimp</code> tactics.
+            <code>corres_split</code> compiled on the first build. One hiccup: an over-eager tactic looped for 10 minutes, so builds now have a time limit. <span class="ok">C2 closed.</span> <span class="hood">(c2)</span></div></li>
+          <li><time>next</time><div class="dim">C3: the first generated Lean, for notifications. C4: <code>cancelSignal_corres</code> in Lean.</div></li>
         </ol>
       </section>
 
@@ -353,6 +356,53 @@ od</pre>
           That's the shape of what C2 has to rebuild.</p>
       </section>
 
+      <section id="lean" class="wide">
+        <h2>the lean side <small>&middot; c2, ported from l4v lib/Monads and Corres_UL</small></h2>
+        <div class="trio">
+          <div>
+            <p class="cap">the monad &middot; Monad/Nondet.lean</p>
+<pre>-- l4v: 's &rArr; ('a &times; 's) set &times; bool
+def NondetM (&sigma; &alpha; : Type) :=
+  &sigma; &rarr; ((&alpha; &times; &sigma;) &rarr; Prop) &times; Prop
+
+instance : Monad (NondetM &sigma;) where
+  pure := ret
+  bind := bind
+
+def incr : NondetM Nat Unit := do
+  let x &larr; get
+  put (x + 1)</pre>
+          </div>
+          <div>
+            <p class="cap">hoare logic &middot; Monad/VCG.lean</p>
+<pre>def valid (P : &sigma; &rarr; Prop) (f : NondetM &sigma; &alpha;)
+    (Q : &alpha; &rarr; &sigma; &rarr; Prop) : Prop :=
+  &forall; s, P s &rarr; &forall; r s',
+    (f s).1 (r, s') &rarr; Q r s'
+
+example :
+    &#10218;fun _ =&gt; True&#10219; incr
+    &#10218;fun _ s =&gt; s &gt; 0&#10219; := by
+  unfold incr; wpsimp</pre>
+          </div>
+          <div>
+            <p class="cap">refinement &middot; Corres.lean</p>
+<pre>theorem corres_split
+  (hx : corres sr nf nf' r' P P' a c)
+  (hy : &forall; rv rv', r' rv rv' &rarr;
+     corres sr nf nf' r (R rv) (R' rv')
+            (b rv) (d rv'))
+  (ha : &#10218;Q&#10219; a &#10218;R&#10219;)
+  (hc : &#10218;Q'&#10219; c &#10218;R'&#10219;) :
+  corres sr nf nf' r (P &and; Q) (P' &and; Q')
+    (a &gt;&gt;= b) (c &gt;&gt;= d)</pre>
+          </div>
+        </div>
+        <p>Because <code>NondetM</code> is a Lean <code>Monad</code>, ordinary <code>do</code>-notation now means l4v&rsquo;s nondeterministic <code>do &hellip; od</code>.
+          Translated Haskell can keep its original shape. Isabelle needed the translator to produce that syntax; Lean gets it free.
+          The <code>corres</code> statement above is abbreviated from <code>corresUnderlying</code>.</p>
+      </section>
+
       <section id="lessons">
         <h2>lessons <small>&middot; from c0</small></h2>
         <ul class="plain">
@@ -360,6 +410,7 @@ od</pre>
           <li><b>Isabelle caps sessions at 8 threads</b> unless you set <code>threads</code> in the user settings, since some tests bypass the Makefile.</li>
           <li><b>l4v's timeouts count CPU time.</b> More threads use the budget faster, so scale the timeouts with the thread count.</li>
           <li><b>Proof structure limits parallelism.</b> Big sessions average 8&ndash;11 cores busy because the theories form long import chains. A Lean port's module layout will face the same limit.</li>
+          <li><b>Lean surface syntax caused every C2 build failure.</b> Keywords (<code>unless</code>, <code>assert</code>), notation precedence and <code>cases</code> renaming broke builds; l4v&rsquo;s semantics never did.</li>
           <li><b>Rootless Docker</b> makes the upstream per-user image unnecessary, because container root is already you.</li>
         </ul>
       </section>
@@ -370,7 +421,7 @@ od</pre>
         <ul class="check">
           <li><span class="ok">[x]</span> C0 reference environment, proofs pass</li>
           <li><span class="ok">[x]</span> C1 Lean project (builds on the instance)</li>
-          <li><span class="todo">[ ]</span> C2 monad, <code>wp</code>, <code>corres</code> in Lean</li>
+          <li><span class="ok">[x]</span> C2 monad, <code>wp</code>, <code>corres</code> in Lean</li>
           <li><span class="todo">[ ]</span> C3 translators on notifications</li>
           <li><span class="todo">[ ]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
           <li><span class="todo">[ ]</span> C5 Dedukti spike</li>

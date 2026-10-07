@@ -3,9 +3,10 @@
 Porting seL4's formal verification ([l4v](https://github.com/seL4/l4v), Isabelle/HOL) to **Lean 4**.
 The end goal is a Lean theorem that seL4's C implementation refines its abstract specification.
 
-**Status: C0 and C1 complete (2026-10-07).** The Isabelle reference builds and every RISCV64 abstract ↔ executable
-proof passes on our hardware, in 36 minutes. A Lean 4.34.1 project ([`lean/`](lean/)) builds on the same machine.
-Next is C2, the Lean proof machinery. See [ROADMAP.md](ROADMAP.md).
+**Status: C0–C2 complete (2026-10-07).** The Isabelle reference builds and every RISCV64 abstract ↔ executable
+proof passes on our hardware, in 36 minutes. In [`lean/`](lean/), Lean 4.34.1 now has l4v's nondeterministic monad,
+Hoare logic, exception layer and `corres`, with first `wp`/`wpsimp` tactics, all checked
+([notes](notes/c2-lean-foundations.md)). Next is C3: the first generated Lean, for notifications. See [ROADMAP.md](ROADMAP.md).
 
 ## The idea
 
@@ -37,6 +38,7 @@ We go in three stages: **crawl** (one slice end to end), **walk** (full abstract
 | [`GOAL.MD`](GOAL.MD) | Goal, approach, references |
 | [`ROADMAP.md`](ROADMAP.md) | Crawl / walk / run tasks, exit criteria, open decisions, risks |
 | [`notes/c0-environment.md`](notes/c0-environment.md) | C0 findings: environment, timings, translator read-through |
+| [`notes/c2-lean-foundations.md`](notes/c2-lean-foundations.md) | C2: what was ported, design decisions, effort data |
 | [`lean/`](lean/) | Lean 4 project (`Sel4Lean`); build with `env/remote/lean_build.sh` |
 | [`env/remote/`](env/remote/) | Reproducible reference environment (runs on an x86_64 Linux box) |
 | [`artifacts/c0/`](artifacts/c0/) | Proof-run reports (JUnit) and summaries |

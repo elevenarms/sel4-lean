@@ -26,10 +26,10 @@ stage's exit criteria are met.
 - [x] Toolchain pinned (`leanprover/lean4:v4.34.1`); builds on the instance (`env/remote/lean_build.sh`, 15 s). **No GitHub Actions for now** (decision 2026-10-07): all builds run on the instance.
 
 ### C2. Lean foundations library (port of l4v `lib/Monads`)
-- [ ] Nondeterministic state monad (with failure) and its basic laws.
-- [ ] Hoare triples (`valid`, `validE`) and the core wp rules.
-- [ ] `corres` definition and its basic composition rules.
-- [ ] A minimal `wp` tactic, so you can find out early what porting the automation involves.
+- [x] Nondeterministic state monad (with failure) and its basic laws.
+- [x] Hoare triples (`valid`, `validE`) and the core wp rules.
+- [x] `corres` definition and its basic composition rules (`corres_split`, `corres_guard_imp`, …).
+- [x] A minimal `wp` tactic, so you can find out early what porting the automation involves. See `notes/c2-lean-foundations.md`.
 
 ### C3. Translators, applied to one subsystem
 Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc_A`); first lemma `cancelSignal_corres`.
