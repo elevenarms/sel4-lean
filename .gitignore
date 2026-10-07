@@ -1,0 +1,11 @@
+# Credentials and machine-specific access
+keys/
+*.pem
+aws_harbor.sh
+
+# Lean / Lake
+.lake/
+build/
+
+# OS / editor
+.DS_Store
