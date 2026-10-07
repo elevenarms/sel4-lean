@@ -1,0 +1,65 @@
+# sel4-lean
+
+Porting seL4's formal verification ([l4v](https://github.com/seL4/l4v), Isabelle/HOL) to **Lean 4**.
+The end goal is a Lean theorem that seL4's C implementation refines its abstract specification.
+
+**Status: C0 complete (2026-10-07).** The Isabelle reference builds and every RISCV64 abstract ↔ executable
+proof passes on our hardware, in 36 minutes. There is no Lean code yet; it starts in C1. See [ROADMAP.md](ROADMAP.md).
+
+## The idea
+
+l4v proves seL4 correct as a stack of refinements:
+
+```
+  Abstract spec        hand-written Isabelle               (spec/abstract)
+        ▲  Refine      ~5,300 lemmas, invariants (AInvs)
+  Executable spec      Haskell model ──haskell-translator──▶ Isabelle   (spec/design)
+        ▲  CRefine
+  C implementation     C-parser → Simpl → AutoCorres
+```
+
+To move this to Lean we need:
+1. **Definitions in Lean**: Haskell → Lean for the executable spec, Isabelle → Lean for the abstract spec
+   (from HOL to dependent types).
+2. **Proof infrastructure in Lean**: l4v's nondeterministic state monad, `wp` calculus, `corres`, and
+   its automation (`wpsimp`, `crunch`).
+3. **Proofs**: either translated (Isabelle → Dedukti → Lean) or re-proved with AI help. The crawl stage
+   measures both and picks one.
+
+We go in three stages: **crawl** (one slice end to end), **walk** (full abstract ↔ executable refinement),
+**run** (down to C).
+
+## Layout
+
+| Path | What |
+|---|---|
+| [`GOAL.MD`](GOAL.MD) | Goal, approach, references |
+| [`ROADMAP.md`](ROADMAP.md) | Crawl / walk / run tasks, exit criteria, open decisions, risks |
+| [`notes/c0-environment.md`](notes/c0-environment.md) | C0 findings: environment, timings, translator read-through |
+| [`env/remote/`](env/remote/) | Reproducible reference environment (runs on an x86_64 Linux box) |
+| [`artifacts/c0/`](artifacts/c0/) | Proof-run reports (JUnit) and summaries |
+| [`scripts/`](scripts/) | Helpers for driving the remote box from a laptop |
+| [`site/index.html`](site/index.html) | One-page project overview |
+
+## Reproducing C0
+
+The reference run needs an x86_64 Linux machine with Docker; we use 32 cores and 62 GB of RAM. Local NVMe helps.
+
+```sh
+# on the Linux box, with this repo at ~/c0/sel4-lean
+bash env/remote/setup.sh        # NVMe /scratch, pinned seL4/l4v/Isabelle, l4v Docker image (~15 s + image pull)
+bash env/remote/run_proofs.sh   # RISCV64: ASpec, ExecSpec, HaskellKernel, AInvs, Refine (~36 min)
+tail -f ~/c0/proofs-riscv64.log
+```
+
+Pinned revisions are in [`env/remote/verification-pinned.xml`](env/remote/verification-pinned.xml):
+seL4 `6df0b6e`, l4v `ac4a36d`, Isabelle2025-2.
+
+From a Mac, `scripts/remote_push.sh`, `scripts/remote.sh` and `scripts/remote_fetch.sh` drive the box over ssh.
+They expect a local, gitignored `aws_harbor.sh` and `keys/`. `scripts/watch_remote.sh` streams the remote
+logs into `project.log`. Results are committed from the laptop; the remote box holds no git credentials.
+
+## Licensing
+
+l4v and seL4 are mostly GPL-2.0 / BSD-2-Clause. Translated definitions and proofs are probably derived works.
+Check before publishing anything derived from them. This repo currently contains only our own scripts and notes.

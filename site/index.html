@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>sel4-lean</title>
+<style>
+/* layout: craigslist home — left rail of links, center grid of grey-barred boxes, everything plain text and links */
+:root {
+  --bg: #ffffff;
+  --fg: #222222;
+  --muted: #6b6b73;
+  --bar: #eeeeee;
+  --rule: #cccccc;
+  --link: #0000cc;
+  --visited: #551a8b;
+  --ok: #1a7f37;
+  --todo: #9a6700;
+  --code-bg: #f7f7f9;
+  --sans: Helvetica, Arial, "Liberation Sans", sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15161a; --fg: #e4e4e8; --muted: #9a9aa6; --bar: #24252c; --rule: #3a3b44;
+    --link: #8fb4ff; --visited: #c3a6ff; --ok: #5cc879; --todo: #e0b050; --code-bg: #1c1d22;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15161a; --fg: #e4e4e8; --muted: #9a9aa6; --bar: #24252c; --rule: #3a3b44;
+  --link: #8fb4ff; --visited: #c3a6ff; --ok: #5cc879; --todo: #e0b050; --code-bg: #1c1d22;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.45 var(--sans);
+}
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  padding-block: 14px 40px;
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 22px;
+}
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+/* left rail */
+.rail { font-size: 13px; }
+.logo { font-size: 26px; font-weight: bold; letter-spacing: -0.5px; margin: 0 0 2px; }
+.logo a, .logo a:visited { color: var(--visited); text-decoration: none; }
+.tag { color: var(--muted); margin: 0 0 14px; }
+.rail ul { list-style: none; padding: 0; margin: 0 0 14px; }
+.rail li { padding: 1px 0; }
+.rail .box { border: 1px solid var(--rule); padding: 8px 10px; margin-bottom: 14px; }
+.rail .box b { display: block; margin-bottom: 4px; }
+.stamp { font-size: 12px; color: var(--muted); }
+
+/* center */
+main { min-width: 0; }
+.crumb { font-size: 13px; color: var(--muted); margin: 6px 0 10px; }
+.crumb b { color: var(--fg); }
+.lede { max-width: 72ch; margin: 0 0 18px; font-size: 15px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 22px;
+  align-items: start;
+}
+.wide { grid-column: 1 / -1; }
+section { min-width: 0; }
+h2 {
+  margin: 0 0 8px;
+  padding: 3px 8px;
+  background: var(--bar);
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+h2 small { font-weight: normal; color: var(--muted); }
+h3 { font-size: 13px; margin: 12px 0 4px; }
+p { margin: 0 0 8px; max-width: 72ch; }
+ul.plain { margin: 0 0 8px; padding-left: 18px; }
+ul.plain li { margin: 2px 0; }
+
+/* story: posting-list style */
+ol.posts { list-style: none; margin: 0; padding: 0; }
+ol.posts li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px dotted var(--rule);
+}
+ol.posts time { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; }
+ol.posts .hood { color: var(--muted); font-size: 12px; }
+
+/* tables */
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 3px 8px 3px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: bold; color: var(--muted); font-size: 12px; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; padding-right: 0; padding-left: 8px; white-space: nowrap; }
+tr.hi td { font-weight: bold; }
+
+/* code + diagrams */
+pre {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  font: 12px/1.45 var(--mono);
+  overflow-x: auto;
+  color: var(--fg);
+}
+code { font-family: var(--mono); font-size: 12px; }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.trio > div { min-width: 0; }
+.cap { font-size: 12px; color: var(--muted); margin: 0 0 3px; }
+
+/* status marks */
+.ok { color: var(--ok); font-weight: bold; }
+.todo { color: var(--todo); font-weight: bold; }
+.dim { color: var(--muted); }
+ul.check { list-style: none; padding: 0; margin: 0 0 8px; }
+ul.check li { padding: 1px 0 1px 22px; text-indent: -22px; }
+
+footer {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .trio { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .page { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .rail ul.nav { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .rail .box { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <aside class="rail">
+    <p class="logo"><a href="#top">sel4-lean</a></p>
+    <p class="tag">seL4's proofs, moving to Lean 4</p>
+    <ul class="nav">
+      <li><a href="#story">story so far</a></li>
+      <li><a href="#stack">the proof stack</a></li>
+      <li><a href="#port">porting plan</a></li>
+      <li><a href="#infra">how we run it</a></li>
+      <li><a href="#results">c0 results</a></li>
+      <li><a href="#translator">one function, three forms</a></li>
+      <li><a href="#lessons">lessons</a></li>
+      <li><a href="#roadmap">roadmap</a></li>
+      <li><a href="#links">links</a></li>
+    </ul>
+    <div class="box">
+      <b>status</b>
+      <span class="ok">C0 complete</span><br>
+      next: C1 lean project<br>
+      <span class="stamp">updated 2026-10-07</span>
+    </div>
+    <div class="box">
+      <b>pinned</b>
+      <code>seL4 6df0b6e</code><br>
+      <code>l4v ac4a36d</code><br>
+      <code>Isabelle2025-2</code><br>
+      <span class="stamp">arch: RISCV64</span>
+    </div>
+  </aside>
+
+  <main id="top">
+    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c0</p>
+    <p class="lede">
+      seL4 is an operating-system kernel with a machine-checked proof, in Isabelle/HOL, that its C code does what
+      its specification says. This project is moving that proof to Lean 4, one stage at a time.
+      Stage C0 is done: the original Isabelle proofs build and pass on our own machine, so we have a reference to port against.
+    </p>
+
+    <div class="grid">
+
+      <section id="story" class="wide">
+        <h2>story so far <small>&middot; 2026-10-07, times PDT</small></h2>
+        <ol class="posts">
+          <li><time>14:00</time><div>Goal written: port seL4 to Lean through the Haskell translator. <span class="hood">(scoping)</span><br>
+            First finding: the translator only covers the middle layer, and the proofs are where the cost is.
+            A spec-only port buys little, so the goal became <b>full verification in Lean</b>, in three stages: crawl, walk, run.</div></li>
+          <li><time>14:13</time><div>Roadmap written and a private repo created. Crawl is split into tasks C0&ndash;C5, and crawl ends with a measured decision: translate the proofs, or re-prove them. <span class="hood">(planning)</span></div></li>
+          <li><time>14:20</time><div>Reference box set up: an x86_64 AWS machine with 32 cores and 62 GB. seL4, l4v and Isabelle are pinned to exact commits, and every setup step lives in a script in the repo. <span class="hood">(c0)</span></div></li>
+          <li><time>14:30</time><div>The image build was slow. Cause: a 6.5 GB <code>chown -R</code> layer written to network disk (139 MB/s), while two local NVMe drives sat unused.
+            Fixed by striping the NVMe drives into <code>/scratch</code> (474 MB/s) and dropping the per-user image. Setup now takes 14 s. <span class="hood">(c0)</span></div></li>
+          <li><time>14:45</time><div>Proof run. Three snags: Isabelle quietly caps sessions at 8 threads, <code>run_tests</code> timeouts count CPU time (32 threads used up Lib's budget in 46 s), and GHC wasn't on the container's PATH. All three fixed and committed. <span class="hood">(c0)</span></div></li>
+          <li><time>15:23</time><div><span class="ok">All RISCV64 reference proofs pass.</span> The abstract&nbsp;&harr;&nbsp;executable stack checks in <b>36 minutes</b>, and Refine alone takes 20:30. <span class="hood">(c0)</span></div></li>
+          <li><time>15:41</time><div>Translator read through. Haskell maps to Lean more directly than it maps to Isabelle.
+            Slice chosen for crawl: <b>notifications</b>, with first lemma <code>cancelSignal_corres</code>. <span class="ok">C0 closed.</span> <span class="hood">(c0)</span></div></li>
+          <li><time>next</time><div class="dim">C1: Lean project. C2: Lean versions of l4v's monad, <code>wp</code> and <code>corres</code>. C3: the first generated Lean, for notifications.</div></li>
+        </ol>
+      </section>
+
+      <section id="stack">
+        <h2>the proof stack <small>&middot; what l4v proves</small></h2>
+        <div class="scroll"><pre>
+  Abstract spec      hand-written Isabelle
+        &#9650;
+        &#9474;  Refine     5,325 lemmas + invariants (AInvs)
+        &#9474;
+  Executable spec    Haskell model
+        &#9650;            &#9474; haskell-translator (Python)
+        &#9474;            &#9660;
+        &#9474;          Isabelle text   (spec/design)
+        &#9474;
+        &#9474;  CRefine
+        &#9474;
+  C implementation   C-parser &rarr; Simpl &rarr; AutoCorres
+</pre></div>
+        <p>Each arrow is a refinement proof: every behaviour of the lower layer is allowed by the layer above.
+          Chained together, they show the C code meets the abstract spec.</p>
+      </section>
+
+      <section id="port">
+        <h2>porting plan <small>&middot; three pieces</small></h2>
+        <h3>1. definitions</h3>
+        <p>Haskell &rarr; Lean for the executable spec. Isabelle &rarr; Lean for the abstract spec.
+          This is the step from HOL to dependent types: HOL's <code>'a word</code> becomes <code>BitVec n</code>,
+          HOL's always-inhabited types need <code>Inhabited</code> instances, and locales become sections.</p>
+        <h3>2. proof machinery</h3>
+        <p>l4v's nondeterministic state monad, the <code>wp</code> calculus, <code>corres</code>,
+          and the automation the proofs depend on: <code>wpsimp</code>, <code>crunch</code> (629 uses in Refine alone).</p>
+        <h3>3. proofs</h3>
+        <p>Either translate them (Isabelle &rarr; Dedukti &rarr; Lean) or re-prove them in Lean with AI help.
+          Crawl measures both on a small slice, then we choose.</p>
+      </section>
+
+      <section id="infra" class="wide">
+        <h2>how we run it <small>&middot; laptop, reference box, repo</small></h2>
+        <div class="scroll"><pre>
+  laptop (Mac)                         reference box (AWS c5ad.8xlarge, x86_64)
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;    remote_push.sh     &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+  &#9474; git repo (sel4-lean)    &#9474; &#9472;&#9472;(tracked files)&#9472;&#9472;&#9658; &#9474; ~/c0/sel4-lean    scripts + results         &#9474;
+  &#9474;  env/remote/*.sh        &#9474;                       &#9474; /scratch  (NVMe RAID0, 1.1 TB, 474 MB/s)  &#9474;
+  &#9474;  notes/, artifacts/     &#9474; &#9668;&#9472;&#9472;remote_fetch.sh&#9472;&#9472;&#9472; &#9474;   verification/  seL4 l4v isabelle        &#9474;
+  &#9474;  project.log (live)     &#9474; &#9668;&#9472;&#9472;watch_remote.sh&#9472;&#9472;&#9472; &#9474;   isabelle-home/ heaps, contrib tools    &#9474;
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;    (filtered logs)    &#9474; docker: trustworthysystems/l4v           &#9474;
+             &#9474; git push                           &#9474;   run_tests -j3, threads=32               &#9474;
+             &#9660;                                    &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+      GitHub (private)                     no git credentials on the box
+</pre></div>
+        <p>Everything the box does is a committed script, so the environment can be rebuilt from scratch in seconds.
+          Results come back to the laptop and are committed there. The local NVMe is wiped if the instance stops, and that's fine,
+          because <code>setup.sh</code> recreates it.</p>
+      </section>
+
+      <section id="results" class="wide">
+        <h2>c0 results <small>&middot; RISCV64, threads=32, -j3</small></h2>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>session</th><th>what it checks</th><th class="n">wall</th><th class="n">cpu</th><th class="n">cores busy</th><th class="n">peak mem</th></tr></thead>
+          <tbody>
+            <tr><td>Pure + HOL + Word_Lib</td><td>Isabelle base libraries</td><td class="n">6:08</td><td class="n">29:56</td><td class="n">4.9</td><td class="n">10.5 GB</td></tr>
+            <tr><td>Lib</td><td>l4v shared library</td><td class="n">0:53</td><td class="n">9:42</td><td class="n">10.9</td><td class="n">7.2 GB</td></tr>
+            <tr><td>ASpec</td><td>abstract spec</td><td class="n">2:21</td><td class="n">6:07</td><td class="n">2.6</td><td class="n">9.0 GB</td></tr>
+            <tr><td>ExecSpec</td><td>translated Haskell spec</td><td class="n">3:02</td><td class="n">9:52</td><td class="n">3.3</td><td class="n">9.3 GB</td></tr>
+            <tr><td>HaskellKernel</td><td>Haskell model builds with GHC</td><td class="n">1:02</td><td class="n">0:41</td><td class="n">&ndash;</td><td class="n">0.8 GB</td></tr>
+            <tr><td>AInvs</td><td>abstract invariants</td><td class="n">8:20</td><td class="n">1:19:53</td><td class="n">9.6</td><td class="n">18.6 GB</td></tr>
+            <tr><td>BaseRefine</td><td>refinement groundwork</td><td class="n">2:25</td><td class="n">4:42</td><td class="n">1.9</td><td class="n">7.9 GB</td></tr>
+            <tr class="hi"><td>Refine</td><td>abstract &harr; executable</td><td class="n">20:30</td><td class="n">2:51:04</td><td class="n">8.3</td><td class="n">21.6 GB</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="dim">Total run: 2,175 s (36 min) of wall time, all tests passing. Times are Isabelle's own; the base-library row ran before the thread fix.</p>
+      </section>
+
+      <section id="translator" class="wide">
+        <h2>one function, three forms <small>&middot; cancelSignal, the first crawl target</small></h2>
+        <div class="trio">
+          <div>
+            <p class="cap">Haskell model &middot; Notification.lhs</p>
+<pre>cancelSignal threadPtr ntfnPtr = do
+  ntfn &lt;- getNotification ntfnPtr
+  assert (isWaiting (ntfnObj ntfn))
+    "must be waiting"
+  let queue' = delete threadPtr
+        $ ntfnQueue $ ntfnObj ntfn
+  ntfn' &lt;- case queue' of
+    [] -&gt; return $ IdleNtfn
+    _  -&gt; return $ (ntfnObj ntfn)
+            { ntfnQueue = queue' }
+  setNotification ntfnPtr
+    (ntfn { ntfnObj = ntfn' })
+  setThreadState Inactive threadPtr</pre>
+          </div>
+          <div>
+            <p class="cap">generated Isabelle &middot; Notification_H.thy</p>
+<pre>cancelSignal threadPtr ntfnPtr &equiv;
+ (do
+  ntfn &larr; getNotification ntfnPtr;
+  haskell_assert
+    (isWaiting (ntfnObj ntfn)) [];
+  queue' &larr; return (delete threadPtr
+        $ ntfnQueue $ ntfnObj ntfn);
+  ntfn' &larr; (case queue' of
+      [] &rArr; return $ IdleNtfn
+    | _  &rArr; return $ (ntfnObj ntfn)
+           &lpar;| ntfnQueue := queue' |&rpar;);
+  setNotification ntfnPtr
+    (ntfn &lpar;| ntfnObj := ntfn' |&rpar;);
+  setThreadState Inactive threadPtr
+ od)</pre>
+          </div>
+          <div>
+            <p class="cap">abstract spec &middot; IpcCancel_A.thy</p>
+<pre>cancel_signal threadptr ntfnptr &equiv; do
+  ntfn &larr; get_notification ntfnptr;
+  queue &larr; (case ntfn_obj ntfn of
+      WaitingNtfn queue &rArr; return queue
+    | _ &rArr; fail);
+  queue' &larr; return $
+      remove1 threadptr queue;
+  newNTFN &larr; return $ ntfn_set_obj ntfn
+     (case queue' of [] &rArr; IdleNtfn
+       | _ &rArr; WaitingNtfn queue');
+  set_notification ntfnptr newNTFN;
+  set_thread_state threadptr Inactive
+od</pre>
+          </div>
+        </div>
+        <p>The translator's job is almost purely syntactic, and Lean already has <code>do</code>, <code>where</code>,
+          <code>{ s with f := v }</code> and as-patterns. Most of the translator's 2,352 lines of hand-written
+          case rewrites exist to work around Isabelle and should disappear for Lean.
+          The lemma that ties the left and right columns together, <code>cancelSignal_corres</code>, is about 35 lines of
+          <code>apply</code> steps: <code>corres_split</code>, <code>wp</code>, <code>corres_guard_imp</code>.
+          That's the shape of what C2 has to rebuild.</p>
+      </section>
+
+      <section id="lessons">
+        <h2>lessons <small>&middot; from c0</small></h2>
+        <ul class="plain">
+          <li><b>Check the disk first.</b> A 32-core box spent 7 minutes on a Docker build because it was writing to network disk.</li>
+          <li><b>Isabelle caps sessions at 8 threads</b> unless you set <code>threads</code> in the user settings, since some tests bypass the Makefile.</li>
+          <li><b>l4v's timeouts count CPU time.</b> More threads use the budget faster, so scale the timeouts with the thread count.</li>
+          <li><b>Proof structure limits parallelism.</b> Big sessions average 8&ndash;11 cores busy because the theories form long import chains. A Lean port's module layout will face the same limit.</li>
+          <li><b>Rootless Docker</b> makes the upstream per-user image unnecessary, because container root is already you.</li>
+        </ul>
+      </section>
+
+      <section id="roadmap">
+        <h2>roadmap <small>&middot; crawl &rarr; walk &rarr; run</small></h2>
+        <h3>crawl &middot; one slice, end to end</h3>
+        <ul class="check">
+          <li><span class="ok">[x]</span> C0 reference environment, proofs pass</li>
+          <li><span class="todo">[ ]</span> C1 Lean project and CI</li>
+          <li><span class="todo">[ ]</span> C2 monad, <code>wp</code>, <code>corres</code> in Lean</li>
+          <li><span class="todo">[ ]</span> C3 translators on notifications</li>
+          <li><span class="todo">[ ]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
+          <li><span class="todo">[ ]</span> C5 Dedukti spike</li>
+        </ul>
+        <h3>walk &middot; full abstract &harr; executable refinement</h3>
+        <p class="dim">Automated translators, Lean <code>wpsimp</code>/<code>crunch</code>, AInvs + Refine ported.</p>
+        <h3>run &middot; down to C</h3>
+        <p class="dim">C semantics in Lean, CRefine, then the headline theorem: C refines abstract.</p>
+      </section>
+
+      <section id="links" class="wide">
+        <h2>links</h2>
+        <div class="grid">
+          <ul class="plain">
+            <li><a href="https://github.com/seL4/l4v">l4v</a>: the seL4 proofs (Isabelle/HOL)</li>
+            <li><a href="https://github.com/seL4/l4v/tree/master/tools/haskell-translator">haskell-translator</a>: Haskell &rarr; Isabelle</li>
+            <li><a href="https://github.com/seL4/seL4-CAmkES-L4v-dockerfiles">seL4-CAmkES-L4v-dockerfiles</a>: build environment</li>
+            <li><a href="https://github.com/Deducteam/Dedukti">Dedukti</a>: a shared format for exchanging proofs</li>
+          </ul>
+          <ul class="plain">
+            <li><a href="https://arxiv.org/abs/2305.15382">DHOL</a>: HOL with dependent types (CADE-29)</li>
+            <li><a href="https://arxiv.org/html/2602.18657v3">DSLean</a>: Lean 4 &harr; external DSL interop</li>
+            <li><a href="https://github.com/nomeata/lean-lisar">Lisar</a>: Isar-style proofs in Lean</li>
+            <li><a href="https://github.com/elevenarms/sel4-lean">sel4-lean</a>: this project (private repo)</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    sel4-lean &middot; an independent research project, not affiliated with the seL4 Foundation &middot; seL4 and l4v are GPL-2.0 / BSD-2-Clause &middot; page updated 2026-10-07
+  </footer>
+</div>
+</body>
+</html>
