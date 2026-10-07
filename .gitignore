@@ -9,3 +9,5 @@ build/
 
 # OS / editor
 .DS_Store
+project.log
+.watch_remote.pid
