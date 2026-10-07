@@ -31,6 +31,9 @@ export STACK_ROOT=/etc/stack LANG=en_AU.UTF-8
 if [ ! -f ~/.isabelle/etc/settings ]; then
   mkdir -p ~/.isabelle/etc && cp misc/etc/settings ~/.isabelle/etc/settings
 fi
+# Thread count for EVERY isabelle build (some tests call isabelle directly, bypassing ISABELLE_BUILD_OPTS)
+sed -i "/^ISABELLE_BUILD_OPTIONS=/d" ~/.isabelle/etc/settings
+echo "ISABELLE_BUILD_OPTIONS=\"threads='"$THREADS"'\"" >> ~/.isabelle/etc/settings
 [ -f ~/.isabelle/.components-done ] || { /host/isabelle/bin/isabelle components -a && touch ~/.isabelle/.components-done; }
 echo "== $(date -u) isabelle: $(/host/isabelle/bin/isabelle getenv -b ML_IDENTIFIER)"
 export L4V_ARCH=RISCV64
