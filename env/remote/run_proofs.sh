@@ -16,6 +16,9 @@ OUT=~/c0/sel4-lean/artifacts/c0
 # (ExecSpec | AInvs | HaskellKernel). Memory: each session <= ~10 GB ML heap + ~6 GB JVM, so 3 fit in 62 GB.
 THREADS=${THREADS:-$(nproc)}
 JOBS=${JOBS:-3}
+# run_tests timeouts are CPU-time budgets tuned for Isabelle's default 8 threads; at 32 threads CPU time
+# accrues ~4x faster per wall-second (Lib hit its budget in 46 s wall). Scale by 2x that for headroom.
+SCALE=${SCALE:-$(( 2 * THREADS / 8 ))}
 NAME=${NAME:-c0-proofs}   # container name; also names the JUnit report (run several side by side)
 TESTS=${*:-haskell-translator ASpec ExecSpec HaskellKernel AInvs Refine}
 mkdir -p "$OUT"
@@ -39,7 +42,7 @@ echo "== $(date -u) isabelle: $(/host/isabelle/bin/isabelle getenv -b ML_IDENTIF
 export L4V_ARCH=RISCV64
 export ISABELLE_BUILD_OPTS="-o threads='"$THREADS"'"
 echo "== $(date -u) run_tests -j '"$JOBS"' threads='"$THREADS"': '"$TESTS"'"
-./run_tests -j '"$JOBS"' -v --junit-report /out/junit-riscv64-'"$NAME"'.xml '"$TESTS"'
+./run_tests -j '"$JOBS"' --scale-timeouts '"$SCALE"' -v --junit-report /out/junit-riscv64-'"$NAME"'.xml '"$TESTS"'
 '
 
 nohup bash -c "
