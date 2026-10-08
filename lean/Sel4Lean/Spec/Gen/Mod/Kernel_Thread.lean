@@ -7,7 +7,6 @@ import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
 import Sel4Lean.Spec.Gen.Mod.API_Faults
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
-import Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.Object_CNode
@@ -19,6 +18,7 @@ import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Config
 import Sel4Lean.Spec.Gen.Mod.Data_WordLib
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64
 
 set_option match.ignoreUnusedAlts true
 
@@ -38,7 +38,6 @@ abbrev setRegister := @Sel4Lean.Spec.M.API_Faults.setRegister
 abbrev numDomains := @Sel4Lean.Spec.M.Config.numDomains
 abbrev timeSlice := @Sel4Lean.Spec.M.Config.timeSlice
 abbrev wordRadix := @Sel4Lean.Spec.M.Data_WordLib.wordRadix
-abbrev getIdleThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.getIdleThread
 abbrev lookupIPCBuffer := @Sel4Lean.Spec.M.Kernel_VSpace.lookupIPCBuffer
 abbrev setNextPC := @Sel4Lean.Spec.M.Machine_Hardware.setNextPC
 abbrev badgeRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.badgeRegister
@@ -55,6 +54,7 @@ abbrev curDomain := @Sel4Lean.Spec.M.Model_StateData.curDomain
 abbrev decDomainTime := @Sel4Lean.Spec.M.Model_StateData.decDomainTime
 abbrev getCurThread := @Sel4Lean.Spec.M.Model_StateData.getCurThread
 abbrev getDomainTime := @Sel4Lean.Spec.M.Model_StateData.getDomainTime
+abbrev getIdleThread := @Sel4Lean.Spec.M.Model_StateData.getIdleThread
 abbrev getQueue := @Sel4Lean.Spec.M.Model_StateData.getQueue
 abbrev getSchedulerAction := @Sel4Lean.Spec.M.Model_StateData.getSchedulerAction
 abbrev ksReadyQueues_asrt := @Sel4Lean.Spec.M.Model_StateData.ksReadyQueues_asrt

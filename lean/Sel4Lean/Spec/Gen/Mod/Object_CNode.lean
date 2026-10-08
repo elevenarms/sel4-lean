@@ -12,9 +12,9 @@ import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
 import Sel4Lean.Spec.Gen.Mod.Model_Preemption
 import Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Data_WordLib
-import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 
 set_option match.ignoreUnusedAlts true
 
@@ -34,11 +34,11 @@ abbrev rightsFromWord := @Sel4Lean.Spec.M.API_Types.rightsFromWord
 abbrev wordSize := @Sel4Lean.Spec.M.Data_WordLib.wordSize
 abbrev emptyOnFailure := @Sel4Lean.Spec.M.Model_Failures.emptyOnFailure
 abbrev unifyFailure := @Sel4Lean.Spec.M.Model_Failures.unifyFailure
+abbrev getObject := @Sel4Lean.Spec.M.Model_PSpace.getObject
 abbrev loadWordUser := @Sel4Lean.Spec.M.Model_PSpace.loadWordUser
+abbrev setObject := @Sel4Lean.Spec.M.Model_PSpace.setObject
 abbrev preemptionPoint := @Sel4Lean.Spec.M.Model_Preemption.preemptionPoint
 abbrev cancelBadgedSends := @Sel4Lean.Spec.M.Object_Endpoint.cancelBadgedSends
-abbrev getObject := @Sel4Lean.Spec.M.Object_Endpoint.getObject
-abbrev setObject := @Sel4Lean.Spec.M.Object_Endpoint.setObject
 abbrev lookupTargetSlot := @Sel4Lean.Spec.M.Object_Interrupt.lookupTargetSlot
 abbrev throw := @Sel4Lean.Spec.M.Object_Interrupt.throw
 abbrev withoutFailure := @Sel4Lean.Spec.M.Object_Interrupt.withoutFailure

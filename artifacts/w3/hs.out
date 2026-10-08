@@ -2,13 +2,13 @@
 [1m[92m[ Info  ][0m[0m downloading: https://raw.githubusercontent.com/haskell/ghcup-metadata/master/ghcup-0.1.0.yaml as file /root/.ghcup/cache/ghcup-0.1.0.yaml
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  653k  100  653k    0     0  10.7M      0 --:--:-- --:--:-- --:--:-- 10.8M
-[1m[92m[ Info  ][0m[0m downloading: https://downloads.haskell.org/~ghc/9.2.8/ghc-9.2.8-x86_64-deb10-linux.tar.xz as file /root/.ghcup/tmp/ghcup-6073ee7c79d41bfb/ghc-9.2.8-x86_64-deb10-linux.tar.xz
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  653k  100  653k    0     0  10.2M      0 --:--:-- --:--:-- --:--:-- 10.4M
+[1m[92m[ Info  ][0m[0m downloading: https://downloads.haskell.org/~ghc/9.2.8/ghc-9.2.8-x86_64-deb10-linux.tar.xz as file /root/.ghcup/tmp/ghcup-54e1ef611366544b/ghc-9.2.8-x86_64-deb10-linux.tar.xz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 19  233M   19 45.7M    0     0   124M      0  0:00:01 --:--:--  0:00:01  124M 97  233M   97  227M    0     0   166M      0  0:00:01  0:00:01 --:--:--  166M100  233M  100  233M    0     0   161M      0  0:00:01  0:00:01 --:--:--  161M
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 56  233M   56  132M    0     0   234M      0 --:--:-- --:--:-- --:--:--  234M100  233M  100  233M    0     0   235M      0 --:--:-- --:--:-- --:--:--  235M
 [1m[92m[ Info  ][0m[0m verifying digest of: ghc-9.2.8-x86_64-deb10-linux.tar.xz
-[1m[92m[ Info  ][0m[0m Unpacking: ghc-9.2.8-x86_64-deb10-linux.tar.xz to /root/.ghcup/tmp/ghcup-29b33cb39226b82d
+[1m[92m[ Info  ][0m[0m Unpacking: ghc-9.2.8-x86_64-deb10-linux.tar.xz to /root/.ghcup/tmp/ghcup-4b24bb6ed351ff79
 [1m[92m[ Info  ][0m[0m Installing ghc
 
 

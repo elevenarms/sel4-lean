@@ -45,6 +45,45 @@ LIB_TYPES = {"Word8": "BitVec 8", "Word16": "BitVec 16", "Word32": "BitVec 32", 
 TYPE.update(LIB_TYPES)
 
 
+# l4v's machine state (spec/machine/RISCV64/MachineTypes.thy), replacing the Haskell simulator's
+# `ReaderT MachineData IO`. `machine_state_rest` is a typedecl there: opaque here, so nothing is assumed of it.
+MACHINE_STATE_LEAN = """/-- Isabelle `typedecl machine_state_rest`: the unspecified rest of the machine. -/
+opaque MachineStateRestImpl : NonemptyType
+def MachineStateRest : Type := MachineStateRestImpl.type
+instance : Nonempty MachineStateRest := MachineStateRestImpl.property
+noncomputable instance : Inhabited MachineStateRest := ⟨Classical.ofNonempty⟩
+
+/-- Isabelle `record machine_state` (spec/machine/RISCV64/MachineTypes.thy). -/
+structure MachineState where
+  irq_masks : {arch}.IRQ → Bool
+  irq_state : Nat
+  underlying_memory : Word → BitVec 8
+  device_state : Word → Option (BitVec 8)
+  machine_state_rest : MachineStateRest
+
+/-- Isabelle `init_machine_state` (all IRQs masked, memory zero, no devices; the rest `undefined`). -/
+noncomputable def initMachineState : MachineState where
+  irq_masks := fun _ => true
+  irq_state := 0
+  underlying_memory := fun _ => 0
+  device_state := fun _ => none
+  machine_state_rest := default
+
+noncomputable instance : Inhabited MachineState := ⟨initMachineState⟩
+
+/-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's
+Isabelle `machine_monad = (machine_state, 'a) nondet_monad`. -/
+abbrev MachineMonad := Sel4Lean.NondetM MachineState"""
+
+
+# operations ported from l4v's MachineOps.thy by hand (Spec/MachineOps.lean)
+MACHINE_OPS = {"loadWord", "storeWord", "getMemoryRegions", "storeWordVM", "configureTimer", "initTimer",
+               "resetTimer", "debugPrint", "setIRQTrigger", "plic_complete_claim", "getActiveIRQ",
+               "maskInterrupt", "ackInterrupt", "setInterruptMode", "clearMemory", "clearMemoryVM",
+               "initMemory", "freeMemory", "initL2Cache", "hwASIDFlush", "sfence", "read_stval",
+               "setVSpaceRoot"}
+
+
 def arch_ok(path):
     stem = os.path.splitext(os.path.basename(path))[0]
     parts = set(path.split(os.sep))
@@ -171,6 +210,25 @@ def direct_imports(path):
         if m is not None:
             out.append(src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH).replace("PLATFORM", PLATFORM))
     return out
+
+
+def unqualified_closure(path, root, x):
+    """Modules through which an unqualified `x` can reach this file, breadth-first: only unqualified,
+    non-SOURCE imports whose import list (if any) names x. A qualified import (`import qualified M as Arch`)
+    brings no unqualified names, so arch definitions behind it are not candidates."""
+    mp = module_paths(root)
+    seen, order = set(), []
+    queue = [m for m, lst in unqualified_imports(path).items() if lst is None or x in lst]
+    while queue:
+        m = queue.pop(0)
+        if m in seen or m not in mp:
+            continue
+        seen.add(m)
+        order.append(m)
+        src_imports = set(direct_imports(mp[m]))   # non-SOURCE
+        queue.extend(n for n, lst in unqualified_imports(mp[m]).items()
+                     if n in src_imports and (lst is None or x in lst))
+    return order
 
 
 def import_closure(path, root):
@@ -533,14 +591,9 @@ def cmd_types(root, files, emit=True):
             return
         if name == "MachineMonad":
             seen.add(name)
-            deps[name] = set()
-            out[name] = ("/-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's\n"
-                         "Isabelle `machine_monad = (machine_state, 'a) nondet_monad`; the machine state is opaque\n"
-                         "for now (TODO(W3)) -/\n"
-                         "opaque MachineStateImpl : NonemptyType\n"
-                         "def MachineState : Type := MachineStateImpl.type\n"
-                         "instance : Nonempty MachineState := MachineStateImpl.property\n"
-                         "abbrev MachineMonad := Sel4Lean.NondetM MachineState", "SEL4/Machine/Hardware/RISCV64.hs")
+            visit(f"{ARCH}.IRQ")
+            deps[name] = {f"{ARCH}.IRQ"}
+            out[name] = (MACHINE_STATE_LEAN.format(arch=ARCH), "SEL4/Machine/Hardware/RISCV64.hs")
             order.append(name)
             return
         if name == "Kernel":
@@ -598,6 +651,16 @@ def cmd_types(root, files, emit=True):
                 text = tr.emit_newtype(name, node)
             else:
                 text = tr.emit_synonym(name, node)
+            if name == "KernelState":
+                # l4v (design/skel/KernelStateData_H.thy) pushes the machine state into the kernel state;
+                # the default keeps the Haskell model's `KState { … }` constructions (which lack it) valid
+                visit("MachineMonad")
+                deps[name] = deps[name] | {"MachineMonad"}
+                text = text.replace("  ksArchState : RISCV64.KernelState\n",
+                                    "  ksArchState : RISCV64.KernelState\n"
+                                    "  /-- not in the Haskell model: l4v's `ksMachineState` -/\n"
+                                    "  ksMachineState : MachineState := initMachineState\n", 1)
+                assert "ksMachineState" in text, "KernelState: ksArchState field not found"
             out[name] = (text, os.path.relpath(path, root))
             order.append(name)
         except Unsupported as ex:
@@ -882,7 +945,9 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                 if any(x in opens.get(ns, ()) for ns in opens):
                     continue
                 # a definition in an imported module that compiles: use it instead of a stub
-                prov = next((hm for hm in closure if hm in mp and lean_module(hm) in compiled
+                # `hm in closure`: reached without SOURCE imports (those break cycles and stay stubs)
+                prov = next((hm for hm in unqualified_closure(mpath, root, x) if hm in mp and hm in closure
+                             and lean_module(hm) in compiled
                              and x in module_defs(mp[hm], root)), None)
                 if prov is not None:
                     ns = f"Sel4Lean.Spec.M.{lean_module(prov)}"
@@ -938,6 +1003,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                      if n in set().union(*(rhs_names(d) for d in ns if d.type != "signature"))
                      - (set().union(*(bound_names(tr, d) for d in ns if d.type != "signature")) - {n})}
         machine = any(os.path.relpath(mpath, root).startswith(p) for p in MACHINE_INTERFACE)
+        uses_machine_ops = False
         for n in order:
             if n in PROVIDED:
                 continue   # hand-written in Spec/PSpaceStorable.lean
@@ -961,8 +1027,17 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                     override = None
             sig_txt = tr.text(next((d for d in body[n] if d.type == "signature"), body[n][0]))
             # whole words: `PPtr a` (a kernel pointer, pure arithmetic) is not the simulator's `Ptr`
-            effectful = re.search(r"\b(MachineMonad|IO|Ptr|MachineData)\b", sig_txt) is not None
-            if machine and effectful:
+            simulator = re.search(r"\b(IO|Ptr|MachineData)\b", sig_txt) is not None
+            machine_op = ARCH in mpath and re.search(r"\bMachineMonad\b", sig_txt) is not None
+            if machine and machine_op and n in MACHINE_OPS:
+                # the RISCV64 module implements these with the simulator; l4v's definitions instead
+                out_defs.append((None, f"/-- Haskell `{n}`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/\n"
+                                       f"abbrev {tr.ident(n)} := @Sel4Lean.Spec.MachineOps.{tr.ident(n)}\n"))
+                uses_machine_ops = True
+                stats["machine-ops"] = stats.get("machine-ops", 0) + 1
+                stats["translated"] += 1
+                continue
+            if machine and (simulator or machine_op):
                 # only the simulator's operations are opaque; constants and pure functions in these modules
                 # (pageBits, pptrBase, …) are translated (the differential test caught the coarser rule)
                 sig = next((d for d in body[n] if d.type == "signature"), None)
@@ -1042,6 +1117,8 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                 unresolved[key] = "no platform signature"
     print(GEN_HEADER.format(rev="ac4a36d", path=", ".join(os.path.relpath(m, root) for m in modules)))
     print("import Sel4Lean.Spec.PSpaceStorable")
+    if uses_machine_ops:
+        print("import Sel4Lean.Spec.MachineOps")
     for im in imports:
         print(f"import Sel4Lean.Spec.Gen.Mod.{im}")
     # Haskell allows overlapping (unreachable) case alternatives; Lean rejects them unless told not to
@@ -1090,7 +1167,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
     print(f"hs2lean imports: {len(imports)} modules, {sum(len(v) for v in opens.values())} names, "
           f"{len(aliases)} arch aliases", file=sys.stderr)
     print(f"hs2lean module: {stats['translated']}/{total} functions translated "
-          f"({stats.get('partial', 0)} partial, {stats.get('machine', 0)} machine-opaque), "
+          f"({stats.get('partial', 0)} partial, {stats.get('machine', 0)} machine-opaque, {stats.get('machine-ops', 0)} l4v machine ops), "
           f"{len([k for k in stubs if k not in failed])} external stubs, {len(unresolved)} unresolved", file=sys.stderr)
     for n, why in sorted(failed.items()):
         print(f"  failed {n}: {why}", file=sys.stderr)

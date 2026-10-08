@@ -1,4 +1,5 @@
 import Sel4Lean.Spec.Prelude
+import Sel4Lean.Monad.VCG
 
 /-!
 # `PSpaceStorable`: typed access to the object heap (hand-written, W2/W3)
@@ -15,6 +16,8 @@ here. hs2lean leaves all names defined in this file to it (`full.py`: `PROVIDED`
 
 namespace Sel4Lean.Spec
 open Sel4Lean (NondetM)
+open Sel4Lean.NondetM (valid)
+open scoped Sel4Lean.NondetM
 open Sel4Lean.Exec (Word PPtr)
 
 /-- Haskell `class PSpaceStorable a` (Model/PSpace.lhs:56). -/
@@ -81,13 +84,29 @@ def updateObject {a σ : Type} [PSpaceStorable a] (val : a) (oldObj : KernelObje
 
 The Haskell `MachineMonad` is `ReaderT MachineData IO` (the simulator). l4v's Isabelle replaces it with
 `machine_monad = (machine_state, 'a) nondet_monad` and lifts it with `do_machine_op` through
-`ksMachineState`, a field the Haskell `KernelState` does not have. We follow Isabelle: `MachineMonad` is
-generated as `NondetM MachineState` (`full.py`), and `doMachineOp` is a placeholder until the machine state
-is modelled (TODO(W3)).
+`ksMachineState`, a field the Haskell `KernelState` does not have. We follow Isabelle: `MachineState` is
+l4v's record and `KernelState` gets `ksMachineState` (both generated, `full.py`).
 -/
 
-/-- Haskell `doMachineOp :: MachineMonad a -> Kernel a` (Model/StateData.lhs); l4v `do_machine_op`. -/
-opaque doMachineOp {α : Type} [Inhabited α] : MachineMonad α → Kernel α
+/-- Haskell `doMachineOp :: MachineMonad a -> Kernel a` (Model/StateData.lhs), as l4v's
+(design/skel/KernelStateData_H.thy): run the machine operation on `ksMachineState`, keep any of its results. -/
+def doMachineOp {α : Type} (mop : MachineMonad α) : Kernel α :=
+  NondetM.bind (NondetM.gets KernelState.ksMachineState) fun ms =>
+  NondetM.bind (NondetM.selectF (mop ms)) fun (r, ms') =>
+  NondetM.bind (NondetM.modify fun ks => { ks with ksMachineState := ms' }) fun _ =>
+  NondetM.ret r
+
+/-- `doMachineOp` lifts a machine-level Hoare triple to the kernel (l4v `dmo_wp`-style). -/
+theorem doMachineOp_wp {α : Type} {mop : MachineMonad α} {P : MachineState → Prop}
+    {Q : α → MachineState → Prop} (h : ⟪P⟫ mop ⟪Q⟫) (R : α → KernelState → Prop) :
+    ⟪fun s => P s.ksMachineState ∧
+       ∀ r ms', Q r ms' → R r { s with ksMachineState := ms' }⟫ (doMachineOp mop) ⟪R⟫ := by
+  intro s ⟨hP, hR⟩ r s' hr
+  simp only [doMachineOp, NondetM.gets_eq, NondetM.modify_eq, NondetM.bind, NondetM.ret,
+    NondetM.selectF, Prod.mk.injEq] at hr
+  obtain ⟨_, _, ⟨rfl, rfl⟩, ⟨r', ms'⟩, _, ⟨hres, rfl⟩, hrest⟩ := hr
+  obtain ⟨_, _, ⟨-, rfl⟩, rfl, rfl⟩ := hrest
+  exact hR _ _ (h _ hP _ _ hres)
 
 /-! ## Instances (Object/Instances.lhs, Object/Instances/RISCV64.hs) -/
 

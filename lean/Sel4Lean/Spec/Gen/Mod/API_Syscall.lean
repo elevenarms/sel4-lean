@@ -9,7 +9,6 @@ import Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler
 import Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor
 import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace
 import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
-import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Object_CNode
 import Sel4Lean.Spec.Gen.Mod.Object_TCB
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
@@ -54,9 +53,9 @@ abbrev tcbSchedDequeue := @Sel4Lean.Spec.M.Kernel_Thread.tcbSchedDequeue
 abbrev throw := @Sel4Lean.Spec.M.Kernel_Thread.throw
 abbrev withoutFailure := @Sel4Lean.Spec.M.Kernel_Thread.withoutFailure
 abbrev handleVMFault := @Sel4Lean.Spec.M.Kernel_VSpace.handleVMFault
-abbrev withoutPreemption := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.withoutPreemption
 abbrev syscall := @Sel4Lean.Spec.M.Model_Syscall.syscall
 abbrev getThreadCallerSlot := @Sel4Lean.Spec.M.Object_CNode.getThreadCallerSlot
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Object_CNode.withoutPreemption
 abbrev getNotification := @Sel4Lean.Spec.M.Object_Endpoint.getNotification
 abbrev receiveIPC := @Sel4Lean.Spec.M.Object_Endpoint.receiveIPC
 abbrev replyFromKernel := @Sel4Lean.Spec.M.Object_Endpoint.replyFromKernel

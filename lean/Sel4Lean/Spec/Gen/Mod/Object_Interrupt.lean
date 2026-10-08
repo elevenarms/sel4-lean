@@ -4,6 +4,16 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.Model_Preemption
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
 
 set_option match.ignoreUnusedAlts true
 
@@ -12,37 +22,43 @@ open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev genInvocationType := @Sel4Lean.Spec.M.API_InvocationLabels.genInvocationType
+abbrev ptrFromPAddr := @Sel4Lean.Spec.M.API_Types.ptrFromPAddr
+abbrev ackInterrupt := @Sel4Lean.Spec.M.Machine_Hardware.ackInterrupt
+abbrev configureTimer := @Sel4Lean.Spec.M.Machine_Hardware.configureTimer
+abbrev debugPrint := @Sel4Lean.Spec.M.Machine_Hardware.debugPrint
+abbrev getActiveIRQ := @Sel4Lean.Spec.M.Machine_Hardware.getActiveIRQ
+abbrev maskInterrupt := @Sel4Lean.Spec.M.Machine_Hardware.maskInterrupt
+abbrev maxIRQ := @Sel4Lean.Spec.M.Machine_Hardware.maxIRQ
+abbrev resetTimer := @Sel4Lean.Spec.M.Machine_Hardware.resetTimer
+abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
+abbrev placeNewObject := @Sel4Lean.Spec.M.Model_PSpace.placeNewObject
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Model_Preemption.withoutPreemption
+abbrev getInterruptState := @Sel4Lean.Spec.M.Model_StateData.getInterruptState
+abbrev setInterruptState := @Sel4Lean.Spec.M.Model_StateData.setInterruptState
+abbrev handleSpuriousIRQ := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.handleSpuriousIRQ
+abbrev sendSignal := @Sel4Lean.Spec.M.Object_Notification.sendSignal
+abbrev isNotificationCap := @Sel4Lean.Spec.M.Object_Structures.isNotificationCap
+abbrev isNullCap := @Sel4Lean.Spec.M.Object_Structures.isNullCap
+abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures.pageBits
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.checkIRQ := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.checkIRQ
+abbrev RISCV64.decodeIRQControlInvocation := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.decodeIRQControlInvocation
+abbrev RISCV64.handleReservedIRQ := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.handleReservedIRQ
+abbrev RISCV64.initInterruptController := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.initInterruptController
+abbrev RISCV64.invokeIRQHandler := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.invokeIRQHandler
+abbrev RISCV64.maskIrqSignal := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.maskIrqSignal
+abbrev RISCV64.performIRQControl := @Sel4Lean.Spec.M.Object_Interrupt_RISCV64.performIRQControl
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.checkIRQ : Word → KernelF SyscallError Unit
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.handleReservedIRQ : IRQ → Kernel Unit
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.initInterruptController : Kernel Unit
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.invokeIRQHandler : IRQHandlerInvocation → Kernel Unit
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.maskIrqSignal : IRQ → Kernel Unit
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque ackInterrupt : IRQ → MachineMonad Unit
 
 -- external: SEL4/Kernel/Init.lhs
 opaque allocFrame : KernelInit PAddr
-
--- external: SEL4/Machine/Hardware.lhs
-opaque configureTimer : MachineMonad IRQ
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
@@ -50,38 +66,17 @@ opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
--- external: SEL4/Machine/Hardware.lhs
-opaque debugPrint : String → MachineMonad Unit
-
 -- external: SEL4/Kernel/Init.lhs
 opaque doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 
--- external: SEL4/API/InvocationLabels.lhs
-opaque genInvocationType : Word → GenInvocationLabels
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getActiveIRQ : Bool → MachineMonad (Option IRQ)
-
--- external: SEL4/Model/StateData.lhs
-opaque getInterruptState : Kernel InterruptState
-
 -- external: SEL4/Object/CNode.lhs
 opaque getSlotCap : (PPtr CTE) → Kernel Capability
 
--- external: SEL4/Object/Interrupt/RISCV64.hs
-opaque handleSpuriousIRQ : Kernel Unit
-
 -- external: SEL4/Object/CNode.lhs
 opaque insertInitCap : (PPtr CTE) → Capability → Kernel Unit
-
--- external: SEL4/Object/Structures.lhs
-opaque isNotificationCap : Capability → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isNullCap : Capability → Bool
 
 -- external: SEL4/Object/CNode.lhs
 opaque locateSlotBasic : (PPtr CTE) → Word → Kernel (PPtr CTE)
@@ -92,41 +87,8 @@ opaque locateSlotCap : Capability → Word → Kernel (PPtr CTE)
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
 
--- external: SEL4/Machine/Hardware.lhs
-opaque maskInterrupt : Bool → IRQ → MachineMonad Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque maxIRQ : IRQ
-
--- external: SEL4/Machine/Hardware.lhs
-opaque pageBits : Nat
-
--- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
-
--- external: SEL4/Machine/Hardware.lhs
-opaque resetTimer : MachineMonad Unit
-
--- external: SEL4/Object/Notification.lhs
-opaque sendSignal : (PPtr Notification) → Word → Kernel Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque setInterruptState : InterruptState → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque timerTick : Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

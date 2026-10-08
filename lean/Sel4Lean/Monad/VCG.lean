@@ -105,6 +105,10 @@ theorem select_wp (A : α → Prop) (Q : α → σ → Prop) :
     ⟪fun s => ∀ x, A x → Q x s⟫ (select A) ⟪Q⟫ := by
   intro s hs r s' ⟨hA, hs'⟩; cases hs'; exact hs r hA
 
+theorem selectF_wp (r : (α → Prop) × Prop) (Q : α → σ → Prop) :
+    ⟪fun s => ∀ x, r.1 x → Q x s⟫ (selectF r) ⟪Q⟫ := by
+  intro s hs x s' ⟨hx, hs'⟩; cases hs'; exact hs x hx
+
 theorem ite_wp (c : Prop) [Decidable c] {f g : NondetM σ α} {P₁ P₂ : σ → Prop} {Q : α → σ → Prop}
     (hf : ⟪P₁⟫ f ⟪Q⟫) (hg : ⟪P₂⟫ g ⟪Q⟫) :
     ⟪fun s => (c → P₁ s) ∧ (¬c → P₂ s)⟫ (if c then f else g) ⟪Q⟫ := by

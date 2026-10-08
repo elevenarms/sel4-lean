@@ -23,7 +23,7 @@ open Lean Elab Tactic Meta NondetM
 
 -- The core rules, in priority order (the last tagged is tried first).
 attribute [wp_rule] ret_wp pure_wp get_wp put_wp gets_wp modify_wp fail_wp assertM_wp assertOpt_wp
-  select_wp ite_wp returnOk_wp throwError_wp stateAssert_wp
+  select_wp selectF_wp ite_wp returnOk_wp throwError_wp stateAssert_wp
 -- Tried first: a postcondition that ignores the state passes through any program unchanged.
 -- (Otherwise e.g. `assertM_wp` yields a precondition mentioning an earlier result, which an opaque
 -- getter before it cannot establish.)

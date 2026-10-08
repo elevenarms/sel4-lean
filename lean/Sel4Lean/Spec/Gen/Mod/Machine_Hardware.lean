@@ -15,66 +15,33 @@ noncomputable section
 
 /-! ## RISCV64 definitions from imported modules -/
 
+abbrev RISCV64.ackInterrupt := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ackInterrupt
 abbrev RISCV64.addrFromKPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromKPPtr
 abbrev RISCV64.addrFromPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromPPtr
+abbrev RISCV64.clearMemory := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.clearMemory
+abbrev RISCV64.configureTimer := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.configureTimer
+abbrev RISCV64.debugPrint := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.debugPrint
+abbrev RISCV64.freeMemory := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.freeMemory
 abbrev RISCV64.fromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.fromPAddr
+abbrev RISCV64.getActiveIRQ := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.getActiveIRQ
+abbrev RISCV64.getDeviceRegions := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.getDeviceRegions
+abbrev RISCV64.getKernelDevices := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.getKernelDevices
+abbrev RISCV64.getMemoryRegions := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.getMemoryRegions
 abbrev RISCV64.getRestartPC := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.getRestartPC
+abbrev RISCV64.initIRQController := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.initIRQController
+abbrev RISCV64.loadWord := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.loadWord
+abbrev RISCV64.maskInterrupt := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.maskInterrupt
 abbrev RISCV64.paddrBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.paddrBase
 abbrev RISCV64.pageBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBits
 abbrev RISCV64.pageColourBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageColourBits
 abbrev RISCV64.pptrBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pptrBase
 abbrev RISCV64.ptrFromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptrFromPAddr
+abbrev RISCV64.resetTimer := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.resetTimer
 abbrev RISCV64.setNextPC := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.setNextPC
+abbrev RISCV64.storeWord := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.storeWord
+abbrev RISCV64.storeWordVM := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.storeWordVM
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque ackInterrupt : IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque configureTimer : MachineMonad IRQ
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque debugPrint : String → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque getActiveIRQ : Bool → MachineMonad (Option IRQ)
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque getDeviceRegions : MachineMonad (List (PAddr × PAddr))
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque initIRQController : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque initL2Cache : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque loadWord : (PPtr Word) → MachineMonad Word
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque maskInterrupt : Bool → IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque resetTimer : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
 /-! ## Unresolved (no stub possible)
   error: no signature found
@@ -84,6 +51,10 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 -/
 
 /-! ## Translated -/
+
+/-- Haskell `initL2Cache` -/
+def initL2Cache : MachineMonad Unit :=
+  pure ()
 
 /-- Haskell `fromPAddr` -/
 def fromPAddr :=
@@ -117,9 +88,71 @@ def maxIRQ : IRQ :=
 def pageBits : Nat :=
   RISCV64.pageBits
 
+/-- Haskell `getMemoryRegions` -/
+def getMemoryRegions : MachineMonad (List (PAddr × PAddr)) :=
+  RISCV64.getMemoryRegions
+
+/-- Haskell `getDeviceRegions` -/
+def getDeviceRegions : MachineMonad (List (PAddr × PAddr)) :=
+  RISCV64.getDeviceRegions
+
+/-- Haskell `getKernelDevices` -/
+def getKernelDevices : MachineMonad (List (PAddr × (PPtr Word))) :=
+  RISCV64.getKernelDevices
+
+/-- Haskell `loadWord` -/
+def loadWord : (PPtr Word) → MachineMonad Word :=
+  RISCV64.loadWord
+
+/-- Haskell `storeWord` -/
+def storeWord : (PPtr Word) → Word → MachineMonad Unit :=
+  RISCV64.storeWord
+
+/-- Haskell `storeWordVM` -/
+def storeWordVM : (PPtr Word) → Word → MachineMonad Unit :=
+  RISCV64.storeWordVM
+
+/-- Haskell `clearMemory` -/
+def clearMemory : (PPtr Word) → Nat → MachineMonad Unit :=
+  RISCV64.clearMemory
+
+/-- Haskell `freeMemory` -/
+def freeMemory : (PPtr Word) → Nat → MachineMonad Unit :=
+  RISCV64.freeMemory
+
 /-- Haskell `pageColourBits` -/
 def pageColourBits : Nat :=
   RISCV64.pageColourBits
+
+/-- Haskell `getActiveIRQ` -/
+def getActiveIRQ (inPreempt : Bool) : MachineMonad (Option IRQ) :=
+  liftM (liftM IRQ.IRQ) ((RISCV64.getActiveIRQ) inPreempt)
+
+/-- Haskell `maskInterrupt` -/
+def maskInterrupt (x0 : Bool) (x1 : IRQ) : MachineMonad Unit :=
+  match x0, x1 with
+  | mask', (IRQ.IRQ irq) => (RISCV64.maskInterrupt) mask' irq
+
+/-- Haskell `ackInterrupt` -/
+def ackInterrupt (x0 : IRQ) : MachineMonad Unit :=
+  match x0 with
+  | (IRQ.IRQ irq) => (RISCV64.ackInterrupt) irq
+
+/-- Haskell `initIRQController` -/
+def initIRQController : MachineMonad Unit :=
+  RISCV64.initIRQController
+
+/-- Haskell `configureTimer` -/
+def configureTimer : MachineMonad IRQ :=
+  liftM IRQ.IRQ (RISCV64.configureTimer)
+
+/-- Haskell `resetTimer` -/
+def resetTimer : MachineMonad Unit :=
+  RISCV64.resetTimer
+
+/-- Haskell `debugPrint` -/
+def debugPrint : String → MachineMonad Unit :=
+  RISCV64.debugPrint
 
 /-- Haskell `getRestartPC` -/
 def getRestartPC : UserMonad Word :=

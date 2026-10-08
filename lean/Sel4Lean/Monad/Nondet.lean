@@ -52,6 +52,10 @@ def fail : NondetM σ α := fun _ => (fun _ => False, True)
 /-- l4v `select A ≡ λs. (A × {s}, False)` -/
 def select (A : α → Prop) : NondetM σ α := fun s => (fun p => A p.1 ∧ p.2 = s, False)
 
+/-- l4v `select_f (S, b) ≡ λs. (S × {s}, b)`: run a result set computed elsewhere (e.g. another monad's
+results, as in `do_machine_op`), keeping the state. -/
+def selectF (r : (α → Prop) × Prop) : NondetM σ α := fun s => (fun p => r.1 p.1 ∧ p.2 = s, r.2)
+
 /-- l4v `f ⊓ g`: either computation may run. -/
 def alternative (f g : NondetM σ α) : NondetM σ α := fun s =>
   (fun p => (f s).1 p ∨ (g s).1 p, (f s).2 ∨ (g s).2)

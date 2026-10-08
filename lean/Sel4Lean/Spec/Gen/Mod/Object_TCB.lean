@@ -9,7 +9,6 @@ import Sel4Lean.Spec.Gen.Mod.Object_CNode
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
-import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Object_Notification
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.Data_Helpers
@@ -33,8 +32,6 @@ abbrev messageInfoFromWord := @Sel4Lean.Spec.M.API_Types.messageInfoFromWord
 abbrev msgMaxLength := @Sel4Lean.Spec.M.API_Types.msgMaxLength
 abbrev wordFromMessageInfo := @Sel4Lean.Spec.M.API_Types.wordFromMessageInfo
 abbrev mapMaybe := @Sel4Lean.Spec.M.Data_Helpers.mapMaybe
-abbrev checkValidIPCBuffer := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.checkValidIPCBuffer
-abbrev isValidVTableRoot := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.isValidVTableRoot
 abbrev getRestartPC := @Sel4Lean.Spec.M.Machine_Hardware.getRestartPC
 abbrev setNextPC := @Sel4Lean.Spec.M.Machine_Hardware.setNextPC
 abbrev frameRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet.frameRegisters
@@ -96,8 +93,14 @@ abbrev RISCV64.sanitiseRegister := @Sel4Lean.Spec.M.Object_TCB_RISCV64.sanitiseR
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- external: SEL4/Kernel/VSpace.lhs
+opaque checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit
+
 -- local, not translated: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
 opaque getExtraCPtrs : (Option (PPtr Word)) → MessageInfo → Kernel (List CPtr)
+
+-- external: SEL4/Kernel/VSpace.lhs
+opaque isValidVTableRoot : Capability → Bool
 
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupCapAndSlot : (PPtr TCB) → CPtr → KernelF LookupFailure (Capability × (PPtr CTE))

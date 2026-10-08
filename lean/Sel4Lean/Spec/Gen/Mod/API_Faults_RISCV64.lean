@@ -5,6 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 
 set_option match.ignoreUnusedAlts true
 
@@ -15,8 +16,8 @@ noncomputable section
 
 /-! ## Definitions from imported modules -/
 
+abbrev getRestartPC := @Sel4Lean.Spec.M.Machine_Hardware.getRestartPC
 abbrev asUser := @Sel4Lean.Spec.M.Object_TCB.asUser
-abbrev getRestartPC := @Sel4Lean.Spec.M.Object_TCB.getRestartPC
 
 /-! ## Stubs (from Haskell signatures) -/
 

@@ -20,3 +20,6 @@ import Sel4Lean.Test.Corres
 import Sel4Lean.Test.Axioms
 import Sel4Lean.Spec.Gen.Types
 import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.MachineOps
+import Sel4Lean.Test.Machine

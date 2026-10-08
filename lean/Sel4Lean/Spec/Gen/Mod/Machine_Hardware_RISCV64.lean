@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.MachineOps
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
 
@@ -29,73 +30,13 @@ abbrev Platform.physBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.phy
 /-! ## Stubs (from Haskell signatures) -/
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque ackInterrupt : RISCV64.IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque clearMemoryVM : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque configureTimer : MachineMonad RISCV64.IRQ
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque debugPrint : String → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque getDeviceRegions : MachineMonad (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque hwASIDFlush : (BitVec 64) → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque initIRQController : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque initMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque loadWord : (PPtr Word) → MachineMonad Word
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque plic_complete_claim : RISCV64.IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque read_stval : MachineMonad Word
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque resetTimer : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque sfence : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
 /-! ## Unresolved (no stub possible)
   error: no signature found
@@ -192,6 +133,18 @@ def pageBitsForSize (x0 : VMPageSize) : Nat :=
   | VMPageSize.RISCVLargePage => pageBits + ptTranslationBits
   | VMPageSize.RISCVHugePage => (pageBits + ptTranslationBits) + ptTranslationBits
 
+/-- Haskell `configureTimer`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev configureTimer := @Sel4Lean.Spec.MachineOps.configureTimer
+
+
+/-- Haskell `resetTimer`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev resetTimer := @Sel4Lean.Spec.MachineOps.resetTimer
+
+
+/-- Haskell `setIRQTrigger`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev setIRQTrigger := @Sel4Lean.Spec.MachineOps.setIRQTrigger
+
+
 /-- Haskell `getRestartPC` -/
 def getRestartPC : UserMonad Word :=
   getRegister (Register.Register (RISCV64.Register.FaultIP))
@@ -199,6 +152,34 @@ def getRestartPC : UserMonad Word :=
 /-- Haskell `setNextPC` -/
 def setNextPC : Word → UserMonad Unit :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
+
+/-- Haskell `clearMemory`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev clearMemory := @Sel4Lean.Spec.MachineOps.clearMemory
+
+
+/-- Haskell `initMemory`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev initMemory := @Sel4Lean.Spec.MachineOps.initMemory
+
+
+/-- Haskell `freeMemory`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev freeMemory := @Sel4Lean.Spec.MachineOps.freeMemory
+
+
+/-- Haskell `clearMemoryVM`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev clearMemoryVM := @Sel4Lean.Spec.MachineOps.clearMemoryVM
+
+
+/-- Haskell `setVSpaceRoot`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev setVSpaceRoot := @Sel4Lean.Spec.MachineOps.setVSpaceRoot
+
+
+/-- Haskell `sfence`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev sfence := @Sel4Lean.Spec.MachineOps.sfence
+
+
+/-- Haskell `hwASIDFlush`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev hwASIDFlush := @Sel4Lean.Spec.MachineOps.hwASIDFlush
+
 
 /-- Haskell `vmRightsToBits` -/
 def vmRightsToBits (x0 : VMRights) : Word :=
@@ -235,6 +216,46 @@ def vmRightsFromBits (rw : Word) : VMRights :=
 /-- Haskell `pageColourBits` -/
 def pageColourBits : Nat :=
   Platform.pageColourBits
+
+/-- Haskell `getMemoryRegions`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev getMemoryRegions := @Sel4Lean.Spec.MachineOps.getMemoryRegions
+
+
+/-- Haskell `storeWord`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev storeWord := @Sel4Lean.Spec.MachineOps.storeWord
+
+
+/-- Haskell `storeWordVM`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev storeWordVM := @Sel4Lean.Spec.MachineOps.storeWordVM
+
+
+/-- Haskell `loadWord`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev loadWord := @Sel4Lean.Spec.MachineOps.loadWord
+
+
+/-- Haskell `getActiveIRQ`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev getActiveIRQ := @Sel4Lean.Spec.MachineOps.getActiveIRQ
+
+
+/-- Haskell `ackInterrupt`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev ackInterrupt := @Sel4Lean.Spec.MachineOps.ackInterrupt
+
+
+/-- Haskell `maskInterrupt`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev maskInterrupt := @Sel4Lean.Spec.MachineOps.maskInterrupt
+
+
+/-- Haskell `debugPrint`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev debugPrint := @Sel4Lean.Spec.MachineOps.debugPrint
+
+
+/-- Haskell `read_stval`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev read_stval := @Sel4Lean.Spec.MachineOps.read_stval
+
+
+/-- Haskell `plic_complete_claim`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
+abbrev plic_complete_claim := @Sel4Lean.Spec.MachineOps.plic_complete_claim
+
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware_RISCV64

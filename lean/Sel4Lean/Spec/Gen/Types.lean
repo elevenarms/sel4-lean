@@ -286,37 +286,6 @@ def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID
   | x => x
 noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
 
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  CPtr ::
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
-instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
-instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
-instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
-instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
-instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
-instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
-instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
-instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
-instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
-instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
-instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
-instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
-instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
-instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
-
-
--- from SEL4/API/Failures/RISCV64.hs
-/-- Haskell `data ArchFault = VMFault { … }` -/
-structure ArchFault where
-  VMFault ::
-  vmFaultAddress : VPtr
-  vmFaultArchData : List Word
-  deriving Inhabited, DecidableEq
-
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
 inductive LookupFailure where
@@ -385,6 +354,37 @@ def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Nat) : Loo
   match x with
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
+
+-- from SEL4/API/Failures/RISCV64.hs
+/-- Haskell `data ArchFault = VMFault { … }` -/
+structure ArchFault where
+  VMFault ::
+  vmFaultAddress : VPtr
+  vmFaultArchData : List Word
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  CPtr ::
+  fromCPtr : Word
+  deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
+instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
+instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
+instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
+instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
+instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
+instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
+instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
+instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
+instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
+instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
+instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
+
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -469,6 +469,14 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
 /-- Haskell `type Priority` -/
 abbrev Priority := BitVec 8
 
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
+
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data RISCV64.Register` -/
 inductive RISCV64.Register where
@@ -536,31 +544,6 @@ structure ArchTCB where
 
 noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
 
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
-
--- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
-
--- from SEL4/Object/Structures.lhs
-/-- Haskell `data ZombieType` -/
-inductive ZombieType where
-  | ZombieTCB
-  | ZombieCNode (zombieCTEBits : Nat)
-  deriving Inhabited, DecidableEq
-
-/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def ZombieType.zombieCTEBits : ZombieType → Nat
-  | .ZombieCNode v => v
-  | _ => default
-/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
-def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
-  match x with
-  | .ZombieCNode _ => .ZombieCNode v
-  | x => x
-
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
 /-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
 structure RISCV64.IRQ where
@@ -582,6 +565,23 @@ structure IRQ where
   deriving Inhabited, DecidableEq
 instance : IntegralH IRQ := ⟨fun a => IntegralH.toInt a.theIRQ, fun i => ⟨IntegralH.ofInt i⟩⟩
 
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `data ZombieType` -/
+inductive ZombieType where
+  | ZombieTCB
+  | ZombieCNode (zombieCTEBits : Nat)
+  deriving Inhabited, DecidableEq
+
+/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def ZombieType.zombieCTEBits : ZombieType → Nat
+  | .ZombieCNode v => v
+  | _ => default
+/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
+def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
+  match x with
+  | .ZombieCNode _ => .ZombieCNode v
+  | x => x
 
 -- pointer cycle: MDBNode, CTE, NTFN, Notification, ThreadState, TCB, Endpoint, Capability
 mutual
@@ -1204,6 +1204,35 @@ abbrev ReadyQueue := TcbQueue
 /-- Haskell `type Ticks` -/
 abbrev Ticks := BitVec 64
 
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Isabelle `typedecl machine_state_rest`: the unspecified rest of the machine. -/
+opaque MachineStateRestImpl : NonemptyType
+def MachineStateRest : Type := MachineStateRestImpl.type
+instance : Nonempty MachineStateRest := MachineStateRestImpl.property
+noncomputable instance : Inhabited MachineStateRest := ⟨Classical.ofNonempty⟩
+
+/-- Isabelle `record machine_state` (spec/machine/RISCV64/MachineTypes.thy). -/
+structure MachineState where
+  irq_masks : RISCV64.IRQ → Bool
+  irq_state : Nat
+  underlying_memory : Word → BitVec 8
+  device_state : Word → Option (BitVec 8)
+  machine_state_rest : MachineStateRest
+
+/-- Isabelle `init_machine_state` (all IRQs masked, memory zero, no devices; the rest `undefined`). -/
+noncomputable def initMachineState : MachineState where
+  irq_masks := fun _ => true
+  irq_state := 0
+  underlying_memory := fun _ => 0
+  device_state := fun _ => none
+  machine_state_rest := default
+
+noncomputable instance : Inhabited MachineState := ⟨initMachineState⟩
+
+/-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's
+Isabelle `machine_monad = (machine_state, 'a) nondet_monad`. -/
+abbrev MachineMonad := Sel4Lean.NondetM MachineState
+
 -- from SEL4/Model/StateData.lhs
 /-- Haskell `data KernelState = KState { … }` -/
 structure KernelState where
@@ -1226,6 +1255,8 @@ structure KernelState where
   ksInterruptState : InterruptState
   ksWorkUnitsCompleted : Word
   ksArchState : RISCV64.KernelState
+  /-- not in the Haskell model: l4v's `ksMachineState` -/
+  ksMachineState : MachineState := initMachineState
   deriving Inhabited
 
 noncomputable instance : DecidableEq KernelState := Classical.typeDecidableEq KernelState
@@ -2416,15 +2447,6 @@ structure SerialData where
   ptrCursor : PPtr Word
   value : Word
   deriving Inhabited, DecidableEq
-
--- from SEL4/Machine/Hardware/RISCV64.hs
-/-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's
-Isabelle `machine_monad = (machine_state, 'a) nondet_monad`; the machine state is opaque
-for now (TODO(W3)) -/
-opaque MachineStateImpl : NonemptyType
-def MachineState : Type := MachineStateImpl.type
-instance : Nonempty MachineState := MachineStateImpl.property
-abbrev MachineMonad := Sel4Lean.NondetM MachineState
 
 -- from SEL4/Kernel/BootInfo.lhs
 /-- Haskell `type Serializer` -/
