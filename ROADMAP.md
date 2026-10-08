@@ -88,7 +88,11 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
 ### W3. Kernel state model
 - [~] Translate `KernelState`, `PSpace`, `getObject`/`setObject` instead of stubbing them. **Types done** (W2 closure);
       `getObject`/`setObject` (typeclass `PSpaceStorable`) next.
-- [ ] Side-by-side test: Lean executable spec vs the Haskell model on the same inputs (from C3).
+- [x] Side-by-side test: Lean executable spec vs the Haskell model on the same inputs (from C3).
+      **Pure functions done:** 60/60 functions agree with GHC on 158 cases (`env/remote/w3_difftest.sh`,
+      [notes](notes/w3-difftest.md)); it caught five translator bugs that compiled. Monadic functions next,
+      once the machine state is modelled.
+- [ ] Machine state: `ksMachineState` and `doMachineOp` as in l4v; replace approximations (`asUser`, map listings).
 
 ### W4. Proofs
 - [ ] Port the invariant definitions (`invs`, `invs'`), then AInvs and Refine, replacing assumptions in
