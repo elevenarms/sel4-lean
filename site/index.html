@@ -174,14 +174,15 @@ html { scroll-behavior: smooth; }
       <li><a href="#generated">generated lean</a></li>
       <li><a href="#proof">first proof</a></li>
       <li><a href="#dedukti">proofs by export</a></li>
+      <li><a href="#walk">walk</a></li>
       <li><a href="#lessons">lessons</a></li>
       <li><a href="#roadmap">roadmap</a></li>
       <li><a href="#links">links</a></li>
     </ul>
     <div class="box">
       <b>status</b>
-      <span class="ok">C0&ndash;C5 complete</span><br>
-      next: crawl decision<br>
+      <span class="ok">crawl closed</span><br>
+      walk: W1 &amp; W2 under way<br>
       <span class="stamp">updated 2026-10-07</span>
     </div>
     <div class="box">
@@ -194,7 +195,7 @@ html { scroll-behavior: smooth; }
   </aside>
 
   <main id="top">
-    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c5</p>
+    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; walk &gt; w2</p>
     <p class="lede">
       seL4 is an operating-system kernel with a machine-checked proof, in Isabelle/HOL, that its C code does what
       its specification says. This project is moving that proof to Lean 4, one stage at a time.
@@ -226,7 +227,12 @@ html { scroll-behavior: smooth; }
             The proofs use only Lean&rsquo;s standard axioms; every l4v lemma they lean on is listed in one structure. Surprise of the stage: Lean&rsquo;s <code>do</code> compiles <code>let x &larr; match &hellip;</code> into a hidden join point, so <code>wp</code> needs a rule for it. <span class="ok">C4 closed.</span> <span class="hood">(c4)</span></div></li>
           <li><time>17:52</time><div>C5: the Dedukti route works end to end. Isabelle&rsquo;s own proofs of HOL, Orderings and Groups went through Lambdapi into Lean, and <span class="ok">the Lean kernel checked 8.5&nbsp;MB of them in 245&nbsp;s</span>.
             It took a hand-made encoding and several workarounds for gaps in the exporter, and the theorems speak HOL&rsquo;s <code>bool</code>, not Lean&rsquo;s <code>Prop</code>. Scaling is the problem: proof terms reach a gigabyte before HOL.Main. <span class="ok">C5 closed.</span> <span class="hood">(c5)</span></div></li>
-          <li><time>next</time><div class="dim">Crawl decision (proposed: re-prove in Lean following l4v, with AI help; Dedukti as a cross-check), then walk.</div></li>
+          <li><time>Oct 8</time><div><b>Crawl closed: we re-prove.</b> Proofs get re-done in Lean following l4v&rsquo;s proof structure, with AI help. Dedukti stays as a cross-check. <span class="hood">(decision)</span></div></li>
+          <li><time>Oct 8</time><div>W1: a <code>@[wp_rule]</code> attribute and a real <code>wp</code>/<code>wpsimp</code> written as Lean metaprograms, which see through Lean&rsquo;s join points. <code>cancelSignal_simple</code> became a one-liner, like l4v&rsquo;s.
+            <code>crunch</code> now proves &ldquo;every function preserves P&rdquo; for all 12 generated notification functions from one command. <span class="hood">(w1)</span></div></li>
+          <li><time>Oct 8</time><div>W2: the translator goes spec-wide. <b>91 data types</b>, the whole RISCV64 kernel state included, translate and compile. <b>94.9%</b> of the 684 functions translate to Lean text, and stubs for everything outside a module are generated from its Haskell signatures.
+            Honest number: <b>30 of 58 modules compile, holding 18% of the functions</b>. The big modules still trip on monad stacks and type classes. <span class="hood">(w2)</span></div></li>
+          <li><time>next</time><div class="dim">W2: get the large modules compiling (Init, VSpace, PSpace, CNode, TCB). W1: <code>corres</code> automation.</div></li>
         </ol>
       </section>
 
@@ -493,6 +499,23 @@ example :
           and l4v sits on HOL-Main, HOL-Library and Word_Lib before its million lines even start. The exported theorems also live in an embedding of HOL. Using them from Lean needs a bridge from HOL&rsquo;s <code>bool</code> to Lean&rsquo;s <code>Prop</code>.</p>
       </section>
 
+      <section id="walk" class="wide">
+        <h2>walk <small>&middot; the whole spec, and automation to match</small></h2>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>measure</th><th class="n">now</th><th>what it means</th></tr></thead>
+          <tbody>
+            <tr><td>data types translated</td><td class="n">91</td><td>every type in the RISCV64 spec, incl. <code>KernelState</code>; compiles</td></tr>
+            <tr><td>functions translated</td><td class="n">649 / 684</td><td>Lean text produced (94.9%)</td></tr>
+            <tr class="hi"><td>modules compiling</td><td class="n">30 / 58</td><td>18% of the functions; large modules still failing</td></tr>
+            <tr><td>generated <code>*_inv</code> lemmas</td><td class="n">12</td><td>one <code>crunch</code> command over the notifications module</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>Modelling follows l4v&rsquo;s Isabelle where it can: <code>Kernel</code> is <code>NondetM KernelState</code>, maps and arrays are functions, sets are predicates, Haskell <code>Int</code> is <code>Nat</code>, <code>Word</code> is <code>BitVec 64</code>.
+          One temporary compromise: self-recursive functions are <code>partial</code>, which hides their bodies from proofs, until W4 adds termination proofs.</p>
+      </section>
+
       <section id="lessons">
         <h2>lessons <small>&middot; from c0</small></h2>
         <ul class="plain">
@@ -518,8 +541,16 @@ example :
           <li><span class="ok">[x]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
           <li><span class="ok">[x]</span> C5 Dedukti spike</li>
         </ul>
-        <h3>walk &middot; full abstract &harr; executable refinement</h3>
-        <p class="dim">Automated translators, Lean <code>wpsimp</code>/<code>crunch</code>, AInvs + Refine ported.</p>
+        <h3>walk &middot; under way</h3>
+        <ul class="check">
+          <li><span class="ok">[x]</span> W1 <code>wp</code>, <code>wpsimp</code>, <code>crunch</code></li>
+          <li><span class="todo">[ ]</span> W1 <code>corres</code> automation</li>
+          <li><span class="todo">[~]</span> W2 translator at spec scale (30/58 modules)</li>
+          <li><span class="todo">[~]</span> W3 kernel state model (types done)</li>
+          <li><span class="todo">[ ]</span> W4 proofs: AInvs, Refine</li>
+        </ul>
+        <h3>walk exit</h3>
+        <p class="dim">Lean proof that the RISCV64 executable spec refines the abstract spec, all invariants proved.</p>
         <h3>run &middot; down to C</h3>
         <p class="dim">C semantics in Lean, CRefine, then the headline theorem: C refines abstract.</p>
       </section>
