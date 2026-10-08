@@ -15,7 +15,16 @@ noncomputable section
 
 /-! ## RISCV64 definitions from imported modules -/
 
+abbrev RISCV64.addrFromKPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromKPPtr
+abbrev RISCV64.addrFromPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromPPtr
 abbrev RISCV64.fromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.fromPAddr
+abbrev RISCV64.getRestartPC := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.getRestartPC
+abbrev RISCV64.paddrBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.paddrBase
+abbrev RISCV64.pageBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBits
+abbrev RISCV64.pageColourBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageColourBits
+abbrev RISCV64.pptrBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pptrBase
+abbrev RISCV64.ptrFromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptrFromPAddr
+abbrev RISCV64.setNextPC := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.setNextPC
 
 /-! ## Stubs (from Haskell signatures) -/
 
@@ -23,16 +32,7 @@ abbrev RISCV64.fromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.fromPAddr
 opaque ackInterrupt : IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque config_HAVE_FPU : Bool
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque configureTimer : MachineMonad IRQ
@@ -56,9 +56,6 @@ opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
 opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getRestartPC : UserMonad Word
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque initIRQController : MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
@@ -71,31 +68,7 @@ opaque loadWord : (PPtr Word) → MachineMonad Word
 opaque maskInterrupt : Bool → IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque maxIRQ : IRQ
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque minIRQ : IRQ
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pageBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pageColourBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pptrBaseOffset : Word
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque resetTimer : MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque setNextPC : Word → UserMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
@@ -115,6 +88,54 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 /-- Haskell `fromPAddr` -/
 def fromPAddr :=
   RISCV64.fromPAddr
+
+/-- Haskell `pptrBaseOffset` -/
+def pptrBaseOffset : Word :=
+  (VPtr.fromVPtr (RISCV64.pptrBase)) - (PAddr.fromPAddr (RISCV64.paddrBase))
+
+/-- Haskell `ptrFromPAddr` -/
+def ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a :=
+  RISCV64.ptrFromPAddr
+
+/-- Haskell `addrFromPPtr` -/
+def addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr :=
+  RISCV64.addrFromPPtr
+
+/-- Haskell `addrFromKPPtr` -/
+def addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr :=
+  RISCV64.addrFromKPPtr
+
+/-- Haskell `minIRQ` -/
+def minIRQ : IRQ :=
+  minBound
+
+/-- Haskell `maxIRQ` -/
+def maxIRQ : IRQ :=
+  maxBound
+
+/-- Haskell `pageBits` -/
+def pageBits : Nat :=
+  RISCV64.pageBits
+
+/-- Haskell `pageColourBits` -/
+def pageColourBits : Nat :=
+  RISCV64.pageColourBits
+
+/-- Haskell `getRestartPC` -/
+def getRestartPC : UserMonad Word :=
+  RISCV64.getRestartPC
+
+/-- Haskell `setNextPC` -/
+def setNextPC : Word → UserMonad Unit :=
+  RISCV64.setNextPC
+
+/-- Haskell `nullPointer` -/
+def nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a :=
+  PPtr.mk 0
+
+/-- Haskell `config_HAVE_FPU` -/
+def config_HAVE_FPU : Bool :=
+  error "generated from CMake config"
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware

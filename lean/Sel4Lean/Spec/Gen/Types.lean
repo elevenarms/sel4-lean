@@ -287,12 +287,27 @@ def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID
 noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
 
 -- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  CPtr ::
+  fromCPtr : Word
+  deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
+instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
+instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
+instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
+instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
+instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
+instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
+instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
+instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
+instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
+instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
+instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 
--- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
 
 -- from SEL4/API/Failures/RISCV64.hs
 /-- Haskell `data ArchFault = VMFault { … }` -/
@@ -370,29 +385,6 @@ def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Nat) : Loo
   match x with
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
-
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  CPtr ::
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
-instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
-instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
-instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
-instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
-instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
-instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
-instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
-instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
-instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
-instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
-instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
-instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
-instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
-instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
-
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -473,13 +465,9 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   | .ArchFault _ => .ArchFault v
   | x => x
 
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `type RISCV64.Word` -/
-abbrev RISCV64.Word := BitVec 64
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data RISCV64.Register` -/
@@ -527,6 +515,10 @@ instance : IntegralH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨RISCV64.Registe
 instance : BoundedH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨.LR, .NextIP⟩
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Haskell `type RISCV64.Word` -/
+abbrev RISCV64.Word := BitVec 64
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data UserContext = UC { … }` -/
 structure UserContext where
   UC ::
@@ -543,6 +535,14 @@ structure ArchTCB where
   deriving Inhabited
 
 noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data ZombieType` -/

@@ -28,14 +28,17 @@ hs2lean imports: 1 modules, 0 names, 14 arch aliases
 hs2lean module: 15/15 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 2 unresolved
   unresolved bit: no signature found
   unresolved map: no signature found
-hs2lean imports: 1 modules, 3 names, 0 arch aliases
-hs2lean module: 50/50 functions translated (0 partial, 45 machine-opaque), 45 external stubs, 4 unresolved
+hs2lean imports: 0 modules, 0 names, 0 arch aliases
+hs2lean module: 13/13 functions translated (0 partial, 10 machine-opaque), 10 external stubs, 1 unresolved
+  unresolved error: no signature found
+hs2lean imports: 2 modules, 3 names, 3 arch aliases
+hs2lean module: 50/50 functions translated (0 partial, 23 machine-opaque), 23 external stubs, 4 unresolved
   unresolved error: no signature found
   unresolved liftIO: no signature found
   unresolved putStrLn: no signature found
   unresolved testBit: no signature found
-hs2lean imports: 1 modules, 0 names, 1 arch aliases
-hs2lean module: 29/29 functions translated (0 partial, 28 machine-opaque), 28 external stubs, 4 unresolved
+hs2lean imports: 1 modules, 0 names, 10 arch aliases
+hs2lean module: 29/29 functions translated (0 partial, 16 machine-opaque), 16 external stubs, 4 unresolved
   unresolved error: no signature found
   unresolved liftM: no signature found
   unresolved maxBound: no signature found
@@ -145,8 +148,8 @@ hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque), 0 extern
   unresolved maxBound: no signature found
   unresolved otherwise: no signature found
   unresolved toEnum: no signature found
-hs2lean imports: 5 modules, 5 names, 2 arch aliases
-hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque), 6 external stubs, 4 unresolved
+hs2lean imports: 6 modules, 6 names, 2 arch aliases
+hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque), 5 external stubs, 4 unresolved
   failed decodeIRQControlInvocation: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
   failed performIRQControl: pattern: apply at line 49: 'ArchInv.IssueIRQHandler (IRQ irq) destSlot srcSlot trigger'
   unresolved error: no signature found
@@ -460,10 +463,7 @@ hs2lean module: 21/22 functions translated (3 partial, 0 machine-opaque), 43 ext
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 13/13 functions translated (0 partial, 13 machine-opaque), 13 external stubs, 1 unresolved
-  unresolved error: no signature found
-hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 13/13 functions translated (0 partial, 13 machine-opaque), 13 external stubs, 1 unresolved
+hs2lean module: 13/13 functions translated (0 partial, 10 machine-opaque), 10 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved

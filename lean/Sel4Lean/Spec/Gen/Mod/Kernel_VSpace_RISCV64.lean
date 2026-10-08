@@ -68,7 +68,7 @@ abbrev asidRange := @Sel4Lean.Spec.M.Object_Structures_RISCV64.asidRange
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
 -- local, not translated: guards that fall through to the next equation: alternative at line 447: 'Untyped
-opaque decodeRISCVASIDControlInvocation : RISCV64.Word → (List RISCV64.Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
+opaque decodeRISCVASIDControlInvocation : Word → (List Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
@@ -142,7 +142,7 @@ def ptBitsLeft (level : Nat) : Nat :=
   (ptTranslationBits * level) + pageBits
 
 /-- Haskell `ptIndex` -/
-def ptIndex (level : Nat) (vPtr : VPtr) : RISCV64.Word :=
+def ptIndex (level : Nat) (vPtr : VPtr) : Word :=
   (shiftRH (VPtr.fromVPtr vPtr) (ptBitsLeft level)) &&& (mask ptTranslationBits)
 
 /-- Haskell `storePTE` -/
@@ -162,7 +162,7 @@ def copyGlobalMappings (newPT : PPtr PTE) : Kernel Unit :=
         storePTE (newPT + offset) pte)
 
 /-- Haskell `lookupIPCBuffer` -/
-def lookupIPCBuffer (isReceiver : Bool) (thread : PPtr TCB) : Kernel (Option (PPtr RISCV64.Word)) :=
+def lookupIPCBuffer (isReceiver : Bool) (thread : PPtr TCB) : Kernel (Option (PPtr Word)) :=
   do
     let bufferPtr ← threadGet TCB.tcbIPCBuffer thread
     let bufferFrameSlot ← getThreadBufferSlot thread
@@ -334,13 +334,13 @@ def unmapPageTable (asid : ASID) (vaddr : VPtr) (pt : PPtr PTE) : Kernel Unit :=
     withoutFailure (doMachineOp sfence))
 
 /-- Haskell `checkMappingPPtr` -/
-def checkMappingPPtr (pptr : PPtr RISCV64.Word) (pte : PTE) : KernelF LookupFailure Unit :=
+def checkMappingPPtr (pptr : PPtr Word) (pte : PTE) : KernelF LookupFailure Unit :=
   match pte with
   | PTE.PagePTE ppn _ _ _ _ => unlessH ((ptrFromPAddr (shiftLH ppn ptBits)) == pptr) (throw LookupFailure.InvalidRoot)
   | _ => throw LookupFailure.InvalidRoot
 
 /-- Haskell `unmapPage` -/
-def unmapPage (size : VMPageSize) (asid : ASID) (vptr : VPtr) (pptr : PPtr RISCV64.Word) : Kernel Unit :=
+def unmapPage (size : VMPageSize) (asid : ASID) (vptr : VPtr) (pptr : PPtr Word) : Kernel Unit :=
   ignoreFailure (do
     let vspace ← findVSpaceForASID asid
     let (bitsLeft, slot) ← withoutFailure (lookupPTSlot vspace vptr)
@@ -368,7 +368,7 @@ def maskVMRights (r : VMRights) (m : CapRights) : VMRights :=
   | _ => VMRights.VMKernelOnly
 
 /-- Haskell `attribsFromWord` -/
-def attribsFromWord (w : RISCV64.Word) : VMAttributes :=
+def attribsFromWord (w : Word) : VMAttributes :=
   { riscvExecuteNever := testBit w 0 : VMAttributes }
 
 /-- Haskell `makeUserPTE` -/
@@ -389,7 +389,7 @@ def checkSlot (slot : PPtr PTE) (test : PTE → Bool) : KernelF SyscallError Uni
     unlessH (test pte) (throw SyscallError.DeleteFirst)
 
 /-- Haskell `decodeRISCVFrameInvocationMap` -/
-def decodeRISCVFrameInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (rightsMask : RISCV64.Word) (attr : RISCV64.Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
+def decodeRISCVFrameInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (rightsMask : Word) (attr : Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
   do
     let (vspace, asid) ← match vspaceCap with
       | Capability.ArchObjectCap (ArchCapability.PageTableCap vspace (some (asid, _))) => pure ((vspace, asid))
@@ -414,7 +414,7 @@ def decodeRISCVFrameInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr 
     pure (RISCV64.Invocation.InvokePage (PageInvocation.PageMap (Capability.ArchObjectCap (ArchCapability.set_capFMappedAddress cap (some ((asid, vptr))))) cte ((makeUserPTE framePAddr exec vmRights, slot))))
 
 /-- Haskell `decodeRISCVFrameInvocation` -/
-def decodeRISCVFrameInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+def decodeRISCVFrameInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2, x3, x4 with
   | label, args, cte, (cap@(ArchCapability.FrameCap ..)), extraCaps => 
       match (invocationType label, args, extraCaps) with
@@ -427,7 +427,7 @@ def decodeRISCVFrameInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 
   | _, _, _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVPageTableInvocationMap` -/
-def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (attr : RISCV64.Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
+def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (attr : Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
   do
     let _ ← whenH (isJust (ArchCapability.capPTMappedAddress cap)) (throw (SyscallError.InvalidCapability 0))
     let (vspace, asid) ← match vspaceCap with
@@ -444,7 +444,7 @@ def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (v
     pure (RISCV64.Invocation.InvokePageTable (PageTableInvocation.PageTableMap (Capability.ArchObjectCap (ArchCapability.set_capPTMappedAddress cap (some ((asid, vptr))))) cte pte slot))
 
 /-- Haskell `decodeRISCVPageTableInvocation` -/
-def decodeRISCVPageTableInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+def decodeRISCVPageTableInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2, x3, x4 with
   | label, args, cte, cap@(ArchCapability.PageTableCap ..), extraCaps => 
       match (invocationType label, args, extraCaps) with
@@ -465,7 +465,7 @@ def decodeRISCVPageTableInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) 
   | _, _, _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVASIDPoolInvocation` -/
-def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+def decodeRISCVASIDPoolInvocation (x0 : Word) (x1 : ArchCapability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2 with
   | label, cap@(ArchCapability.ASIDPoolCap ..), extraCaps => 
       match (invocationType label, extraCaps) with
@@ -488,7 +488,7 @@ def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 
   | _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVMMUInvocation` -/
-def decodeRISCVMMUInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : ArchCapability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+def decodeRISCVMMUInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : ArchCapability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2, x3, x4, x5 with
   | label, args, _, cte, cap@(ArchCapability.FrameCap ..), extraCaps => decodeRISCVFrameInvocation label args cte cap extraCaps
   | label, args, _, cte, cap@(ArchCapability.PageTableCap ..), extraCaps => decodeRISCVPageTableInvocation label args cte cap extraCaps
@@ -496,7 +496,7 @@ def decodeRISCVMMUInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : 
   | label, _, _, _, cap@(ArchCapability.ASIDPoolCap ..), extraCaps => decodeRISCVASIDPoolInvocation label cap extraCaps
 
 /-- Haskell `performPageInvocation` -/
-def performPageInvocation (x0 : PageInvocation) : Kernel (List RISCV64.Word) :=
+def performPageInvocation (x0 : PageInvocation) : Kernel (List Word) :=
   match x0 with
   | (PageInvocation.PageMap cap ctSlot (pte, slot)) => 
       do
@@ -544,7 +544,7 @@ def performASIDPoolInvocation (x0 : ASIDPoolInvocation) : Kernel Unit :=
         setObject poolPtr (ASIDPool.ASIDPool pool')
 
 /-- Haskell `performRISCVMMUInvocation` -/
-def performRISCVMMUInvocation (i : RISCV64.Invocation) : KernelP (List RISCV64.Word) :=
+def performRISCVMMUInvocation (i : RISCV64.Invocation) : KernelP (List Word) :=
   withoutPreemption (do
     match i with
     | RISCV64.Invocation.InvokePageTable oper => (do

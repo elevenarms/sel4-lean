@@ -5,6 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
 
 set_option match.ignoreUnusedAlts true
 
@@ -19,22 +20,16 @@ abbrev getRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.getRegister
 abbrev mask := @Sel4Lean.Spec.M.Machine_RegisterSet.mask
 abbrev setRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.setRegister
 
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev Platform.fromPAddr := @PAddr.fromPAddr
+abbrev Platform.pageColourBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.pageColourBits
+abbrev Platform.physBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.physBase
+
 /-! ## Stubs (from Haskell signatures) -/
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque ackInterrupt : RISCV64.IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque allowRead : VMRights → Bool
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque allowWrite : VMRights → Bool
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
@@ -52,9 +47,6 @@ opaque debugPrint : String → MachineMonad Unit
 opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque fromPAddr : PAddr → Word
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
 
 -- machine interface: opaque by design (as l4v MachineOps)
@@ -67,9 +59,6 @@ opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
 opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getVMRights : Bool → Bool → VMRights
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque hwASIDFlush : (BitVec 64) → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
@@ -79,52 +68,13 @@ opaque initIRQController : MachineMonad Unit
 opaque initMemory : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque kernelELFBase : VPtr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque kernelELFPAddrBase : PAddr
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque loadWord : (PPtr Word) → MachineMonad Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque paddrBase : PAddr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pageBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pageBitsForSize : VMPageSize → Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pageColourBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque plic_complete_claim : RISCV64.IRQ → MachineMonad Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pptrBase : VPtr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pptrTop : VPtr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pptrUserTop : VPtr
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque ptBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque ptTranslationBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pteBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque read_stval : MachineMonad Word
@@ -147,15 +97,6 @@ opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
--- machine interface: opaque by design (as l4v MachineOps)
-opaque vmFaultTypeFSR : VMFaultType → Word
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque vmRightsFromBits : Word → VMRights
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque vmRightsToBits : VMRights → Word
-
 /-! ## Unresolved (no stub possible)
   error: no signature found
   liftIO: no signature found
@@ -169,13 +110,87 @@ opaque vmRightsToBits : VMRights → Word
 def toPAddr :=
   PAddr.PAddr
 
+/-- Haskell `vmFaultTypeFSR` -/
+def vmFaultTypeFSR (f : VMFaultType) : Word :=
+  match f with
+  | VMFaultType.RISCVInstructionAccessFault => 1
+  | VMFaultType.RISCVLoadAccessFault => 5
+  | VMFaultType.RISCVStoreAccessFault => 7
+  | VMFaultType.RISCVInstructionPageFault => 12
+  | VMFaultType.RISCVLoadPageFault => 13
+  | VMFaultType.RISCVStorePageFault => 15
+
+/-- Haskell `fromPAddr` -/
+def fromPAddr : PAddr → Word :=
+  Platform.fromPAddr
+
+/-- Haskell `paddrBase` -/
+def paddrBase : PAddr :=
+  (PAddr.PAddr) 0x0
+
+/-- Haskell `pptrBase` -/
+def pptrBase : VPtr :=
+  VPtr.VPtr 0xFFFFFFC000000000
+
+/-- Haskell `pptrTop` -/
+def pptrTop : VPtr :=
+  VPtr.VPtr 0xFFFFFFFF80000000
+
+/-- Haskell `kernelELFPAddrBase` -/
+def kernelELFPAddrBase : PAddr :=
+  Platform.physBase
+
+/-- Haskell `kernelELFBase` -/
+def kernelELFBase : VPtr :=
+  VPtr.VPtr ((VPtr.fromVPtr pptrTop) + ((PAddr.fromPAddr kernelELFPAddrBase) &&& (mask 30)))
+
+/-- Haskell `pptrUserTop` -/
+def pptrUserTop : VPtr :=
+  pptrBase
+
 /-- Haskell `pptrBaseOffset` -/
 def pptrBaseOffset : Word :=
   (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
 
+/-- Haskell `ptrFromPAddr` -/
+def ptrFromPAddr {t_a : Type} [Inhabited t_a] (addr : PAddr) : PPtr t_a :=
+  PPtr.mk ((PAddr.fromPAddr addr) + pptrBaseOffset)
+
+/-- Haskell `addrFromPPtr` -/
+def addrFromPPtr {t_a : Type} [Inhabited t_a] (addr : PPtr t_a) : PAddr :=
+  toPAddr ((PPtr.ptr addr) - pptrBaseOffset)
+
 /-- Haskell `kernelELFBaseOffset` -/
 def kernelELFBaseOffset :=
   (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
+
+/-- Haskell `addrFromKPPtr` -/
+def addrFromKPPtr {t_a : Type} [Inhabited t_a] (x0 : PPtr t_a) : PAddr :=
+  match x0 with
+  | (PPtr.mk addr) => toPAddr (addr - kernelELFBaseOffset)
+
+/-- Haskell `pageBits` -/
+def pageBits : Nat :=
+  12
+
+/-- Haskell `ptTranslationBits` -/
+def ptTranslationBits : Nat :=
+  9
+
+/-- Haskell `pteBits` -/
+def pteBits : Nat :=
+  3
+
+/-- Haskell `ptBits` -/
+def ptBits : Nat :=
+  ptTranslationBits + pteBits
+
+/-- Haskell `pageBitsForSize` -/
+def pageBitsForSize (x0 : VMPageSize) : Nat :=
+  match x0 with
+  | VMPageSize.RISCVSmallPage => pageBits
+  | VMPageSize.RISCVLargePage => pageBits + ptTranslationBits
+  | VMPageSize.RISCVHugePage => (pageBits + ptTranslationBits) + ptTranslationBits
 
 /-- Haskell `getRestartPC` -/
 def getRestartPC : UserMonad Word :=
@@ -184,6 +199,42 @@ def getRestartPC : UserMonad Word :=
 /-- Haskell `setNextPC` -/
 def setNextPC : Word → UserMonad Unit :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
+
+/-- Haskell `vmRightsToBits` -/
+def vmRightsToBits (x0 : VMRights) : Word :=
+  match x0 with
+  | VMRights.VMKernelOnly => 1
+  | VMRights.VMReadOnly => 2
+  | VMRights.VMReadWrite => 3
+
+/-- Haskell `allowWrite` -/
+def allowWrite (x0 : VMRights) : Bool :=
+  match x0 with
+  | VMRights.VMKernelOnly => false
+  | VMRights.VMReadOnly => false
+  | VMRights.VMReadWrite => true
+
+/-- Haskell `allowRead` -/
+def allowRead (x0 : VMRights) : Bool :=
+  match x0 with
+  | VMRights.VMKernelOnly => false
+  | VMRights.VMReadOnly => true
+  | VMRights.VMReadWrite => true
+
+/-- Haskell `getVMRights` -/
+def getVMRights (x0 : Bool) (x1 : Bool) : VMRights :=
+  match x0, x1 with
+  | true, true => VMRights.VMReadWrite
+  | false, true => VMRights.VMReadOnly
+  | _, _ => VMRights.VMKernelOnly
+
+/-- Haskell `vmRightsFromBits` -/
+def vmRightsFromBits (rw : Word) : VMRights :=
+  getVMRights (testBit rw 1) (testBit rw 0)
+
+/-- Haskell `pageColourBits` -/
+def pageColourBits : Nat :=
+  Platform.pageColourBits
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware_RISCV64

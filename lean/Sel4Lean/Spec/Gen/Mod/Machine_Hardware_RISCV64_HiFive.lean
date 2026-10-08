@@ -33,19 +33,10 @@ opaque getKernelDevices : (PtrH CallbackData) → IO (List (PAddr × (PPtr Word)
 opaque getMemoryRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque irqInvalid : RISCV64.IRQ
-
--- machine interface: opaque by design (as l4v MachineOps)
 opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque maskInterrupt : (PtrH CallbackData) → Bool → RISCV64.IRQ → IO Unit
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque pageColourBits : Nat
-
--- machine interface: opaque by design (as l4v MachineOps)
-opaque physBase : PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque resetTimer : (PtrH CallbackData) → IO Unit
@@ -58,6 +49,18 @@ opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 -/
 
 /-! ## Translated -/
+
+/-- Haskell `physBase` -/
+def physBase : PAddr :=
+  PAddr.PAddr 0x80000000
+
+/-- Haskell `pageColourBits` -/
+def pageColourBits : Nat :=
+  error "unused on this architecture"
+
+/-- Haskell `irqInvalid` -/
+def irqInvalid : RISCV64.IRQ :=
+  RISCV64.IRQ.IRQ 0
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive

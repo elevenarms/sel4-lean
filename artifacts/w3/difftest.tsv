@@ -1,0 +1,159 @@
+id	module	function	args	haskell	lean	verdict
+1	Data_WordLib	wordBits		64	64	agree
+2	Data_WordLib	wordSize		8	8	agree
+3	Data_WordLib	wordRadix		6	6	agree
+4	API_Types_RISCV64	tcbBlockSizeBits		10	10	agree
+5	API_Types_Universal	epSizeBits		4	4	agree
+6	API_Types_Universal	ntfnSizeBits		5	5	agree
+7	API_Types_Universal	cteSizeBits		5	5	agree
+8	Config	minFreeSlots		128	128	agree
+9	Config	minSmallBlocks		16	16	agree
+10	Config	rootCNodeSize		12	12	agree
+11	Config	timeSlice		error	0	hs-error
+12	Config	numDomains		error	0	hs-error
+13	Config	numPriorities		256	256	agree
+14	Config	retypeFanOutLimit		error	0	hs-error
+15	Config	resetChunkBits		error	0	hs-error
+16	Kernel_Thread	invertL1Index	0	3	3	agree
+17	Kernel_Thread	invertL1Index	1	2	2	agree
+18	Kernel_Thread	invertL1Index	2	1	1	agree
+19	Kernel_Thread	invertL1Index	3	0	0	agree
+20	Kernel_Thread	invertL1Index	8	-5	0	int-nat
+21	Kernel_Thread	invertL1Index	12	-9	0	int-nat
+22	Kernel_Thread	invertL1Index	31	-28	0	int-nat
+23	Kernel_Thread	invertL1Index	32	-29	0	int-nat
+24	Kernel_Thread	prioToL1Index	0	0	0	agree
+25	Kernel_Thread	prioToL1Index	1	0	0	agree
+26	Kernel_Thread	prioToL1Index	2	0	0	agree
+27	Kernel_Thread	prioToL1Index	7	0	0	agree
+28	Kernel_Thread	prioToL1Index	255	3	3	agree
+29	Kernel_Thread	prioToL1Index	128	2	2	agree
+30	Kernel_Thread	prioToL1Index	158	2	2	agree
+31	Kernel_Thread	prioToL1Index	111	1	1	agree
+32	Kernel_Thread	l1IndexToPrio	0	0	0	agree
+33	Kernel_Thread	l1IndexToPrio	1	64	64	agree
+34	Kernel_Thread	l1IndexToPrio	2	128	128	agree
+35	Kernel_Thread	l1IndexToPrio	3	192	192	agree
+36	Kernel_Thread	l1IndexToPrio	8	0	0	agree
+37	Kernel_Thread	l1IndexToPrio	12	0	0	agree
+38	Kernel_Thread	l1IndexToPrio	31	192	192	agree
+39	Kernel_Thread	l1IndexToPrio	32	0	0	agree
+40	Kernel_VSpace_RISCV64	ipcBufferSizeBits		10	10	agree
+41	Kernel_VSpace_RISCV64	ptBitsLeft	0	12	12	agree
+42	Kernel_VSpace_RISCV64	ptBitsLeft	1	21	21	agree
+43	Kernel_VSpace_RISCV64	ptBitsLeft	2	30	30	agree
+44	Kernel_VSpace_RISCV64	ptBitsLeft	3	39	39	agree
+45	Kernel_VSpace_RISCV64	ptBitsLeft	8	84	84	agree
+46	Kernel_VSpace_RISCV64	ptBitsLeft	12	120	120	agree
+47	Kernel_VSpace_RISCV64	ptBitsLeft	31	291	291	agree
+48	Kernel_VSpace_RISCV64	ptBitsLeft	32	300	300	agree
+49	Kernel_VSpace_RISCV64	ptIndex	0 0	0	0	agree
+50	Kernel_VSpace_RISCV64	ptIndex	1 1	0	0	agree
+51	Kernel_VSpace_RISCV64	ptIndex	2 2	0	0	agree
+52	Kernel_VSpace_RISCV64	ptIndex	3 7	0	0	agree
+53	Kernel_VSpace_RISCV64	ptIndex	8 4095	0	0	agree
+54	Kernel_VSpace_RISCV64	ptIndex	12 4096	0	0	agree
+55	Kernel_VSpace_RISCV64	ptIndex	31 18446744073709551615	0	0	agree
+56	Kernel_VSpace_RISCV64	ptIndex	32 9223372036854775808	0	0	agree
+57	Kernel_VSpace_RISCV64	ptSlotIndex	0 0 0	0	0	agree
+58	Kernel_VSpace_RISCV64	ptSlotIndex	1 1 1	1	1	agree
+59	Kernel_VSpace_RISCV64	ptSlotIndex	2 2 2	2	2	agree
+60	Kernel_VSpace_RISCV64	ptSlotIndex	3 7 7	7	7	agree
+61	Kernel_VSpace_RISCV64	ptSlotIndex	8 4095 4095	4095	4095	agree
+62	Kernel_VSpace_RISCV64	ptSlotIndex	12 4096 4096	4096	4096	agree
+63	Kernel_VSpace_RISCV64	ptSlotIndex	31 18446744073709551615 18446744073709551615	18446744073709551615	18446744073709551615	agree
+64	Kernel_VSpace_RISCV64	ptSlotIndex	32 9223372036854775808 9223372036854775808	9223372036854775808	9223372036854775808	agree
+65	Machine_Hardware	pptrBaseOffset		18446743798831644672	18446743798831644672	agree
+66	Machine_Hardware	ptrFromPAddr	0	18446743798831644672	18446743798831644672	agree
+67	Machine_Hardware	ptrFromPAddr	1	18446743798831644673	18446743798831644673	agree
+68	Machine_Hardware	ptrFromPAddr	2	18446743798831644674	18446743798831644674	agree
+69	Machine_Hardware	ptrFromPAddr	7	18446743798831644679	18446743798831644679	agree
+70	Machine_Hardware	ptrFromPAddr	4095	18446743798831648767	18446743798831648767	agree
+71	Machine_Hardware	ptrFromPAddr	4096	18446743798831648768	18446743798831648768	agree
+72	Machine_Hardware	ptrFromPAddr	18446744073709551615	18446743798831644671	18446743798831644671	agree
+73	Machine_Hardware	ptrFromPAddr	9223372036854775808	9223371761976868864	9223371761976868864	agree
+74	Machine_Hardware	addrFromPPtr	0	274877906944	274877906944	agree
+75	Machine_Hardware	addrFromPPtr	1	274877906945	274877906945	agree
+76	Machine_Hardware	addrFromPPtr	2	274877906946	274877906946	agree
+77	Machine_Hardware	addrFromPPtr	7	274877906951	274877906951	agree
+78	Machine_Hardware	addrFromPPtr	4095	274877911039	274877911039	agree
+79	Machine_Hardware	addrFromPPtr	4096	274877911040	274877911040	agree
+80	Machine_Hardware	addrFromPPtr	18446744073709551615	274877906943	274877906943	agree
+81	Machine_Hardware	addrFromPPtr	9223372036854775808	9223372311732682752	9223372311732682752	agree
+82	Machine_Hardware	addrFromKPPtr	0	4294967296	4294967296	agree
+83	Machine_Hardware	addrFromKPPtr	1	4294967297	4294967297	agree
+84	Machine_Hardware	addrFromKPPtr	2	4294967298	4294967298	agree
+85	Machine_Hardware	addrFromKPPtr	7	4294967303	4294967303	agree
+86	Machine_Hardware	addrFromKPPtr	4095	4294971391	4294971391	agree
+87	Machine_Hardware	addrFromKPPtr	4096	4294971392	4294971392	agree
+88	Machine_Hardware	addrFromKPPtr	18446744073709551615	4294967295	4294967295	agree
+89	Machine_Hardware	addrFromKPPtr	9223372036854775808	9223372041149743104	9223372041149743104	agree
+90	Machine_Hardware	pageBits		12	12	agree
+91	Machine_Hardware	pageColourBits		error	0	hs-error
+92	Machine_Hardware	nullPointer		0	0	agree
+93	Machine_Hardware	config_HAVE_FPU		error	0	hs-error
+94	Machine_Hardware_RISCV64	fromPAddr	0	0	0	agree
+95	Machine_Hardware_RISCV64	fromPAddr	1	1	1	agree
+96	Machine_Hardware_RISCV64	fromPAddr	2	2	2	agree
+97	Machine_Hardware_RISCV64	fromPAddr	7	7	7	agree
+98	Machine_Hardware_RISCV64	fromPAddr	4095	4095	4095	agree
+99	Machine_Hardware_RISCV64	fromPAddr	4096	4096	4096	agree
+100	Machine_Hardware_RISCV64	fromPAddr	18446744073709551615	18446744073709551615	18446744073709551615	agree
+101	Machine_Hardware_RISCV64	fromPAddr	9223372036854775808	9223372036854775808	9223372036854775808	agree
+102	Machine_Hardware_RISCV64	paddrBase		0	0	agree
+103	Machine_Hardware_RISCV64	pptrBase		18446743798831644672	18446743798831644672	agree
+104	Machine_Hardware_RISCV64	pptrTop		18446744071562067968	18446744071562067968	agree
+105	Machine_Hardware_RISCV64	kernelELFPAddrBase		2147483648	2147483648	agree
+106	Machine_Hardware_RISCV64	kernelELFBase		18446744071562067968	18446744071562067968	agree
+107	Machine_Hardware_RISCV64	pptrUserTop		18446743798831644672	18446743798831644672	agree
+108	Machine_Hardware_RISCV64	ptrFromPAddr	0	18446743798831644672	18446743798831644672	agree
+109	Machine_Hardware_RISCV64	ptrFromPAddr	1	18446743798831644673	18446743798831644673	agree
+110	Machine_Hardware_RISCV64	ptrFromPAddr	2	18446743798831644674	18446743798831644674	agree
+111	Machine_Hardware_RISCV64	ptrFromPAddr	7	18446743798831644679	18446743798831644679	agree
+112	Machine_Hardware_RISCV64	ptrFromPAddr	4095	18446743798831648767	18446743798831648767	agree
+113	Machine_Hardware_RISCV64	ptrFromPAddr	4096	18446743798831648768	18446743798831648768	agree
+114	Machine_Hardware_RISCV64	ptrFromPAddr	18446744073709551615	18446743798831644671	18446743798831644671	agree
+115	Machine_Hardware_RISCV64	ptrFromPAddr	9223372036854775808	9223371761976868864	9223371761976868864	agree
+116	Machine_Hardware_RISCV64	addrFromPPtr	0	274877906944	274877906944	agree
+117	Machine_Hardware_RISCV64	addrFromPPtr	1	274877906945	274877906945	agree
+118	Machine_Hardware_RISCV64	addrFromPPtr	2	274877906946	274877906946	agree
+119	Machine_Hardware_RISCV64	addrFromPPtr	7	274877906951	274877906951	agree
+120	Machine_Hardware_RISCV64	addrFromPPtr	4095	274877911039	274877911039	agree
+121	Machine_Hardware_RISCV64	addrFromPPtr	4096	274877911040	274877911040	agree
+122	Machine_Hardware_RISCV64	addrFromPPtr	18446744073709551615	274877906943	274877906943	agree
+123	Machine_Hardware_RISCV64	addrFromPPtr	9223372036854775808	9223372311732682752	9223372311732682752	agree
+124	Machine_Hardware_RISCV64	addrFromKPPtr	0	4294967296	4294967296	agree
+125	Machine_Hardware_RISCV64	addrFromKPPtr	1	4294967297	4294967297	agree
+126	Machine_Hardware_RISCV64	addrFromKPPtr	2	4294967298	4294967298	agree
+127	Machine_Hardware_RISCV64	addrFromKPPtr	7	4294967303	4294967303	agree
+128	Machine_Hardware_RISCV64	addrFromKPPtr	4095	4294971391	4294971391	agree
+129	Machine_Hardware_RISCV64	addrFromKPPtr	4096	4294971392	4294971392	agree
+130	Machine_Hardware_RISCV64	addrFromKPPtr	18446744073709551615	4294967295	4294967295	agree
+131	Machine_Hardware_RISCV64	addrFromKPPtr	9223372036854775808	9223372041149743104	9223372041149743104	agree
+132	Machine_Hardware_RISCV64	pageBits		12	12	agree
+133	Machine_Hardware_RISCV64	ptTranslationBits		9	9	agree
+134	Machine_Hardware_RISCV64	pteBits		3	3	agree
+135	Machine_Hardware_RISCV64	ptBits		12	12	agree
+136	Machine_Hardware_RISCV64	pageColourBits		error	0	hs-error
+137	Machine_Hardware_RISCV64_HiFive	physBase		2147483648	2147483648	agree
+138	Machine_Hardware_RISCV64_HiFive	pageColourBits		error	0	hs-error
+139	Machine_RegisterSet_RISCV64	sstatusSPIE		32	32	agree
+140	Model_StateData_RISCV64	maxPTLevel		2	2	agree
+141	Object_ObjectType	badgeBits		64	64	agree
+142	Object_ObjectType_RISCV64	cteRightsBits		0	0	agree
+143	Object_ObjectType_RISCV64	cteGuardBits		58	58	agree
+144	Object_ObjectType_RISCV64	asidPoolBits		12	12	agree
+145	Object_Structures_RISCV64	minUntypedSizeBits		4	4	agree
+146	Object_Structures_RISCV64	maxUntypedSizeBits		38	38	agree
+147	Object_Structures_RISCV64	asidHighBits		7	7	agree
+148	Object_Structures_RISCV64	asidLowBits		9	9	agree
+149	Object_Structures_RISCV64	asidBits		16	16	agree
+150	Object_Structures_RISCV64	asidHighBitsOf	0	0	0	agree
+151	Object_Structures_RISCV64	asidHighBitsOf	1	0	0	agree
+152	Object_Structures_RISCV64	asidHighBitsOf	2	0	0	agree
+153	Object_Structures_RISCV64	asidHighBitsOf	7	0	0	agree
+154	Object_Structures_RISCV64	asidHighBitsOf	4095	7	7	agree
+155	Object_Structures_RISCV64	asidHighBitsOf	4096	8	8	agree
+156	Object_Structures_RISCV64	asidHighBitsOf	18446744073709551615	127	127	agree
+157	Object_Structures_RISCV64	asidHighBitsOf	9223372036854775808	0	0	agree
+158	Object_Structures_RISCV64	timeArgLen		1	1	agree

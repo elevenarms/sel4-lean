@@ -7,6 +7,7 @@ import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Model_Preemption
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 
@@ -21,6 +22,7 @@ noncomputable section
 
 abbrev invocationType := @Sel4Lean.Spec.M.API_InvocationLabels.invocationType
 abbrev maxIRQ := @Sel4Lean.Spec.M.Machine_Hardware.maxIRQ
+abbrev irqInvalid := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.irqInvalid
 abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
 abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
 abbrev withoutPreemption := @Sel4Lean.Spec.M.Model_Preemption.withoutPreemption
@@ -40,9 +42,6 @@ opaque decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (Lis
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
-
--- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
-opaque irqInvalid : RISCV64.IRQ
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque isIRQActive : IRQ → Kernel Bool

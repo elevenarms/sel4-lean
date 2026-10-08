@@ -12,6 +12,8 @@ import sys
 from hs2lean import (Translator, DataInfo, Unsupported, parse_file, top_decls, kids, TYPE)
 
 ARCH = "RISCV64"
+# the platform behind the spec's `PLATFORM` placeholder: l4v builds HiFive (SEL4.cabal, make_spec.sh)
+PLATFORM = "HiFive"
 # names defined by hand-written Lean (Spec/PSpaceStorable.lean): never emitted or stubbed by hs2lean
 PROVIDED = {"makeObject", "injectKO", "projectKO", "loadObject", "updateObject", "objBits", "alignCheck",
             "sizeCheck", "alignError", "typeError", "doMachineOp", "funArray", "funPartialArray"}
@@ -46,6 +48,9 @@ TYPE.update(LIB_TYPES)
 def arch_ok(path):
     stem = os.path.splitext(os.path.basename(path))[0]
     parts = set(path.split(os.sep))
+    if os.path.basename(os.path.dirname(path)) == ARCH and stem != PLATFORM:
+        if os.path.basename(os.path.dirname(os.path.dirname(path))) == "Hardware":
+            return False   # another platform (RISCV64/HiFive.hs): one platform per build, as in l4v
     return stem not in OTHER_ARCHES and not (parts & OTHER_ARCHES)
 
 
@@ -95,6 +100,10 @@ def index_decls(root):
     # every RISCV64 file declaring X in any form (incl. re-exports), for arch scoping
     best["__arch_decl_files__"] = {k: {e[2] for e in v if ARCH in e[2]} for k, v in idx.items()
                                    if not k.startswith("sig:")}
+    # signatures in the platform module, for `Platform.f` stubs
+    best["__platform_sigs__"] = {k[4:]: [e for e in v if os.path.basename(os.path.dirname(e[2])) == ARCH
+                                         and os.path.splitext(os.path.basename(e[2]))[0] == PLATFORM]
+                                 for k, v in idx.items() if k.startswith("sig:")}
     # arch-specific declarations, for `Arch.X` inside a generic type also named X (e.g. newtype IRQ = IRQ Arch.IRQ)
     for k, v in idx.items():
         arch = [e for e in v if ARCH in e[2] and not reexport(e)]
@@ -112,17 +121,22 @@ def module_of(path, root):
 
 
 def unqualified_imports(path):
-    """Modules a file imports without `qualified` (the spec's `TARGET` placeholder is the architecture)."""
+    """Modules a file imports without `qualified` (the spec's `TARGET` placeholder is the architecture),
+    each with its import list: `import M (a, B)` brings only those names, `None` means everything."""
     if path not in _IMPORT_CACHE:
         src, rn = parse_file(path)
-        mods = set()
+        mods = {}
         imps = next((c for c in rn.children if c.type == "imports"), None)
         for imp in kids(imps) if imps is not None else []:
             if any(c.type == "qualified" for c in imp.children):
                 continue
             m = imp.child_by_field_name("module")
             if m is not None:
-                mods.add(src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH))
+                name = src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH).replace("PLATFORM", PLATFORM)
+                lst = imp.child_by_field_name("names")
+                hiding = any(c.type == "hiding" for c in imp.children)
+                mods[name] = (None if lst is None or hiding
+                              else set(re.findall(r"[A-Za-z_][A-Za-z0-9_']*", src[lst.start_byte:lst.end_byte].decode())))
         _IMPORT_CACHE[path] = mods
     return _IMPORT_CACHE[path]
 
@@ -155,7 +169,7 @@ def direct_imports(path):
             continue
         m = imp.child_by_field_name("module")
         if m is not None:
-            out.append(src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH))
+            out.append(src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH).replace("PLATFORM", PLATFORM))
     return out
 
 
@@ -221,22 +235,28 @@ def lean_module(hs_module):
     return "_".join(parts)
 
 
+def visible_from(path, root, mod, x):
+    """Is name x of module mod in scope unqualified in this file (declared here, or imported and listed)?"""
+    if mod == module_of(path, root):
+        return True
+    imps = unqualified_imports(path)
+    return mod in imps and (imps[mod] is None or x in imps[mod])
+
+
 def arch_scope(path, root, idx, candidates):
     """Arch types X that an unqualified `X` means in this file (Haskell scoping): those declared in this
     file or in a module it imports unqualified, counting re-exports (`type IRQ = Platform.IRQ`)."""
-    visible = unqualified_imports(path) | {module_of(path, root)}
     files = idx.get("__arch_decl_files__", {})
     return {x for x in candidates
-            if f"{ARCH}.{x}" in idx and ({module_of(f, root) for f in files.get(x, ())} & visible)}
+            if f"{ARCH}.{x}" in idx and any(visible_from(path, root, module_of(f, root), x) for f in files.get(x, ()))}
 
 
 def arch_ctor_scope(path, root, idx, candidates):
     """Arch types whose *constructors* an unqualified name means: only if the module with the actual
     data/newtype declaration is visible. A re-export `type IRQ = Platform.IRQ` brings the type, not `IRQ`'s
     constructor (so in Object/Interrupt/RISCV64.hs the type IRQ is the arch one but the constructor is generic)."""
-    visible = unqualified_imports(path) | {module_of(path, root)}
     return {x for x in candidates
-            if f"{ARCH}.{x}" in idx and module_of(idx[f"{ARCH}.{x}"][2], root) in visible}
+            if f"{ARCH}.{x}" in idx and visible_from(path, root, module_of(idx[f"{ARCH}.{x}"][2], root), x)}
 
 
 class FullTranslator(Translator):
@@ -254,6 +274,7 @@ class FullTranslator(Translator):
         self.arch_ctor_in_scope = set()  # arch types whose constructors are in scope unqualified
         self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
         self.arch_calls = set()      # `Arch.f` references seen while translating
+        self.platform_calls = set()  # `Platform.f` references (the platform module, e.g. RISCV64/Spike.hs)
         self.constraints = []        # kept class constraints of the current signature
         self.hk = set()              # higher-kinded type variables (`m` in `m a`)
         self.discard_stmts = True    # `let _ ← e` for non-final do statements
@@ -327,6 +348,9 @@ class FullTranslator(Translator):
             if q.startswith("Arch") and base[:1].islower():
                 self.arch_calls.add(base)
                 return f"{ARCH}.{base}"
+            if q == "Platform" and base[:1].islower():
+                self.platform_calls.add(base)
+                return f"Platform.{base}"
         return super().e(n, ind)
 
     def ctor(self, name):
@@ -935,7 +959,12 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                     override = (ps, gtr.ty(gt))
                 except Unsupported:
                     override = None
-            if machine:
+            sig_txt = tr.text(next((d for d in body[n] if d.type == "signature"), body[n][0]))
+            # whole words: `PPtr a` (a kernel pointer, pure arithmetic) is not the simulator's `Ptr`
+            effectful = re.search(r"\b(MachineMonad|IO|Ptr|MachineData)\b", sig_txt) is not None
+            if machine and effectful:
+                # only the simulator's operations are opaque; constants and pure functions in these modules
+                # (pageBits, pptrBase, …) are translated (the differential test caught the coarser rule)
                 sig = next((d for d in body[n] if d.type == "signature"), None)
                 st = sig_stub(tr, n, sig, "machine interface: opaque by design (as l4v MachineOps)") if sig is not None else None
                 if st:
@@ -989,6 +1018,28 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                 stubs[key] = st
             else:
                 unresolved[key] = "no RISCV64 signature"
+        # `Platform.f`: the platform module's definition (imported, or a stub from its signature)
+        for f in sorted(tr.platform_calls):
+            key = f"Platform.{f}"
+            if key in stubs or key in aliases:
+                continue
+            prov = next((hm for hm in closure if hm.endswith("." + PLATFORM) and hm in mp
+                         and lean_module(hm) in compiled and f in module_defs(mp[hm], root)), None)
+            if prov is not None:
+                if lean_module(prov) not in imports:
+                    imports.append(lean_module(prov))
+                aliases[key] = f"abbrev {key} := @Sel4Lean.Spec.M.{lean_module(prov)}.{tr.ident(f)}"
+                continue
+            fty = data.field_type.get(f)
+            if fty is not None:   # a record selector in the platform module (`newtype PAddr = PAddr { fromPAddr }`)
+                aliases[key] = f"abbrev {key} := @{fty}.{tr.ident(f)}"
+                continue
+            sig = next((e for e in idx.get("__platform_sigs__", {}).get(f, ())), None)
+            st = sig_stub(tr, key, sig[1], "platform") if sig else None
+            if st:
+                stubs[key] = st
+            else:
+                unresolved[key] = "no platform signature"
     print(GEN_HEADER.format(rev="ac4a36d", path=", ".join(os.path.relpath(m, root) for m in modules)))
     print("import Sel4Lean.Spec.PSpaceStorable")
     for im in imports:
