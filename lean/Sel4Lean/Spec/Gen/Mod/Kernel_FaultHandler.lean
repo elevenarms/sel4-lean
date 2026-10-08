@@ -4,25 +4,33 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Kernel_CSpace
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
-import Sel4Lean.Spec.Gen.Mod.Object_TCB
-import Sel4Lean.Spec.Gen.Mod.Object_Notification
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
-import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Kernel_FaultHandler
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Kernel_CSpace (lookupCap throw withoutFailure)
-open Sel4Lean.Spec.M.Kernel_Thread (setThreadState)
-open Sel4Lean.Spec.M.Machine_Hardware (debugPrint getRestartPC)
-open Sel4Lean.Spec.M.Model_Failures (capFaultOnFailure catchFailure)
-open Sel4Lean.Spec.M.Object_Endpoint (sendIPC threadSet)
-open Sel4Lean.Spec.M.Object_Notification (asUser)
-open Sel4Lean.Spec.M.Object_TCB (threadGet)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev lookupCap := @Sel4Lean.Spec.M.Kernel_CSpace.lookupCap
+abbrev asUser := @Sel4Lean.Spec.M.Kernel_Thread.asUser
+abbrev catchFailure := @Sel4Lean.Spec.M.Kernel_Thread.catchFailure
+abbrev getRestartPC := @Sel4Lean.Spec.M.Kernel_Thread.getRestartPC
+abbrev setThreadState := @Sel4Lean.Spec.M.Kernel_Thread.setThreadState
+abbrev threadGet := @Sel4Lean.Spec.M.Kernel_Thread.threadGet
+abbrev threadSet := @Sel4Lean.Spec.M.Kernel_Thread.threadSet
+abbrev throw := @Sel4Lean.Spec.M.Kernel_Thread.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Kernel_Thread.withoutFailure
+abbrev debugPrint := @Sel4Lean.Spec.M.Machine_Hardware.debugPrint
+abbrev capFaultOnFailure := @Sel4Lean.Spec.M.Model_Failures.capFaultOnFailure
+abbrev sendIPC := @Sel4Lean.Spec.M.Object_Endpoint.sendIPC
 
 /-! ## Stubs (from Haskell signatures) -/
 

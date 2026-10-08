@@ -5,59 +5,40 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Kernel_VSpace
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware (configureTimer initIRQController initL2Cache)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev configureTimer := @Sel4Lean.Spec.M.Machine_Hardware.configureTimer
+abbrev initIRQController := @Sel4Lean.Spec.M.Machine_Hardware.initIRQController
+abbrev initL2Cache := @Sel4Lean.Spec.M.Machine_Hardware.initL2Cache
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.activateGlobalVSpace := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.activateGlobalVSpace
+abbrev RISCV64.checkValidIPCBuffer := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.checkValidIPCBuffer
+abbrev RISCV64.createBIFrame := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createBIFrame
+abbrev RISCV64.createDeviceFrames := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createDeviceFrames
+abbrev RISCV64.createFramesOfRegion := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createFramesOfRegion
+abbrev RISCV64.createIPCBufferFrame := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createIPCBufferFrame
+abbrev RISCV64.createITASIDPool := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createITASIDPool
+abbrev RISCV64.createITPDPTs := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createITPDPTs
+abbrev RISCV64.handleVMFault := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.handleVMFault
+abbrev RISCV64.isValidVTableRoot := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.isValidVTableRoot
+abbrev RISCV64.lookupIPCBuffer := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupIPCBuffer
+abbrev RISCV64.mapKernelWindow := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.mapKernelWindow
+abbrev RISCV64.vptrFromPPtr := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.vptrFromPPtr
+abbrev RISCV64.writeITASIDPool := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.writeITASIDPool
+abbrev RISCV64.writeITPDPTs := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.writeITPDPTs
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.activateGlobalVSpace : Kernel Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.createBIFrame : Capability → VPtr → (BitVec 32) → (BitVec 32) → KernelInit Capability
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.createDeviceFrames : Capability → KernelInit Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.createFramesOfRegion : Capability → Region → Bool → KernelInit Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.createIPCBufferFrame : Capability → VPtr → KernelInit Capability
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.createITASIDPool : Capability → KernelInit Capability
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.createITPDPTs : Capability → VPtr → VPtr → KernelInit Capability
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.handleVMFault : (PPtr TCB) → VMFaultType → KernelF Fault Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.isValidVTableRoot : Capability → Bool
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr RISCV64.Word))
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.mapKernelWindow : Kernel Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.writeITASIDPool : Capability → Capability → Kernel Unit
-
--- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.writeITPDPTs : Capability → Capability → KernelInit Unit
 
 /-! ## Translated -/
 

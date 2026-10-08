@@ -7,12 +7,19 @@ import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Model_Preemption
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware (getActiveIRQ)
-open Sel4Lean.Spec.M.Model_StateData (getWorkUnits modifyWorkUnits setWorkUnits)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev getActiveIRQ := @Sel4Lean.Spec.M.Machine_Hardware.getActiveIRQ
+abbrev getWorkUnits := @Sel4Lean.Spec.M.Model_StateData.getWorkUnits
+abbrev modifyWorkUnits := @Sel4Lean.Spec.M.Model_StateData.modifyWorkUnits
+abbrev setWorkUnits := @Sel4Lean.Spec.M.Model_StateData.setWorkUnits
 
 /-! ## Stubs (from Haskell signatures) -/
 

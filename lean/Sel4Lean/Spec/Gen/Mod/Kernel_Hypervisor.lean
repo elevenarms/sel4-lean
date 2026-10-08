@@ -6,6 +6,8 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Kernel_Hypervisor
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)

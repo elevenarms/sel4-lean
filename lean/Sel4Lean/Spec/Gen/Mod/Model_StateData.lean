@@ -8,12 +8,22 @@ import Sel4Lean.Spec.Gen.Mod.Object_Structures
 import Sel4Lean.Spec.Gen.Mod.Config
 import Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Model_StateData
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Config (numDomains)
-open Sel4Lean.Spec.M.Object_Structures (domainEndMarker dschDomain dschLength emptyQueue l2BitmapSize maxPriority)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev numDomains := @Sel4Lean.Spec.M.Config.numDomains
+abbrev domainEndMarker := @Sel4Lean.Spec.M.Object_Structures.domainEndMarker
+abbrev dschDomain := @Sel4Lean.Spec.M.Object_Structures.dschDomain
+abbrev dschLength := @Sel4Lean.Spec.M.Object_Structures.dschLength
+abbrev emptyQueue := @Sel4Lean.Spec.M.Object_Structures.emptyQueue
+abbrev l2BitmapSize := @Sel4Lean.Spec.M.Object_Structures.l2BitmapSize
+abbrev maxPriority := @Sel4Lean.Spec.M.Object_Structures.maxPriority
 
 /-! ## RISCV64 definitions from imported modules -/
 

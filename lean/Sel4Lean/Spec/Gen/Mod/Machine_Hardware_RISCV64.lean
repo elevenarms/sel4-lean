@@ -6,11 +6,18 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Machine_Hardware_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_RegisterSet (getRegister mask setRegister)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev getRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.getRegister
+abbrev mask := @Sel4Lean.Spec.M.Machine_RegisterSet.mask
+abbrev setRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.setRegister
 
 /-! ## Stubs (from Haskell signatures) -/
 

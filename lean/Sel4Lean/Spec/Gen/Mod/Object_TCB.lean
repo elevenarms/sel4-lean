@@ -4,145 +4,105 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_CNode
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Data_Helpers
+import Sel4Lean.Spec.Gen.Mod.Object_ObjectType
+import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_TCB
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev messageInfoFromWord := @Sel4Lean.Spec.M.API_Types.messageInfoFromWord
+abbrev msgMaxLength := @Sel4Lean.Spec.M.API_Types.msgMaxLength
+abbrev wordFromMessageInfo := @Sel4Lean.Spec.M.API_Types.wordFromMessageInfo
+abbrev mapMaybe := @Sel4Lean.Spec.M.Data_Helpers.mapMaybe
+abbrev checkValidIPCBuffer := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.checkValidIPCBuffer
+abbrev isValidVTableRoot := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.isValidVTableRoot
+abbrev getRestartPC := @Sel4Lean.Spec.M.Machine_Hardware.getRestartPC
+abbrev setNextPC := @Sel4Lean.Spec.M.Machine_Hardware.setNextPC
+abbrev frameRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet.frameRegisters
+abbrev getRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.getRegister
+abbrev gpRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet.gpRegisters
+abbrev msgInfoRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.msgInfoRegister
+abbrev msgRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet.msgRegisters
+abbrev tlsBaseRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.tlsBaseRegister
+abbrev capFaultOnFailure := @Sel4Lean.Spec.M.Model_Failures.capFaultOnFailure
+abbrev rangeCheck := @Sel4Lean.Spec.M.Model_Failures.rangeCheck
+abbrev storeWordUser := @Sel4Lean.Spec.M.Model_PSpace.storeWordUser
+abbrev cteDelete := @Sel4Lean.Spec.M.Object_CNode.cteDelete
+abbrev cteDeleteOne := @Sel4Lean.Spec.M.Object_CNode.cteDeleteOne
+abbrev cteInsert := @Sel4Lean.Spec.M.Object_CNode.cteInsert
+abbrev deriveCap := @Sel4Lean.Spec.M.Object_CNode.deriveCap
+abbrev genInvocationType := @Sel4Lean.Spec.M.Object_CNode.genInvocationType
+abbrev getCTE := @Sel4Lean.Spec.M.Object_CNode.getCTE
+abbrev getCurThread := @Sel4Lean.Spec.M.Object_CNode.getCurThread
+abbrev getObject := @Sel4Lean.Spec.M.Object_CNode.getObject
+abbrev getSlotCap := @Sel4Lean.Spec.M.Object_CNode.getSlotCap
+abbrev loadWordUser := @Sel4Lean.Spec.M.Object_CNode.loadWordUser
+abbrev locateSlotTCB := @Sel4Lean.Spec.M.Object_CNode.locateSlotTCB
+abbrev sameObjectAs := @Sel4Lean.Spec.M.Object_CNode.sameObjectAs
+abbrev setObject := @Sel4Lean.Spec.M.Object_CNode.setObject
+abbrev slotCapLongRunningDelete := @Sel4Lean.Spec.M.Object_CNode.slotCapLongRunningDelete
+abbrev throw := @Sel4Lean.Spec.M.Object_CNode.throw
+abbrev updateCapData := @Sel4Lean.Spec.M.Object_CNode.updateCapData
+abbrev withoutFailure := @Sel4Lean.Spec.M.Object_CNode.withoutFailure
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Object_CNode.withoutPreemption
+abbrev wordSize := @Sel4Lean.Spec.M.Object_CNode.wordSize
+abbrev bindNotification := @Sel4Lean.Spec.M.Object_Notification.bindNotification
+abbrev getBoundNotification := @Sel4Lean.Spec.M.Object_Notification.getBoundNotification
+abbrev getNotification := @Sel4Lean.Spec.M.Object_Notification.getNotification
+abbrev rescheduleRequired := @Sel4Lean.Spec.M.Object_Notification.rescheduleRequired
+abbrev setRegister := @Sel4Lean.Spec.M.Object_Notification.setRegister
+abbrev setThreadState := @Sel4Lean.Spec.M.Object_Notification.setThreadState
+abbrev suspend := @Sel4Lean.Spec.M.Object_ObjectType.suspend
+abbrev unbindNotification := @Sel4Lean.Spec.M.Object_ObjectType.unbindNotification
+abbrev isNullCap := @Sel4Lean.Spec.M.Object_Structures.isNullCap
+abbrev isReplyCap := @Sel4Lean.Spec.M.Object_Structures.isReplyCap
+abbrev minPriority := @Sel4Lean.Spec.M.Object_Structures.minPriority
+abbrev nullPointer := @Sel4Lean.Spec.M.Object_Structures.nullPointer
+abbrev tcbCTableSlot := @Sel4Lean.Spec.M.Object_Structures.tcbCTableSlot
+abbrev tcbCallerSlot := @Sel4Lean.Spec.M.Object_Structures.tcbCallerSlot
+abbrev tcbFlagMask := @Sel4Lean.Spec.M.Object_Structures.tcbFlagMask
+abbrev tcbIPCBufferSlot := @Sel4Lean.Spec.M.Object_Structures.tcbIPCBufferSlot
+abbrev tcbReplySlot := @Sel4Lean.Spec.M.Object_Structures.tcbReplySlot
+abbrev tcbVTableSlot := @Sel4Lean.Spec.M.Object_Structures.tcbVTableSlot
+abbrev atcbContextGet := @Sel4Lean.Spec.M.Object_Structures_RISCV64.atcbContextGet
+abbrev atcbContextSet := @Sel4Lean.Spec.M.Object_Structures_RISCV64.atcbContextSet
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.decodeTransfer := @Sel4Lean.Spec.M.Object_TCB_RISCV64.decodeTransfer
+abbrev RISCV64.getSanitiseRegisterInfo := @Sel4Lean.Spec.M.Object_TCB_RISCV64.getSanitiseRegisterInfo
+abbrev RISCV64.performTransfer := @Sel4Lean.Spec.M.Object_TCB_RISCV64.performTransfer
+abbrev RISCV64.postModifyRegisters := @Sel4Lean.Spec.M.Object_TCB_RISCV64.postModifyRegisters
+abbrev RISCV64.postSetFlags := @Sel4Lean.Spec.M.Object_TCB_RISCV64.postSetFlags
+abbrev RISCV64.sanitiseRegister := @Sel4Lean.Spec.M.Object_TCB_RISCV64.sanitiseRegister
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.decodeTransfer : (BitVec 8) → KernelF SyscallError CopyRegisterSets
-
--- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.getSanitiseRegisterInfo : (PPtr TCB) → Kernel Bool
-
--- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.performTransfer : CopyRegisterSets → (PPtr TCB) → (PPtr TCB) → Kernel Unit
-
--- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.postModifyRegisters : (PPtr TCB) → (PPtr TCB) → UserMonad Unit
-
--- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.postSetFlags : (PPtr TCB) → TcbFlags → Kernel Unit
-
--- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.sanitiseRegister : Bool → RISCV64.Register → RISCV64.Word → RISCV64.Word
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque atcbContextGet : ArchTCB → UserContext
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque atcbContextSet : UserContext → ArchTCB → ArchTCB
-
--- external: SEL4/Object/Notification.lhs
-opaque bindNotification : (PPtr TCB) → (PPtr Notification) → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque capFaultOnFailure {t_a : Type} [Inhabited t_a] : CPtr → Bool → (KernelF LookupFailure t_a) → KernelF Fault t_a
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque cteDelete : (PPtr CTE) → Bool → KernelP Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
-
--- external: SEL4/Object/ObjectType.lhs
-opaque deriveCap : (PPtr CTE) → Capability → KernelF SyscallError Capability
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque frameRegisters : List Register
-
--- external: SEL4/API/InvocationLabels.lhs
-opaque genInvocationType : Word → GenInvocationLabels
-
--- external: SEL4/Kernel/Thread.lhs
-opaque getBoundNotification : (PPtr TCB) → Kernel (Option (PPtr Notification))
-
--- external: SEL4/Object/CNode.lhs
-opaque getCTE : (PPtr CTE) → Kernel CTE
-
--- external: SEL4/Model/StateData.lhs
-opaque getCurThread : Kernel (PPtr TCB)
 
 -- local, not translated: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
 opaque getExtraCPtrs : (Option (PPtr Word)) → MessageInfo → Kernel (List CPtr)
 
--- external: SEL4/Object/Notification.lhs
-opaque getNotification : (PPtr Notification) → Kernel Notification
-
--- external: SEL4/Model/PSpace.lhs
-opaque getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → Kernel t_a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque getRegister : Register → UserMonad Word
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getRestartPC : UserMonad Word
-
--- external: SEL4/Object/CNode.lhs
-opaque getSlotCap : (PPtr CTE) → Kernel Capability
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque gpRegisters : List Register
-
--- external: SEL4/Object/Structures.lhs
-opaque isNullCap : Capability → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isReplyCap : Capability → Bool
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque isValidVTableRoot : Capability → Bool
-
--- external: SEL4/Model/PSpace.lhs
-opaque loadWordUser : (PPtr Word) → Kernel Word
-
--- external: SEL4/Object/CNode.lhs
-opaque locateSlotTCB : (PPtr TCB) → Word → Kernel (PPtr CTE)
-
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupCapAndSlot : (PPtr TCB) → CPtr → KernelF LookupFailure (Capability × (PPtr CTE))
 
--- external: Data/Helpers.hs
-opaque mapMaybe {t_a : Type} {t_b : Type} [Inhabited t_a] [Inhabited t_b] : (t_a → t_b) → (Option t_a) → Option t_b
-
--- external: SEL4/API/Types.lhs
-opaque messageInfoFromWord : Word → MessageInfo
-
--- external: SEL4/Object/Structures.lhs
-opaque minPriority : Priority
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque msgInfoRegister : Register
-
--- external: SEL4/API/Types.lhs
-opaque msgMaxLength {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque msgRegisters : List Register
-
--- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a
-
--- external: SEL4/Model/Failures.lhs
-opaque rangeCheck {t_a : Type} {t_b : Type} [Inhabited t_a] [Inhabited t_b] [IntegralH t_a] [OrdH t_a] [IntegralH t_b] [OrdH t_b] : t_a → t_b → t_b → KernelF SyscallError Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque rescheduleRequired : Kernel Unit
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque restart : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/ObjectType.lhs
-opaque sameObjectAs : Capability → Capability → Bool
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque setFlags : (PPtr TCB) → TcbFlags → Kernel Unit
@@ -150,71 +110,8 @@ opaque setFlags : (PPtr TCB) → TcbFlags → Kernel Unit
 -- external: SEL4/Kernel/Thread.lhs
 opaque setMCPriority : (PPtr TCB) → Priority → Kernel Unit
 
--- external: SEL4/Machine/Hardware.lhs
-opaque setNextPC : Word → UserMonad Unit
-
--- external: SEL4/Model/PSpace.lhs
-opaque setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → t_a → Kernel Unit
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque setPriority : (PPtr TCB) → Priority → Kernel Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque setRegister : Register → Word → UserMonad Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque setThreadState : ThreadState → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque slotCapLongRunningDelete : (PPtr CTE) → Kernel Bool
-
--- external: SEL4/Model/PSpace.lhs
-opaque storeWordUser : (PPtr Word) → Word → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque suspend : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbCTableSlot : Word
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbCallerSlot : Word
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbFlagMask : Word
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbIPCBufferSlot : Word
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbReplySlot : Word
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbVTableSlot : Word
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque tlsBaseRegister : Register
-
--- external: SEL4/Object/Notification.lhs
-opaque unbindNotification : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/ObjectType.lhs
-opaque updateCapData : Bool → Word → Capability → Capability
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
-
--- external: SEL4/API/Types.lhs
-opaque wordFromMessageInfo : MessageInfo → Word
-
--- external: Data/WordLib.lhs
-opaque wordSize : Nat
 
 /-! ## Unresolved (no stub possible)
   complement: no signature found

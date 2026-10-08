@@ -4,67 +4,71 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.Object_ObjectType
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+import Sel4Lean.Spec.Gen.Mod.Model_Preemption
+import Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.Data_WordLib
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_CNode
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev allRights := @Sel4Lean.Spec.M.API_Types.allRights
+abbrev getObjectSize := @Sel4Lean.Spec.M.API_Types.getObjectSize
+abbrev msgMaxExtraCaps := @Sel4Lean.Spec.M.API_Types.msgMaxExtraCaps
+abbrev msgMaxLength := @Sel4Lean.Spec.M.API_Types.msgMaxLength
+abbrev rightsFromWord := @Sel4Lean.Spec.M.API_Types.rightsFromWord
+abbrev wordSize := @Sel4Lean.Spec.M.Data_WordLib.wordSize
+abbrev emptyOnFailure := @Sel4Lean.Spec.M.Model_Failures.emptyOnFailure
+abbrev unifyFailure := @Sel4Lean.Spec.M.Model_Failures.unifyFailure
+abbrev loadWordUser := @Sel4Lean.Spec.M.Model_PSpace.loadWordUser
+abbrev preemptionPoint := @Sel4Lean.Spec.M.Model_Preemption.preemptionPoint
+abbrev cancelBadgedSends := @Sel4Lean.Spec.M.Object_Endpoint.cancelBadgedSends
+abbrev getObject := @Sel4Lean.Spec.M.Object_Endpoint.getObject
+abbrev setObject := @Sel4Lean.Spec.M.Object_Endpoint.setObject
+abbrev genInvocationType := @Sel4Lean.Spec.M.Object_Interrupt.genInvocationType
+abbrev lookupTargetSlot := @Sel4Lean.Spec.M.Object_Interrupt.lookupTargetSlot
+abbrev throw := @Sel4Lean.Spec.M.Object_Interrupt.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Object_Interrupt.withoutFailure
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Object_Interrupt.withoutPreemption
+abbrev createObject := @Sel4Lean.Spec.M.Object_ObjectType.createObject
+abbrev deriveCap := @Sel4Lean.Spec.M.Object_ObjectType.deriveCap
+abbrev finaliseCap := @Sel4Lean.Spec.M.Object_ObjectType.finaliseCap
+abbrev getCurThread := @Sel4Lean.Spec.M.Object_ObjectType.getCurThread
+abbrev hasCancelSendRights := @Sel4Lean.Spec.M.Object_ObjectType.hasCancelSendRights
+abbrev isCapRevocable := @Sel4Lean.Spec.M.Object_ObjectType.isCapRevocable
+abbrev maskCapRights := @Sel4Lean.Spec.M.Object_ObjectType.maskCapRights
+abbrev postCapDeletion := @Sel4Lean.Spec.M.Object_ObjectType.postCapDeletion
+abbrev sameObjectAs := @Sel4Lean.Spec.M.Object_ObjectType.sameObjectAs
+abbrev sameRegionAs := @Sel4Lean.Spec.M.Object_ObjectType.sameRegionAs
+abbrev updateCapData := @Sel4Lean.Spec.M.Object_ObjectType.updateCapData
+abbrev isArchMDBParentOf := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.isArchMDBParentOf
+abbrev isNullCap := @Sel4Lean.Spec.M.Object_Structures.isNullCap
+abbrev isUntypedCap := @Sel4Lean.Spec.M.Object_Structures.isUntypedCap
+abbrev maxFreeIndex := @Sel4Lean.Spec.M.Object_Structures.maxFreeIndex
+abbrev nullMDBNode := @Sel4Lean.Spec.M.Object_Structures.nullMDBNode
+abbrev nullPointer := @Sel4Lean.Spec.M.Object_Structures.nullPointer
+abbrev tcbReplySlot := @Sel4Lean.Spec.M.Object_Structures.tcbReplySlot
+abbrev untypedZeroRange := @Sel4Lean.Spec.M.Object_Structures.untypedZeroRange
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/API/Types.lhs
-opaque allRights : CapRights
-
--- external: SEL4/Object/Endpoint.lhs
-opaque cancelBadgedSends : (PPtr Endpoint) → Word → Kernel Unit
-
--- external: SEL4/Object/ObjectType.lhs
-opaque createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel Capability
-
--- external: SEL4/Object/ObjectType.lhs
-opaque deriveCap : (PPtr CTE) → Capability → KernelF SyscallError Capability
-
--- external: SEL4/Model/Failures.lhs
-opaque emptyOnFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f (List t_a)) → Kernel (List t_a)
-
--- external: SEL4/Object/ObjectType.lhs
-opaque finaliseCap : Capability → Bool → Bool → Kernel (Capability × Capability)
-
--- external: SEL4/API/InvocationLabels.lhs
-opaque genInvocationType : Word → GenInvocationLabels
-
--- external: SEL4/Model/StateData.lhs
-opaque getCurThread : Kernel (PPtr TCB)
-
--- external: SEL4/Model/PSpace.lhs
-opaque getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → Kernel t_a
-
--- external: SEL4/API/Types.lhs
-opaque getObjectSize : ObjectType → Nat → Nat
 
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadCallerSlot : (PPtr TCB) → Kernel (PPtr CTE)
 
--- external: SEL4/Object/ObjectType.lhs
-opaque hasCancelSendRights : Capability → Bool
-
--- external: SEL4/Object/ObjectType/RISCV64.hs
-opaque isArchMDBParentOf : Capability → Capability → Bool → Bool
-
--- external: SEL4/Object/ObjectType.lhs
-opaque isCapRevocable : Capability → Capability → Bool
-
 -- local, not translated: guards that fall through to the next equation: alternative at line 657: 'Endpoin
 opaque isMDBParentOf : CTE → CTE → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isNullCap : Capability → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isUntypedCap : Capability → Bool
-
--- external: SEL4/Model/PSpace.lhs
-opaque loadWordUser : (PPtr Word) → Kernel Word
 
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupCap : (PPtr TCB) → CPtr → KernelF LookupFailure Capability
@@ -74,69 +78,6 @@ opaque lookupPivotSlot : Capability → CPtr → Nat → KernelF SyscallError (P
 
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupSourceSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
-
--- external: SEL4/Kernel/CSpace.lhs
-opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
-
--- external: SEL4/Object/ObjectType.lhs
-opaque maskCapRights : CapRights → Capability → Capability
-
--- external: SEL4/Object/Structures.lhs
-opaque maxFreeIndex : Nat → Nat
-
--- external: SEL4/API/Types.lhs
-opaque msgMaxExtraCaps {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a
-
--- external: SEL4/API/Types.lhs
-opaque msgMaxLength {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a
-
--- external: SEL4/Object/Structures.lhs
-opaque nullMDBNode : MDBNode
-
--- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a
-
--- external: SEL4/Object/ObjectType.lhs
-opaque postCapDeletion : Capability → Kernel Unit
-
--- external: SEL4/Model/Preemption.lhs
-opaque preemptionPoint : KernelP Unit
-
--- external: SEL4/API/Types.lhs
-opaque rightsFromWord : Word → CapRights
-
--- external: SEL4/Object/ObjectType.lhs
-opaque sameObjectAs : Capability → Capability → Bool
-
--- external: SEL4/Object/ObjectType.lhs
-opaque sameRegionAs : Capability → Capability → Bool
-
--- external: SEL4/Model/PSpace.lhs
-opaque setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → t_a → Kernel Unit
-
--- external: SEL4/Object/Structures.lhs
-opaque tcbReplySlot : Word
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/Model/Failures.lhs
-opaque unifyFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → KernelF Unit t_a
-
--- external: SEL4/Object/Structures.lhs
-opaque untypedZeroRange : Capability → Option (Word × Word)
-
--- external: SEL4/Object/ObjectType.lhs
-opaque updateCapData : Bool → Word → Capability → Capability
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
-
--- external: Data/WordLib.lhs
-opaque wordSize : Nat
 
 /-! ## Unresolved (no stub possible)
   const: no signature found
@@ -381,8 +322,10 @@ def locateSlotCap (x0 : Capability) (x1 : Word) : Kernel (PPtr CTE) :=
       | ZombieType.ZombieCNode bits => locateSlotCNode (Capability.capZombiePtr cap) bits offset
   | _, _ => failM "locateSlotCap: not a cap with slots"
 
+-- mutually recursive: cteDelete, finaliseSlot, reduceZombie
+mutual
 /-- Haskell `reduceZombie` -/
-def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
+partial def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
   match x0, x1, x2 with
   | (Capability.Zombie _ _ 0), _, _ => failM "reduceZombie expected unremovable Zombie"
   | (Capability.Zombie ptr _ _), slot, false => 
@@ -436,10 +379,12 @@ partial def finaliseSlot (slot : PPtr CTE) (exposed : Bool) : KernelP (Bool × C
               finaliseSlot slot exposed
 
 /-- Haskell `cteDelete` -/
-def cteDelete (slot : PPtr CTE) (exposed : Bool) : KernelP Unit :=
+partial def cteDelete (slot : PPtr CTE) (exposed : Bool) : KernelP Unit :=
   do
     let (success, info) ← finaliseSlot slot exposed
     whenH (exposed || success) (withoutPreemption (emptySlot slot info))
+
+end
 
 /-- Haskell `archMDBAssertions` -/
 def archMDBAssertions (x0 : KernelState) : Bool :=

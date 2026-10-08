@@ -4,109 +4,83 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Untyped
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
+import Sel4Lean.Spec.Gen.Mod.Object_Domain
+import Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_ObjectType
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev toAPIType := @Sel4Lean.Spec.M.API_Types.toAPIType
+abbrev wordSizeCase := @Sel4Lean.Spec.M.API_Types.wordSizeCase
+abbrev curDomain := @Sel4Lean.Spec.M.Model_StateData.curDomain
+abbrev getCurThread := @Sel4Lean.Spec.M.Model_StateData.getCurThread
+abbrev decodeDomainInvocation := @Sel4Lean.Spec.M.Object_Domain.decodeDomainInvocation
+abbrev invokeDomain := @Sel4Lean.Spec.M.Object_Domain.invokeDomain
+abbrev cancelAllIPC := @Sel4Lean.Spec.M.Object_Endpoint.cancelAllIPC
+abbrev sendIPC := @Sel4Lean.Spec.M.Object_Endpoint.sendIPC
+abbrev decodeIRQControlInvocation := @Sel4Lean.Spec.M.Object_Interrupt.decodeIRQControlInvocation
+abbrev decodeIRQHandlerInvocation := @Sel4Lean.Spec.M.Object_Interrupt.decodeIRQHandlerInvocation
+abbrev deletedIRQHandler := @Sel4Lean.Spec.M.Object_Interrupt.deletedIRQHandler
+abbrev deletingIRQHandler := @Sel4Lean.Spec.M.Object_Interrupt.deletingIRQHandler
+abbrev invokeIRQHandler := @Sel4Lean.Spec.M.Object_Interrupt.invokeIRQHandler
+abbrev performIRQControl := @Sel4Lean.Spec.M.Object_Interrupt.performIRQControl
+abbrev placeNewObject := @Sel4Lean.Spec.M.Object_Interrupt.placeNewObject
+abbrev cancelAllSignals := @Sel4Lean.Spec.M.Object_Notification.cancelAllSignals
+abbrev sendSignal := @Sel4Lean.Spec.M.Object_Notification.sendSignal
+abbrev unbindMaybeNotification := @Sel4Lean.Spec.M.Object_Notification.unbindMaybeNotification
+abbrev unbindNotification := @Sel4Lean.Spec.M.Object_Notification.unbindNotification
+abbrev isIRQControlCap := @Sel4Lean.Spec.M.Object_Structures.isIRQControlCap
+abbrev mask := @Sel4Lean.Spec.M.Object_Structures.mask
+abbrev decodeUntypedInvocation := @Sel4Lean.Spec.M.Object_Untyped.decodeUntypedInvocation
+abbrev ensureNoChildren := @Sel4Lean.Spec.M.Object_Untyped.ensureNoChildren
+abbrev invokeUntyped := @Sel4Lean.Spec.M.Object_Untyped.invokeUntyped
+abbrev throw := @Sel4Lean.Spec.M.Object_Untyped.throw
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Object_Untyped.withoutPreemption
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.capUntypedPtr := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.capUntypedPtr
+abbrev RISCV64.capUntypedSize := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.capUntypedSize
+abbrev RISCV64.createObject := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.createObject
+abbrev RISCV64.cteGuardBits := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.cteGuardBits
+abbrev RISCV64.cteRightsBits := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.cteRightsBits
+abbrev RISCV64.decodeInvocation := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.decodeInvocation
+abbrev RISCV64.deriveCap := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.deriveCap
+abbrev RISCV64.finaliseCap := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.finaliseCap
+abbrev RISCV64.isCapRevocable := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.isCapRevocable
+abbrev RISCV64.isIRQControlCapDescendant := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.isIRQControlCapDescendant
+abbrev RISCV64.isPhysicalCap := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.isPhysicalCap
+abbrev RISCV64.maskCapRights := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.maskCapRights
+abbrev RISCV64.performInvocation := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.performInvocation
+abbrev RISCV64.postCapDeletion := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.postCapDeletion
+abbrev RISCV64.prepareThreadDelete := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.prepareThreadDelete
+abbrev RISCV64.sameObjectAs := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.sameObjectAs
+abbrev RISCV64.sameRegionAs := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.sameRegionAs
+abbrev RISCV64.updateCapData := @Sel4Lean.Spec.M.Object_ObjectType_RISCV64.updateCapData
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.capUntypedPtr : ArchCapability → PPtr Unit
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.capUntypedSize : ArchCapability → Word
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel ArchCapability
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.cteGuardBits : Nat
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.cteRightsBits : Nat
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.deriveCap : (PPtr CTE) → ArchCapability → KernelF SyscallError Capability
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.finaliseCap : ArchCapability → Bool → Kernel (Capability × Capability)
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.isCapRevocable : Capability → Capability → Bool
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.isIRQControlCapDescendant : ArchCapability → Bool
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.isPhysicalCap : ArchCapability → Bool
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.maskCapRights : CapRights → ArchCapability → Capability
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.performInvocation : RISCV64.Invocation → KernelP (List Word)
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.postCapDeletion : ArchCapability → Kernel Unit
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.prepareThreadDelete : (PPtr TCB) → Kernel Unit
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.sameObjectAs : ArchCapability → ArchCapability → Bool
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.sameRegionAs : ArchCapability → ArchCapability → Bool
-
--- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.updateCapData : Bool → Word → ArchCapability → Capability
-
--- external: SEL4/Object/Endpoint.lhs
-opaque cancelAllIPC : (PPtr Endpoint) → Kernel Unit
-
--- external: SEL4/Object/Notification.lhs
-opaque cancelAllSignals : (PPtr Notification) → Kernel Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque curDomain : Kernel Domain
 
 -- external: SEL4/Object/CNode.lhs
 opaque decodeCNodeInvocation : Word → (List Word) → Capability → (List Capability) → KernelF SyscallError CNodeInvocation
 
--- external: SEL4/Object/Domain.hs
-opaque decodeDomainInvocation : Word → (List Word) → (List (Capability × (PPtr CTE))) → KernelF SyscallError DomainInvocation
-
--- external: SEL4/Object/Interrupt.lhs
-opaque decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
-
--- external: SEL4/Object/Interrupt.lhs
-opaque decodeIRQHandlerInvocation : Word → IRQ → (List (Capability × (PPtr CTE))) → KernelF SyscallError IRQHandlerInvocation
-
 -- external: SEL4/Object/TCB.lhs
 opaque decodeTCBInvocation : Word → (List Word) → Capability → (PPtr CTE) → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
 
--- external: SEL4/Object/Untyped.lhs
-opaque decodeUntypedInvocation : Word → (List Word) → (PPtr CTE) → Capability → (List Capability) → KernelF SyscallError UntypedInvocation
-
--- external: SEL4/Object/Interrupt.lhs
-opaque deletedIRQHandler : IRQ → Kernel Unit
-
--- external: SEL4/Object/Interrupt.lhs
-opaque deletingIRQHandler : IRQ → Kernel Unit
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque doReplyTransfer : (PPtr TCB) → (PPtr TCB) → (PPtr CTE) → Bool → Kernel Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque ensureNoChildren : (PPtr CTE) → KernelF SyscallError Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque getCurThread : Kernel (PPtr TCB)
 
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadCSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
@@ -114,56 +88,11 @@ opaque getThreadCSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
 -- external: SEL4/Object/CNode.lhs
 opaque invokeCNode : CNodeInvocation → KernelP Unit
 
--- external: SEL4/Object/Domain.hs
-opaque invokeDomain : DomainInvocation → Kernel Unit
-
--- external: SEL4/Object/Interrupt.lhs
-opaque invokeIRQHandler : IRQHandlerInvocation → Kernel Unit
-
 -- external: SEL4/Object/TCB.lhs
 opaque invokeTCB : TCBInvocation → KernelP (List Word)
 
--- external: SEL4/Object/Untyped.lhs
-opaque invokeUntyped : UntypedInvocation → KernelP Unit
-
--- external: SEL4/Object/Structures.lhs
-opaque isIRQControlCap : Capability → Bool
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
-
--- external: SEL4/Object/Interrupt.lhs
-opaque performIRQControl : IRQControlInvocation → KernelP Unit
-
--- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
-
--- external: SEL4/Object/Endpoint.lhs
-opaque sendIPC : Bool → Bool → Word → Bool → Bool → (PPtr TCB) → (PPtr Endpoint) → Kernel Unit
-
--- external: SEL4/Object/Notification.lhs
-opaque sendSignal : (PPtr Notification) → Word → Kernel Unit
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque suspend : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/API/Types.lhs
-opaque toAPIType : ObjectType → Option APIObjectType
-
--- external: SEL4/Object/Notification.lhs
-opaque unbindMaybeNotification : (PPtr Notification) → Kernel Unit
-
--- external: SEL4/Object/Notification.lhs
-opaque unbindNotification : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
-
--- external: Data/WordLib.lhs
-opaque wordSizeCase {t_a : Type} [Inhabited t_a] : t_a → t_a → t_a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

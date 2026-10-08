@@ -4,46 +4,43 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Config
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_Domain
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev numDomains := @Sel4Lean.Spec.M.Config.numDomains
+abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
+abbrev domainEndMarker := @Sel4Lean.Spec.M.Object_Structures.domainEndMarker
+abbrev maxDomainDuration := @Sel4Lean.Spec.M.Object_Structures.maxDomainDuration
+abbrev parseTimeArg := @Sel4Lean.Spec.M.Object_Structures_RISCV64.parseTimeArg
+abbrev timeArgLen := @Sel4Lean.Spec.M.Object_Structures_RISCV64.timeArgLen
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.prepareSetDomain := @Sel4Lean.Spec.M.Object_Domain_RISCV64.prepareSetDomain
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Object/Domain/RISCV64.hs
-opaque RISCV64.prepareSetDomain : (PPtr TCB) → Domain → Kernel Unit
-
--- external: SEL4/Object/Structures.lhs
-opaque domainEndMarker : DomainScheduleItem
 
 -- external: SEL4/API/InvocationLabels.lhs
 opaque genInvocationType : Word → GenInvocationLabels
-
--- external: SEL4/Object/Structures.lhs
-opaque maxDomainDuration : DomainDuration
-
--- external: SEL4/Config.lhs
-opaque numDomains : Nat
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque parseTimeArg : Nat → (List Word) → Ticks
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque setDomain : (PPtr TCB) → Domain → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque timeArgLen : Nat
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 /-! ## Unresolved (no stub possible)
   fromIntegral: no signature found

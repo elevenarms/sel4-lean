@@ -4,23 +4,31 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.Mod.Object_Notification
-import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.API_Failures
 import Sel4Lean.Spec.Gen.Mod.Object_TCB
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.API_Faults
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.API_Failures (msgFromLookupFailure)
-open Sel4Lean.Spec.M.API_Faults_RISCV64 (handleArchFaultReply makeArchFaultMessage)
-open Sel4Lean.Spec.M.Machine_Hardware (getRestartPC)
-open Sel4Lean.Spec.M.Machine_RegisterSet (exceptionMessage getRegister setRegister syscallMessage)
-open Sel4Lean.Spec.M.Object_Notification (asUser)
-open Sel4Lean.Spec.M.Object_TCB (getSanitiseRegisterInfo sanitiseRegister)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev msgFromLookupFailure := @Sel4Lean.Spec.M.API_Failures.msgFromLookupFailure
+abbrev asUser := @Sel4Lean.Spec.M.API_Faults_RISCV64.asUser
+abbrev getRestartPC := @Sel4Lean.Spec.M.API_Faults_RISCV64.getRestartPC
+abbrev handleArchFaultReply := @Sel4Lean.Spec.M.API_Faults_RISCV64.handleArchFaultReply
+abbrev makeArchFaultMessage := @Sel4Lean.Spec.M.API_Faults_RISCV64.makeArchFaultMessage
+abbrev exceptionMessage := @Sel4Lean.Spec.M.Machine_RegisterSet.exceptionMessage
+abbrev getRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.getRegister
+abbrev setRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.setRegister
+abbrev syscallMessage := @Sel4Lean.Spec.M.Machine_RegisterSet.syscallMessage
+abbrev getSanitiseRegisterInfo := @Sel4Lean.Spec.M.Object_TCB.getSanitiseRegisterInfo
+abbrev sanitiseRegister := @Sel4Lean.Spec.M.Object_TCB.sanitiseRegister
 
 /-! ## Stubs (from Haskell signatures) -/
 

@@ -4,43 +4,69 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Model_Preemption
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Kernel_VSpace_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev ptrFromPAddr := @Sel4Lean.Spec.M.API_Types.ptrFromPAddr
+abbrev rightsFromWord := @Sel4Lean.Spec.M.API_Types.rightsFromWord
+abbrev addrFromKPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromKPPtr
+abbrev addrFromPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromPPtr
+abbrev hwASIDFlush := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.hwASIDFlush
+abbrev pageBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBits
+abbrev pageBitsForSize := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBitsForSize
+abbrev pptrBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pptrBase
+abbrev pptrUserTop := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pptrUserTop
+abbrev ptBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptBits
+abbrev ptTranslationBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptTranslationBits
+abbrev pteBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pteBits
+abbrev read_stval := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.read_stval
+abbrev setVSpaceRoot := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.setVSpaceRoot
+abbrev sfence := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.sfence
+abbrev vmFaultTypeFSR := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.vmFaultTypeFSR
+abbrev mask := @Sel4Lean.Spec.M.Machine_RegisterSet.mask
+abbrev catchFailure := @Sel4Lean.Spec.M.Model_Failures.catchFailure
+abbrev ignoreFailure := @Sel4Lean.Spec.M.Model_Failures.ignoreFailure
+abbrev lookupErrorOnFailure := @Sel4Lean.Spec.M.Model_Failures.lookupErrorOnFailure
+abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
+abbrev deleteObjects := @Sel4Lean.Spec.M.Model_PSpace.deleteObjects
+abbrev getObject := @Sel4Lean.Spec.M.Model_PSpace.getObject
+abbrev placeNewObject := @Sel4Lean.Spec.M.Model_PSpace.placeNewObject
+abbrev setObject := @Sel4Lean.Spec.M.Model_PSpace.setObject
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Model_Preemption.withoutPreemption
+abbrev getCurThread := @Sel4Lean.Spec.M.Model_StateData.getCurThread
+abbrev maxPTLevel := @Sel4Lean.Spec.M.Model_StateData_RISCV64.maxPTLevel
+abbrev riscvKSGlobalPT := @Sel4Lean.Spec.M.Model_StateData_RISCV64.riscvKSGlobalPT
+abbrev maxFreeIndex := @Sel4Lean.Spec.M.Object_Structures.maxFreeIndex
+abbrev asidHighBits := @Sel4Lean.Spec.M.Object_Structures_RISCV64.asidHighBits
+abbrev asidHighBitsOf := @Sel4Lean.Spec.M.Object_Structures_RISCV64.asidHighBitsOf
+abbrev asidLowBits := @Sel4Lean.Spec.M.Object_Structures_RISCV64.asidLowBits
+abbrev asidRange := @Sel4Lean.Spec.M.Object_Structures_RISCV64.asidRange
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Machine/Hardware.lhs
-opaque addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- external: SEL4/Machine/Hardware.lhs
-opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque asidHighBits : Nat
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque asidHighBitsOf : ASID → ASID
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque asidLowBits : Nat
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque asidRange : ASID × ASID
-
--- external: SEL4/Model/Failures.lhs
-opaque catchFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → (t_f → Kernel t_a) → Kernel t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
 -- local, not translated: guards that fall through to the next equation: alternative at line 447: 'Untyped
 opaque decodeRISCVASIDControlInvocation : RISCV64.Word → (List RISCV64.Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
-
--- external: SEL4/Model/PSpace.lhs
-opaque deleteObjects {t_a : Type} [Inhabited t_a] : (PPtr t_a) → Nat → Kernel Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
@@ -51,12 +77,6 @@ opaque ensureNoChildren : (PPtr CTE) → KernelF SyscallError Unit
 -- external: SEL4/Object/CNode.lhs
 opaque getCTE : (PPtr CTE) → Kernel CTE
 
--- external: SEL4/Model/StateData.lhs
-opaque getCurThread : Kernel (PPtr TCB)
-
--- external: SEL4/Model/PSpace.lhs
-opaque getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → Kernel t_a
-
 -- external: SEL4/Object/CNode.lhs
 opaque getSlotCap : (PPtr CTE) → Kernel Capability
 
@@ -66,101 +86,26 @@ opaque getThreadBufferSlot : (PPtr TCB) → Kernel (PPtr CTE)
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadVSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
 
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque hwASIDFlush : (BitVec 64) → MachineMonad Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque ignoreFailure {t_f : Type} [Inhabited t_f] : (KernelF t_f Unit) → Kernel Unit
-
 -- external: SEL4/API/InvocationLabels.lhs
 opaque invocationType : Word → InvocationLabel
 
 -- external: SEL4/Object/CNode.lhs
 opaque isFinalCapability : CTE → Kernel Bool
 
--- external: SEL4/Model/Failures.lhs
-opaque lookupErrorOnFailure {t_a : Type} [Inhabited t_a] : Bool → (KernelF LookupFailure t_a) → KernelF SyscallError t_a
-
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
-
--- external: SEL4/Object/Structures.lhs
-opaque maxFreeIndex : Nat → Nat
-
--- external: SEL4/Model/StateData/RISCV64.hs
-opaque maxPTLevel : Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque pageBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pageBitsForSize : VMPageSize → Nat
 
 -- local, not translated: arithmetic sequence form: arithmetic_sequence at line 520: '[ptr, ptr + bit pteB
 opaque performPageTableInvocation : PageTableInvocation → Kernel Unit
 
--- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pptrBase : VPtr
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pptrUserTop : VPtr
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptTranslationBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pteBits : Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque read_stval : MachineMonad Word
-
--- external: SEL4/API/Types.lhs
-opaque rightsFromWord : Word → CapRights
-
--- external: SEL4/Model/StateData/RISCV64.hs
-opaque riscvKSGlobalPT : RISCV64.KernelState → PPtr PTE
-
--- external: SEL4/Model/PSpace.lhs
-opaque setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → t_a → Kernel Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque sfence : MachineMonad Unit
-
 -- external: SEL4/Object/TCB.lhs
 opaque threadGet {t_a : Type} [Inhabited t_a] : (TCB → t_a) → (PPtr TCB) → Kernel t_a
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque updateCap : (PPtr CTE) → Capability → Kernel Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque updateFreeIndex : (PPtr CTE) → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque vmFaultTypeFSR : VMFaultType → Word
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   assocs: no signature found
@@ -247,9 +192,9 @@ def findVSpaceForASID (asid : ASID) : KernelF LookupFailure (PPtr PTE) :=
     let _ ← assertG (asid ≤ (snd asidRange)) "ASID out of range"
     let asidTable ← withoutFailure (gets (RISCV64.KernelState.riscvKSASIDTable ∘ KernelState.ksArchState))
     let poolPtr := asidTable (asidHighBitsOf asid)
-    let ASIDPool.ASIDPool pool ← match poolPtr with
+    let ASIDPool.ASIDPool pool ← (match poolPtr with
       | some ptr => withoutFailure (getObject ptr)
-      | none => throw LookupFailure.InvalidRoot | failM "pattern match failure"
+      | none => throw LookupFailure.InvalidRoot) | failM "pattern match failure"
     let pm := pool (asid &&& (mask asidLowBits))
     match pm with
     | some ptr => (do
@@ -344,7 +289,7 @@ def deleteASIDPool (base : ASID) (ptr : PPtr ASIDPool) : Kernel Unit :=
     let _ ← assertG ((base &&& (mask asidLowBits)) == 0) "ASID pool's base must be aligned"
     let asidTable ← gets (RISCV64.KernelState.riscvKSASIDTable ∘ KernelState.ksArchState)
     whenH ((asidTable (asidHighBitsOf base)) == (some ptr)) (do
-      let ASIDPool.ASIDPool pool ← getObject ptr | failM "pattern match failure"
+      let ASIDPool.ASIDPool pool ← (getObject ptr) | failM "pattern match failure"
       let asidTable' := arrayUpdH asidTable ([(asidHighBitsOf base, none)])
       let _ ← modify (fun s => { s with ksArchState := { (KernelState.ksArchState s) with riscvKSASIDTable := asidTable' } })
       let tcb ← getCurThread
@@ -357,7 +302,7 @@ def deleteASID (asid : ASID) (pt : PPtr PTE) : Kernel Unit :=
     match asidTable (asidHighBitsOf asid) with
     | none => pure ()
     | some poolPtr => (do
-          let ASIDPool.ASIDPool pool ← getObject poolPtr | failM "pattern match failure"
+          let ASIDPool.ASIDPool pool ← (getObject poolPtr) | failM "pattern match failure"
           whenH ((pool (asid &&& (mask asidLowBits))) == (some pt)) (do
             let _ ← doMachineOp (hwASIDFlush (ASID.fromASID asid))
             let pool' := arrayUpdH pool ([(asid &&& (mask asidLowBits), none)])
@@ -533,7 +478,7 @@ def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 
                 let _ ← whenH (isNothing poolPtr) (throw (SyscallError.FailedLookup false LookupFailure.InvalidRoot))
                 let some p := poolPtr | failM "irrefutable pattern"
                 let _ ← whenH (p != (ArchCapability.capASIDPool cap)) (throw (SyscallError.InvalidCapability 0))
-                let ASIDPool.ASIDPool pool ← withoutFailure (getObject p) | failM "pattern match failure"
+                let ASIDPool.ASIDPool pool ← (withoutFailure (getObject p)) | failM "pattern match failure"
                 let free := filter (fun (x, y) => (x ≤ ((shiftLH 1 asidLowBits) - 1)) && (((x + base) != 0) && (isNothing y))) (assocs pool)
                 let _ ← whenH (null free) (throw SyscallError.DeleteFirst)
                 let asid := fst (head free)
@@ -565,7 +510,7 @@ def performPageInvocation (x0 : PageInvocation) : Kernel (List RISCV64.Word) :=
         let _ ← match ArchCapability.capFMappedAddress cap with
                 | some (asid, vaddr) => unmapPage (ArchCapability.capFSize cap) asid vaddr (ArchCapability.capFBasePtr cap)
                 | _ => pure ()
-        let Capability.ArchObjectCap cap ← getSlotCap ctSlot | failM "pattern match failure"
+        let Capability.ArchObjectCap cap ← (getSlotCap ctSlot) | failM "pattern match failure"
         let _ ← updateCap ctSlot (Capability.ArchObjectCap (ArchCapability.set_capFMappedAddress cap none))
         pure []
   | (PageInvocation.PageGetAddr ptr) => pure ([PAddr.fromPAddr (addrFromPPtr ptr)])
@@ -595,7 +540,7 @@ def performASIDPoolInvocation (x0 : ASIDPoolInvocation) : Kernel Unit :=
         let Capability.ArchObjectCap cap := oldcap | failM "irrefutable pattern"
         let _ ← updateCap ctSlot (Capability.ArchObjectCap (ArchCapability.set_capPTMappedAddress cap (some ((asid, 0)))))
         let _ ← copyGlobalMappings (ArchCapability.capPTBasePtr cap)
-        let ASIDPool.ASIDPool pool ← getObject poolPtr | failM "pattern match failure"
+        let ASIDPool.ASIDPool pool ← (getObject poolPtr) | failM "pattern match failure"
         let pool' := arrayUpdH pool ([(asid &&& (mask asidLowBits), some (ArchCapability.capPTBasePtr cap))])
         setObject poolPtr (ASIDPool.ASIDPool pool')
 

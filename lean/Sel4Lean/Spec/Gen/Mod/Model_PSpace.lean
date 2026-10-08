@@ -5,17 +5,24 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
-import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Model_PSpace
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware (freeMemory loadWord storeWord)
-open Sel4Lean.Spec.M.Machine_RegisterSet (mask)
-open Sel4Lean.Spec.M.Object_Structures (kernelObjectTypeName objBitsKO)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev freeMemory := @Sel4Lean.Spec.M.Machine_Hardware.freeMemory
+abbrev loadWord := @Sel4Lean.Spec.M.Machine_Hardware.loadWord
+abbrev storeWord := @Sel4Lean.Spec.M.Machine_Hardware.storeWord
+abbrev kernelObjectTypeName := @Sel4Lean.Spec.M.Object_Structures.kernelObjectTypeName
+abbrev mask := @Sel4Lean.Spec.M.Object_Structures.mask
+abbrev objBitsKO := @Sel4Lean.Spec.M.Object_Structures.objBitsKO
 
 /-! ## RISCV64 definitions from imported modules -/
 

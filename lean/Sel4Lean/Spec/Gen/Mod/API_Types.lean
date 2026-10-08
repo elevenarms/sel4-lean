@@ -8,12 +8,17 @@ import Sel4Lean.Spec.Gen.Mod.Data_WordLib
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.API_Types
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Data_WordLib (wordSizeCase)
-open Sel4Lean.Spec.M.Machine_Hardware (ptrFromPAddr)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev wordSizeCase := @Sel4Lean.Spec.M.Data_WordLib.wordSizeCase
+abbrev ptrFromPAddr := @Sel4Lean.Spec.M.Machine_Hardware.ptrFromPAddr
 
 /-! ## RISCV64 definitions from imported modules -/
 

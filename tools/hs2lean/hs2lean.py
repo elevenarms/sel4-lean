@@ -598,9 +598,13 @@ class Translator:
             if s.type == "bind":
                 pn = s.child_by_field_name("pattern")
                 p = self.pat(pn)
-                line = f"let {p} ← {self.e(s.child_by_field_name('expression'), si + 2)}"
+                ex = self.e(s.child_by_field_name('expression'), si + 2)
                 if pn.type not in ("variable", "tuple", "wildcard", "parens") and getattr(self, "discard_stmts", False):
-                    line += ' | failM "pattern match failure"'   # Haskell MonadFail on a refutable bind
+                    # Haskell MonadFail on a refutable bind; parenthesise so a multi-line `match` does not
+                    # swallow the `| failM …` handler as one of its alternatives
+                    line = f"let {p} ← ({ex}) | failM \"pattern match failure\""
+                else:
+                    line = f"let {p} ← {ex}"
                 lines.append(line)
             elif s.type == "exp":
                 # Haskell drops non-Unit results of non-final statements; Lean needs `let _ ←`. The prefix

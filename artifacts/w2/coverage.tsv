@@ -44,7 +44,7 @@ SEL4/Model/StateData.lhs	26	26	hs2lean module: 26/26 functions translated (1 par
 SEL4/Model/StateData/RISCV64.hs	3	3	hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 2 unresolved
 SEL4/Model/Syscall.lhs	1	1	hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque), 1 external stubs, 0 unresolved
 SEL4/Object.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
-SEL4/Object/CNode.lhs	42	43	hs2lean module: 42/43 functions translated (2 partial, 0 machine-opaque), 41 external stubs, 13 unresolved
+SEL4/Object/CNode.lhs	42	43	hs2lean module: 42/43 functions translated (4 partial, 0 machine-opaque), 41 external stubs, 13 unresolved
 SEL4/Object/Domain.hs	9	9	hs2lean module: 9/9 functions translated (1 partial, 0 machine-opaque), 11 external stubs, 7 unresolved
 SEL4/Object/Domain/RISCV64.hs	1	1	hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Object/Endpoint.lhs	8	9	hs2lean module: 8/9 functions translated (0 partial, 0 machine-opaque), 30 external stubs, 7 unresolved

@@ -7,12 +7,19 @@ import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Object_Structures_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (pageBits pteBits)
-open Sel4Lean.Spec.M.Machine_RegisterSet (mask newContext)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev pageBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBits
+abbrev pteBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pteBits
+abbrev mask := @Sel4Lean.Spec.M.Machine_RegisterSet.mask
+abbrev newContext := @Sel4Lean.Spec.M.Machine_RegisterSet.newContext
 
 /-! ## Stubs (from Haskell signatures) -/
 

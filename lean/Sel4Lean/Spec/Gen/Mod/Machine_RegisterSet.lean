@@ -6,6 +6,8 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Machine_RegisterSet
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)

@@ -5,39 +5,89 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
-import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.API_Faults
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Object_CNode
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
 import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace
 import Sel4Lean.Spec.Gen.Mod.Object_TCB
-import Sel4Lean.Spec.Gen.Mod.API_Faults
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Config
 import Sel4Lean.Spec.Gen.Mod.Data_WordLib
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace
-import Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Kernel_Thread
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.API_Faults (handleFaultReply makeFaultMessage)
-open Sel4Lean.Spec.M.Config (numDomains timeSlice)
-open Sel4Lean.Spec.M.Data_WordLib (wordRadix)
-open Sel4Lean.Spec.M.Kernel_VSpace (lookupIPCBuffer)
-open Sel4Lean.Spec.M.Machine_Hardware (getRestartPC nullPointer setNextPC)
-open Sel4Lean.Spec.M.Machine_RegisterSet (badgeRegister capRegister faultRegister getRegister mask nextInstructionRegister setRegister)
-open Sel4Lean.Spec.M.Model_Failures (catchFailure constOnFailure throw unifyFailure withoutFailure)
-open Sel4Lean.Spec.M.Model_PSpace (getObject)
-open Sel4Lean.Spec.M.Model_StateData (curDomain decDomainTime getCurThread getDomainTime getIdleThread getQueue getSchedulerAction ksReadyQueues_asrt nextDomain ready_qs_runnable setCurThread setQueue setSchedulerAction)
-open Sel4Lean.Spec.M.Object_Endpoint (cancelIPC cteDeleteOne getCTE setMRs setMessageInfo threadSet)
-open Sel4Lean.Spec.M.Object_Interrupt (doKernelOp)
-open Sel4Lean.Spec.M.Object_Notification (asUser)
-open Sel4Lean.Spec.M.Object_Structures (emptyQueue isNullCap isReply isReplyCap l2BitmapSize)
-open Sel4Lean.Spec.M.Object_TCB (copyMRs cteInsert deriveCap getMRs getMessageInfo getSlotCap lookupExtraCaps setExtraBadge threadGet)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev asUser := @Sel4Lean.Spec.M.API_Faults.asUser
+abbrev getRegister := @Sel4Lean.Spec.M.API_Faults.getRegister
+abbrev getRestartPC := @Sel4Lean.Spec.M.API_Faults.getRestartPC
+abbrev handleFaultReply := @Sel4Lean.Spec.M.API_Faults.handleFaultReply
+abbrev makeFaultMessage := @Sel4Lean.Spec.M.API_Faults.makeFaultMessage
+abbrev setRegister := @Sel4Lean.Spec.M.API_Faults.setRegister
+abbrev numDomains := @Sel4Lean.Spec.M.Config.numDomains
+abbrev timeSlice := @Sel4Lean.Spec.M.Config.timeSlice
+abbrev wordRadix := @Sel4Lean.Spec.M.Data_WordLib.wordRadix
+abbrev getIdleThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.getIdleThread
+abbrev lookupIPCBuffer := @Sel4Lean.Spec.M.Kernel_VSpace.lookupIPCBuffer
+abbrev setNextPC := @Sel4Lean.Spec.M.Machine_Hardware.setNextPC
+abbrev badgeRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.badgeRegister
+abbrev capRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.capRegister
+abbrev faultRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.faultRegister
+abbrev nextInstructionRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.nextInstructionRegister
+abbrev catchFailure := @Sel4Lean.Spec.M.Model_Failures.catchFailure
+abbrev constOnFailure := @Sel4Lean.Spec.M.Model_Failures.constOnFailure
+abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
+abbrev unifyFailure := @Sel4Lean.Spec.M.Model_Failures.unifyFailure
+abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
+abbrev getObject := @Sel4Lean.Spec.M.Model_PSpace.getObject
+abbrev curDomain := @Sel4Lean.Spec.M.Model_StateData.curDomain
+abbrev decDomainTime := @Sel4Lean.Spec.M.Model_StateData.decDomainTime
+abbrev getCurThread := @Sel4Lean.Spec.M.Model_StateData.getCurThread
+abbrev getDomainTime := @Sel4Lean.Spec.M.Model_StateData.getDomainTime
+abbrev getQueue := @Sel4Lean.Spec.M.Model_StateData.getQueue
+abbrev getSchedulerAction := @Sel4Lean.Spec.M.Model_StateData.getSchedulerAction
+abbrev ksReadyQueues_asrt := @Sel4Lean.Spec.M.Model_StateData.ksReadyQueues_asrt
+abbrev nextDomain := @Sel4Lean.Spec.M.Model_StateData.nextDomain
+abbrev ready_qs_runnable := @Sel4Lean.Spec.M.Model_StateData.ready_qs_runnable
+abbrev setCurThread := @Sel4Lean.Spec.M.Model_StateData.setCurThread
+abbrev setQueue := @Sel4Lean.Spec.M.Model_StateData.setQueue
+abbrev setSchedulerAction := @Sel4Lean.Spec.M.Model_StateData.setSchedulerAction
+abbrev cteInsert := @Sel4Lean.Spec.M.Object_CNode.cteInsert
+abbrev deriveCap := @Sel4Lean.Spec.M.Object_CNode.deriveCap
+abbrev getReceiveSlots := @Sel4Lean.Spec.M.Object_CNode.getReceiveSlots
+abbrev getSlotCap := @Sel4Lean.Spec.M.Object_CNode.getSlotCap
+abbrev setupReplyMaster := @Sel4Lean.Spec.M.Object_CNode.setupReplyMaster
+abbrev cancelIPC := @Sel4Lean.Spec.M.Object_Endpoint.cancelIPC
+abbrev cteDeleteOne := @Sel4Lean.Spec.M.Object_Endpoint.cteDeleteOne
+abbrev getCTE := @Sel4Lean.Spec.M.Object_Endpoint.getCTE
+abbrev setMRs := @Sel4Lean.Spec.M.Object_Endpoint.setMRs
+abbrev setMessageInfo := @Sel4Lean.Spec.M.Object_Endpoint.setMessageInfo
+abbrev threadSet := @Sel4Lean.Spec.M.Object_Endpoint.threadSet
+abbrev doKernelOp := @Sel4Lean.Spec.M.Object_Interrupt.doKernelOp
+abbrev emptyQueue := @Sel4Lean.Spec.M.Object_Structures.emptyQueue
+abbrev isNullCap := @Sel4Lean.Spec.M.Object_Structures.isNullCap
+abbrev isReply := @Sel4Lean.Spec.M.Object_Structures.isReply
+abbrev isReplyCap := @Sel4Lean.Spec.M.Object_Structures.isReplyCap
+abbrev l2BitmapSize := @Sel4Lean.Spec.M.Object_Structures.l2BitmapSize
+abbrev mask := @Sel4Lean.Spec.M.Object_Structures.mask
+abbrev nullPointer := @Sel4Lean.Spec.M.Object_Structures.nullPointer
+abbrev copyMRs := @Sel4Lean.Spec.M.Object_TCB.copyMRs
+abbrev getMRs := @Sel4Lean.Spec.M.Object_TCB.getMRs
+abbrev getMessageInfo := @Sel4Lean.Spec.M.Object_TCB.getMessageInfo
+abbrev lookupExtraCaps := @Sel4Lean.Spec.M.Object_TCB.lookupExtraCaps
+abbrev setExtraBadge := @Sel4Lean.Spec.M.Object_TCB.setExtraBadge
+abbrev threadGet := @Sel4Lean.Spec.M.Object_TCB.threadGet
 
 /-! ## RISCV64 definitions from imported modules -/
 
@@ -48,12 +98,6 @@ abbrev RISCV64.switchToIdleThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.swit
 abbrev RISCV64.switchToThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.switchToThread
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Object/CNode.lhs
-opaque getReceiveSlots : (PPtr TCB) → (Option (PPtr Word)) → Kernel (List (PPtr CTE))
-
--- external: SEL4/Object/CNode.lhs
-opaque setupReplyMaster : (PPtr TCB) → Kernel Unit
 
 -- local, not translated: guards that fall through to the next equation: alternative at line 279: '(Endpoi
 opaque transferCapsToSlots : (Option (PPtr Endpoint)) → (PPtr Word) → Nat → (List (Capability × (PPtr CTE))) → (List (PPtr CTE)) → MessageInfo → Kernel MessageInfo

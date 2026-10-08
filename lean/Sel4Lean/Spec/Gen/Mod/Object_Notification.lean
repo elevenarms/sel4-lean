@@ -8,13 +8,20 @@ import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Object_Notification
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_RegisterSet (badgeRegister setRegister)
-open Sel4Lean.Spec.M.Model_PSpace (getObject setObject)
-open Sel4Lean.Spec.M.Model_StateData (ksReadyQueues_asrt)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev badgeRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.badgeRegister
+abbrev setRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.setRegister
+abbrev getObject := @Sel4Lean.Spec.M.Model_PSpace.getObject
+abbrev setObject := @Sel4Lean.Spec.M.Model_PSpace.setObject
+abbrev ksReadyQueues_asrt := @Sel4Lean.Spec.M.Model_StateData.ksReadyQueues_asrt
 
 /-! ## Stubs (from Haskell signatures) -/
 

@@ -6,23 +6,32 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
 import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Config
 import Sel4Lean.Spec.Gen.Mod.Data_WordLib
-import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_Structures
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.API_Types_RISCV64 (tcbBlockSizeBits)
-open Sel4Lean.Spec.M.API_Types_Universal (cteSizeBits epSizeBits ntfnSizeBits)
-open Sel4Lean.Spec.M.Config (numDomains numPriorities)
-open Sel4Lean.Spec.M.Data_WordLib (wordBits)
-open Sel4Lean.Spec.M.Machine_Hardware (config_HAVE_FPU nullPointer pageBits)
-open Sel4Lean.Spec.M.Machine_RegisterSet (mask)
-open Sel4Lean.Spec.M.Object_Structures_RISCV64 (archObjSize)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev tcbBlockSizeBits := @Sel4Lean.Spec.M.API_Types_RISCV64.tcbBlockSizeBits
+abbrev cteSizeBits := @Sel4Lean.Spec.M.API_Types_Universal.cteSizeBits
+abbrev epSizeBits := @Sel4Lean.Spec.M.API_Types_Universal.epSizeBits
+abbrev ntfnSizeBits := @Sel4Lean.Spec.M.API_Types_Universal.ntfnSizeBits
+abbrev numDomains := @Sel4Lean.Spec.M.Config.numDomains
+abbrev numPriorities := @Sel4Lean.Spec.M.Config.numPriorities
+abbrev wordBits := @Sel4Lean.Spec.M.Data_WordLib.wordBits
+abbrev config_HAVE_FPU := @Sel4Lean.Spec.M.Machine_Hardware.config_HAVE_FPU
+abbrev nullPointer := @Sel4Lean.Spec.M.Machine_Hardware.nullPointer
+abbrev archObjSize := @Sel4Lean.Spec.M.Object_Structures_RISCV64.archObjSize
+abbrev mask := @Sel4Lean.Spec.M.Object_Structures_RISCV64.mask
+abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures_RISCV64.pageBits
 
 /-! ## Stubs (from Haskell signatures) -/
 

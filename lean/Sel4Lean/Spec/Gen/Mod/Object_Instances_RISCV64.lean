@@ -5,6 +5,8 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Object_Instances_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)

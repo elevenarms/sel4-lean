@@ -6,11 +6,17 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_TCB
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.API_Faults_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Object_TCB (asUser getRestartPC)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev asUser := @Sel4Lean.Spec.M.Object_TCB.asUser
+abbrev getRestartPC := @Sel4Lean.Spec.M.Object_TCB.getRestartPC
 
 /-! ## Stubs (from Haskell signatures) -/
 

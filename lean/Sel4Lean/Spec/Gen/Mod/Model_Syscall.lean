@@ -6,11 +6,16 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Model_Preemption
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.Model_Syscall
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Model_Preemption (withoutPreemption)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Model_Preemption.withoutPreemption
 
 /-! ## Stubs (from Haskell signatures) -/
 

@@ -7,12 +7,20 @@ import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.API_Types_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.API_Types_Universal (cteSizeBits epSizeBits ntfnSizeBits)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (pageBitsForSize ptBits)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev cteSizeBits := @Sel4Lean.Spec.M.API_Types_Universal.cteSizeBits
+abbrev epSizeBits := @Sel4Lean.Spec.M.API_Types_Universal.epSizeBits
+abbrev ntfnSizeBits := @Sel4Lean.Spec.M.API_Types_Universal.ntfnSizeBits
+abbrev pageBitsForSize := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBitsForSize
+abbrev ptBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptBits
 
 /-! ## Stubs (from Haskell signatures) -/
 

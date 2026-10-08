@@ -4,18 +4,22 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Kernel_Thread_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Model_StateData (getIdleThread)
 noncomputable section
 
-/-! ## Stubs (from Haskell signatures) -/
+/-! ## Definitions from imported modules -/
 
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque setVMRoot : (PPtr TCB) → Kernel Unit
+abbrev setVMRoot := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.setVMRoot
+abbrev getIdleThread := @Sel4Lean.Spec.M.Model_StateData.getIdleThread
+
+/-! ## Stubs (from Haskell signatures) -/
 
 /-! ## Unresolved (no stub possible)
   error: no signature found

@@ -25,7 +25,7 @@
 ✔ Kernel_Thread
 ✔ Kernel_Thread_RISCV64
 ✔ Kernel_VSpace
-✖ Kernel_VSpace_RISCV64
+✔ Kernel_VSpace_RISCV64
 ✔ Machine
 ✔ Machine_Hardware
 ✔ Machine_Hardware_RISCV64
@@ -43,7 +43,7 @@
 ✔ Model_StateData_RISCV64
 ✔ Model_Syscall
 ✔ Object
-✖ Object_CNode
+✔ Object_CNode
 ✔ Object_Domain
 ✔ Object_Domain_RISCV64
 ✔ Object_Endpoint

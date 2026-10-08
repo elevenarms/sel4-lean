@@ -6,11 +6,16 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Data_WordLib
 
+set_option match.ignoreUnusedAlts true
+
 namespace Sel4Lean.Spec.M.API_Types_Universal
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Data_WordLib (wordSizeCase)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev wordSizeCase := @Sel4Lean.Spec.M.Data_WordLib.wordSizeCase
 
 /-! ## Stubs (from Haskell signatures) -/
 

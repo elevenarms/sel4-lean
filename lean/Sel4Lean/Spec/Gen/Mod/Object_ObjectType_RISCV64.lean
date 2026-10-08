@@ -4,64 +4,40 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_ObjectType_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
-/-! ## Stubs (from Haskell signatures) -/
+/-! ## Definitions from imported modules -/
 
--- external: SEL4/Model/Failures.lhs
-opaque catchFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → (t_f → Kernel t_a) → Kernel t_a
+abbrev catchFailure := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.catchFailure
+abbrev decodeRISCVMMUInvocation := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.decodeRISCVMMUInvocation
+abbrev deleteASID := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.deleteASID
+abbrev deleteASIDPool := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.deleteASIDPool
+abbrev findVSpaceForASID := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.findVSpaceForASID
+abbrev maskVMRights := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.maskVMRights
+abbrev performRISCVMMUInvocation := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.performRISCVMMUInvocation
+abbrev placeNewObject := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.placeNewObject
+abbrev throw := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.throw
+abbrev unmapPage := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.unmapPage
+abbrev unmapPageTable := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.unmapPageTable
+abbrev withoutFailure := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.withoutFailure
+abbrev pageBitsForSize := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageBitsForSize
+abbrev ptBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptBits
+abbrev ptTranslationBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptTranslationBits
+abbrev mask := @Sel4Lean.Spec.M.Machine_RegisterSet.mask
+
+/-! ## Stubs (from Haskell signatures) -/
 
 -- local, not translated: pattern: apply at line 158: 'Arch.Types.APIObjectType _'
 opaque createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel ArchCapability
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque decodeRISCVMMUInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque deleteASID : ASID → (PPtr PTE) → Kernel Unit
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque deleteASIDPool : ASID → (PPtr ASIDPool) → Kernel Unit
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque findVSpaceForASID : ASID → KernelF LookupFailure (PPtr PTE)
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque maskVMRights : VMRights → CapRights → VMRights
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pageBitsForSize : VMPageSize → Nat
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque performRISCVMMUInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word)
-
--- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptTranslationBits : Nat
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque unmapPage : VMPageSize → ASID → VPtr → (PPtr RISCV64.Word) → Kernel Unit
-
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque unmapPageTable : ASID → VPtr → (PPtr PTE) → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

@@ -6,21 +6,38 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Notification
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
-import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
-import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.Object_Endpoint
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware (nullPointer)
-open Sel4Lean.Spec.M.Machine_RegisterSet (badgeRegister setRegister)
-open Sel4Lean.Spec.M.Model_PSpace (getObject setObject)
-open Sel4Lean.Spec.M.Model_StateData (capHasProperty ksReadyQueues_asrt)
-open Sel4Lean.Spec.M.Object_Notification (asUser cancelSignal completeSignal doNBRecvFailedTransfer getBoundNotification getNotification getThreadState possibleSwitchTo rescheduleRequired setThreadState tcbSchedEnqueue)
-open Sel4Lean.Spec.M.Object_Structures (isReceive isReplyCap isSend)
 noncomputable section
+
+/-! ## Definitions from imported modules -/
+
+abbrev capHasProperty := @Sel4Lean.Spec.M.Model_StateData.capHasProperty
+abbrev asUser := @Sel4Lean.Spec.M.Object_Notification.asUser
+abbrev badgeRegister := @Sel4Lean.Spec.M.Object_Notification.badgeRegister
+abbrev cancelSignal := @Sel4Lean.Spec.M.Object_Notification.cancelSignal
+abbrev completeSignal := @Sel4Lean.Spec.M.Object_Notification.completeSignal
+abbrev doNBRecvFailedTransfer := @Sel4Lean.Spec.M.Object_Notification.doNBRecvFailedTransfer
+abbrev getBoundNotification := @Sel4Lean.Spec.M.Object_Notification.getBoundNotification
+abbrev getNotification := @Sel4Lean.Spec.M.Object_Notification.getNotification
+abbrev getObject := @Sel4Lean.Spec.M.Object_Notification.getObject
+abbrev getThreadState := @Sel4Lean.Spec.M.Object_Notification.getThreadState
+abbrev ksReadyQueues_asrt := @Sel4Lean.Spec.M.Object_Notification.ksReadyQueues_asrt
+abbrev possibleSwitchTo := @Sel4Lean.Spec.M.Object_Notification.possibleSwitchTo
+abbrev rescheduleRequired := @Sel4Lean.Spec.M.Object_Notification.rescheduleRequired
+abbrev setObject := @Sel4Lean.Spec.M.Object_Notification.setObject
+abbrev setRegister := @Sel4Lean.Spec.M.Object_Notification.setRegister
+abbrev setThreadState := @Sel4Lean.Spec.M.Object_Notification.setThreadState
+abbrev tcbSchedEnqueue := @Sel4Lean.Spec.M.Object_Notification.tcbSchedEnqueue
+abbrev isReceive := @Sel4Lean.Spec.M.Object_Structures.isReceive
+abbrev isReplyCap := @Sel4Lean.Spec.M.Object_Structures.isReplyCap
+abbrev isSend := @Sel4Lean.Spec.M.Object_Structures.isSend
+abbrev nullPointer := @Sel4Lean.Spec.M.Object_Structures.nullPointer
 
 /-! ## Stubs (from Haskell signatures) -/
 

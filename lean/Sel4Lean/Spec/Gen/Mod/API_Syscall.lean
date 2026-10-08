@@ -4,124 +4,69 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
+import Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler
+import Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Object_CNode
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+import Sel4Lean.Spec.Gen.Mod.Kernel_CSpace
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.Object_ObjectType
+import Sel4Lean.Spec.Gen.Mod.API_Failures
+import Sel4Lean.Spec.Gen.Mod.Model_Syscall
+
+set_option match.ignoreUnusedAlts true
 
 namespace Sel4Lean.Spec.M.API_Syscall
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev msgFromSyscallError := @Sel4Lean.Spec.M.API_Failures.msgFromSyscallError
+abbrev lookupCap := @Sel4Lean.Spec.M.Kernel_CSpace.lookupCap
+abbrev lookupCapAndSlot := @Sel4Lean.Spec.M.Kernel_CSpace.lookupCapAndSlot
+abbrev capFaultOnFailure := @Sel4Lean.Spec.M.Kernel_FaultHandler.capFaultOnFailure
+abbrev handleFault := @Sel4Lean.Spec.M.Kernel_FaultHandler.handleFault
+abbrev handleHypervisorFault := @Sel4Lean.Spec.M.Kernel_Hypervisor.handleHypervisorFault
+abbrev asUser := @Sel4Lean.Spec.M.Kernel_Thread.asUser
+abbrev capRegister := @Sel4Lean.Spec.M.Kernel_Thread.capRegister
+abbrev catchFailure := @Sel4Lean.Spec.M.Kernel_Thread.catchFailure
+abbrev doReplyTransfer := @Sel4Lean.Spec.M.Kernel_Thread.doReplyTransfer
+abbrev getCurThread := @Sel4Lean.Spec.M.Kernel_Thread.getCurThread
+abbrev getMRs := @Sel4Lean.Spec.M.Kernel_Thread.getMRs
+abbrev getMessageInfo := @Sel4Lean.Spec.M.Kernel_Thread.getMessageInfo
+abbrev getRegister := @Sel4Lean.Spec.M.Kernel_Thread.getRegister
+abbrev getSlotCap := @Sel4Lean.Spec.M.Kernel_Thread.getSlotCap
+abbrev getThreadState := @Sel4Lean.Spec.M.Kernel_Thread.getThreadState
+abbrev lookupExtraCaps := @Sel4Lean.Spec.M.Kernel_Thread.lookupExtraCaps
+abbrev lookupIPCBuffer := @Sel4Lean.Spec.M.Kernel_Thread.lookupIPCBuffer
+abbrev mask := @Sel4Lean.Spec.M.Kernel_Thread.mask
+abbrev rescheduleRequired := @Sel4Lean.Spec.M.Kernel_Thread.rescheduleRequired
+abbrev setThreadState := @Sel4Lean.Spec.M.Kernel_Thread.setThreadState
+abbrev tcbSchedAppend := @Sel4Lean.Spec.M.Kernel_Thread.tcbSchedAppend
+abbrev tcbSchedDequeue := @Sel4Lean.Spec.M.Kernel_Thread.tcbSchedDequeue
+abbrev throw := @Sel4Lean.Spec.M.Kernel_Thread.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Kernel_Thread.withoutFailure
+abbrev handleVMFault := @Sel4Lean.Spec.M.Kernel_VSpace.handleVMFault
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.withoutPreemption
+abbrev syscall := @Sel4Lean.Spec.M.Model_Syscall.syscall
+abbrev getThreadCallerSlot := @Sel4Lean.Spec.M.Object_CNode.getThreadCallerSlot
+abbrev getNotification := @Sel4Lean.Spec.M.Object_Endpoint.getNotification
+abbrev receiveIPC := @Sel4Lean.Spec.M.Object_Endpoint.receiveIPC
+abbrev replyFromKernel := @Sel4Lean.Spec.M.Object_Endpoint.replyFromKernel
+abbrev maybeHandleInterrupt := @Sel4Lean.Spec.M.Object_Interrupt.maybeHandleInterrupt
+abbrev receiveSignal := @Sel4Lean.Spec.M.Object_Notification.receiveSignal
+abbrev decodeInvocation := @Sel4Lean.Spec.M.Object_ObjectType.decodeInvocation
+abbrev performInvocation := @Sel4Lean.Spec.M.Object_ObjectType.performInvocation
+abbrev deleteCallerCap := @Sel4Lean.Spec.M.Object_TCB.deleteCallerCap
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Object/TCB.lhs
-opaque asUser {t_a : Type} [Inhabited t_a] : (PPtr TCB) → (UserMonad t_a) → Kernel t_a
-
--- external: SEL4/Model/Failures.lhs
-opaque capFaultOnFailure {t_a : Type} [Inhabited t_a] : CPtr → Bool → (KernelF LookupFailure t_a) → KernelF Fault t_a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque capRegister : Register
-
--- external: SEL4/Model/Failures.lhs
-opaque catchFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → (t_f → Kernel t_a) → Kernel t_a
-
--- external: SEL4/Object/ObjectType.lhs
-opaque decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → Capability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
-
--- external: SEL4/Object/TCB.lhs
-opaque deleteCallerCap : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque doReplyTransfer : (PPtr TCB) → (PPtr TCB) → (PPtr CTE) → Bool → Kernel Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque getCurThread : Kernel (PPtr TCB)
-
--- external: SEL4/Object/TCB.lhs
-opaque getMRs : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo → Kernel (List Word)
-
--- external: SEL4/Object/TCB.lhs
-opaque getMessageInfo : (PPtr TCB) → Kernel MessageInfo
-
--- external: SEL4/Object/Notification.lhs
-opaque getNotification : (PPtr Notification) → Kernel Notification
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque getRegister : Register → UserMonad Word
-
--- external: SEL4/Object/CNode.lhs
-opaque getSlotCap : (PPtr CTE) → Kernel Capability
-
--- external: SEL4/Object/TCB.lhs
-opaque getThreadCallerSlot : (PPtr TCB) → Kernel (PPtr CTE)
-
--- external: SEL4/Kernel/Thread.lhs
-opaque getThreadState : (PPtr TCB) → Kernel ThreadState
-
--- external: SEL4/Kernel/FaultHandler.lhs
-opaque handleFault : (PPtr TCB) → Fault → Kernel Unit
-
--- external: SEL4/Kernel/Hypervisor.lhs
-opaque handleHypervisorFault : (PPtr TCB) → HypFaultType → Kernel Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque handleVMFault : (PPtr TCB) → VMFaultType → KernelF Fault Unit
-
--- external: SEL4/Kernel/CSpace.lhs
-opaque lookupCap : (PPtr TCB) → CPtr → KernelF LookupFailure Capability
-
--- external: SEL4/Kernel/CSpace.lhs
-opaque lookupCapAndSlot : (PPtr TCB) → CPtr → KernelF LookupFailure (Capability × (PPtr CTE))
-
--- external: SEL4/Object/TCB.lhs
-opaque lookupExtraCaps : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo → KernelF Fault (List (Capability × (PPtr CTE)))
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
-
--- external: SEL4/Object/Interrupt.lhs
-opaque maybeHandleInterrupt : Bool → Kernel Unit
-
--- external: SEL4/API/Failures.lhs
-opaque msgFromSyscallError : SyscallError → Word × (List Word)
-
--- external: SEL4/Object/ObjectType.lhs
-opaque performInvocation : Bool → Bool → Invocation → KernelP (List Word)
-
--- external: SEL4/Object/Endpoint.lhs
-opaque receiveIPC : (PPtr TCB) → Capability → Bool → Kernel Unit
-
--- external: SEL4/Object/Notification.lhs
-opaque receiveSignal : (PPtr TCB) → Capability → Bool → Kernel Unit
-
--- external: SEL4/Object/Endpoint.lhs
-opaque replyFromKernel : (PPtr TCB) → (Word × (List Word)) → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque rescheduleRequired : Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque setThreadState : ThreadState → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/Syscall.lhs
-opaque syscall {t_a : Type} {t_c : Type} {t_b : Type} [Inhabited t_a] [Inhabited t_c] [Inhabited t_b] : (KernelF Fault t_a) → (Fault → Kernel t_c) → (t_a → KernelF SyscallError t_b) → (SyscallError → Kernel t_c) → (t_b → KernelP t_c) → KernelP t_c
-
--- external: SEL4/Kernel/Thread.lhs
-opaque tcbSchedAppend : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque tcbSchedDequeue : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   fromIntegral: no signature found

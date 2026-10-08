@@ -854,16 +854,31 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                     stubs[x] = stub
                 else:
                     unresolved[x] = "no translatable signature found" if sig else "no signature found"
-        order, done = [], set()
+        # strongly connected components of the local call graph: mutually recursive functions are emitted
+        # together in a `mutual` block (as partial defs until W4 adds termination proofs)
+        idx_n, low, stk, on, comps, cnt = {}, {}, [], set(), [], [0]
 
-        def visit(n, path=()):
-            if n in done or n in path:
-                return
-            for d in sorted(deps[n]):
-                visit(d, path + (n,))
-            done.add(n); order.append(n)
+        def scc(v):
+            idx_n[v] = low[v] = cnt[0]; cnt[0] += 1
+            stk.append(v); on.add(v)
+            for w in sorted(deps[v]):
+                if w not in idx_n:
+                    scc(w); low[v] = min(low[v], low[w])
+                elif w in on:
+                    low[v] = min(low[v], idx_n[w])
+            if low[v] == idx_n[v]:
+                c = []
+                while True:
+                    w = stk.pop(); on.discard(w); c.append(w)
+                    if w == v:
+                        break
+                comps.append(c)
+        sys.setrecursionlimit(10000)
         for n, _ in decls:
-            visit(n)
+            if n not in idx_n:
+                scc(n)
+        order = [n for c in comps for n in c]
+        mutual_of = {n: tuple(sorted(c)) for c in comps if len(c) > 1 for n in c}
         body = dict(decls)
         def rhs_names(d):
             """Variables used in right-hand sides and where-clauses (not the defining name or patterns)."""
@@ -907,11 +922,13 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                     continue
             try:
                 text = tr.emit_function(n, body[n], sig_override=override)
+                if n in mutual_of:
+                    recursive.add(n)
                 if n in recursive:
                     # TODO(W4): termination proofs (l4v proves them in Isabelle); `partial` hides the body
                     text = text.replace(f"\ndef {tr.ident(n)} ", f"\npartial def {tr.ident(n)} ", 1)
                     stats["partial"] = stats.get("partial", 0) + 1
-                out_defs.append(text)
+                out_defs.append((mutual_of.get(n), text))
                 stats["translated"] += 1
             except (Unsupported, StopIteration, AttributeError) as ex:
                 stats["failed"] += 1
@@ -953,11 +970,19 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
     print("import Sel4Lean.Spec.PSpaceStorable")
     for im in imports:
         print(f"import Sel4Lean.Spec.Gen.Mod.{im}")
+    # Haskell allows overlapping (unreachable) case alternatives; Lean rejects them unless told not to
+    print("\nset_option match.ignoreUnusedAlts true")
     print(f"\nnamespace {namespace}\nopen Sel4Lean.Spec\n"
           "open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)")
-    for ns, names in sorted(opens.items()):
-        print(f"open {ns} ({' '.join(Translator.ident(n) for n in sorted(names))})")
     print("noncomputable section\n")
+    if opens:
+        # imported definitions as local aliases, not `open`: an opened name can clash with Lean's own
+        # (`throw`), while a declaration in this namespace takes precedence; `abbrev` stays transparent
+        print("/-! ## Definitions from imported modules -/\n")
+        for ns, names in sorted(opens.items()):
+            for n in sorted(names):
+                print(f"abbrev {Translator.ident(n)} := @{ns}.{Translator.ident(n)}")
+        print()
     if aliases:
         print("/-! ## RISCV64 definitions from imported modules -/\n")
         for k in sorted(aliases):
@@ -972,8 +997,20 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
             print(f"  {n}: {why}")
         print("-/\n")
     print("/-! ## Translated -/\n")
-    for d in out_defs:
-        print(d); print()
+    i = 0
+    while i < len(out_defs):
+        grp, text = out_defs[i]
+        if grp is None:
+            print(text); print(); i += 1
+            continue
+        block = []
+        while i < len(out_defs) and out_defs[i][0] == grp:
+            block.append(out_defs[i][1]); i += 1
+        print(f"-- mutually recursive: {', '.join(grp)}")
+        print("mutual")
+        for t in block:
+            print(t); print()
+        print("end\n")
     print(f"end\nend {namespace}")
     total = stats["translated"] + stats["failed"]
     print(f"hs2lean imports: {len(imports)} modules, {sum(len(v) for v in opens.values())} names, "
