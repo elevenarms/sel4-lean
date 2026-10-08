@@ -14,7 +14,7 @@ inductive NTFN where
   | WaitingNtfn (ntfnQueue : List (PPtr TCB))
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `ntfnMsgIdentifier` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ntfnMsgIdentifier`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def NTFN.ntfnMsgIdentifier : NTFN → Word
   | .ActiveNtfn v => v
   | _ => default
@@ -24,7 +24,7 @@ def NTFN.set_ntfnMsgIdentifier (x : NTFN) (v : Word) : NTFN :=
   | .ActiveNtfn _ => .ActiveNtfn v
   | x => x
 
-/-- Haskell selector `ntfnQueue` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ntfnQueue`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def NTFN.ntfnQueue : NTFN → List (PPtr TCB)
   | .WaitingNtfn v => v
   | _ => default
@@ -53,7 +53,7 @@ inductive ThreadState where
   | Restart
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `blockingObject` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingObject`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingObject : ThreadState → PPtr Endpoint
   | .BlockedOnReceive v _ => v
   | .BlockedOnSend v _ _ _ _ => v
@@ -65,7 +65,7 @@ def ThreadState.set_blockingObject (x : ThreadState) (v : PPtr Endpoint) : Threa
   | .BlockedOnSend _ a1 a2 a3 a4 => .BlockedOnSend v a1 a2 a3 a4
   | x => x
 
-/-- Haskell selector `blockingIPCCanGrant` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCCanGrant`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCCanGrant : ThreadState → Bool
   | .BlockedOnReceive _ v => v
   | .BlockedOnSend _ _ v _ _ => v
@@ -77,7 +77,7 @@ def ThreadState.set_blockingIPCCanGrant (x : ThreadState) (v : Bool) : ThreadSta
   | .BlockedOnSend a0 a1 _ a3 a4 => .BlockedOnSend a0 a1 v a3 a4
   | x => x
 
-/-- Haskell selector `waitingOnNotification` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `waitingOnNotification`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.waitingOnNotification : ThreadState → PPtr Notification
   | .BlockedOnNotification v => v
   | _ => default
@@ -87,7 +87,7 @@ def ThreadState.set_waitingOnNotification (x : ThreadState) (v : PPtr Notificati
   | .BlockedOnNotification _ => .BlockedOnNotification v
   | x => x
 
-/-- Haskell selector `blockingIPCBadge` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCBadge`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCBadge : ThreadState → Word
   | .BlockedOnSend _ v _ _ _ => v
   | _ => default
@@ -97,7 +97,7 @@ def ThreadState.set_blockingIPCBadge (x : ThreadState) (v : Word) : ThreadState 
   | .BlockedOnSend a0 _ a2 a3 a4 => .BlockedOnSend a0 v a2 a3 a4
   | x => x
 
-/-- Haskell selector `blockingIPCCanGrantReply` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCCanGrantReply`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCCanGrantReply : ThreadState → Bool
   | .BlockedOnSend _ _ _ v _ => v
   | _ => default
@@ -107,7 +107,7 @@ def ThreadState.set_blockingIPCCanGrantReply (x : ThreadState) (v : Bool) : Thre
   | .BlockedOnSend a0 a1 a2 _ a4 => .BlockedOnSend a0 a1 a2 v a4
   | x => x
 
-/-- Haskell selector `blockingIPCIsCall` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCIsCall`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCIsCall : ThreadState → Bool
   | .BlockedOnSend _ _ _ _ v => v
   | _ => default

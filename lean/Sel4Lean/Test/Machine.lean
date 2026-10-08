@@ -24,6 +24,6 @@ example (m : Bool) (irq : RISCV64.IRQ) (ks₀ : KernelState) :
   rintro ks rfl; exact ⟨trivial, fun _ _ hq => ⟨hq, rfl⟩⟩
 
 /-- The IRQ oracle's bound is a theorem (l4v: an axiom). -/
-example (n : Nat) : irqOracle n ≤ MachineOps.maxIRQ := irqOracle_max_irq n
+example (n : Nat) : irq_oracle n ≤ MachineOps.maxIRQ := irq_oracle_max_irq n
 
 end Sel4Lean.Test

@@ -15,12 +15,17 @@ import sys
 
 import difftest
 
-# Isabelle-generated helper constants: not spec definitions
-HELPER = re.compile(r"(_update$|_ext$|\.make$|\.extend$|\.truncate$|\.fields$|\.fields_def|^Abs_|^Rep_|"
-                    r"\.(case|rec|size|pred|rel|set|map|equal|discI|sel)_|\.Abs_|\.Rep_|\.case_|\.rec_|\.size_|"
-                    r"\.pred_|\.rel_|\.set_|\.map_|_class\.|\.dummy_|\.Rep|\.Abs|_rep$|_abs$|\.typedef|"
-                    r"\.term_of_|\.typerep_|\.enum_|\.less_eq_|\.less_|\.equal_|\.default_|\.zero_|\.one_|"
-                    r"\.plus_|\.minus_|\.times_|\.divide_|\.modulo_|\.uminus_|\.ord_|\.linorder_|\.bot_|\.top_)")
+# Isabelle-generated helper constants: not spec definitions. Records (`_update`, `_ext`, `make`, `fields`,
+# tuple isomorphisms), datatypes/BNF (`case_`, `rec_`, `ctor_`, `dtor_`, `mor_`, `alg_`, `wit_`, `is_C`
+# discriminators), Quickcheck/Narrowing (`random_`, `full_exhaustive_`, `partial_term_of_`, `narrowing_`,
+# `_trans`), type-class instance internals, and code-generator support.
+HELPER = re.compile(r"(_update$|_ext$|\.make$|\.extend$|\.truncate$|\.fields$|_Tuple_Iso$|_inner\d|"
+                    r"(^|\.)(Abs_|Rep_|case_|rec_|size_|pred_|rel_|set_|map_|ctor_|dtor_|mor_|min_alg_|alg_|"
+                    r"str_init_|wit_|random_|full_exhaustive_|partial_term_of_|narrowing_|term_of_|typerep_|"
+                    r"enum_|equal_|less_eq_|less_|default_|zero_|one_|plus_|minus_|times_|divide_|modulo_|"
+                    r"uminus_|bot_|top_|un_|is_[A-Z]|discI|sel_|dummy_)|_trans$|_inst\.|_class\.|\.typedef|"
+                    # function package (termination) and record extension slots
+                    r"_graph$|_sumC$|_rel$|_dom$|\.more$|\.class\.|_axioms$)")
 
 
 def base(name):

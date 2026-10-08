@@ -87,11 +87,11 @@ inductive PTE where
   | PageTablePTE (ptePPN : PAddr) (pteGlobal : Bool)
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `ptePPN` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptePPN`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PTE.ptePPN : PTE → PAddr
   | .PagePTE v _ _ _ _ => v
   | .PageTablePTE v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptePPN = v }` (no-op on other constructors). -/
 def PTE.set_ptePPN (x : PTE) (v : PAddr) : PTE :=
   match x with
@@ -99,11 +99,11 @@ def PTE.set_ptePPN (x : PTE) (v : PAddr) : PTE :=
   | .PageTablePTE _ a1 => .PageTablePTE v a1
   | x => x
 
-/-- Haskell selector `pteGlobal` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pteGlobal`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PTE.pteGlobal : PTE → Bool
   | .PagePTE _ v _ _ _ => v
   | .PageTablePTE _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pteGlobal = v }` (no-op on other constructors). -/
 def PTE.set_pteGlobal (x : PTE) (v : Bool) : PTE :=
   match x with
@@ -111,35 +111,50 @@ def PTE.set_pteGlobal (x : PTE) (v : Bool) : PTE :=
   | .PageTablePTE a0 _ => .PageTablePTE a0 v
   | x => x
 
-/-- Haskell selector `pteUser` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pteUser`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PTE.pteUser : PTE → Bool
   | .PagePTE _ _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pteUser = v }` (no-op on other constructors). -/
 def PTE.set_pteUser (x : PTE) (v : Bool) : PTE :=
   match x with
   | .PagePTE a0 a1 _ a3 a4 => .PagePTE a0 a1 v a3 a4
   | x => x
 
-/-- Haskell selector `pteExecute` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pteExecute`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PTE.pteExecute : PTE → Bool
   | .PagePTE _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pteExecute = v }` (no-op on other constructors). -/
 def PTE.set_pteExecute (x : PTE) (v : Bool) : PTE :=
   match x with
   | .PagePTE a0 a1 a2 _ a4 => .PagePTE a0 a1 a2 v a4
   | x => x
 
-/-- Haskell selector `pteRights` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pteRights`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PTE.pteRights : PTE → VMRights
   | .PagePTE _ _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pteRights = v }` (no-op on other constructors). -/
 def PTE.set_pteRights (x : PTE) (v : VMRights) : PTE :=
   match x with
   | .PagePTE a0 a1 a2 a3 _ => .PagePTE a0 a1 a2 a3 v
   | x => x
+
+/-- l4v-generated discriminator `isInvalidPTE` -/
+def isInvalidPTE : _root_.Sel4Lean.Spec.PTE → Bool
+  | .InvalidPTE .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isPagePTE` -/
+def isPagePTE : _root_.Sel4Lean.Spec.PTE → Bool
+  | .PagePTE .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isPageTablePTE` -/
+def isPageTablePTE : _root_.Sel4Lean.Spec.PTE → Bool
+  | .PageTablePTE .. => true
+  | _ => false
 
 -- from SEL4/Object/Structures/RISCV64.hs
 /-- Haskell `newtype ASIDPool = ASIDPool …` -/
@@ -195,95 +210,115 @@ inductive ArchCapability where
   | PageTableCap (capPTBasePtr : PPtr PTE) (capPTMappedAddress : Option (ASID × VPtr))
   deriving Inhabited
 
-/-- Haskell selector `capASIDPool` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capASIDPool`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capASIDPool : ArchCapability → PPtr ASIDPool
   | .ASIDPoolCap v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capASIDPool = v }` (no-op on other constructors). -/
 def ArchCapability.set_capASIDPool (x : ArchCapability) (v : PPtr ASIDPool) : ArchCapability :=
   match x with
   | .ASIDPoolCap _ a1 => .ASIDPoolCap v a1
   | x => x
 
-/-- Haskell selector `capASIDBase` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capASIDBase`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capASIDBase : ArchCapability → ASID
   | .ASIDPoolCap _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capASIDBase = v }` (no-op on other constructors). -/
 def ArchCapability.set_capASIDBase (x : ArchCapability) (v : ASID) : ArchCapability :=
   match x with
   | .ASIDPoolCap a0 _ => .ASIDPoolCap a0 v
   | x => x
 
-/-- Haskell selector `capFBasePtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFBasePtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capFBasePtr : ArchCapability → PPtr Word
   | .FrameCap v _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFBasePtr = v }` (no-op on other constructors). -/
 def ArchCapability.set_capFBasePtr (x : ArchCapability) (v : PPtr Word) : ArchCapability :=
   match x with
   | .FrameCap _ a1 a2 a3 a4 => .FrameCap v a1 a2 a3 a4
   | x => x
 
-/-- Haskell selector `capFVMRights` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFVMRights`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capFVMRights : ArchCapability → VMRights
   | .FrameCap _ v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFVMRights = v }` (no-op on other constructors). -/
 def ArchCapability.set_capFVMRights (x : ArchCapability) (v : VMRights) : ArchCapability :=
   match x with
   | .FrameCap a0 _ a2 a3 a4 => .FrameCap a0 v a2 a3 a4
   | x => x
 
-/-- Haskell selector `capFSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFSize`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capFSize : ArchCapability → VMPageSize
   | .FrameCap _ _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFSize = v }` (no-op on other constructors). -/
 def ArchCapability.set_capFSize (x : ArchCapability) (v : VMPageSize) : ArchCapability :=
   match x with
   | .FrameCap a0 a1 _ a3 a4 => .FrameCap a0 a1 v a3 a4
   | x => x
 
-/-- Haskell selector `capFIsDevice` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFIsDevice`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capFIsDevice : ArchCapability → Bool
   | .FrameCap _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFIsDevice = v }` (no-op on other constructors). -/
 def ArchCapability.set_capFIsDevice (x : ArchCapability) (v : Bool) : ArchCapability :=
   match x with
   | .FrameCap a0 a1 a2 _ a4 => .FrameCap a0 a1 a2 v a4
   | x => x
 
-/-- Haskell selector `capFMappedAddress` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFMappedAddress`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capFMappedAddress : ArchCapability → Option (ASID × VPtr)
   | .FrameCap _ _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFMappedAddress = v }` (no-op on other constructors). -/
 def ArchCapability.set_capFMappedAddress (x : ArchCapability) (v : Option (ASID × VPtr)) : ArchCapability :=
   match x with
   | .FrameCap a0 a1 a2 a3 _ => .FrameCap a0 a1 a2 a3 v
   | x => x
 
-/-- Haskell selector `capPTBasePtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capPTBasePtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capPTBasePtr : ArchCapability → PPtr PTE
   | .PageTableCap v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capPTBasePtr = v }` (no-op on other constructors). -/
 def ArchCapability.set_capPTBasePtr (x : ArchCapability) (v : PPtr PTE) : ArchCapability :=
   match x with
   | .PageTableCap _ a1 => .PageTableCap v a1
   | x => x
 
-/-- Haskell selector `capPTMappedAddress` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capPTMappedAddress`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ArchCapability.capPTMappedAddress : ArchCapability → Option (ASID × VPtr)
   | .PageTableCap _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capPTMappedAddress = v }` (no-op on other constructors). -/
 def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID × VPtr)) : ArchCapability :=
   match x with
   | .PageTableCap a0 _ => .PageTableCap a0 v
   | x => x
+
+/-- l4v-generated discriminator `isASIDControlCap` -/
+def isASIDControlCap : _root_.Sel4Lean.Spec.ArchCapability → Bool
+  | .ASIDControlCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isASIDPoolCap` -/
+def isASIDPoolCap : _root_.Sel4Lean.Spec.ArchCapability → Bool
+  | .ASIDPoolCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isFrameCap` -/
+def isFrameCap : _root_.Sel4Lean.Spec.ArchCapability → Bool
+  | .FrameCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isPageTableCap` -/
+def isPageTableCap : _root_.Sel4Lean.Spec.ArchCapability → Bool
+  | .PageTableCap .. => true
+  | _ => false
 noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
 
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
@@ -309,18 +344,6 @@ instance : IntegralH IRQ := ⟨fun a => IntegralH.toInt a.theIRQ, fun i => ⟨In
 
 
 -- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
-
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
-
--- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
-
--- from SEL4/API/Types.lhs
 /-- Haskell `newtype CPtr = CPtr …` -/
 structure CPtr where
   CPtr ::
@@ -343,6 +366,14 @@ instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
 instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 
 
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
+
 -- from SEL4/API/Failures/RISCV64.hs
 /-- Haskell `data ArchFault = VMFault { … }` -/
 structure ArchFault where
@@ -360,65 +391,85 @@ inductive LookupFailure where
   | GuardMismatch (guardMismatchBitsLeft : Nat) (guardMismatchGuardFound : Word) (guardMismatchGuardSize : Nat)
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `missingCapBitsLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `missingCapBitsLeft`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def LookupFailure.missingCapBitsLeft : LookupFailure → Nat
   | .MissingCapability v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { missingCapBitsLeft = v }` (no-op on other constructors). -/
 def LookupFailure.set_missingCapBitsLeft (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .MissingCapability _ => .MissingCapability v
   | x => x
 
-/-- Haskell selector `depthMismatchBitsLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `depthMismatchBitsLeft`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def LookupFailure.depthMismatchBitsLeft : LookupFailure → Nat
   | .DepthMismatch v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { depthMismatchBitsLeft = v }` (no-op on other constructors). -/
 def LookupFailure.set_depthMismatchBitsLeft (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .DepthMismatch _ a1 => .DepthMismatch v a1
   | x => x
 
-/-- Haskell selector `depthMismatchBitsFound` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `depthMismatchBitsFound`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def LookupFailure.depthMismatchBitsFound : LookupFailure → Nat
   | .DepthMismatch _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { depthMismatchBitsFound = v }` (no-op on other constructors). -/
 def LookupFailure.set_depthMismatchBitsFound (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .DepthMismatch a0 _ => .DepthMismatch a0 v
   | x => x
 
-/-- Haskell selector `guardMismatchBitsLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `guardMismatchBitsLeft`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def LookupFailure.guardMismatchBitsLeft : LookupFailure → Nat
   | .GuardMismatch v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { guardMismatchBitsLeft = v }` (no-op on other constructors). -/
 def LookupFailure.set_guardMismatchBitsLeft (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .GuardMismatch _ a1 a2 => .GuardMismatch v a1 a2
   | x => x
 
-/-- Haskell selector `guardMismatchGuardFound` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `guardMismatchGuardFound`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def LookupFailure.guardMismatchGuardFound : LookupFailure → Word
   | .GuardMismatch _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { guardMismatchGuardFound = v }` (no-op on other constructors). -/
 def LookupFailure.set_guardMismatchGuardFound (x : LookupFailure) (v : Word) : LookupFailure :=
   match x with
   | .GuardMismatch a0 _ a2 => .GuardMismatch a0 v a2
   | x => x
 
-/-- Haskell selector `guardMismatchGuardSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `guardMismatchGuardSize`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def LookupFailure.guardMismatchGuardSize : LookupFailure → Nat
   | .GuardMismatch _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { guardMismatchGuardSize = v }` (no-op on other constructors). -/
 def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
+
+/-- l4v-generated discriminator `isMissingCapability` -/
+def isMissingCapability : _root_.Sel4Lean.Spec.LookupFailure → Bool
+  | .MissingCapability .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isDepthMismatch` -/
+def isDepthMismatch : _root_.Sel4Lean.Spec.LookupFailure → Bool
+  | .DepthMismatch .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isInvalidRoot` -/
+def isInvalidRoot : _root_.Sel4Lean.Spec.LookupFailure → Bool
+  | .InvalidRoot .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isGuardMismatch` -/
+def isGuardMismatch : _root_.Sel4Lean.Spec.LookupFailure → Bool
+  | .GuardMismatch .. => true
+  | _ => false
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -429,75 +480,103 @@ inductive Fault where
   | ArchFault (archFault : Sel4Lean.Spec.ArchFault)
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `userExceptionNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `userExceptionNumber`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.userExceptionNumber : Fault → Word
   | .UserException v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { userExceptionNumber = v }` (no-op on other constructors). -/
 def Fault.set_userExceptionNumber (x : Fault) (v : Word) : Fault :=
   match x with
   | .UserException _ a1 => .UserException v a1
   | x => x
 
-/-- Haskell selector `userExceptionErrorCode` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `userExceptionErrorCode`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.userExceptionErrorCode : Fault → Word
   | .UserException _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { userExceptionErrorCode = v }` (no-op on other constructors). -/
 def Fault.set_userExceptionErrorCode (x : Fault) (v : Word) : Fault :=
   match x with
   | .UserException a0 _ => .UserException a0 v
   | x => x
 
-/-- Haskell selector `capFaultAddress` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFaultAddress`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.capFaultAddress : Fault → CPtr
   | .CapFault v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFaultAddress = v }` (no-op on other constructors). -/
 def Fault.set_capFaultAddress (x : Fault) (v : CPtr) : Fault :=
   match x with
   | .CapFault _ a1 a2 => .CapFault v a1 a2
   | x => x
 
-/-- Haskell selector `capFaultInReceivePhase` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFaultInReceivePhase`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.capFaultInReceivePhase : Fault → Bool
   | .CapFault _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFaultInReceivePhase = v }` (no-op on other constructors). -/
 def Fault.set_capFaultInReceivePhase (x : Fault) (v : Bool) : Fault :=
   match x with
   | .CapFault a0 _ a2 => .CapFault a0 v a2
   | x => x
 
-/-- Haskell selector `capFaultFailure` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFaultFailure`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.capFaultFailure : Fault → LookupFailure
   | .CapFault _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFaultFailure = v }` (no-op on other constructors). -/
 def Fault.set_capFaultFailure (x : Fault) (v : LookupFailure) : Fault :=
   match x with
   | .CapFault a0 a1 _ => .CapFault a0 a1 v
   | x => x
 
-/-- Haskell selector `unknownSyscallNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `unknownSyscallNumber`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.unknownSyscallNumber : Fault → Word
   | .UnknownSyscallException v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { unknownSyscallNumber = v }` (no-op on other constructors). -/
 def Fault.set_unknownSyscallNumber (x : Fault) (v : Word) : Fault :=
   match x with
   | .UnknownSyscallException _ => .UnknownSyscallException v
   | x => x
 
-/-- Haskell selector `archFault` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `archFault`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Fault.archFault : Fault → Sel4Lean.Spec.ArchFault
   | .ArchFault v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { archFault = v }` (no-op on other constructors). -/
 def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   match x with
   | .ArchFault _ => .ArchFault v
   | x => x
+
+/-- l4v-generated discriminator `isUserException` -/
+def isUserException : _root_.Sel4Lean.Spec.Fault → Bool
+  | .UserException .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isCapFault` -/
+def isCapFault : _root_.Sel4Lean.Spec.Fault → Bool
+  | .CapFault .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isUnknownSyscallException` -/
+def isUnknownSyscallException : _root_.Sel4Lean.Spec.Fault → Bool
+  | .UnknownSyscallException .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isArchFault` -/
+def isArchFault : _root_.Sel4Lean.Spec.Fault → Bool
+  | .ArchFault .. => true
+  | _ => false
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Haskell `type RISCV64.Word` -/
+abbrev RISCV64.Word := BitVec 64
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data RISCV64.Register` -/
@@ -545,10 +624,6 @@ instance : IntegralH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨RISCV64.Registe
 instance : BoundedH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨.LR, .NextIP⟩
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `type RISCV64.Word` -/
-abbrev RISCV64.Word := BitVec 64
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data UserContext = UC { … }` -/
 structure UserContext where
   UC ::
@@ -573,15 +648,25 @@ inductive ZombieType where
   | ZombieCNode (zombieCTEBits : Nat)
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `zombieCTEBits`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ZombieType.zombieCTEBits : ZombieType → Nat
   | .ZombieCNode v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
 def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
   match x with
   | .ZombieCNode _ => .ZombieCNode v
   | x => x
+
+/-- l4v-generated discriminator `isZombieTCB` -/
+def isZombieTCB : _root_.Sel4Lean.Spec.ZombieType → Bool
+  | .ZombieTCB .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isZombieCNode` -/
+def isZombieCNode : _root_.Sel4Lean.Spec.ZombieType → Bool
+  | .ZombieCNode .. => true
+  | _ => false
 
 -- pointer cycle: MDBNode, CTE, NTFN, Notification, ThreadState, TCB, Endpoint, Capability
 mutual
@@ -685,31 +770,46 @@ noncomputable instance : DecidableEq TCB := Classical.typeDecidableEq TCB
 noncomputable instance : DecidableEq Endpoint := Classical.typeDecidableEq Endpoint
 noncomputable instance : DecidableEq Capability := Classical.typeDecidableEq Capability
 
-/-- Haskell selector `ntfnMsgIdentifier` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ntfnMsgIdentifier`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def NTFN.ntfnMsgIdentifier : NTFN → Word
   | .ActiveNtfn v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ntfnMsgIdentifier = v }` (no-op on other constructors). -/
 def NTFN.set_ntfnMsgIdentifier (x : NTFN) (v : Word) : NTFN :=
   match x with
   | .ActiveNtfn _ => .ActiveNtfn v
   | x => x
 
-/-- Haskell selector `ntfnQueue` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ntfnQueue`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def NTFN.ntfnQueue : NTFN → List (PPtr TCB)
   | .WaitingNtfn v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ntfnQueue = v }` (no-op on other constructors). -/
 def NTFN.set_ntfnQueue (x : NTFN) (v : List (PPtr TCB)) : NTFN :=
   match x with
   | .WaitingNtfn _ => .WaitingNtfn v
   | x => x
 
-/-- Haskell selector `blockingObject` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- l4v-generated discriminator `isIdleNtfn` -/
+def isIdleNtfn : _root_.Sel4Lean.Spec.NTFN → Bool
+  | .IdleNtfn .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isActiveNtfn` -/
+def isActiveNtfn : _root_.Sel4Lean.Spec.NTFN → Bool
+  | .ActiveNtfn .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isWaitingNtfn` -/
+def isWaitingNtfn : _root_.Sel4Lean.Spec.NTFN → Bool
+  | .WaitingNtfn .. => true
+  | _ => false
+
+/-- Haskell selector `blockingObject`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingObject : ThreadState → PPtr Endpoint
   | .BlockedOnReceive v _ => v
   | .BlockedOnSend v _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { blockingObject = v }` (no-op on other constructors). -/
 def ThreadState.set_blockingObject (x : ThreadState) (v : PPtr Endpoint) : ThreadState :=
   match x with
@@ -717,11 +817,11 @@ def ThreadState.set_blockingObject (x : ThreadState) (v : PPtr Endpoint) : Threa
   | .BlockedOnSend _ a1 a2 a3 a4 => .BlockedOnSend v a1 a2 a3 a4
   | x => x
 
-/-- Haskell selector `blockingIPCCanGrant` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCCanGrant`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCCanGrant : ThreadState → Bool
   | .BlockedOnReceive _ v => v
   | .BlockedOnSend _ _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { blockingIPCCanGrant = v }` (no-op on other constructors). -/
 def ThreadState.set_blockingIPCCanGrant (x : ThreadState) (v : Bool) : ThreadState :=
   match x with
@@ -729,51 +829,91 @@ def ThreadState.set_blockingIPCCanGrant (x : ThreadState) (v : Bool) : ThreadSta
   | .BlockedOnSend a0 a1 _ a3 a4 => .BlockedOnSend a0 a1 v a3 a4
   | x => x
 
-/-- Haskell selector `waitingOnNotification` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `waitingOnNotification`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.waitingOnNotification : ThreadState → PPtr Notification
   | .BlockedOnNotification v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { waitingOnNotification = v }` (no-op on other constructors). -/
 def ThreadState.set_waitingOnNotification (x : ThreadState) (v : PPtr Notification) : ThreadState :=
   match x with
   | .BlockedOnNotification _ => .BlockedOnNotification v
   | x => x
 
-/-- Haskell selector `blockingIPCBadge` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCBadge`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCBadge : ThreadState → Word
   | .BlockedOnSend _ v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { blockingIPCBadge = v }` (no-op on other constructors). -/
 def ThreadState.set_blockingIPCBadge (x : ThreadState) (v : Word) : ThreadState :=
   match x with
   | .BlockedOnSend a0 _ a2 a3 a4 => .BlockedOnSend a0 v a2 a3 a4
   | x => x
 
-/-- Haskell selector `blockingIPCCanGrantReply` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCCanGrantReply`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCCanGrantReply : ThreadState → Bool
   | .BlockedOnSend _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { blockingIPCCanGrantReply = v }` (no-op on other constructors). -/
 def ThreadState.set_blockingIPCCanGrantReply (x : ThreadState) (v : Bool) : ThreadState :=
   match x with
   | .BlockedOnSend a0 a1 a2 _ a4 => .BlockedOnSend a0 a1 a2 v a4
   | x => x
 
-/-- Haskell selector `blockingIPCIsCall` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `blockingIPCIsCall`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def ThreadState.blockingIPCIsCall : ThreadState → Bool
   | .BlockedOnSend _ _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { blockingIPCIsCall = v }` (no-op on other constructors). -/
 def ThreadState.set_blockingIPCIsCall (x : ThreadState) (v : Bool) : ThreadState :=
   match x with
   | .BlockedOnSend a0 a1 a2 a3 _ => .BlockedOnSend a0 a1 a2 a3 v
   | x => x
 
-/-- Haskell selector `epQueue` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- l4v-generated discriminator `isBlockedOnReceive` -/
+def isBlockedOnReceive : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .BlockedOnReceive .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isBlockedOnReply` -/
+def isBlockedOnReply : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .BlockedOnReply .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isBlockedOnNotification` -/
+def isBlockedOnNotification : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .BlockedOnNotification .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isRunning` -/
+def isRunning : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .Running .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isInactive` -/
+def isInactive : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .Inactive .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isIdleThreadState` -/
+def isIdleThreadState : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .IdleThreadState .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isBlockedOnSend` -/
+def isBlockedOnSend : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .BlockedOnSend .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isRestart` -/
+def isRestart : _root_.Sel4Lean.Spec.ThreadState → Bool
+  | .Restart .. => true
+  | _ => false
+
+/-- Haskell selector `epQueue`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Endpoint.epQueue : Endpoint → List (PPtr TCB)
   | .RecvEP v => v
   | .SendEP v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { epQueue = v }` (no-op on other constructors). -/
 def Endpoint.set_epQueue (x : Endpoint) (v : List (PPtr TCB)) : Endpoint :=
   match x with
@@ -781,11 +921,26 @@ def Endpoint.set_epQueue (x : Endpoint) (v : List (PPtr TCB)) : Endpoint :=
   | .SendEP _ => .SendEP v
   | x => x
 
-/-- Haskell selector `capTCBPtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- l4v-generated discriminator `isRecvEP` -/
+def isRecvEP : _root_.Sel4Lean.Spec.Endpoint → Bool
+  | .RecvEP .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isIdleEP` -/
+def isIdleEP : _root_.Sel4Lean.Spec.Endpoint → Bool
+  | .IdleEP .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isSendEP` -/
+def isSendEP : _root_.Sel4Lean.Spec.Endpoint → Bool
+  | .SendEP .. => true
+  | _ => false
+
+/-- Haskell selector `capTCBPtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capTCBPtr : Capability → PPtr TCB
   | .ThreadCap v => v
   | .ReplyCap v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capTCBPtr = v }` (no-op on other constructors). -/
 def Capability.set_capTCBPtr (x : Capability) (v : PPtr TCB) : Capability :=
   match x with
@@ -793,255 +948,315 @@ def Capability.set_capTCBPtr (x : Capability) (v : PPtr TCB) : Capability :=
   | .ReplyCap _ a1 a2 => .ReplyCap v a1 a2
   | x => x
 
-/-- Haskell selector `capNtfnPtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capNtfnPtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capNtfnPtr : Capability → PPtr Notification
   | .NotificationCap v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capNtfnPtr = v }` (no-op on other constructors). -/
 def Capability.set_capNtfnPtr (x : Capability) (v : PPtr Notification) : Capability :=
   match x with
   | .NotificationCap _ a1 a2 a3 => .NotificationCap v a1 a2 a3
   | x => x
 
-/-- Haskell selector `capNtfnBadge` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capNtfnBadge`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capNtfnBadge : Capability → Word
   | .NotificationCap _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capNtfnBadge = v }` (no-op on other constructors). -/
 def Capability.set_capNtfnBadge (x : Capability) (v : Word) : Capability :=
   match x with
   | .NotificationCap a0 _ a2 a3 => .NotificationCap a0 v a2 a3
   | x => x
 
-/-- Haskell selector `capNtfnCanSend` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capNtfnCanSend`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capNtfnCanSend : Capability → Bool
   | .NotificationCap _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capNtfnCanSend = v }` (no-op on other constructors). -/
 def Capability.set_capNtfnCanSend (x : Capability) (v : Bool) : Capability :=
   match x with
   | .NotificationCap a0 a1 _ a3 => .NotificationCap a0 a1 v a3
   | x => x
 
-/-- Haskell selector `capNtfnCanReceive` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capNtfnCanReceive`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capNtfnCanReceive : Capability → Bool
   | .NotificationCap _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capNtfnCanReceive = v }` (no-op on other constructors). -/
 def Capability.set_capNtfnCanReceive (x : Capability) (v : Bool) : Capability :=
   match x with
   | .NotificationCap a0 a1 a2 _ => .NotificationCap a0 a1 a2 v
   | x => x
 
-/-- Haskell selector `capIRQ` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capIRQ`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capIRQ : Capability → IRQ
   | .IRQHandlerCap v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capIRQ = v }` (no-op on other constructors). -/
 def Capability.set_capIRQ (x : Capability) (v : IRQ) : Capability :=
   match x with
   | .IRQHandlerCap _ => .IRQHandlerCap v
   | x => x
 
-/-- Haskell selector `capEPPtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capEPPtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capEPPtr : Capability → PPtr Endpoint
   | .EndpointCap v _ _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capEPPtr = v }` (no-op on other constructors). -/
 def Capability.set_capEPPtr (x : Capability) (v : PPtr Endpoint) : Capability :=
   match x with
   | .EndpointCap _ a1 a2 a3 a4 a5 => .EndpointCap v a1 a2 a3 a4 a5
   | x => x
 
-/-- Haskell selector `capEPBadge` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capEPBadge`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capEPBadge : Capability → Word
   | .EndpointCap _ v _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capEPBadge = v }` (no-op on other constructors). -/
 def Capability.set_capEPBadge (x : Capability) (v : Word) : Capability :=
   match x with
   | .EndpointCap a0 _ a2 a3 a4 a5 => .EndpointCap a0 v a2 a3 a4 a5
   | x => x
 
-/-- Haskell selector `capEPCanSend` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capEPCanSend`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capEPCanSend : Capability → Bool
   | .EndpointCap _ _ v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capEPCanSend = v }` (no-op on other constructors). -/
 def Capability.set_capEPCanSend (x : Capability) (v : Bool) : Capability :=
   match x with
   | .EndpointCap a0 a1 _ a3 a4 a5 => .EndpointCap a0 a1 v a3 a4 a5
   | x => x
 
-/-- Haskell selector `capEPCanReceive` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capEPCanReceive`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capEPCanReceive : Capability → Bool
   | .EndpointCap _ _ _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capEPCanReceive = v }` (no-op on other constructors). -/
 def Capability.set_capEPCanReceive (x : Capability) (v : Bool) : Capability :=
   match x with
   | .EndpointCap a0 a1 a2 _ a4 a5 => .EndpointCap a0 a1 a2 v a4 a5
   | x => x
 
-/-- Haskell selector `capEPCanGrant` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capEPCanGrant`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capEPCanGrant : Capability → Bool
   | .EndpointCap _ _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capEPCanGrant = v }` (no-op on other constructors). -/
 def Capability.set_capEPCanGrant (x : Capability) (v : Bool) : Capability :=
   match x with
   | .EndpointCap a0 a1 a2 a3 _ a5 => .EndpointCap a0 a1 a2 a3 v a5
   | x => x
 
-/-- Haskell selector `capEPCanGrantReply` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capEPCanGrantReply`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capEPCanGrantReply : Capability → Bool
   | .EndpointCap _ _ _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capEPCanGrantReply = v }` (no-op on other constructors). -/
 def Capability.set_capEPCanGrantReply (x : Capability) (v : Bool) : Capability :=
   match x with
   | .EndpointCap a0 a1 a2 a3 a4 _ => .EndpointCap a0 a1 a2 a3 a4 v
   | x => x
 
-/-- Haskell selector `capZombiePtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capZombiePtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capZombiePtr : Capability → PPtr CTE
   | .Zombie v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capZombiePtr = v }` (no-op on other constructors). -/
 def Capability.set_capZombiePtr (x : Capability) (v : PPtr CTE) : Capability :=
   match x with
   | .Zombie _ a1 a2 => .Zombie v a1 a2
   | x => x
 
-/-- Haskell selector `capZombieType` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capZombieType`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capZombieType : Capability → ZombieType
   | .Zombie _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capZombieType = v }` (no-op on other constructors). -/
 def Capability.set_capZombieType (x : Capability) (v : ZombieType) : Capability :=
   match x with
   | .Zombie a0 _ a2 => .Zombie a0 v a2
   | x => x
 
-/-- Haskell selector `capZombieNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capZombieNumber`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capZombieNumber : Capability → Nat
   | .Zombie _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capZombieNumber = v }` (no-op on other constructors). -/
 def Capability.set_capZombieNumber (x : Capability) (v : Nat) : Capability :=
   match x with
   | .Zombie a0 a1 _ => .Zombie a0 a1 v
   | x => x
 
-/-- Haskell selector `capCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capCap : Capability → ArchCapability
   | .ArchObjectCap v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capCap = v }` (no-op on other constructors). -/
 def Capability.set_capCap (x : Capability) (v : ArchCapability) : Capability :=
   match x with
   | .ArchObjectCap _ => .ArchObjectCap v
   | x => x
 
-/-- Haskell selector `capReplyMaster` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capReplyMaster`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capReplyMaster : Capability → Bool
   | .ReplyCap _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capReplyMaster = v }` (no-op on other constructors). -/
 def Capability.set_capReplyMaster (x : Capability) (v : Bool) : Capability :=
   match x with
   | .ReplyCap a0 _ a2 => .ReplyCap a0 v a2
   | x => x
 
-/-- Haskell selector `capReplyCanGrant` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capReplyCanGrant`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capReplyCanGrant : Capability → Bool
   | .ReplyCap _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capReplyCanGrant = v }` (no-op on other constructors). -/
 def Capability.set_capReplyCanGrant (x : Capability) (v : Bool) : Capability :=
   match x with
   | .ReplyCap a0 a1 _ => .ReplyCap a0 a1 v
   | x => x
 
-/-- Haskell selector `capIsDevice` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capIsDevice`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capIsDevice : Capability → Bool
   | .UntypedCap v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capIsDevice = v }` (no-op on other constructors). -/
 def Capability.set_capIsDevice (x : Capability) (v : Bool) : Capability :=
   match x with
   | .UntypedCap _ a1 a2 a3 => .UntypedCap v a1 a2 a3
   | x => x
 
-/-- Haskell selector `capPtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capPtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capPtr : Capability → PPtr Unit
   | .UntypedCap _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capPtr = v }` (no-op on other constructors). -/
 def Capability.set_capPtr (x : Capability) (v : PPtr Unit) : Capability :=
   match x with
   | .UntypedCap a0 _ a2 a3 => .UntypedCap a0 v a2 a3
   | x => x
 
-/-- Haskell selector `capBlockSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capBlockSize`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capBlockSize : Capability → Nat
   | .UntypedCap _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capBlockSize = v }` (no-op on other constructors). -/
 def Capability.set_capBlockSize (x : Capability) (v : Nat) : Capability :=
   match x with
   | .UntypedCap a0 a1 _ a3 => .UntypedCap a0 a1 v a3
   | x => x
 
-/-- Haskell selector `capFreeIndex` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capFreeIndex`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capFreeIndex : Capability → Nat
   | .UntypedCap _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capFreeIndex = v }` (no-op on other constructors). -/
 def Capability.set_capFreeIndex (x : Capability) (v : Nat) : Capability :=
   match x with
   | .UntypedCap a0 a1 a2 _ => .UntypedCap a0 a1 a2 v
   | x => x
 
-/-- Haskell selector `capCNodePtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capCNodePtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capCNodePtr : Capability → PPtr CTE
   | .CNodeCap v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capCNodePtr = v }` (no-op on other constructors). -/
 def Capability.set_capCNodePtr (x : Capability) (v : PPtr CTE) : Capability :=
   match x with
   | .CNodeCap _ a1 a2 a3 => .CNodeCap v a1 a2 a3
   | x => x
 
-/-- Haskell selector `capCNodeBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capCNodeBits`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capCNodeBits : Capability → Nat
   | .CNodeCap _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capCNodeBits = v }` (no-op on other constructors). -/
 def Capability.set_capCNodeBits (x : Capability) (v : Nat) : Capability :=
   match x with
   | .CNodeCap a0 _ a2 a3 => .CNodeCap a0 v a2 a3
   | x => x
 
-/-- Haskell selector `capCNodeGuard` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capCNodeGuard`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capCNodeGuard : Capability → Word
   | .CNodeCap _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capCNodeGuard = v }` (no-op on other constructors). -/
 def Capability.set_capCNodeGuard (x : Capability) (v : Word) : Capability :=
   match x with
   | .CNodeCap a0 a1 _ a3 => .CNodeCap a0 a1 v a3
   | x => x
 
-/-- Haskell selector `capCNodeGuardSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `capCNodeGuardSize`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def Capability.capCNodeGuardSize : Capability → Nat
   | .CNodeCap _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { capCNodeGuardSize = v }` (no-op on other constructors). -/
 def Capability.set_capCNodeGuardSize (x : Capability) (v : Nat) : Capability :=
   match x with
   | .CNodeCap a0 a1 a2 _ => .CNodeCap a0 a1 a2 v
   | x => x
+
+/-- l4v-generated discriminator `isThreadCap` -/
+def isThreadCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .ThreadCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isNullCap` -/
+def isNullCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .NullCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isNotificationCap` -/
+def isNotificationCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .NotificationCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isIRQHandlerCap` -/
+def isIRQHandlerCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .IRQHandlerCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isEndpointCap` -/
+def isEndpointCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .EndpointCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isDomainCap` -/
+def isDomainCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .DomainCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isZombie` -/
+def isZombie : _root_.Sel4Lean.Spec.Capability → Bool
+  | .Zombie .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isArchObjectCap` -/
+def isArchObjectCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .ArchObjectCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isReplyCap` -/
+def isReplyCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .ReplyCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isUntypedCap` -/
+def isUntypedCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .UntypedCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isCNodeCap` -/
+def isCNodeCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .CNodeCap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isIRQControlCap` -/
+def isIRQControlCap : _root_.Sel4Lean.Spec.Capability → Bool
+  | .IRQControlCap .. => true
+  | _ => false
 
 -- from SEL4/Object/Structures/RISCV64.hs
 /-- Haskell `data ArchKernelObject` -/
@@ -1075,15 +1290,30 @@ inductive SchedulerAction where
   | SwitchToThread (schActTarget : PPtr TCB)
   deriving Inhabited
 
-/-- Haskell selector `schActTarget` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `schActTarget`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SchedulerAction.schActTarget : SchedulerAction → PPtr TCB
   | .SwitchToThread v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { schActTarget = v }` (no-op on other constructors). -/
 def SchedulerAction.set_schActTarget (x : SchedulerAction) (v : PPtr TCB) : SchedulerAction :=
   match x with
   | .SwitchToThread _ => .SwitchToThread v
   | x => x
+
+/-- l4v-generated discriminator `isResumeCurrentThread` -/
+def isResumeCurrentThread : _root_.Sel4Lean.Spec.SchedulerAction → Bool
+  | .ResumeCurrentThread .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isChooseNewThread` -/
+def isChooseNewThread : _root_.Sel4Lean.Spec.SchedulerAction → Bool
+  | .ChooseNewThread .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isSwitchToThread` -/
+def isSwitchToThread : _root_.Sel4Lean.Spec.SchedulerAction → Bool
+  | .SwitchToThread .. => true
+  | _ => false
 noncomputable instance : DecidableEq SchedulerAction := Classical.typeDecidableEq SchedulerAction
 
 -- from SEL4/Object/Structures.lhs
@@ -1219,15 +1449,21 @@ structure MachineState where
   device_state : Word → Option (BitVec 8)
   machine_state_rest : MachineStateRest
 
-/-- Isabelle `init_machine_state` (all IRQs masked, memory zero, no devices; the rest `undefined`). -/
-noncomputable def initMachineState : MachineState where
-  irq_masks := fun _ => true
-  irq_state := 0
-  underlying_memory := fun _ => 0
-  device_state := fun _ => none
-  machine_state_rest := default
+/-- Isabelle `init_irq_masks ≡ λ_. True` (all IRQs masked). -/
+def init_irq_masks : RISCV64.IRQ → Bool := fun _ => true
 
-noncomputable instance : Inhabited MachineState := ⟨initMachineState⟩
+/-- Isabelle `init_underlying_memory ≡ λ_. 0`. -/
+def init_underlying_memory : Word → BitVec 8 := fun _ => 0
+
+/-- Isabelle `init_machine_state` (the rest is `undefined`). -/
+noncomputable def init_machine_state : MachineState where
+  irq_masks := init_irq_masks
+  irq_state := 0
+  underlying_memory := init_underlying_memory
+  device_state := fun _ => none
+  machine_state_rest := undefinedH
+
+noncomputable instance : Inhabited MachineState := ⟨init_machine_state⟩
 
 /-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's
 Isabelle `machine_monad = (machine_state, 'a) nondet_monad`. -/
@@ -1256,7 +1492,7 @@ structure KernelState where
   ksWorkUnitsCompleted : Word
   ksArchState : RISCV64.KernelState
   /-- not in the Haskell model: l4v's `ksMachineState` -/
-  ksMachineState : MachineState := initMachineState
+  ksMachineState : MachineState := init_machine_state
   deriving Inhabited
 
 noncomputable instance : DecidableEq KernelState := Classical.typeDecidableEq KernelState
@@ -1276,25 +1512,40 @@ inductive BinaryTree (t_a : Type) where
 instance {t_a : Type} : Inhabited (BinaryTree t_a) := ⟨.Empty⟩
 
 
-/-- Haskell selector `btTrue` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `btTrue`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def BinaryTree.btTrue {t_a : Type} : (BinaryTree t_a) → BinaryTree t_a
   | .Node v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { btTrue = v }` (no-op on other constructors). -/
 def BinaryTree.set_btTrue {t_a : Type} (x : (BinaryTree t_a)) (v : BinaryTree t_a) : (BinaryTree t_a) :=
   match x with
   | .Node _ a1 => .Node v a1
   | x => x
 
-/-- Haskell selector `btFalse` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `btFalse`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def BinaryTree.btFalse {t_a : Type} : (BinaryTree t_a) → BinaryTree t_a
   | .Node _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { btFalse = v }` (no-op on other constructors). -/
 def BinaryTree.set_btFalse {t_a : Type} (x : (BinaryTree t_a)) (v : BinaryTree t_a) : (BinaryTree t_a) :=
   match x with
   | .Node a0 _ => .Node a0 v
   | x => x
+
+/-- l4v-generated discriminator `isNode` -/
+def isNode {t_a : Type} : (_root_.Sel4Lean.Spec.BinaryTree t_a) → Bool
+  | .Node .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isLeaf` -/
+def isLeaf {t_a : Type} : (_root_.Sel4Lean.Spec.BinaryTree t_a) → Bool
+  | .Leaf .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isEmpty` -/
+def isEmpty {t_a : Type} : (_root_.Sel4Lean.Spec.BinaryTree t_a) → Bool
+  | .Empty .. => true
+  | _ => false
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data InitFailure` -/
@@ -1322,75 +1573,125 @@ inductive SyscallError where
   | AlignmentError
   deriving Inhabited, DecidableEq
 
-/-- Haskell selector `invalidArgumentNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `invalidArgumentNumber`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.invalidArgumentNumber : SyscallError → Nat
   | .InvalidArgument v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { invalidArgumentNumber = v }` (no-op on other constructors). -/
 def SyscallError.set_invalidArgumentNumber (x : SyscallError) (v : Nat) : SyscallError :=
   match x with
   | .InvalidArgument _ => .InvalidArgument v
   | x => x
 
-/-- Haskell selector `rangeErrorMin` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `rangeErrorMin`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.rangeErrorMin : SyscallError → Word
   | .RangeError v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { rangeErrorMin = v }` (no-op on other constructors). -/
 def SyscallError.set_rangeErrorMin (x : SyscallError) (v : Word) : SyscallError :=
   match x with
   | .RangeError _ a1 => .RangeError v a1
   | x => x
 
-/-- Haskell selector `rangeErrorMax` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `rangeErrorMax`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.rangeErrorMax : SyscallError → Word
   | .RangeError _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { rangeErrorMax = v }` (no-op on other constructors). -/
 def SyscallError.set_rangeErrorMax (x : SyscallError) (v : Word) : SyscallError :=
   match x with
   | .RangeError a0 _ => .RangeError a0 v
   | x => x
 
-/-- Haskell selector `failedLookupWasSource` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `failedLookupWasSource`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.failedLookupWasSource : SyscallError → Bool
   | .FailedLookup v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { failedLookupWasSource = v }` (no-op on other constructors). -/
 def SyscallError.set_failedLookupWasSource (x : SyscallError) (v : Bool) : SyscallError :=
   match x with
   | .FailedLookup _ a1 => .FailedLookup v a1
   | x => x
 
-/-- Haskell selector `failedLookupDescription` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `failedLookupDescription`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.failedLookupDescription : SyscallError → LookupFailure
   | .FailedLookup _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { failedLookupDescription = v }` (no-op on other constructors). -/
 def SyscallError.set_failedLookupDescription (x : SyscallError) (v : LookupFailure) : SyscallError :=
   match x with
   | .FailedLookup a0 _ => .FailedLookup a0 v
   | x => x
 
-/-- Haskell selector `invalidCapNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `invalidCapNumber`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.invalidCapNumber : SyscallError → Nat
   | .InvalidCapability v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { invalidCapNumber = v }` (no-op on other constructors). -/
 def SyscallError.set_invalidCapNumber (x : SyscallError) (v : Nat) : SyscallError :=
   match x with
   | .InvalidCapability _ => .InvalidCapability v
   | x => x
 
-/-- Haskell selector `memoryLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `memoryLeft`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def SyscallError.memoryLeft : SyscallError → Word
   | .NotEnoughMemory v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { memoryLeft = v }` (no-op on other constructors). -/
 def SyscallError.set_memoryLeft (x : SyscallError) (v : Word) : SyscallError :=
   match x with
   | .NotEnoughMemory _ => .NotEnoughMemory v
   | x => x
+
+/-- l4v-generated discriminator `isIllegalOperation` -/
+def isIllegalOperation : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .IllegalOperation .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isInvalidArgument` -/
+def isInvalidArgument : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .InvalidArgument .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isTruncatedMessage` -/
+def isTruncatedMessage : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .TruncatedMessage .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isDeleteFirst` -/
+def isDeleteFirst : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .DeleteFirst .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isRangeError` -/
+def isRangeError : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .RangeError .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isFailedLookup` -/
+def isFailedLookup : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .FailedLookup .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isInvalidCapability` -/
+def isInvalidCapability : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .InvalidCapability .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isRevokeFirst` -/
+def isRevokeFirst : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .RevokeFirst .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isNotEnoughMemory` -/
+def isNotEnoughMemory : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .NotEnoughMemory .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isAlignmentError` -/
+def isAlignmentError : _root_.Sel4Lean.Spec.SyscallError → Bool
+  | .AlignmentError .. => true
+  | _ => false
 
 -- from SEL4/API/Invocation.lhs
 /-- Haskell `data CNodeInvocation` -/
@@ -1404,22 +1705,22 @@ inductive CNodeInvocation where
   | Delete (targetSlot : PPtr CTE)
   deriving Inhabited
 
-/-- Haskell selector `insertCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `insertCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.insertCap : CNodeInvocation → Capability
   | .Insert v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { insertCap = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_insertCap (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
   match x with
   | .Insert _ a1 a2 => .Insert v a1 a2
   | x => x
 
-/-- Haskell selector `sourceSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `sourceSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.sourceSlot : CNodeInvocation → PPtr CTE
   | .Insert _ v _ => v
   | .Rotate _ _ v _ _ => v
   | .Move _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { sourceSlot = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_sourceSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeInvocation :=
   match x with
@@ -1428,7 +1729,7 @@ def CNodeInvocation.set_sourceSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeI
   | .Move a0 _ a2 => .Move a0 v a2
   | x => x
 
-/-- Haskell selector `targetSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `targetSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.targetSlot : CNodeInvocation → PPtr CTE
   | .Insert _ _ v => v
   | .Rotate _ _ _ _ v => v
@@ -1436,7 +1737,7 @@ def CNodeInvocation.targetSlot : CNodeInvocation → PPtr CTE
   | .Move _ _ v => v
   | .SaveCaller v => v
   | .Delete v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { targetSlot = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_targetSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeInvocation :=
   match x with
@@ -1448,55 +1749,90 @@ def CNodeInvocation.set_targetSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeI
   | .Delete _ => .Delete v
   | x => x
 
-/-- Haskell selector `moveCap1` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `moveCap1`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.moveCap1 : CNodeInvocation → Capability
   | .Rotate v _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { moveCap1 = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_moveCap1 (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
   match x with
   | .Rotate _ a1 a2 a3 a4 => .Rotate v a1 a2 a3 a4
   | x => x
 
-/-- Haskell selector `moveCap2` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `moveCap2`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.moveCap2 : CNodeInvocation → Capability
   | .Rotate _ v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { moveCap2 = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_moveCap2 (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
   match x with
   | .Rotate a0 _ a2 a3 a4 => .Rotate a0 v a2 a3 a4
   | x => x
 
-/-- Haskell selector `pivotSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pivotSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.pivotSlot : CNodeInvocation → PPtr CTE
   | .Rotate _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pivotSlot = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_pivotSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeInvocation :=
   match x with
   | .Rotate a0 a1 a2 _ a4 => .Rotate a0 a1 a2 v a4
   | x => x
 
-/-- Haskell selector `moveCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `moveCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.moveCap : CNodeInvocation → Capability
   | .Move v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { moveCap = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_moveCap (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
   match x with
   | .Move _ a1 a2 => .Move v a1 a2
   | x => x
 
-/-- Haskell selector `epCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `epCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def CNodeInvocation.epCap : CNodeInvocation → Capability
   | .CancelBadgedSends v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { epCap = v }` (no-op on other constructors). -/
 def CNodeInvocation.set_epCap (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
   match x with
   | .CancelBadgedSends _ => .CancelBadgedSends v
   | x => x
+
+/-- l4v-generated discriminator `isInsert` -/
+def isInsert : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .Insert .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isRotate` -/
+def isRotate : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .Rotate .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isRevoke` -/
+def isRevoke : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .Revoke .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isMove` -/
+def isMove : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .Move .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isCancelBadgedSends` -/
+def isCancelBadgedSends : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .CancelBadgedSends .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isSaveCaller` -/
+def isSaveCaller : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .SaveCaller .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isDelete` -/
+def isDelete : _root_.Sel4Lean.Spec.CNodeInvocation → Bool
+  | .Delete .. => true
+  | _ => false
 noncomputable instance : DecidableEq CNodeInvocation := Classical.typeDecidableEq CNodeInvocation
 
 -- from SEL4/API/Invocation.lhs
@@ -1507,21 +1843,21 @@ inductive DomainInvocation where
   | InvokeDomainScheduleConfigure (domIndex : Nat) (domDomain : Domain) (domDuration : DomainDuration)
   deriving Inhabited
 
-/-- Haskell selector `domThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `domThread`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def DomainInvocation.domThread : DomainInvocation → PPtr TCB
   | .InvokeDomainSet v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { domThread = v }` (no-op on other constructors). -/
 def DomainInvocation.set_domThread (x : DomainInvocation) (v : PPtr TCB) : DomainInvocation :=
   match x with
   | .InvokeDomainSet _ a1 => .InvokeDomainSet v a1
   | x => x
 
-/-- Haskell selector `domDomain` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `domDomain`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def DomainInvocation.domDomain : DomainInvocation → Domain
   | .InvokeDomainSet _ v => v
   | .InvokeDomainScheduleConfigure _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { domDomain = v }` (no-op on other constructors). -/
 def DomainInvocation.set_domDomain (x : DomainInvocation) (v : Domain) : DomainInvocation :=
   match x with
@@ -1529,11 +1865,11 @@ def DomainInvocation.set_domDomain (x : DomainInvocation) (v : Domain) : DomainI
   | .InvokeDomainScheduleConfigure a0 _ a2 => .InvokeDomainScheduleConfigure a0 v a2
   | x => x
 
-/-- Haskell selector `domIndex` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `domIndex`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def DomainInvocation.domIndex : DomainInvocation → Nat
   | .InvokeDomainScheduleSetStart v => v
   | .InvokeDomainScheduleConfigure v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { domIndex = v }` (no-op on other constructors). -/
 def DomainInvocation.set_domIndex (x : DomainInvocation) (v : Nat) : DomainInvocation :=
   match x with
@@ -1541,15 +1877,30 @@ def DomainInvocation.set_domIndex (x : DomainInvocation) (v : Nat) : DomainInvoc
   | .InvokeDomainScheduleConfigure _ a1 a2 => .InvokeDomainScheduleConfigure v a1 a2
   | x => x
 
-/-- Haskell selector `domDuration` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `domDuration`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def DomainInvocation.domDuration : DomainInvocation → DomainDuration
   | .InvokeDomainScheduleConfigure _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { domDuration = v }` (no-op on other constructors). -/
 def DomainInvocation.set_domDuration (x : DomainInvocation) (v : DomainDuration) : DomainInvocation :=
   match x with
   | .InvokeDomainScheduleConfigure a0 a1 _ => .InvokeDomainScheduleConfigure a0 a1 v
   | x => x
+
+/-- l4v-generated discriminator `isInvokeDomainSet` -/
+def isInvokeDomainSet : _root_.Sel4Lean.Spec.DomainInvocation → Bool
+  | .InvokeDomainSet .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isInvokeDomainScheduleSetStart` -/
+def isInvokeDomainScheduleSetStart : _root_.Sel4Lean.Spec.DomainInvocation → Bool
+  | .InvokeDomainScheduleSetStart .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isInvokeDomainScheduleConfigure` -/
+def isInvokeDomainScheduleConfigure : _root_.Sel4Lean.Spec.DomainInvocation → Bool
+  | .InvokeDomainScheduleConfigure .. => true
+  | _ => false
 noncomputable instance : DecidableEq DomainInvocation := Classical.typeDecidableEq DomainInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
@@ -1571,45 +1922,55 @@ inductive IRQControlInvocation where
   | IssueIRQHandler (issueHandlerIRQ : IRQ) (issueHandlerSlot : PPtr CTE) (issueHandlerControllerSlot : PPtr CTE)
   deriving Inhabited
 
-/-- Haskell selector `archIRQControl` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `archIRQControl`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQControlInvocation.archIRQControl : IRQControlInvocation → RISCV64.IRQControlInvocation
   | .ArchIRQControl v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { archIRQControl = v }` (no-op on other constructors). -/
 def IRQControlInvocation.set_archIRQControl (x : IRQControlInvocation) (v : RISCV64.IRQControlInvocation) : IRQControlInvocation :=
   match x with
   | .ArchIRQControl _ => .ArchIRQControl v
   | x => x
 
-/-- Haskell selector `issueHandlerIRQ` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `issueHandlerIRQ`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQControlInvocation.issueHandlerIRQ : IRQControlInvocation → IRQ
   | .IssueIRQHandler v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { issueHandlerIRQ = v }` (no-op on other constructors). -/
 def IRQControlInvocation.set_issueHandlerIRQ (x : IRQControlInvocation) (v : IRQ) : IRQControlInvocation :=
   match x with
   | .IssueIRQHandler _ a1 a2 => .IssueIRQHandler v a1 a2
   | x => x
 
-/-- Haskell selector `issueHandlerSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `issueHandlerSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQControlInvocation.issueHandlerSlot : IRQControlInvocation → PPtr CTE
   | .IssueIRQHandler _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { issueHandlerSlot = v }` (no-op on other constructors). -/
 def IRQControlInvocation.set_issueHandlerSlot (x : IRQControlInvocation) (v : PPtr CTE) : IRQControlInvocation :=
   match x with
   | .IssueIRQHandler a0 _ a2 => .IssueIRQHandler a0 v a2
   | x => x
 
-/-- Haskell selector `issueHandlerControllerSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `issueHandlerControllerSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQControlInvocation.issueHandlerControllerSlot : IRQControlInvocation → PPtr CTE
   | .IssueIRQHandler _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { issueHandlerControllerSlot = v }` (no-op on other constructors). -/
 def IRQControlInvocation.set_issueHandlerControllerSlot (x : IRQControlInvocation) (v : PPtr CTE) : IRQControlInvocation :=
   match x with
   | .IssueIRQHandler a0 a1 _ => .IssueIRQHandler a0 a1 v
   | x => x
+
+/-- l4v-generated discriminator `isArchIRQControl` -/
+def isArchIRQControl : _root_.Sel4Lean.Spec.IRQControlInvocation → Bool
+  | .ArchIRQControl .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isIssueIRQHandler` -/
+def isIssueIRQHandler : _root_.Sel4Lean.Spec.IRQControlInvocation → Bool
+  | .IssueIRQHandler .. => true
+  | _ => false
 noncomputable instance : DecidableEq IRQControlInvocation := Classical.typeDecidableEq IRQControlInvocation
 
 -- from SEL4/API/Invocation.lhs
@@ -1620,7 +1981,7 @@ inductive IRQHandlerInvocation where
   | SetIRQHandler (irqHandlerIRQ : IRQ) (setIRQHandlerCap : Capability) (setIRQHandlerSlot : PPtr CTE)
   deriving Inhabited
 
-/-- Haskell selector `irqHandlerIRQ` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `irqHandlerIRQ`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQHandlerInvocation.irqHandlerIRQ : IRQHandlerInvocation → IRQ
   | .AckIRQ v => v
   | .ClearIRQHandler v => v
@@ -1632,25 +1993,40 @@ def IRQHandlerInvocation.set_irqHandlerIRQ (x : IRQHandlerInvocation) (v : IRQ) 
   | .ClearIRQHandler _ => .ClearIRQHandler v
   | .SetIRQHandler _ a1 a2 => .SetIRQHandler v a1 a2
 
-/-- Haskell selector `setIRQHandlerCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setIRQHandlerCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQHandlerInvocation.setIRQHandlerCap : IRQHandlerInvocation → Capability
   | .SetIRQHandler _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setIRQHandlerCap = v }` (no-op on other constructors). -/
 def IRQHandlerInvocation.set_setIRQHandlerCap (x : IRQHandlerInvocation) (v : Capability) : IRQHandlerInvocation :=
   match x with
   | .SetIRQHandler a0 _ a2 => .SetIRQHandler a0 v a2
   | x => x
 
-/-- Haskell selector `setIRQHandlerSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setIRQHandlerSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def IRQHandlerInvocation.setIRQHandlerSlot : IRQHandlerInvocation → PPtr CTE
   | .SetIRQHandler _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setIRQHandlerSlot = v }` (no-op on other constructors). -/
 def IRQHandlerInvocation.set_setIRQHandlerSlot (x : IRQHandlerInvocation) (v : PPtr CTE) : IRQHandlerInvocation :=
   match x with
   | .SetIRQHandler a0 a1 _ => .SetIRQHandler a0 a1 v
   | x => x
+
+/-- l4v-generated discriminator `isAckIRQ` -/
+def isAckIRQ : _root_.Sel4Lean.Spec.IRQHandlerInvocation → Bool
+  | .AckIRQ .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isClearIRQHandler` -/
+def isClearIRQHandler : _root_.Sel4Lean.Spec.IRQHandlerInvocation → Bool
+  | .ClearIRQHandler .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isSetIRQHandler` -/
+def isSetIRQHandler : _root_.Sel4Lean.Spec.IRQHandlerInvocation → Bool
+  | .SetIRQHandler .. => true
+  | _ => false
 noncomputable instance : DecidableEq IRQHandlerInvocation := Classical.typeDecidableEq IRQHandlerInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
@@ -1684,65 +2060,80 @@ inductive PageInvocation where
   | PageUnmap (pageUnmapCap : ArchCapability) (pageUnmapCapSlot : PPtr CTE)
   deriving Inhabited
 
-/-- Haskell selector `pageGetBasePtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pageGetBasePtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageInvocation.pageGetBasePtr : PageInvocation → PPtr Word
   | .PageGetAddr v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pageGetBasePtr = v }` (no-op on other constructors). -/
 def PageInvocation.set_pageGetBasePtr (x : PageInvocation) (v : PPtr Word) : PageInvocation :=
   match x with
   | .PageGetAddr _ => .PageGetAddr v
   | x => x
 
-/-- Haskell selector `pageMapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pageMapCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageInvocation.pageMapCap : PageInvocation → Capability
   | .PageMap v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pageMapCap = v }` (no-op on other constructors). -/
 def PageInvocation.set_pageMapCap (x : PageInvocation) (v : Capability) : PageInvocation :=
   match x with
   | .PageMap _ a1 a2 => .PageMap v a1 a2
   | x => x
 
-/-- Haskell selector `pageMapCTSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pageMapCTSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageInvocation.pageMapCTSlot : PageInvocation → PPtr CTE
   | .PageMap _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pageMapCTSlot = v }` (no-op on other constructors). -/
 def PageInvocation.set_pageMapCTSlot (x : PageInvocation) (v : PPtr CTE) : PageInvocation :=
   match x with
   | .PageMap a0 _ a2 => .PageMap a0 v a2
   | x => x
 
-/-- Haskell selector `pageMapEntries` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pageMapEntries`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageInvocation.pageMapEntries : PageInvocation → PTE × (PPtr PTE)
   | .PageMap _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pageMapEntries = v }` (no-op on other constructors). -/
 def PageInvocation.set_pageMapEntries (x : PageInvocation) (v : PTE × (PPtr PTE)) : PageInvocation :=
   match x with
   | .PageMap a0 a1 _ => .PageMap a0 a1 v
   | x => x
 
-/-- Haskell selector `pageUnmapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pageUnmapCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageInvocation.pageUnmapCap : PageInvocation → ArchCapability
   | .PageUnmap v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pageUnmapCap = v }` (no-op on other constructors). -/
 def PageInvocation.set_pageUnmapCap (x : PageInvocation) (v : ArchCapability) : PageInvocation :=
   match x with
   | .PageUnmap _ a1 => .PageUnmap v a1
   | x => x
 
-/-- Haskell selector `pageUnmapCapSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `pageUnmapCapSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageInvocation.pageUnmapCapSlot : PageInvocation → PPtr CTE
   | .PageUnmap _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { pageUnmapCapSlot = v }` (no-op on other constructors). -/
 def PageInvocation.set_pageUnmapCapSlot (x : PageInvocation) (v : PPtr CTE) : PageInvocation :=
   match x with
   | .PageUnmap a0 _ => .PageUnmap a0 v
   | x => x
+
+/-- l4v-generated discriminator `isPageGetAddr` -/
+def isPageGetAddr : _root_.Sel4Lean.Spec.PageInvocation → Bool
+  | .PageGetAddr .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isPageMap` -/
+def isPageMap : _root_.Sel4Lean.Spec.PageInvocation → Bool
+  | .PageMap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isPageUnmap` -/
+def isPageUnmap : _root_.Sel4Lean.Spec.PageInvocation → Bool
+  | .PageUnmap .. => true
+  | _ => false
 noncomputable instance : DecidableEq PageInvocation := Classical.typeDecidableEq PageInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
@@ -1752,65 +2143,75 @@ inductive PageTableInvocation where
   | PageTableMap (ptMapCap : Capability) (ptMapCTSlot : PPtr CTE) (ptMapPTE : PTE) (ptMapPTSlot : PPtr PTE)
   deriving Inhabited
 
-/-- Haskell selector `ptUnmapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptUnmapCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageTableInvocation.ptUnmapCap : PageTableInvocation → ArchCapability
   | .PageTableUnmap v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptUnmapCap = v }` (no-op on other constructors). -/
 def PageTableInvocation.set_ptUnmapCap (x : PageTableInvocation) (v : ArchCapability) : PageTableInvocation :=
   match x with
   | .PageTableUnmap _ a1 => .PageTableUnmap v a1
   | x => x
 
-/-- Haskell selector `ptUnmapCapSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptUnmapCapSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageTableInvocation.ptUnmapCapSlot : PageTableInvocation → PPtr CTE
   | .PageTableUnmap _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptUnmapCapSlot = v }` (no-op on other constructors). -/
 def PageTableInvocation.set_ptUnmapCapSlot (x : PageTableInvocation) (v : PPtr CTE) : PageTableInvocation :=
   match x with
   | .PageTableUnmap a0 _ => .PageTableUnmap a0 v
   | x => x
 
-/-- Haskell selector `ptMapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptMapCap`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageTableInvocation.ptMapCap : PageTableInvocation → Capability
   | .PageTableMap v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptMapCap = v }` (no-op on other constructors). -/
 def PageTableInvocation.set_ptMapCap (x : PageTableInvocation) (v : Capability) : PageTableInvocation :=
   match x with
   | .PageTableMap _ a1 a2 a3 => .PageTableMap v a1 a2 a3
   | x => x
 
-/-- Haskell selector `ptMapCTSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptMapCTSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageTableInvocation.ptMapCTSlot : PageTableInvocation → PPtr CTE
   | .PageTableMap _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptMapCTSlot = v }` (no-op on other constructors). -/
 def PageTableInvocation.set_ptMapCTSlot (x : PageTableInvocation) (v : PPtr CTE) : PageTableInvocation :=
   match x with
   | .PageTableMap a0 _ a2 a3 => .PageTableMap a0 v a2 a3
   | x => x
 
-/-- Haskell selector `ptMapPTE` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptMapPTE`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageTableInvocation.ptMapPTE : PageTableInvocation → PTE
   | .PageTableMap _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptMapPTE = v }` (no-op on other constructors). -/
 def PageTableInvocation.set_ptMapPTE (x : PageTableInvocation) (v : PTE) : PageTableInvocation :=
   match x with
   | .PageTableMap a0 a1 _ a3 => .PageTableMap a0 a1 v a3
   | x => x
 
-/-- Haskell selector `ptMapPTSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `ptMapPTSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def PageTableInvocation.ptMapPTSlot : PageTableInvocation → PPtr PTE
   | .PageTableMap _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { ptMapPTSlot = v }` (no-op on other constructors). -/
 def PageTableInvocation.set_ptMapPTSlot (x : PageTableInvocation) (v : PPtr PTE) : PageTableInvocation :=
   match x with
   | .PageTableMap a0 a1 a2 _ => .PageTableMap a0 a1 a2 v
   | x => x
+
+/-- l4v-generated discriminator `isPageTableUnmap` -/
+def isPageTableUnmap : _root_.Sel4Lean.Spec.PageTableInvocation → Bool
+  | .PageTableUnmap .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isPageTableMap` -/
+def isPageTableMap : _root_.Sel4Lean.Spec.PageTableInvocation → Bool
+  | .PageTableMap .. => true
+  | _ => false
 noncomputable instance : DecidableEq PageTableInvocation := Classical.typeDecidableEq PageTableInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
@@ -1849,325 +2250,370 @@ inductive TCBInvocation where
   | SetFlags (setFlagsTCB : PPtr TCB) (setFlagsClear : Word) (setFlagsSet : Word)
   deriving Inhabited
 
-/-- Haskell selector `suspendThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `suspendThread`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.suspendThread : TCBInvocation → PPtr TCB
   | .Suspend v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { suspendThread = v }` (no-op on other constructors). -/
 def TCBInvocation.set_suspendThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .Suspend _ => .Suspend v
   | x => x
 
-/-- Haskell selector `resumeThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `resumeThread`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.resumeThread : TCBInvocation → PPtr TCB
   | .Resume v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { resumeThread = v }` (no-op on other constructors). -/
 def TCBInvocation.set_resumeThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .Resume _ => .Resume v
   | x => x
 
-/-- Haskell selector `tcThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcThread`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcThread : TCBInvocation → PPtr TCB
   | .ThreadControl v _ _ _ _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcThread = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .ThreadControl _ a1 a2 a3 a4 a5 a6 a7 => .ThreadControl v a1 a2 a3 a4 a5 a6 a7
   | x => x
 
-/-- Haskell selector `tcThreadCapSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcThreadCapSlot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcThreadCapSlot : TCBInvocation → PPtr CTE
   | .ThreadControl _ v _ _ _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcThreadCapSlot = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcThreadCapSlot (x : TCBInvocation) (v : PPtr CTE) : TCBInvocation :=
   match x with
   | .ThreadControl a0 _ a2 a3 a4 a5 a6 a7 => .ThreadControl a0 v a2 a3 a4 a5 a6 a7
   | x => x
 
-/-- Haskell selector `tcNewFaultEP` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcNewFaultEP`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcNewFaultEP : TCBInvocation → Option CPtr
   | .ThreadControl _ _ v _ _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcNewFaultEP = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcNewFaultEP (x : TCBInvocation) (v : Option CPtr) : TCBInvocation :=
   match x with
   | .ThreadControl a0 a1 _ a3 a4 a5 a6 a7 => .ThreadControl a0 a1 v a3 a4 a5 a6 a7
   | x => x
 
-/-- Haskell selector `tcNewMCPriority` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcNewMCPriority`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcNewMCPriority : TCBInvocation → Option (Priority × (PPtr TCB))
   | .ThreadControl _ _ _ v _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcNewMCPriority = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcNewMCPriority (x : TCBInvocation) (v : Option (Priority × (PPtr TCB))) : TCBInvocation :=
   match x with
   | .ThreadControl a0 a1 a2 _ a4 a5 a6 a7 => .ThreadControl a0 a1 a2 v a4 a5 a6 a7
   | x => x
 
-/-- Haskell selector `tcNewPriority` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcNewPriority`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcNewPriority : TCBInvocation → Option (Priority × (PPtr TCB))
   | .ThreadControl _ _ _ _ v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcNewPriority = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcNewPriority (x : TCBInvocation) (v : Option (Priority × (PPtr TCB))) : TCBInvocation :=
   match x with
   | .ThreadControl a0 a1 a2 a3 _ a5 a6 a7 => .ThreadControl a0 a1 a2 a3 v a5 a6 a7
   | x => x
 
-/-- Haskell selector `tcNewCRoot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcNewCRoot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcNewCRoot : TCBInvocation → Option (Capability × (PPtr CTE))
   | .ThreadControl _ _ _ _ _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcNewCRoot = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcNewCRoot (x : TCBInvocation) (v : Option (Capability × (PPtr CTE))) : TCBInvocation :=
   match x with
   | .ThreadControl a0 a1 a2 a3 a4 _ a6 a7 => .ThreadControl a0 a1 a2 a3 a4 v a6 a7
   | x => x
 
-/-- Haskell selector `tcNewVRoot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcNewVRoot`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcNewVRoot : TCBInvocation → Option (Capability × (PPtr CTE))
   | .ThreadControl _ _ _ _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcNewVRoot = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcNewVRoot (x : TCBInvocation) (v : Option (Capability × (PPtr CTE))) : TCBInvocation :=
   match x with
   | .ThreadControl a0 a1 a2 a3 a4 a5 _ a7 => .ThreadControl a0 a1 a2 a3 a4 a5 v a7
   | x => x
 
-/-- Haskell selector `tcNewIPCBuffer` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `tcNewIPCBuffer`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.tcNewIPCBuffer : TCBInvocation → Option (VPtr × (Option (Capability × (PPtr CTE))))
   | .ThreadControl _ _ _ _ _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { tcNewIPCBuffer = v }` (no-op on other constructors). -/
 def TCBInvocation.set_tcNewIPCBuffer (x : TCBInvocation) (v : Option (VPtr × (Option (Capability × (PPtr CTE))))) : TCBInvocation :=
   match x with
   | .ThreadControl a0 a1 a2 a3 a4 a5 a6 _ => .ThreadControl a0 a1 a2 a3 a4 a5 a6 v
   | x => x
 
-/-- Haskell selector `notificationTCB` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `notificationTCB`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.notificationTCB : TCBInvocation → PPtr TCB
   | .NotificationControl v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { notificationTCB = v }` (no-op on other constructors). -/
 def TCBInvocation.set_notificationTCB (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .NotificationControl _ a1 => .NotificationControl v a1
   | x => x
 
-/-- Haskell selector `notificationPtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `notificationPtr`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.notificationPtr : TCBInvocation → Option (PPtr Notification)
   | .NotificationControl _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { notificationPtr = v }` (no-op on other constructors). -/
 def TCBInvocation.set_notificationPtr (x : TCBInvocation) (v : Option (PPtr Notification)) : TCBInvocation :=
   match x with
   | .NotificationControl a0 _ => .NotificationControl a0 v
   | x => x
 
-/-- Haskell selector `writeRegsThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `writeRegsThread`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.writeRegsThread : TCBInvocation → PPtr TCB
   | .WriteRegisters v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { writeRegsThread = v }` (no-op on other constructors). -/
 def TCBInvocation.set_writeRegsThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .WriteRegisters _ a1 a2 a3 => .WriteRegisters v a1 a2 a3
   | x => x
 
-/-- Haskell selector `writeRegsResume` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `writeRegsResume`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.writeRegsResume : TCBInvocation → Bool
   | .WriteRegisters _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { writeRegsResume = v }` (no-op on other constructors). -/
 def TCBInvocation.set_writeRegsResume (x : TCBInvocation) (v : Bool) : TCBInvocation :=
   match x with
   | .WriteRegisters a0 _ a2 a3 => .WriteRegisters a0 v a2 a3
   | x => x
 
-/-- Haskell selector `writeRegsValues` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `writeRegsValues`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.writeRegsValues : TCBInvocation → List Word
   | .WriteRegisters _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { writeRegsValues = v }` (no-op on other constructors). -/
 def TCBInvocation.set_writeRegsValues (x : TCBInvocation) (v : List Word) : TCBInvocation :=
   match x with
   | .WriteRegisters a0 a1 _ a3 => .WriteRegisters a0 a1 v a3
   | x => x
 
-/-- Haskell selector `writeRegsArch` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `writeRegsArch`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.writeRegsArch : TCBInvocation → CopyRegisterSets
   | .WriteRegisters _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { writeRegsArch = v }` (no-op on other constructors). -/
 def TCBInvocation.set_writeRegsArch (x : TCBInvocation) (v : CopyRegisterSets) : TCBInvocation :=
   match x with
   | .WriteRegisters a0 a1 a2 _ => .WriteRegisters a0 a1 a2 v
   | x => x
 
-/-- Haskell selector `readRegsThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `readRegsThread`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.readRegsThread : TCBInvocation → PPtr TCB
   | .ReadRegisters v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { readRegsThread = v }` (no-op on other constructors). -/
 def TCBInvocation.set_readRegsThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .ReadRegisters _ a1 a2 a3 => .ReadRegisters v a1 a2 a3
   | x => x
 
-/-- Haskell selector `readRegsSuspend` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `readRegsSuspend`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.readRegsSuspend : TCBInvocation → Bool
   | .ReadRegisters _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { readRegsSuspend = v }` (no-op on other constructors). -/
 def TCBInvocation.set_readRegsSuspend (x : TCBInvocation) (v : Bool) : TCBInvocation :=
   match x with
   | .ReadRegisters a0 _ a2 a3 => .ReadRegisters a0 v a2 a3
   | x => x
 
-/-- Haskell selector `readRegsLength` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `readRegsLength`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.readRegsLength : TCBInvocation → Word
   | .ReadRegisters _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { readRegsLength = v }` (no-op on other constructors). -/
 def TCBInvocation.set_readRegsLength (x : TCBInvocation) (v : Word) : TCBInvocation :=
   match x with
   | .ReadRegisters a0 a1 _ a3 => .ReadRegisters a0 a1 v a3
   | x => x
 
-/-- Haskell selector `readRegsArch` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `readRegsArch`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.readRegsArch : TCBInvocation → CopyRegisterSets
   | .ReadRegisters _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { readRegsArch = v }` (no-op on other constructors). -/
 def TCBInvocation.set_readRegsArch (x : TCBInvocation) (v : CopyRegisterSets) : TCBInvocation :=
   match x with
   | .ReadRegisters a0 a1 a2 _ => .ReadRegisters a0 a1 a2 v
   | x => x
 
-/-- Haskell selector `copyRegsTarget` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsTarget`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsTarget : TCBInvocation → PPtr TCB
   | .CopyRegisters v _ _ _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsTarget = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsTarget (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .CopyRegisters _ a1 a2 a3 a4 a5 a6 => .CopyRegisters v a1 a2 a3 a4 a5 a6
   | x => x
 
-/-- Haskell selector `copyRegsSource` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsSource`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsSource : TCBInvocation → PPtr TCB
   | .CopyRegisters _ v _ _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsSource = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsSource (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .CopyRegisters a0 _ a2 a3 a4 a5 a6 => .CopyRegisters a0 v a2 a3 a4 a5 a6
   | x => x
 
-/-- Haskell selector `copyRegsSuspendSource` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsSuspendSource`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsSuspendSource : TCBInvocation → Bool
   | .CopyRegisters _ _ v _ _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsSuspendSource = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsSuspendSource (x : TCBInvocation) (v : Bool) : TCBInvocation :=
   match x with
   | .CopyRegisters a0 a1 _ a3 a4 a5 a6 => .CopyRegisters a0 a1 v a3 a4 a5 a6
   | x => x
 
-/-- Haskell selector `copyRegsResumeTarget` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsResumeTarget`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsResumeTarget : TCBInvocation → Bool
   | .CopyRegisters _ _ _ v _ _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsResumeTarget = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsResumeTarget (x : TCBInvocation) (v : Bool) : TCBInvocation :=
   match x with
   | .CopyRegisters a0 a1 a2 _ a4 a5 a6 => .CopyRegisters a0 a1 a2 v a4 a5 a6
   | x => x
 
-/-- Haskell selector `copyRegsTransferFrame` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsTransferFrame`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsTransferFrame : TCBInvocation → Bool
   | .CopyRegisters _ _ _ _ v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsTransferFrame = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsTransferFrame (x : TCBInvocation) (v : Bool) : TCBInvocation :=
   match x with
   | .CopyRegisters a0 a1 a2 a3 _ a5 a6 => .CopyRegisters a0 a1 a2 a3 v a5 a6
   | x => x
 
-/-- Haskell selector `copyRegsTransferInteger` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsTransferInteger`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsTransferInteger : TCBInvocation → Bool
   | .CopyRegisters _ _ _ _ _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsTransferInteger = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsTransferInteger (x : TCBInvocation) (v : Bool) : TCBInvocation :=
   match x with
   | .CopyRegisters a0 a1 a2 a3 a4 _ a6 => .CopyRegisters a0 a1 a2 a3 a4 v a6
   | x => x
 
-/-- Haskell selector `copyRegsTransferArch` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `copyRegsTransferArch`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.copyRegsTransferArch : TCBInvocation → CopyRegisterSets
   | .CopyRegisters _ _ _ _ _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { copyRegsTransferArch = v }` (no-op on other constructors). -/
 def TCBInvocation.set_copyRegsTransferArch (x : TCBInvocation) (v : CopyRegisterSets) : TCBInvocation :=
   match x with
   | .CopyRegisters a0 a1 a2 a3 a4 a5 _ => .CopyRegisters a0 a1 a2 a3 a4 a5 v
   | x => x
 
-/-- Haskell selector `setTLSBaseTCB` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setTLSBaseTCB`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.setTLSBaseTCB : TCBInvocation → PPtr TCB
   | .SetTLSBase v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setTLSBaseTCB = v }` (no-op on other constructors). -/
 def TCBInvocation.set_setTLSBaseTCB (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .SetTLSBase _ a1 => .SetTLSBase v a1
   | x => x
 
-/-- Haskell selector `setTLSBaseNewBase` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setTLSBaseNewBase`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.setTLSBaseNewBase : TCBInvocation → Word
   | .SetTLSBase _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setTLSBaseNewBase = v }` (no-op on other constructors). -/
 def TCBInvocation.set_setTLSBaseNewBase (x : TCBInvocation) (v : Word) : TCBInvocation :=
   match x with
   | .SetTLSBase a0 _ => .SetTLSBase a0 v
   | x => x
 
-/-- Haskell selector `setFlagsTCB` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setFlagsTCB`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.setFlagsTCB : TCBInvocation → PPtr TCB
   | .SetFlags v _ _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setFlagsTCB = v }` (no-op on other constructors). -/
 def TCBInvocation.set_setFlagsTCB (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
   match x with
   | .SetFlags _ a1 a2 => .SetFlags v a1 a2
   | x => x
 
-/-- Haskell selector `setFlagsClear` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setFlagsClear`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.setFlagsClear : TCBInvocation → Word
   | .SetFlags _ v _ => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setFlagsClear = v }` (no-op on other constructors). -/
 def TCBInvocation.set_setFlagsClear (x : TCBInvocation) (v : Word) : TCBInvocation :=
   match x with
   | .SetFlags a0 _ a2 => .SetFlags a0 v a2
   | x => x
 
-/-- Haskell selector `setFlagsSet` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+/-- Haskell selector `setFlagsSet`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
 def TCBInvocation.setFlagsSet : TCBInvocation → Word
   | .SetFlags _ _ v => v
-  | _ => default
+  | _ => undefinedH
 /-- Haskell record update `x { setFlagsSet = v }` (no-op on other constructors). -/
 def TCBInvocation.set_setFlagsSet (x : TCBInvocation) (v : Word) : TCBInvocation :=
   match x with
   | .SetFlags a0 a1 _ => .SetFlags a0 a1 v
   | x => x
+
+/-- l4v-generated discriminator `isSuspend` -/
+def isSuspend : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .Suspend .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isResume` -/
+def isResume : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .Resume .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isThreadControl` -/
+def isThreadControl : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .ThreadControl .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isNotificationControl` -/
+def isNotificationControl : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .NotificationControl .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isWriteRegisters` -/
+def isWriteRegisters : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .WriteRegisters .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isReadRegisters` -/
+def isReadRegisters : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .ReadRegisters .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isCopyRegisters` -/
+def isCopyRegisters : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .CopyRegisters .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isSetTLSBase` -/
+def isSetTLSBase : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .SetTLSBase .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isSetFlags` -/
+def isSetFlags : _root_.Sel4Lean.Spec.TCBInvocation → Bool
+  | .SetFlags .. => true
+  | _ => false
 noncomputable instance : DecidableEq TCBInvocation := Classical.typeDecidableEq TCBInvocation
 
 -- from SEL4/API/Types/Universal.lhs

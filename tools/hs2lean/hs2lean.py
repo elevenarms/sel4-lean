@@ -247,13 +247,14 @@ class Translator:
             total = len(owners) == len(info["ctors"])
             fty = self.ty(ft)
             out.append("")
-            out.append(f"/-- Haskell selector `{fname}` (partial in Haskell; `default` elsewhere, like Isabelle). -/")
+            out.append(f"/-- Haskell selector `{fname}`; on other constructors unspecified (`undefinedH`), as l4v's "
+                       f"primrec selectors are in Isabelle. -/")
             out.append(f"def {name}.{fname} : {name} → {fty}")
             for cname, i, n in owners:
                 pats = " ".join("v" if j == i else "_" for j in range(n))
                 out.append(f"  | .{cname} {pats} => v")
             if not total:
-                out.append("  | _ => default")
+                out.append("  | _ => undefinedH" if getattr(self, "l4v_style", False) else "  | _ => default")
             out.append(f"/-- Haskell record update `x {{ {fname} = v }}` (no-op on other constructors). -/")
             out.append(f"def {name}.set_{fname} (x : {name}) (v : {fty}) : {name} :=")
             out.append("  match x with")
@@ -263,6 +264,19 @@ class Translator:
                 out.append(f"  | .{cname} {pats} => .{cname} {args}")
             if not total:
                 out.append("  | x => x")
+        # l4v's translator (lhs_pars.py named_constructor_check) gives every constructor of a record-syntax
+        # data type with several constructors a discriminator `isC v ≡ case v of C … ⇒ True | _ ⇒ False`
+        if getattr(self, "l4v_style", False) and len(info["ctors"]) > 1 and any(f for _, f, _ in info["ctors"]):
+            ns = name.rsplit(".", 1)[0] + "." if "." in name else ""
+            ps = self.params(node) if hasattr(self, "params") else []
+            binders = "".join(f" {{{p} : Type}}" for p in ps)
+            applied = f"(_root_.Sel4Lean.Spec.{name} {' '.join(ps)})" if ps else f"_root_.Sel4Lean.Spec.{name}"
+            for cname, fields, args in info["ctors"]:
+                out.append("")
+                out.append(f"/-- l4v-generated discriminator `is{cname}` -/")
+                out.append(f"def {ns}is{cname}{binders} : {applied} → Bool")
+                out.append(f"  | .{cname} .. => true")
+                out.append("  | _ => false")
         return "\n".join(out)
 
     # ---------------- names

@@ -1,4 +1,5 @@
-import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.Gen.KernelConfig
 
 /-!
 # Platform constants (hand-written, W3): l4v's `spec/machine/RISCV64/Platform.thy`
@@ -20,8 +21,10 @@ open Sel4Lean.Exec (Word PPtr)
 def canonical_bit : Nat := 38
 /-- `kdevBase = - (1 << 30)` -/
 def kdevBase : Word := -((1 : Word) <<< 30)
+/-- `physBase` (Kernel_Config.thy; Haskell's HiFive module says 0x80000000), at the Haskell type -/
+def physBase : PAddr := PAddr.PAddr KernelConfig.physBase
 /-- `kernelELFPAddrBase = physBase` -/
-def kernelELFPAddrBase : PAddr := KernelConfig.physBase
+def kernelELFPAddrBase : PAddr := physBase
 /-- `pptrTop ≡ - (1 << 31)` -/
 def pptrTop : VPtr := VPtr.VPtr (-((1 : Word) <<< 31))
 /-- `kernelELFBase = pptrTop + (kernelELFPAddrBase && mask 30)` -/

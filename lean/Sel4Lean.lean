@@ -22,7 +22,7 @@ import Sel4Lean.Spec.Gen.Types
 import Sel4Lean.Spec.Prelude
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.PSpaceInstances
-import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Gen.KernelConfig
 import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.MachineOps
 import Sel4Lean.Test.Machine

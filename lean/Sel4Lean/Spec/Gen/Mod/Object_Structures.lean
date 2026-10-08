@@ -4,6 +4,8 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.KernelConfig
+import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
 import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
 import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
@@ -45,41 +47,29 @@ abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures_RISCV64.pageBits
 
 /-! ## Translated -/
 
-/-- Haskell `isNullCap` -/
-def isNullCap (x0 : Capability) : Bool :=
-  match x0 with
-  | Capability.NullCap => true
-  | _ => false
+/-- Haskell `isNullCap`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev isNullCap := @Sel4Lean.Spec.isNullCap
 
-/-- Haskell `isDomainCap` -/
-def isDomainCap (x0 : Capability) : Bool :=
-  match x0 with
-  | Capability.DomainCap => true
-  | _ => false
 
-/-- Haskell `isIRQControlCap` -/
-def isIRQControlCap (x0 : Capability) : Bool :=
-  match x0 with
-  | Capability.IRQControlCap => true
-  | _ => false
+/-- Haskell `isDomainCap`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev isDomainCap := @Sel4Lean.Spec.isDomainCap
 
-/-- Haskell `isReplyCap` -/
-def isReplyCap (x0 : Capability) : Bool :=
-  match x0 with
-  | (Capability.ReplyCap ..) => true
-  | _ => false
 
-/-- Haskell `isUntypedCap` -/
-def isUntypedCap (x0 : Capability) : Bool :=
-  match x0 with
-  | (Capability.UntypedCap ..) => true
-  | _ => false
+/-- Haskell `isIRQControlCap`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev isIRQControlCap := @Sel4Lean.Spec.isIRQControlCap
 
-/-- Haskell `isNotificationCap` -/
-def isNotificationCap (x0 : Capability) : Bool :=
-  match x0 with
-  | (Capability.NotificationCap ..) => true
-  | _ => false
+
+/-- Haskell `isReplyCap`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev isReplyCap := @Sel4Lean.Spec.isReplyCap
+
+
+/-- Haskell `isUntypedCap`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev isUntypedCap := @Sel4Lean.Spec.isUntypedCap
+
+
+/-- Haskell `isNotificationCap`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev isNotificationCap := @Sel4Lean.Spec.isNotificationCap
+
 
 /-- Haskell `kernelObjectTypeName` -/
 def kernelObjectTypeName (o : KernelObject) : String :=

@@ -62,15 +62,21 @@ structure MachineState where
   device_state : Word → Option (BitVec 8)
   machine_state_rest : MachineStateRest
 
-/-- Isabelle `init_machine_state` (all IRQs masked, memory zero, no devices; the rest `undefined`). -/
-noncomputable def initMachineState : MachineState where
-  irq_masks := fun _ => true
-  irq_state := 0
-  underlying_memory := fun _ => 0
-  device_state := fun _ => none
-  machine_state_rest := default
+/-- Isabelle `init_irq_masks ≡ λ_. True` (all IRQs masked). -/
+def init_irq_masks : {arch}.IRQ → Bool := fun _ => true
 
-noncomputable instance : Inhabited MachineState := ⟨initMachineState⟩
+/-- Isabelle `init_underlying_memory ≡ λ_. 0`. -/
+def init_underlying_memory : Word → BitVec 8 := fun _ => 0
+
+/-- Isabelle `init_machine_state` (the rest is `undefined`). -/
+noncomputable def init_machine_state : MachineState where
+  irq_masks := init_irq_masks
+  irq_state := 0
+  underlying_memory := init_underlying_memory
+  device_state := fun _ => none
+  machine_state_rest := undefinedH
+
+noncomputable instance : Inhabited MachineState := ⟨init_machine_state⟩
 
 /-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's
 Isabelle `machine_monad = (machine_state, 'a) nondet_monad`. -/
@@ -83,13 +89,17 @@ abbrev MachineMonad := Sel4Lean.NondetM MachineState"""
 _HW = f"SEL4/Machine/Hardware/{ARCH}.hs"
 L4V_OVERRIDES = {("SEL4/Config.lhs", n): f"Sel4Lean.Spec.KernelConfig.{n}"     # Kernel_Config.thy
                  for n in ("timeSlice", "numDomains", "retypeFanOutLimit", "resetChunkBits")}
-L4V_OVERRIDES[(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", "physBase")] = "Sel4Lean.Spec.KernelConfig.physBase"
+L4V_OVERRIDES[(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", "physBase")] = "Sel4Lean.Spec.Platform.physBase"
 L4V_OVERRIDES.update({(_HW, n): f"Sel4Lean.Spec.Platform.{n}"                   # Platform.thy
                       for n in ("toPAddr", "paddrBase", "pptrBase", "pptrTop", "kernelELFPAddrBase", "kernelELFBase",
                                 "pptrUserTop", "pptrBaseOffset", "ptrFromPAddr", "addrFromPPtr",
                                 "kernelELFBaseOffset", "addrFromKPPtr")})
 L4V_OVERRIDES.update({(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", n): f"Sel4Lean.Spec.Platform.{n}"
                       for n in ("irqInvalid", "pageColourBits")})
+# Structures_H: the Haskell's hand-written `isNullCap` etc. are replaced by l4v's generated discriminators
+L4V_OVERRIDES.update({("SEL4/Object/Structures.lhs", n): f"Sel4Lean.Spec.{n}"
+                      for n in ("isNullCap", "isDomainCap", "isIRQControlCap", "isReplyCap", "isUntypedCap",
+                                "isNotificationCap")})
 
 # operations ported from l4v's MachineOps.thy by hand (Spec/MachineOps.lean)
 MACHINE_OPS = {"loadWord", "storeWord", "getMemoryRegions", "storeWordVM", "configureTimer", "initTimer",
@@ -346,6 +356,7 @@ class FullTranslator(Translator):
         self.arch_in_scope = set()   # arch types an unqualified name refers to in this file
         self.arch_ctor_in_scope = set()  # arch types whose constructors are in scope unqualified
         self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
+        self.l4v_style = True        # l4v's design-spec conventions (discriminators, undefined selectors)
         self.arch_calls = set()      # `Arch.f` references seen while translating
         self.platform_calls = set()  # `Platform.f` references (the platform module, e.g. RISCV64/Spike.hs)
         self.constraints = []        # kept class constraints of the current signature
@@ -696,7 +707,7 @@ def cmd_types(root, files, emit=True):
                 text = text.replace("  ksArchState : RISCV64.KernelState\n",
                                     "  ksArchState : RISCV64.KernelState\n"
                                     "  /-- not in the Haskell model: l4v's `ksMachineState` -/\n"
-                                    "  ksMachineState : MachineState := initMachineState\n", 1)
+                                    "  ksMachineState : MachineState := init_machine_state\n", 1)
                 assert "ksMachineState" in text, "KernelState: ksArchState field not found"
             out[name] = (text, os.path.relpath(path, root))
             order.append(name)
@@ -1171,7 +1182,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
     if uses_machine_ops:
         print("import Sel4Lean.Spec.MachineOps")
     if uses_kernel_config:
-        print("import Sel4Lean.Spec.KernelConfig")
+        print("import Sel4Lean.Spec.Gen.KernelConfig")
         print("import Sel4Lean.Spec.Platform")
     for im in imports:
         print(f"import Sel4Lean.Spec.Gen.Mod.{im}")

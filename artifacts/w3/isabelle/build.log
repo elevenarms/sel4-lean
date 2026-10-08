@@ -1,4 +1,4 @@
-Started at Thu Oct 8 06:14:18 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Started at Thu Oct 8 06:25:55 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
 ISABELLE_TOOL_JAVA_OPTIONS="-Djava.awt.headless=true -Xms512m -Xmx4g -Xss16m"
 ISABELLE_BUILD_OPTIONS="threads=32"
 
@@ -28,14 +28,7 @@ Session Lib/Basics (lib)
 Session Lib/Lib (lib)
 Session Specifications/ExecSpec
 Session Unsorted/LeanGate
-Running LeanGate ...
-LeanGate: theory LeanGate.Consts
-LeanGate: theory LeanGate.Values
-LeanGate: theory LeanGate.Consts 100% (0.456s cumulated time)
-LeanGate: theory LeanGate.Values 100% (21.897s cumulated time)
-Timing LeanGate (32 threads, 21.996s elapsed time, 24.434s cpu time, 2.558s GC time, factor 1.11)
-Finished LeanGate (0:00:23 elapsed time, 0:00:27 cpu time, factor 1.14)
 
-Finished at Thu Oct 8 06:14:49 GMT 2026
-0:00:31 elapsed time, 0:00:27 cpu time, factor 0.87
+Finished at Thu Oct 8 06:26:03 GMT 2026
+0:00:07 elapsed time
 isabelle exit 0

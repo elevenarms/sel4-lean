@@ -25,3 +25,5 @@ ROOTS="$HS/Object/Structures.lhs $HS/Object/Structures/RISCV64.hs $HS/Model/Stat
 for m in $ALL; do ROOTS="$ROOTS $L4V/spec/haskell/src/$m"; done
 (cd ~/c0/sel4-lean/tools/hs2lean && $PY full.py types $L4V/spec/haskell/src $ROOTS > "$SPEC/Types.lean")
 wc -l "$SPEC/Types.lean"
+# l4v's build configuration, generated from its Kernel_Config.thy
+(cd ~/c0/sel4-lean/tools/hs2lean && $PY kconfig.py $L4V/spec/machine/RISCV64/Kernel_Config.thy > "$SPEC/KernelConfig.lean")

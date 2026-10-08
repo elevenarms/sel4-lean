@@ -5,7 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.MachineOps
-import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Gen.KernelConfig
 import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive

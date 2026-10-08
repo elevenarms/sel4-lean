@@ -4,7 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Gen.KernelConfig
 import Sel4Lean.Spec.Platform
 
 set_option match.ignoreUnusedAlts true
@@ -53,7 +53,7 @@ opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 /-! ## Translated -/
 
 /-- Haskell `physBase`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev physBase := @Sel4Lean.Spec.KernelConfig.physBase
+abbrev physBase := @Sel4Lean.Spec.Platform.physBase
 
 
 /-- Haskell `pageColourBits`: dropped by l4v's skeleton; its Isabelle definition -/

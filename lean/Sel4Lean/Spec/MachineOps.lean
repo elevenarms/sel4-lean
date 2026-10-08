@@ -26,19 +26,19 @@ open Sel4Lean.Spec.Platform (irqInvalid)
 abbrev MachineRestMonad (α : Type) := NondetM MachineStateRest α
 
 /-- Isabelle `machine_rest_lift`: run an operation on the unspecified rest of the machine. -/
-def machineRestLift {α : Type} (f : MachineRestMonad α) : MachineMonad α :=
+def machine_rest_lift {α : Type} (f : MachineRestMonad α) : MachineMonad α :=
   NondetM.bind (NondetM.gets MachineState.machine_state_rest) fun mr =>
   NondetM.bind (NondetM.selectF (f mr)) fun (r, mr') =>
   NondetM.bind (NondetM.modify fun s => { s with machine_state_rest := mr' }) fun _ =>
   NondetM.ret r
 
 /-- Isabelle `ignore_failure f ≡ λs. if fst (f s) = {} then ({((),s)}, False) else (fst (f s), False)`. -/
-def ignoreFailure {σ : Type} (f : NondetM σ Unit) : NondetM σ Unit := fun s =>
+def ignore_failure {σ : Type} (f : NondetM σ Unit) : NondetM σ Unit := fun s =>
   (fun p => (f s).1 p ∨ ((¬ ∃ q, (f s).1 q) ∧ p = ((), s)), False)
 
 /-- Isabelle `machine_op_lift ≡ machine_rest_lift o ignore_failure`. -/
-def machineOpLift (f : MachineRestMonad Unit) : MachineMonad Unit :=
-  machineRestLift (ignoreFailure f)
+def machine_op_lift (f : MachineRestMonad Unit) : MachineMonad Unit :=
+  machine_rest_lift (ignore_failure f)
 
 /-- Isabelle `upto_enum_step a b c` (`[a, b .e. c]`) at word type. -/
 def wordStepList (a b c : Word) : List Word :=
@@ -62,10 +62,10 @@ def storeWord (p : PPtr Word) (w : Word) : MachineMonad Unit :=
     { s with underlying_memory := mem }
 
 /-- Isabelle `consts' memory_regions`. -/
-opaque memoryRegions : List (PAddr × PAddr)
+opaque memory_regions : List (PAddr × PAddr)
 
 /-- Isabelle `getMemoryRegions ≡ return memory_regions`. -/
-def getMemoryRegions : MachineMonad (List (PAddr × PAddr)) := NondetM.ret memoryRegions
+def getMemoryRegions : MachineMonad (List (PAddr × PAddr)) := NondetM.ret memory_regions
 
 /-- Isabelle `storeWordVM ≡ return ()` (simulator only). -/
 def storeWordVM (_p : PPtr Word) (_w : Word) : MachineMonad Unit := NondetM.ret ()
@@ -78,11 +78,11 @@ opaque initTimer_impl : MachineRestMonad Unit
 opaque resetTimer_impl : MachineRestMonad Unit
 
 def configureTimer : MachineMonad RISCV64.IRQ :=
-  NondetM.bind (machineOpLift configureTimer_impl) fun _ => NondetM.gets configureTimer_val
+  NondetM.bind (machine_op_lift configureTimer_impl) fun _ => NondetM.gets configureTimer_val
 
-def initTimer : MachineMonad Unit := machineOpLift initTimer_impl
+def initTimer : MachineMonad Unit := machine_op_lift initTimer_impl
 
-def resetTimer : MachineMonad Unit := machineOpLift resetTimer_impl
+def resetTimer : MachineMonad Unit := machine_op_lift resetTimer_impl
 
 /-! ## Debug -/
 
@@ -95,32 +95,32 @@ opaque setIRQTrigger_impl : RISCV64.IRQ → Bool → MachineRestMonad Unit
 opaque plic_complete_claim_impl : RISCV64.IRQ → MachineRestMonad Unit
 
 def setIRQTrigger (irq : RISCV64.IRQ) (trigger : Bool) : MachineMonad Unit :=
-  machineOpLift (setIRQTrigger_impl irq trigger)
+  machine_op_lift (setIRQTrigger_impl irq trigger)
 
 def plic_complete_claim (irq : RISCV64.IRQ) : MachineMonad Unit :=
-  machineOpLift (plic_complete_claim_impl irq)
+  machine_op_lift (plic_complete_claim_impl irq)
 
 /-- Isabelle `non_kernel_IRQs = {}` on RISCV64. -/
-def nonKernelIRQs (_irq : RISCV64.IRQ) : Prop := False
+def non_kernel_IRQs (_irq : RISCV64.IRQ) : Prop := False
 
 /-- Isabelle `maxIRQ ≡ Kernel_Config.maxIRQ` (54 on HiFive; Haskell `maxBound = IRQ 54`). -/
 def maxIRQ : RISCV64.IRQ := ⟨BitVec.ofNat 32 KernelConfig.maxIRQ⟩
 
 /-- Isabelle `axiomatization irq_oracle :: nat ⇒ irq where irq_oracle_max_irq: ∀n. irq_oracle n ≤ maxIRQ`,
 as an opaque inhabitant of the subtype: the bound is a theorem, not an axiom. -/
-opaque irqOracleImpl : {f : Nat → RISCV64.IRQ // ∀ n, f n ≤ maxIRQ} :=
+opaque irq_oracle_impl : {f : Nat → RISCV64.IRQ // ∀ n, f n ≤ maxIRQ} :=
   ⟨fun _ => ⟨0⟩, fun _ => show (0 : BitVec 32) ≤ BitVec.ofNat 32 KernelConfig.maxIRQ by decide⟩
 
-def irqOracle : Nat → RISCV64.IRQ := irqOracleImpl.val
+def irq_oracle : Nat → RISCV64.IRQ := irq_oracle_impl.val
 
-theorem irqOracle_max_irq (n : Nat) : irqOracle n ≤ maxIRQ := irqOracleImpl.property n
+theorem irq_oracle_max_irq (n : Nat) : irq_oracle n ≤ maxIRQ := irq_oracle_impl.property n
 
 /-- Isabelle `getActiveIRQ`: oracle-based and deterministic (for information-flow proofs). It advances
 `irq_state`, then reports the oracle's IRQ unless it is masked or invalid. -/
 def getActiveIRQ (_inKernel : Bool) : MachineMonad (Option RISCV64.IRQ) :=
   NondetM.bind (NondetM.gets MachineState.irq_masks) fun isMasked =>
   NondetM.bind (NondetM.modify fun s => { s with irq_state := s.irq_state + 1 }) fun _ =>
-  NondetM.bind (NondetM.gets fun s => irqOracle s.irq_state) fun active =>
+  NondetM.bind (NondetM.gets fun s => irq_oracle s.irq_state) fun active =>
   -- `non_kernel_IRQs` is empty on RISCV64, so the `in_kernel ∧ …` disjunct is always false
   if isMasked active ∨ active = irqInvalid then NondetM.ret none else NondetM.ret (some active)
 
@@ -160,10 +160,10 @@ opaque sfence_impl : MachineRestMonad Unit
 opaque stval_val : MachineState → Word
 opaque setVSpaceRoot_impl : PAddr → Word → MachineRestMonad Unit
 
-def initL2Cache : MachineMonad Unit := machineOpLift initL2Cache_impl
-def hwASIDFlush (asid : Word) : MachineMonad Unit := machineOpLift (hwASIDFlush_impl asid)
-def sfence : MachineMonad Unit := machineOpLift sfence_impl
+def initL2Cache : MachineMonad Unit := machine_op_lift initL2Cache_impl
+def hwASIDFlush (asid : Word) : MachineMonad Unit := machine_op_lift (hwASIDFlush_impl asid)
+def sfence : MachineMonad Unit := machine_op_lift sfence_impl
 def read_stval : MachineMonad Word := NondetM.gets stval_val
-def setVSpaceRoot (pt : PAddr) (asid : Word) : MachineMonad Unit := machineOpLift (setVSpaceRoot_impl pt asid)
+def setVSpaceRoot (pt : PAddr) (asid : Word) : MachineMonad Unit := machine_op_lift (setVSpaceRoot_impl pt asid)
 
 end Sel4Lean.Spec.MachineOps

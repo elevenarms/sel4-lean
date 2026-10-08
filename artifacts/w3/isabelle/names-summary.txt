@@ -1,0 +1,17 @@
+isagate names: 1242/1321 ExecSpec constants have a Lean declaration of the same name
+  ExecSpec.KernelInitMonad_H: 6/24
+  ExecSpec.KI_Decls_H: 1/17
+  ExecSpec.PSpaceStorable_H: 5/19
+  ExecSpec.KernelInit_H: 1/7
+  ExecSpec.Intermediate_H: 0/5
+  ExecSpec.Delete_H: 0/4
+  ExecSpec.ArchStructures_H: 35/38
+  ExecSpec.API_H: 0/3
+  ExecSpec.MachineOps: 42/44
+  ExecSpec.ArchIntermediate_H: 0/2
+  ExecSpec.State_H: 21/23
+  ExecSpec.KernelStateData_H: 42/43
+  ExecSpec.Platform: 19/20
+  ExecSpec.FaultMonad_H: 15/16
+  ExecSpec.PSpaceStruct_H: 2/3
+isagate names: 684 Lean names with no ExecSpec constant

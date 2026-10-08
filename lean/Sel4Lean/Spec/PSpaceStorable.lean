@@ -22,20 +22,91 @@ open Sel4Lean.NondetM (valid)
 open scoped Sel4Lean.NondetM
 open Sel4Lean.Exec (Word PPtr)
 
-/-- Haskell `class PSpaceStorable a` (Model/PSpace.lhs:56). -/
-class PSpaceStorable (a : Type) where
-  makeObject : a
+/-! ## Object kinds (l4v: `kernel_object_type`, `koTypeOf`, `archTypeOf`) -/
+
+/-- Isabelle `datatype arch_kernel_object_type` (design/skel/RISCV64/ArchStructures_H.thy). -/
+inductive RISCV64.ArchKernelObjectType where
+  | PTET
+  | ASIDPoolT
+  deriving DecidableEq, Inhabited
+
+/-- Isabelle `archTypeOf`. -/
+def RISCV64.archTypeOf : ArchKernelObject → RISCV64.ArchKernelObjectType
+  | .KOPTE _ => .PTET
+  | .KOASIDPool _ => .ASIDPoolT
+
+/-- Isabelle `datatype kernel_object_type` (design/skel/PSpaceStorable_H.thy). -/
+inductive KernelObjectType where
+  | EndpointT
+  | NotificationT
+  | CTET
+  | TCBT
+  | UserDataT
+  | UserDataDeviceT
+  | KernelDataT
+  | ArchT (t : RISCV64.ArchKernelObjectType)
+  deriving DecidableEq, Inhabited
+
+/-- Isabelle `koTypeOf`. -/
+def koTypeOf : KernelObject → KernelObjectType
+  | .KOEndpoint _ => .EndpointT
+  | .KONotification _ => .NotificationT
+  | .KOCTE _ => .CTET
+  | .KOTCB _ => .TCBT
+  | .KOUserData => .UserDataT
+  | .KOUserDataDevice => .UserDataDeviceT
+  | .KOKernelData => .KernelDataT
+  | .KOArch e => .ArchT (RISCV64.archTypeOf e)
+
+/-! ## The classes (l4v: `pre_storable`, `pspace_storable`)
+
+The Haskell has one class, `PSpaceStorable` (Model/PSpace.lhs:56), polymorphic over `MonadFail m`. l4v
+splits it in two and states its laws as class assumptions; so do we, as `Prop` fields every instance proves
+(l4v proves them in ObjectInstances_H). `loadObject`/`updateObject` are methods: the CTE instance overrides
+them to reach CTEs stored inside TCBs. -/
+
+/-- Isabelle `class pre_storable`. -/
+class PreStorable (a : Type) where
   injectKO : a → KernelObject
-  /-- Haskell `projectKO :: MonadFail m => KernelObject -> m a`, as Isabelle's `projectKO_opt`. -/
   projectKO_opt : KernelObject → Option a
+  /-- Isabelle `koType :: 'a itself ⇒ kernel_object_type` -/
+  koType : KernelObjectType
+  /-- Isabelle `project_inject` -/
+  project_inject : ∀ (ko : KernelObject) (v : a), projectKO_opt ko = some v ↔ injectKO v = ko
+  /-- Isabelle `project_koType` -/
+  project_koType : ∀ (ko : KernelObject), (∃ v : a, projectKO_opt ko = some v) ↔ koTypeOf ko = koType
 
-export PSpaceStorable (makeObject injectKO projectKO_opt)
+/-- Isabelle `class pspace_storable = pre_storable + …` -/
+class PSpaceStorable (a : Type) extends PreStorable a where
+  makeObject : a
+  loadObject : Word → Word → Option Word → KernelObject → Kernel a
+  updateObject : a → KernelObject → Word → Word → Option Word → Kernel KernelObject
+  /-- Isabelle `updateObject_type`: an update keeps the object's kind. -/
+  updateObject_type : ∀ (v : a) (ko : KernelObject) (p p' : Word) (p'' : Option Word) (s s' : KernelState)
+    (ko' : KernelObject), (updateObject v ko p p' p'' s).1 (ko', s') → koTypeOf ko' = koTypeOf ko
 
-/-- Haskell `projectKO` in a failing monad. -/
-def projectKO {a σ : Type} [PSpaceStorable a] (o : KernelObject) : NondetM σ a :=
+export PreStorable (injectKO projectKO_opt koType)
+export PSpaceStorable (makeObject loadObject updateObject)
+
+/-- Isabelle `projectKO e ≡ case projectKO_opt e of None ⇒ fail | Some k ⇒ return k`. -/
+def projectKO {a σ : Type} [PreStorable a] (o : KernelObject) : NondetM σ a :=
   match projectKO_opt o with
   | some x => pure x
   | none => NondetM.fail
+
+/-- A result of `projectKO`: the projection succeeded, and the state is unchanged. -/
+theorem projectKO_result {a σ : Type} [PreStorable a] {o : KernelObject} {s t : σ} {v : a}
+    (h : (projectKO o s).1 (v, t)) : projectKO_opt o = some v ∧ t = s := by
+  unfold projectKO at h
+  cases hx : (projectKO_opt o : Option a) <;> rw [hx] at h
+  · exact h.elim
+  · cases h; exact ⟨rfl, rfl⟩
+
+theorem projectKO_wp {a σ : Type} [PreStorable a] (o : KernelObject) (Q : a → σ → Prop) :
+    ⟪fun s => ∀ v, projectKO_opt o = some v → Q v s⟫ (projectKO o) ⟪Q⟫ := by
+  intro s h r s' hr
+  obtain ⟨hx, rfl⟩ := projectKO_result hr
+  exact h _ hx
 
 /-- Haskell `mask n` at word type (Machine/RegisterSet.lhs:174). -/
 abbrev maskW (n : Nat) : Word := (1 <<< n) - 1
@@ -56,11 +127,15 @@ def typeError {α σ : Type} (_t : String) (_o : KernelObject) : NondetM σ α :
 def alignCheck {σ : Type} (x : Word) (n : Nat) : NondetM σ Unit :=
   if x &&& maskW n == 0 then pure () else NondetM.fail
 
-/-- Haskell `sizeCheck` (Model/PSpace.lhs:315). -/
-def sizeCheck {σ : Type} (start : Word) (next : Option Word) (n : Nat) : NondetM σ Unit :=
-  match next with
+/-- Isabelle `magnitudeCheck x y n ≡ case y of None ⇒ return () | Some z ⇒ when (z - x < 1 << n) fail`
+(the Haskell's `sizeCheck`, Model/PSpace.lhs:315). -/
+def magnitudeCheck {σ : Type} (x : Word) (y : Option Word) (n : Nat) : NondetM σ Unit :=
+  match y with
   | none => pure ()
-  | some e => if e - start < 1 <<< n then NondetM.fail else pure ()
+  | some z => if z - x < 1 <<< n then NondetM.fail else pure ()
+
+/-- Haskell `sizeCheck`: l4v's `magnitudeCheck`. -/
+abbrev sizeCheck {σ : Type} := @magnitudeCheck σ
 
 /-! ## Machine operations
 
