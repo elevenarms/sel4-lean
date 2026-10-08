@@ -15,20 +15,16 @@ noncomputable section
 -- external: SEL4/Model/Preemption.lhs
 opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 
-/-! ## Unresolved (no stub possible)
-  runExceptT: no signature found
--/
-
 /-! ## Translated -/
 
 /-- Haskell `syscall` -/
 def syscall (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
   do
-    let rFault ← withoutPreemption (runExceptT mFault)
+    let rFault ← withoutPreemption (ExceptT.run mFault)
     match rFault with
     | Left f => withoutPreemption (hFault f)
     | Right a => (do
-          let rError ← withoutPreemption (runExceptT (mError a))
+          let rError ← withoutPreemption (ExceptT.run (mError a))
           match rError with
           | Left e => withoutPreemption (hError e)
           | Right b => mFinalise b)

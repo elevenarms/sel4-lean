@@ -141,6 +141,11 @@ class FullTranslator(Translator):
                 return f"{ARCH}.{base}"
         return super().e(n, ind)
 
+    def ctor(self, name):
+        if self.in_arch_module and name in self.data.arch_ctor_type:
+            return f"{self.data.arch_ctor_type[name]}.{name}"
+        return super().ctor(name)
+
     def type_names(self, n):
         """Type constructor names mentioned under n (not in `deriving` clauses; qualifiers dropped)."""
         out, stack = set(), [n]
@@ -149,7 +154,8 @@ class FullTranslator(Translator):
             if m.type == "deriving":
                 continue
             if m.type == "name":
-                out.add(self.text(m))
+                nm = self.text(m)
+                out.add(f"{ARCH}.{nm}" if self.in_arch_module and nm in self.arch_names else nm)
             elif m.type == "qualified":
                 base = self.text(m).split(".")[-1]
                 out.add(f"{ARCH}.{base}" if base == self.current_name else base)
@@ -226,6 +232,11 @@ def cmd_types(root, files, emit=True):
     # closure over referenced type names
     order, seen, stubs, failed, out = [], set(), {}, {}, {}
     deps = {}
+    # types X declared both generically and for RISCV64 (Register, KernelState, IRQ, …): inside RISCV64
+    # files, unqualified X means RISCV64.X
+    dupes = {k[len(ARCH) + 1:] for k in idx
+             if k.startswith(ARCH + ".") and not k.startswith(ARCH + ".sig:")
+             and k[len(ARCH) + 1:] in idx and idx[k] is not idx[k[len(ARCH) + 1:]]}
 
     def visit(name):
         if name in seen or name in LIB_TYPES or name in ("PPtr", "Type", "Array", "Map", "Set"):
@@ -246,6 +257,8 @@ def cmd_types(root, files, emit=True):
         src, node, path = idx[name]
         tr = FullTranslator(src, data)
         tr.current_name = name.split(".")[-1] if not name.startswith(ARCH + ".") else None
+        if ARCH in path:
+            tr.in_arch_module, tr.arch_names = True, dupes - {name.split(".")[-1]}
         refs = tr.type_names(node) - {name, name.split(".")[-1]}
         deps[name] = refs
         for r in sorted(refs):

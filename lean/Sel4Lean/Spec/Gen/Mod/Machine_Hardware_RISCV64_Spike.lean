@@ -41,7 +41,7 @@ def getDeviceRegions (x0 : PtrH CallbackData) : IO (List (PAddr × PAddr)) :=
   | _ => error "unimplemented"
 
 /-- Haskell `getKernelDevices` -/
-def getKernelDevices (x0 : PtrH CallbackData) : IO (List (PAddr × (PPtr Word))) :=
+def getKernelDevices (x0 : PtrH CallbackData) : IO (List (PAddr × (PPtr RISCV64.Word))) :=
   match x0 with
   | _ => error "unimplemented"
 
@@ -51,11 +51,11 @@ def maskInterrupt (x0 : PtrH CallbackData) (x1 : Bool) (x2 : RISCV64.IRQ) : IO U
   | env, mask, (IRQ.IRQ irq) => error "unimplemented"
 
 /-- Haskell `loadWordCallback` -/
-def loadWordCallback : (PtrH CallbackData) → PAddr → IO Word :=
+def loadWordCallback : (PtrH CallbackData) → PAddr → IO RISCV64.Word :=
   error "unimplemented"
 
 /-- Haskell `storeWordCallback` -/
-def storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit :=
+def storeWordCallback : (PtrH CallbackData) → PAddr → RISCV64.Word → IO Unit :=
   error "unimplemented"
 
 /-- Haskell `getActiveIRQ` -/

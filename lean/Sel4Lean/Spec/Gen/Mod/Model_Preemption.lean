@@ -29,7 +29,6 @@ opaque setWorkUnits : Word → Kernel Unit
 
 /-! ## Unresolved (no stub possible)
   lift: no signature found
-  throwError: no signature found
 -/
 
 /-! ## Translated -/
@@ -51,7 +50,7 @@ def preemptionPoint : KernelP Unit :=
       lift (setWorkUnits 0)
       let preempt ← lift (doMachineOp (getActiveIRQ true))
       match preempt with
-      | some irq => throwError irq
+      | some irq => throw irq
       | none => pure ())
 
 end

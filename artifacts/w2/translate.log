@@ -61,7 +61,7 @@ hs2lean module: 2/3 functions translated (0 partial), 13 external stubs, 1 unres
   unresolved show: no signature found
 hs2lean module: 1/1 functions translated (0 partial), 1 external stubs, 0 unresolved
 hs2lean module: 1/1 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 35 unresolved
+hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 33 unresolved
   failed createUntypedObject: arithmetic sequence form: arithmetic_sequence at line 289: '[regStartPAddr bootMemReuseReg, (regStartPAddr bootMemReuseR
   unresolved bit: no signature found
   unresolved break: no signature found
@@ -88,7 +88,6 @@ hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 35 un
   unresolved notElem: no signature found
   unresolved otherwise: no signature found
   unresolved replicate: no signature found
-  unresolved runExceptT: no signature found
   unresolved runStateT: no signature found
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
@@ -96,9 +95,8 @@ hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 35 un
   unresolved snd: no signature found
   unresolved tail: no signature found
   unresolved take: no signature found
-  unresolved throwError: no signature found
   unresolved undefined: no signature found
-hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 22 unresolved
+hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 21 unresolved
   failed transferCapsToSlots: guarded alternative: alternative at line 279: '(EndpointCap { capEPPtr = p1 }, Just p2, _) | p1 == p2 -> do\n           
   unresolved bit: no signature found
   unresolved complement: no signature found
@@ -112,7 +110,6 @@ hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 22 un
   unresolved makeObject: no signature found
   unresolved map: no signature found
   unresolved maxBound: no signature found
-  unresolved mdbPrev: no signature found
   unresolved modify: no signature found
   unresolved not: no signature found
   unresolved reverse: no signature found
@@ -125,12 +122,11 @@ hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 22 un
 hs2lean module: 5/5 functions translated (0 partial), 2 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean module: 16/16 functions translated (0 partial), 21 external stubs, 0 unresolved
-hs2lean module: 51/53 functions translated (0 partial), 50 external stubs, 24 unresolved
+hs2lean module: 51/53 functions translated (0 partial), 50 external stubs, 23 unresolved
   failed decodeRISCVASIDControlInvocation: guarded alternative: alternative at line 447: 'UntypedCap { capIsDevice = False } | capBlockSize untyped == objBits pool
   failed performPageTableInvocation: arithmetic sequence form: arithmetic_sequence at line 520: '[ptr, ptr + bit pteBits .. ptr + bit ptBits - 1]'
   unresolved assocs: no signature found
   unresolved bit: no signature found
-  unresolved capAllowRead: no signature found
   unresolved complement: no signature found
   unresolved const: no signature found
   unresolved error: no signature found
@@ -160,8 +156,7 @@ hs2lean module: 29/29 functions translated (0 partial), 25 external stubs, 6 unr
   unresolved liftM: no signature found
   unresolved maxBound: no signature found
   unresolved minBound: no signature found
-hs2lean module: 50/50 functions translated (0 partial), 6 external stubs, 5 unresolved
-  unresolved ask: no signature found
+hs2lean module: 50/50 functions translated (0 partial), 6 external stubs, 4 unresolved
   unresolved error: no signature found
   unresolved liftIO: no signature found
   unresolved putStrLn: no signature found
@@ -185,14 +180,12 @@ hs2lean module: 14/16 functions translated (0 partial), 1 external stubs, 5 unre
   unresolved setRegister: local, not translated, no signature: function without a signature: function at line 89: 'setRegis
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 12/12 functions translated (0 partial), 0 external stubs, 7 unresolved
+hs2lean module: 12/12 functions translated (0 partial), 0 external stubs, 5 unresolved
   unresolved const: no signature found
   unresolved either: no signature found
   unresolved flip: no signature found
   unresolved fromIntegral: no signature found
   unresolved lift: no signature found
-  unresolved runExceptT: no signature found
-  unresolved throwError: no signature found
 hs2lean module: 24/24 functions translated (0 partial), 11 external stubs, 20 unresolved
   unresolved findMax: no signature found
   unresolved findMin: no signature found
@@ -215,9 +208,8 @@ hs2lean module: 24/24 functions translated (0 partial), 11 external stubs, 20 un
   unresolved splitLookup: no signature found
   unresolved updateObject: no signature found
 hs2lean module: 1/1 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 3/3 functions translated (0 partial), 5 external stubs, 2 unresolved
+hs2lean module: 3/3 functions translated (0 partial), 5 external stubs, 1 unresolved
   unresolved lift: no signature found
-  unresolved throwError: no signature found
 hs2lean module: 27/27 functions translated (0 partial), 11 external stubs, 8 unresolved
   unresolved const: no signature found
   unresolved error: no signature found
@@ -230,17 +222,9 @@ hs2lean module: 27/27 functions translated (0 partial), 11 external stubs, 8 unr
 hs2lean module: 3/3 functions translated (0 partial), 0 external stubs, 2 unresolved
   unresolved error: no signature found
   unresolved head: no signature found
-hs2lean module: 1/1 functions translated (0 partial), 1 external stubs, 1 unresolved
-  unresolved runExceptT: no signature found
+hs2lean module: 1/1 functions translated (0 partial), 1 external stubs, 0 unresolved
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 36/43 functions translated (0 partial), 43 external stubs, 15 unresolved
-  failed cteInsert: record update of unknown field: record at line 277: 'srcMDB {\n                mdbPrev = srcSlot,\n                mdbRe
-  failed cteMove: record update of unknown field: record at line 322: 'm { mdbPrev = destSlot }'
-  failed cteSwap: record update of unknown field: record at line 345: 'm { mdbPrev = slot2 }'
-  failed emptySlot: record update of unknown field: record at line 409: 'mdb {\n                    mdbPrev = prev,\n                    mdb
-  failed insertInitCap: record update of unknown field: record at line 576: 'nullMDBNode {\n        mdbRevocable = True,\n        mdbFirstBadged
-  failed insertNewCap: record update of unknown field: record at line 561: 'm { mdbPrev = slot }'
-  failed setupReplyMaster: record update of unknown field: record at line 590: 'nullMDBNode { mdbRevocable = True, mdbFirstBadged = True }'
+hs2lean module: 43/43 functions translated (0 partial), 43 external stubs, 13 unresolved
   unresolved const: no signature found
   unresolved elem: no signature found
   unresolved error: no signature found
@@ -248,8 +232,6 @@ hs2lean module: 36/43 functions translated (0 partial), 43 external stubs, 15 un
   unresolved fromIntegral: no signature found
   unresolved length: no signature found
   unresolved liftM: no signature found
-  unresolved mdbFirstBadged: no signature found
-  unresolved mdbPrev: no signature found
   unresolved modify: no signature found
   unresolved not: no signature found
   unresolved otherwise: no signature found
@@ -298,15 +280,8 @@ hs2lean module: 7/9 functions translated (0 partial), 15 external stubs, 4 unres
   unresolved fromIntegral: no signature found
   unresolved toEnum: no signature found
 hs2lean module: 13/13 functions translated (0 partial), 14 external stubs, 0 unresolved
-hs2lean module: 15/16 functions translated (0 partial), 53 external stubs, 20 unresolved
-  failed maskCapRights: record update of unknown field: record at line 322: 'c {\n    capEPCanSend = capEPCanSend c && capAllowWrite r,\n    cap
+hs2lean module: 16/16 functions translated (0 partial), 54 external stubs, 14 unresolved
   unresolved bit: no signature found
-  unresolved capAllowGrant: no signature found
-  unresolved capAllowGrantReply: no signature found
-  unresolved capAllowRead: no signature found
-  unresolved capEPCanGrantReply: no signature found
-  unresolved capEPCanReceive: no signature found
-  unresolved capNtfnCanReceive: no signature found
   unresolved error: no signature found
   unresolved finiteBitSize: no signature found
   unresolved fromIntegral: no signature found
@@ -326,31 +301,19 @@ hs2lean module: 20/21 functions translated (0 partial), 17 external stubs, 4 unr
   unresolved error: no signature found
   unresolved makeObject: no signature found
   unresolved modify: no signature found
-hs2lean module: 33/34 functions translated (0 partial), 12 external stubs, 7 unresolved
-  failed nullMDBNode: record construction with unknown fields: record at line 349: 'MDB {\n    mdbNext = nullPointer,\n    mdbPrev = nullPoint
+hs2lean module: 34/34 functions translated (0 partial), 12 external stubs, 5 unresolved
   unresolved bit: no signature found
   unresolved div: no signature found
   unresolved fromIntegral: no signature found
   unresolved fst: no signature found
-  unresolved mdbFirstBadged: no signature found
-  unresolved mdbPrev: no signature found
   unresolved snd: no signature found
 hs2lean module: 13/13 functions translated (0 partial), 4 external stubs, 3 unresolved
   unresolved fromIntegral: no signature found
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
-hs2lean module: 35/43 functions translated (0 partial), 71 external stubs, 26 unresolved
-  failed decodeCopyRegisters: record construction with unknown fields: record at line 125: 'CopyRegisters {\n        copyRegsTarget = capTCBPtr cap,\n
-  failed decodeSetIPCBuffer: record construction with unknown fields: record at line 275: 'ThreadControl {\n        tcThread = capTCBPtr cap,\n      
-  failed decodeSetMCPriority: record construction with unknown fields: record at line 229: 'ThreadControl {\n        tcThread = capTCBPtr cap,\n      
-  failed decodeSetPriority: record construction with unknown fields: record at line 210: 'ThreadControl {\n        tcThread = capTCBPtr cap,\n\n    
-  failed decodeSetSchedParams: record construction with unknown fields: record at line 250: 'ThreadControl {\n        tcThread = capTCBPtr cap,\n      
-  failed decodeSetSpace: record construction with unknown fields: record at line 320: 'ThreadControl {\n        tcThread = capTCBPtr cap,\n      
-  failed decodeTCBConfigure: record construction with unknown fields: record at line 181: 'ThreadControl {\n        tcThread = capTCBPtr cap,\n      
+hs2lean module: 42/43 functions translated (0 partial), 71 external stubs, 23 unresolved
   failed getExtraCPtrs: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
   unresolved complement: no signature found
-  unresolved copyRegsResumeTarget: no signature found
-  unresolved copyRegsTransferInteger: no signature found
   unresolved drop: no signature found
   unresolved forM: no signature found
   unresolved fromIntegral: no signature found
@@ -370,7 +333,6 @@ hs2lean module: 35/43 functions translated (0 partial), 71 external stubs, 26 un
   unresolved runState: no signature found
   unresolved shiftR: no signature found
   unresolved take: no signature found
-  unresolved tcNewVRoot: no signature found
   unresolved testBit: no signature found
   unresolved zipWithM: no signature found
   unresolved zipWithM_: no signature found

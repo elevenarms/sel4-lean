@@ -226,7 +226,6 @@ opaque wordRadix : Nat
   makeObject: no signature found
   map: no signature found
   maxBound: no signature found
-  mdbPrev: no signature found
   modify: no signature found
   not: no signature found
   reverse: no signature found
@@ -551,8 +550,8 @@ def doReplyTransfer (sender : PPtr TCB) (receiver : PPtr TCB) (slot : PPtr CTE) 
     let state ← getThreadState receiver
     assertH (isReply state) "Reply transfer to a thread that isn't listening"
     let mdbNode ← liftM CTE.cteMDBNode (getCTE slot)
-    assertH (((mdbPrev mdbNode) != nullPointer) && ((MDBNode.mdbNext mdbNode) == nullPointer)) "doReplyTransfer: ReplyCap not at end of MDB chain"
-    let parentCap ← getSlotCap (mdbPrev mdbNode)
+    assertH (((MDBNode.mdbPrev mdbNode) != nullPointer) && ((MDBNode.mdbNext mdbNode) == nullPointer)) "doReplyTransfer: ReplyCap not at end of MDB chain"
+    let parentCap ← getSlotCap (MDBNode.mdbPrev mdbNode)
     assertH ((isReplyCap parentCap) && (Capability.capReplyMaster parentCap)) "doReplyTransfer: ReplyCap parent not reply master"
     let fault ← threadGet TCB.tcbFault receiver
     match fault with

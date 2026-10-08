@@ -31,6 +31,20 @@ instance {α : Type} : DecidableEq (PPtr α) := fun a b =>
   else
     isFalse (fun e => h (congrArg PPtr.ptr e))
 
+-- Haskell derives Num, Ord and Bits for `PPtr`: lift them through the address
+instance {α : Type} {n : Nat} : OfNat (PPtr α) n := ⟨⟨OfNat.ofNat n⟩⟩
+instance {α : Type} : LE (PPtr α) := ⟨fun a b => a.ptr ≤ b.ptr⟩
+instance {α : Type} : LT (PPtr α) := ⟨fun a b => a.ptr < b.ptr⟩
+instance {α : Type} (a b : PPtr α) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.ptr ≤ b.ptr))
+instance {α : Type} (a b : PPtr α) : Decidable (a < b) := inferInstanceAs (Decidable (a.ptr < b.ptr))
+instance {α : Type} : Add (PPtr α) := ⟨fun a b => ⟨a.ptr + b.ptr⟩⟩
+instance {α : Type} : Sub (PPtr α) := ⟨fun a b => ⟨a.ptr - b.ptr⟩⟩
+instance {α : Type} : Mul (PPtr α) := ⟨fun a b => ⟨a.ptr * b.ptr⟩⟩
+instance {α : Type} : AndOp (PPtr α) := ⟨fun a b => ⟨a.ptr &&& b.ptr⟩⟩
+instance {α : Type} : OrOp (PPtr α) := ⟨fun a b => ⟨a.ptr ||| b.ptr⟩⟩
+instance {α : Type} : HShiftLeft (PPtr α) Nat (PPtr α) := ⟨fun a k => ⟨a.ptr <<< k⟩⟩
+instance {α : Type} : HShiftRight (PPtr α) Nat (PPtr α) := ⟨fun a k => ⟨a.ptr >>> k⟩⟩
+
 /-- Haskell `Foreign.Ptr a`: a raw machine address (used only by machine-interface code). -/
 abbrev PtrH (_ : Type) := Word
 

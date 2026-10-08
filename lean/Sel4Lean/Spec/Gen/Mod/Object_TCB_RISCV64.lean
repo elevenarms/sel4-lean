@@ -25,7 +25,7 @@ def performTransfer (x0 : CopyRegisterSets) (x1 : PPtr TCB) (x2 : PPtr TCB) : Ke
   | _, _, _ => pure ()
 
 /-- Haskell `sanitiseRegister` -/
-def sanitiseRegister (x0 : Bool) (x1 : RISCV64.Register) (x2 : Word) : Word :=
+def sanitiseRegister (x0 : Bool) (x1 : RISCV64.Register) (x2 : RISCV64.Word) : RISCV64.Word :=
   match x0, x1, x2 with
   | _, _, v => v
 

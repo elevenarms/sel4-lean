@@ -92,6 +92,8 @@ NAME = {
     "return": "pure", "fail": "failH", "assert": "assertH", "stateAssert": "stateAssertH",
     "forM_": "forM_H", "delete": "deleteH", "when": "whenH", "unless": "unlessH",
     "fromPPtr": "PPtr.ptr", "PPtr": "PPtr.mk",
+    # mtl classes -> Lean's monad classes
+    "throwError": "throw", "catchError": "tryCatch", "runExceptT": "ExceptT.run", "ask": "read",
     "Just": "some", "Nothing": "none", "True": "true", "False": "false",
 }
 TYPE = {"Maybe": "Option", "Bool": "Bool", "Word": "Word", "Int": "Int", "Integer": "Int"}
@@ -105,6 +107,7 @@ class DataInfo:
     def __init__(self):
         self.types = {}      # type -> {"ctors": [(ctor, [(field, type_node)] or None, [arg type nodes])], "single": bool}
         self.ctor_type = {}  # ctor -> type
+        self.arch_ctor_type = {}  # ctor -> RISCV64.T, for constructors of arch types (shadowing generic ones)
         self.field_type = {} # field -> type
 
 
@@ -173,29 +176,36 @@ class Translator:
             elif c.type == "record":
                 fields = []
                 for f in kids(c.child_by_field_name("fields")):
-                    fname = self.text(f.child_by_field_name("name"))
-                    fields.append((fname, f.child_by_field_name("type")))
+                    ftype = f.child_by_field_name("type")
+                    # `a, b :: T` declares several fields of one type
+                    names = [x for x in kids(f) if x.type == "field_name"] or [f.child_by_field_name("name")]
+                    for nm in names:
+                        fields.append((self.text(nm), ftype))
                 ctors.append((cname, fields, [t for _, t in fields]))
             else:
                 self.fail(c)
         info = {"ctors": ctors, "single": len(ctors) == 1 and ctors[0][1] is not None}
         self.data.types[name] = info
         for cname, fields, _ in ctors:
-            self.data.ctor_type[cname] = name
+            if name.startswith("RISCV64."):
+                self.data.arch_ctor_type[cname] = name
+                self.data.ctor_type.setdefault(cname, name)
+            else:
+                self.data.ctor_type[cname] = name
             for fname, _ in fields or []:
                 self.data.field_type[fname] = name
 
     def emit_data(self, name, node):
         info = self.data.types[name]
-        derives = "deriving Inhabited"
-        d = node.child_by_field_name("deriving")
-        if d is not None and "Eq" in self.text(d):
-            derives = "deriving Inhabited, DecidableEq"
+        # DecidableEq whenever derivable (Haskell sometimes hand-writes `instance Eq`); full.py drops it
+        # again for types that contain functions
+        derives = "deriving Inhabited, DecidableEq"
         out = []
         if info["single"]:
             cname, fields, _ = info["ctors"][0]
             out.append(f"/-- Haskell `data {name} = {cname} {{ … }}` -/")
             out.append(f"structure {name} where")
+            out.append(f"  {cname} ::")   # keep the Haskell constructor name
             for fname, ft in fields:
                 out.append(f"  {fname} : {self.ty(ft)}")
             out.append(f"  {derives}")
@@ -208,6 +218,16 @@ class Translator:
             else:
                 out.append(f"  | {cname}" + "".join(f" (a{i} : {self.ty(t)})" for i, t in enumerate(args)))
         out.append(f"  {derives}")
+        if all(not args and not fields for _, fields, args in info["ctors"]):
+            # enumeration: Haskell `Enum`/`fromIntegral` via the constructor index Lean generates
+            out.append("")
+            cs = [c for c, _, _ in info["ctors"]]
+            to = " ".join(f"| .{c} => {i}" for i, c in enumerate(cs))
+            of = " ".join(f"| {i} => .{c}" for i, c in enumerate(cs))
+            q = f"_root_.Sel4Lean.Spec.{name}"   # a constructor may share the type's name (data UserData = UserData)
+            out.append(f"def {name}.toIdx : {q} → Int {to}")
+            out.append(f"def {name}.ofIdx : Nat → {q} {of} | _ => default")
+            out.append(f"instance : IntegralH {q} := ⟨{name}.toIdx, fun i => {name}.ofIdx i.toNat⟩")
         # Haskell field selectors and record update, per field (fields may be shared by constructors)
         fields_all = {}
         for cname, fields, args in info["ctors"]:

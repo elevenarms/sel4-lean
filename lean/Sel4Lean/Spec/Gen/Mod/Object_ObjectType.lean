@@ -16,7 +16,7 @@ noncomputable section
 opaque RISCV64.capUntypedPtr : ArchCapability → PPtr Unit
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.capUntypedSize : ArchCapability → Word
+opaque RISCV64.capUntypedSize : ArchCapability → RISCV64.Word
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel ArchCapability
@@ -28,7 +28,7 @@ opaque RISCV64.cteGuardBits : Nat
 opaque RISCV64.cteRightsBits : Nat
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
+opaque RISCV64.decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.deriveCap : (PPtr CTE) → ArchCapability → KernelF SyscallError Capability
@@ -46,7 +46,10 @@ opaque RISCV64.isIRQControlCapDescendant : ArchCapability → Bool
 opaque RISCV64.isPhysicalCap : ArchCapability → Bool
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.performInvocation : Invocation → KernelP (List Word)
+opaque RISCV64.maskCapRights : CapRights → ArchCapability → Capability
+
+-- arch: SEL4/Object/ObjectType/RISCV64.hs
+opaque RISCV64.performInvocation : Invocation → KernelP (List RISCV64.Word)
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.postCapDeletion : ArchCapability → Kernel Unit
@@ -55,7 +58,7 @@ opaque RISCV64.postCapDeletion : ArchCapability → Kernel Unit
 opaque RISCV64.prepareThreadDelete : (PPtr TCB) → Kernel Unit
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.updateCapData : Bool → Word → ArchCapability → Capability
+opaque RISCV64.updateCapData : Bool → RISCV64.Word → ArchCapability → Capability
 
 -- external: SEL4/Object/Endpoint.lhs
 opaque cancelAllIPC : (PPtr Endpoint) → Kernel Unit
@@ -132,9 +135,6 @@ opaque isIRQControlCapDescendant : ArchCapability → Bool
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque mask {w : Type} [Inhabited w] : Nat → w
 
--- local, not translated: record update of unknown field: record at line 322: 'c {\n    capEPCanSend = cap
-opaque maskCapRights : CapRights → Capability → Capability
-
 -- external: SEL4/Model/PSpace.lhs
 opaque objBits {a : Type} [Inhabited a] : a → Nat
 
@@ -176,12 +176,6 @@ opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
-  capAllowGrant: no signature found
-  capAllowGrantReply: no signature found
-  capAllowRead: no signature found
-  capEPCanGrantReply: no signature found
-  capEPCanReceive: no signature found
-  capNtfnCanReceive: no signature found
   error: no signature found
   finiteBitSize: no signature found
   fromIntegral: no signature found
@@ -225,11 +219,11 @@ def isCapRevocable (newCap : Capability) (srcCap : Capability) : Bool :=
 /-- Haskell `finaliseCap` -/
 def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability × Capability) :=
   match x0, x1, x2 with
-  | (Capability.EndpointCap ptr _ _ _), final, _ => 
+  | (Capability.EndpointCap ptr _ _ _ _ _), final, _ => 
       do
         whenH final (cancelAllIPC ptr)
         pure ((Capability.NullCap, Capability.NullCap))
-  | (Capability.NotificationCap ptr _ _), final, _ => 
+  | (Capability.NotificationCap ptr _ _ _), final, _ => 
       do
         whenH final (do
           unbindMaybeNotification ptr
@@ -266,7 +260,7 @@ def postCapDeletion (info : Capability) : Kernel Unit :=
 /-- Haskell `hasCancelSendRights` -/
 def hasCancelSendRights (x0 : Capability) : Bool :=
   match x0 with
-  | (Capability.EndpointCap _ _ true true) => true
+  | (Capability.EndpointCap _ _ true true true true) => true
   | _ => false
 
 /-- Haskell `capUntypedPtr` -/
@@ -274,8 +268,8 @@ def capUntypedPtr (x0 : Capability) : PPtr Unit :=
   match x0 with
   | Capability.NullCap => error "No valid pointer"
   | (Capability.UntypedCap _ p _ _) => p
-  | (Capability.EndpointCap (PPtr.mk p) _ _ _) => PPtr.mk p
-  | (Capability.NotificationCap (PPtr.mk p) _ _) => PPtr.mk p
+  | (Capability.EndpointCap (PPtr.mk p) _ _ _ _ _) => PPtr.mk p
+  | (Capability.NotificationCap (PPtr.mk p) _ _ _) => PPtr.mk p
   | (Capability.ReplyCap (PPtr.mk p) _ _) => PPtr.mk p
   | (Capability.CNodeCap (PPtr.mk p) _ _ _) => PPtr.mk p
   | (Capability.ThreadCap (PPtr.mk p)) => PPtr.mk p
@@ -360,6 +354,22 @@ def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability :=
   | p, w, (Capability.ArchObjectCap aoCap) => (RISCV64.updateCapData) p w aoCap
   | _, _, cap => cap
 
+/-- Haskell `maskCapRights` -/
+def maskCapRights (x0 : CapRights) (x1 : Capability) : Capability :=
+  match x0, x1 with
+  | _, Capability.NullCap => Capability.NullCap
+  | _, Capability.DomainCap => Capability.DomainCap
+  | _, c@(Capability.UntypedCap ..) => c
+  | r, c@(Capability.EndpointCap ..) => Capability.set_capEPCanGrantReply (Capability.set_capEPCanGrant (Capability.set_capEPCanReceive (Capability.set_capEPCanSend c ((Capability.capEPCanSend c) && (CapRights.capAllowWrite r))) ((Capability.capEPCanReceive c) && (CapRights.capAllowRead r))) ((Capability.capEPCanGrant c) && (CapRights.capAllowGrant r))) ((Capability.capEPCanGrantReply c) && (CapRights.capAllowGrantReply r))
+  | r, c@(Capability.NotificationCap ..) => Capability.set_capNtfnCanReceive (Capability.set_capNtfnCanSend c ((Capability.capNtfnCanSend c) && (CapRights.capAllowWrite r))) ((Capability.capNtfnCanReceive c) && (CapRights.capAllowRead r))
+  | r, c@(Capability.ReplyCap ..) => Capability.set_capReplyCanGrant c ((Capability.capReplyCanGrant c) && (CapRights.capAllowGrant r))
+  | _, c@(Capability.CNodeCap ..) => c
+  | _, c@(Capability.ThreadCap ..) => c
+  | _, c@Capability.IRQControlCap => c
+  | _, c@(Capability.IRQHandlerCap ..) => c
+  | r, (Capability.ArchObjectCap aoCap) => (RISCV64.maskCapRights) r aoCap
+  | _, c@(Capability.Zombie ..) => c
+
 /-- Haskell `createObject` -/
 def createObject (t : ObjectType) (regionBase : PPtr Unit) (userSize : Nat) (isDevice : Bool) : Kernel Capability :=
   let funupd := fun f x v y => if y == x then
@@ -389,8 +399,8 @@ def createObject (t : ObjectType) (regionBase : PPtr Unit) (userSize : Nat) (isD
 /-- Haskell `decodeInvocation` -/
 def decodeInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : Capability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError Invocation :=
   match x0, x1, x2, x3, x4, x5 with
-  | _, _, _, _, cap@(Capability.EndpointCap _ _ true _), _ => pure (Invocation.InvokeEndpoint (Capability.capEPPtr cap) (Capability.capEPBadge cap) (Capability.capEPCanGrant cap) (capEPCanGrantReply cap))
-  | _, _, _, _, cap@(Capability.NotificationCap _ _ true), _ => 
+  | _, _, _, _, cap@(Capability.EndpointCap _ _ true _ _ _), _ => pure (Invocation.InvokeEndpoint (Capability.capEPPtr cap) (Capability.capEPBadge cap) (Capability.capEPCanGrant cap) (Capability.capEPCanGrantReply cap))
+  | _, _, _, _, cap@(Capability.NotificationCap _ _ true _), _ => 
       do
         pure (Invocation.InvokeNotification (Capability.capNtfnPtr cap) (Capability.capNtfnBadge cap))
   | _, _, _, slot, cap@(Capability.ReplyCap _ false _), _ => 

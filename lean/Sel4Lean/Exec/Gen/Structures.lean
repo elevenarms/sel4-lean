@@ -12,7 +12,7 @@ inductive NTFN where
   | IdleNtfn
   | ActiveNtfn (ntfnMsgIdentifier : Word)
   | WaitingNtfn (ntfnQueue : List (PPtr TCB))
-  deriving Inhabited
+  deriving Inhabited, DecidableEq
 
 /-- Haskell selector `ntfnMsgIdentifier` (partial in Haskell; `default` elsewhere, like Isabelle). -/
 def NTFN.ntfnMsgIdentifier : NTFN → Word
@@ -36,9 +36,10 @@ def NTFN.set_ntfnQueue (x : NTFN) (v : List (PPtr TCB)) : NTFN :=
 
 /-- Haskell `data Notification = NTFN { … }` -/
 structure Notification where
+  NTFN ::
   ntfnObj : NTFN
   ntfnBoundTCB : Option (PPtr TCB)
-  deriving Inhabited
+  deriving Inhabited, DecidableEq
 
 /-- Haskell `data ThreadState` -/
 inductive ThreadState where

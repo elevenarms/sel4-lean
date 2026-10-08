@@ -176,7 +176,6 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
   notElem: no signature found
   otherwise: no signature found
   replicate: no signature found
-  runExceptT: no signature found
   runStateT: no signature found
   shiftL: no signature found
   shiftR: no signature found
@@ -184,7 +183,6 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
   snd: no signature found
   tail: no signature found
   take: no signature found
-  throwError: no signature found
   undefined: no signature found
 -/
 
@@ -335,7 +333,7 @@ def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelInit Unit 
   do
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let maxSlot ← noInitFailure (gets InitData.initSlotPosMax)
-    whenH (currSlot ≥ maxSlot) (throwError InitFailure.IFailure)
+    whenH (currSlot ≥ maxSlot) (throw InitFailure.IFailure)
     let slot ← doKernelOp (locateSlotCap rootCNodeCap currSlot)
     doKernelOp (insertInitCap slot cap)
     noInitFailure (modify (fun st => { st with initSlotPosCur := currSlot + 1 }))
@@ -381,7 +379,7 @@ def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
   do
     let initData := { initFreeMemory := [], initSlotPosCur := 0, initSlotPosMax := bit (pageBits), initBootInfo := nopBIFrameData, initVPtrOffset := vptr, initBootInfoFrame := 0 : InitData }
     (flip runStateT) initData (do
-      let result ← runExceptT oper
+      let result ← ExceptT.run oper
       either (fun _ => failH "initKernel Fail") pure result)
     pure ()
 

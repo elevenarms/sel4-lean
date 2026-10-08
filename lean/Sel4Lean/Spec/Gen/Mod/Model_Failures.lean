@@ -18,8 +18,6 @@ noncomputable section
   flip: no signature found
   fromIntegral: no signature found
   lift: no signature found
-  runExceptT: no signature found
-  throwError: no signature found
 -/
 
 /-! ## Translated -/
@@ -30,18 +28,18 @@ def withoutFailure : (Kernel a) → KernelF f a :=
 
 /-- Haskell `throw` -/
 def throw : f → KernelF f a :=
-  throwError
+  throw
 
 /-- Haskell `catchFailure` -/
 def catchFailure (f : KernelF f a) (h : f → Kernel a) : Kernel a :=
   do
-    let result ← runExceptT f
+    let result ← ExceptT.run f
     either h pure result
 
 /-- Haskell `rethrowFailure` -/
 def rethrowFailure (t : f1 → f2) (m : KernelF f1 a) : KernelF f2 a :=
   do
-    let result ← lift (runExceptT m)
+    let result ← lift (ExceptT.run m)
     either (throw ∘ t) pure result
 
 /-- Haskell `capFaultOnFailure` -/

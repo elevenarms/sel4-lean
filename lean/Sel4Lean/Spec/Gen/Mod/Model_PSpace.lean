@@ -109,7 +109,7 @@ def getObject (ptr : PPtr a) : Kernel a :=
     let map ← gets (PSpace.psMap ∘ KernelState.ksPSpace)
     let (before, after) := lookupAround2 (PPtr.ptr ptr) map
     let (ptr', val) ← maybeToMonad before
-    loadObject (PPtr.ptr ptr) ptr' after SlotRegion.val
+    loadObject (PPtr.ptr ptr) ptr' after Register.val
 
 /-- Haskell `setObject` -/
 def setObject (ptr : PPtr a) (val : a) : Kernel Unit :=
@@ -118,7 +118,7 @@ def setObject (ptr : PPtr a) (val : a) : Kernel Unit :=
     let map := PSpace.psMap ps
     let (before, after) := lookupAround2 (PPtr.ptr ptr) map
     let (ptr', obj) ← maybeToMonad before
-    let obj' ← updateObject SlotRegion.val obj (PPtr.ptr ptr) ptr' after
+    let obj' ← updateObject Register.val obj (PPtr.ptr ptr) ptr' after
     let map' := (insert) ptr' obj' map
     let ps' := { ps with psMap := map' }
     modify (fun ks => { ks with ksPSpace := ps' })
@@ -130,7 +130,7 @@ def alignError (n : Nat) : m a :=
 /-- Haskell `placeNewObject'` -/
 def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat) : Kernel Unit :=
   do
-    let objSizeBits := objBitsKO SlotRegion.val
+    let objSizeBits := objBitsKO Register.val
     let totalBits := objSizeBits + groupSizeBits
     unlessH (((PPtr.ptr ptr) &&& (mask totalBits)) == 0) (alignError totalBits)
     let ps ← gets KernelState.ksPSpace
@@ -140,13 +140,13 @@ def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat)
     | none => pure ()
     | some (x, _) => assertH (x < (PPtr.ptr ptr)) "Object creation would destroy an existing object"
     let addresses := map (fun n => (PPtr.ptr ptr) + (n <<< objSizeBits)) (enumFromToH 0 ((1 <<< groupSizeBits) - 1))
-    let map' := foldr (fun addr map => (insert) addr SlotRegion.val map) (PSpace.psMap ps) addresses
+    let map' := foldr (fun addr map => (insert) addr Register.val map) (PSpace.psMap ps) addresses
     let ps' := { ps with psMap := map' }
     modify (fun ks => { ks with ksPSpace := ps' })
 
 /-- Haskell `placeNewObject` -/
 def placeNewObject (ptr : PPtr Unit) (val : a) (groupSizeBits : Nat) : Kernel Unit :=
-  placeNewObject' ptr (injectKO SlotRegion.val) groupSizeBits
+  placeNewObject' ptr (injectKO Register.val) groupSizeBits
 
 /-- Haskell `deleteRange` -/
 def deleteRange (m : (Word → Option a)) (pstart : Word) (bits : Nat) : (Word → Option a) :=
@@ -206,7 +206,7 @@ def reserveFrame (ptr : PPtr a) (isKernel : Bool) : Kernel Unit :=
         KernelObject.KOKernelData
       else
         KernelObject.KOUserData
-    placeNewObject' (PPtr.mk (PPtr.ptr ptr)) SlotRegion.val 0
+    placeNewObject' (PPtr.mk (PPtr.ptr ptr)) Register.val 0
     pure ()
 
 /-- Haskell `typeError` -/

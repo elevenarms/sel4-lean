@@ -165,11 +165,11 @@ def handleRecv (isBlocking : Bool) : Kernel Unit :=
     catchFailure (capFaultOnFailure epCPtr true (do
       let epCap ← lookupCap thread epCPtr
       match CNodeInvocation.epCap with
-      | Capability.EndpointCap _ _ _ _ => (do
+      | Capability.EndpointCap _ _ _ true _ _ => (do
             withoutFailure (do
               deleteCallerCap thread
               receiveIPC thread CNodeInvocation.epCap isBlocking))
-      | Capability.NotificationCap ntfnPtr _ _ => (do
+      | Capability.NotificationCap ntfnPtr _ _ true => (do
             let ntfn ← withoutFailure (getNotification ntfnPtr)
             let boundTCB ← pure (Notification.ntfnBoundTCB ntfn)
             if (boundTCB == (some thread)) || (boundTCB == none) then

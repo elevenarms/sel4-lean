@@ -30,9 +30,6 @@ opaque mask {w : Type} [Inhabited w] : Nat → w
 -- external: SEL4/API/Types/Universal.lhs
 opaque ntfnSizeBits : Nat
 
--- local, not translated: record construction with unknown fields: record at line 349: 'MDB {\n    mdbNext
-opaque nullMDBNode : MDBNode
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque nullPointer {a : Type} [Inhabited a] : PPtr a
 
@@ -56,8 +53,6 @@ opaque wordBits : Nat
   div: no signature found
   fromIntegral: no signature found
   fst: no signature found
-  mdbFirstBadged: no signature found
-  mdbPrev: no signature found
   snd: no signature found
 -/
 
@@ -158,6 +153,10 @@ def maxDomain : Priority :=
 /-- Haskell `l2BitmapSize` -/
 def l2BitmapSize : Nat :=
   div ((numPriorities + wordBits) - 1) wordBits
+
+/-- Haskell `nullMDBNode` -/
+def nullMDBNode : MDBNode :=
+  { mdbNext := nullPointer, mdbPrev := nullPointer, mdbRevocable := false, mdbFirstBadged := false : MDBNode }
 
 /-- Haskell `dschDomain` -/
 def dschDomain : DomainScheduleItem → Domain :=

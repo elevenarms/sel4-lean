@@ -13,10 +13,10 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.checkIRQ : Word → KernelF SyscallError Unit
+opaque RISCV64.checkIRQ : RISCV64.Word → KernelF SyscallError Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
+opaque RISCV64.decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
 opaque RISCV64.handleReservedIRQ : RISCV64.IRQ → Kernel Unit
@@ -206,7 +206,7 @@ def decodeIRQHandlerInvocation (label : Word) (irq : IRQ) (extraCaps : List (Cap
   match (genInvocationType label, extraCaps) with
   | (GenInvocationLabels.IRQAckIRQ, _) => pure (IRQHandlerInvocation.AckIRQ irq)
   | (GenInvocationLabels.IRQSetIRQHandler, (cap, slot) :: _) => (match cap with
-      | Capability.NotificationCap _ _ true => pure (IRQHandlerInvocation.SetIRQHandler irq cap slot)
+      | Capability.NotificationCap _ _ true _ => pure (IRQHandlerInvocation.SetIRQHandler irq cap slot)
       | _ => throw (SyscallError.InvalidCapability 0))
   | (GenInvocationLabels.IRQSetIRQHandler, _) => throw SyscallError.TruncatedMessage
   | (GenInvocationLabels.IRQClearIRQHandler, _) => pure (IRQHandlerInvocation.ClearIRQHandler irq)
@@ -280,7 +280,7 @@ def handleInterrupt (irq : IRQ) : Kernel Unit :=
               let slot ← getIRQSlot irq
               let cap ← getSlotCap slot
               match cap with
-              | Capability.NotificationCap _ _ true => sendSignal (Capability.capNtfnPtr cap) (Capability.capNtfnBadge cap)
+              | Capability.NotificationCap _ _ true _ => sendSignal (Capability.capNtfnPtr cap) (Capability.capNtfnBadge cap)
               | _ => doMachineOp (debugPrint ("Undelivered interrupt: " ++ («show» irq)))
               (RISCV64.maskIrqSignal) irq)
         | IRQState.IRQTimer => (do

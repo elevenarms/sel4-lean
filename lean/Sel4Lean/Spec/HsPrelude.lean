@@ -30,12 +30,20 @@ class IntegralH (α : Type) where
 instance {n : Nat} : IntegralH (BitVec n) := ⟨fun x => x.toNat, fun i => BitVec.ofInt n i⟩
 instance : IntegralH Int := ⟨id, id⟩
 instance : IntegralH Nat := ⟨Int.ofNat, Int.toNat⟩
+instance : IntegralH Bool := ⟨fun b => if b then 1 else 0, fun i => i != 0⟩
+
+instance {α : Type} : IntegralH (Sel4Lean.Exec.PPtr α) := ⟨fun p => p.ptr.toNat, fun i => ⟨BitVec.ofInt 64 i⟩⟩
+
+/-- Haskell `fromEnum` / `toEnum` (enumerations are `IntegralH` via their constructor index). -/
+abbrev fromEnum {α : Type} [IntegralH α] (x : α) : Nat := (IntegralH.toInt x).toNat
+abbrev toEnum {α : Type} [IntegralH α] (i : Nat) : α := IntegralH.ofInt i
 
 /-- Haskell `fromIntegral` (unsigned words convert through their natural-number value, like `ucast`). -/
 abbrev fromIntegral {α β : Type} [IntegralH α] [IntegralH β] (x : α) : β :=
   IntegralH.ofInt (IntegralH.toInt x)
 
-abbrev bit {n : Nat} (i : Nat) : BitVec n := 1#n <<< i
+/-- Haskell `bit :: Bits a => Int -> a` (used at words and at Int/Nat). -/
+abbrev bit {α : Type} [IntegralH α] (i : Nat) : α := IntegralH.ofInt ((2 : Int) ^ i)
 abbrev testBit {n : Nat} (x : BitVec n) (i : Nat) : Bool := x.getLsbD i
 abbrev complement {n : Nat} (x : BitVec n) : BitVec n := ~~~x
 abbrev finiteBitSize {n : Nat} (_ : BitVec n) : Nat := n
@@ -66,6 +74,8 @@ abbrev reverse {α : Type} (xs : List α) : List α := xs.reverse
 abbrev takeWhile {α : Type} (p : α → Bool) (xs : List α) : List α := xs.takeWhile p
 abbrev elem {α : Type} [BEq α] (x : α) (xs : List α) : Bool := xs.contains x
 abbrev notElem {α : Type} [BEq α] (x : α) (xs : List α) : Bool := !xs.contains x
+abbrev filterM {m : Type → Type} [Monad m] {α : Type} (p : α → m Bool) (xs : List α) : m (List α) :=
+  xs.filterM p
 abbrev foldl' {α β : Type} (f : β → α → β) (z : β) (xs : List α) : β := xs.foldl f z
 abbrev listIndexH {α : Type} [Inhabited α] (xs : List α) (i : Int) : α := xs.getD i.toNat default
 abbrev enumFromToH {α : Type} [IntegralH α] (a b : α) : List α :=

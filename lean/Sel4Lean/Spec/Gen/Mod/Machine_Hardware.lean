@@ -22,7 +22,7 @@ opaque RISCV64.addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
 opaque RISCV64.addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.clearMemory : (PPtr Word) → Nat → MachineMonad Unit
+opaque RISCV64.clearMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
 opaque RISCV64.configureTimer : MachineMonad RISCV64.IRQ
@@ -31,10 +31,10 @@ opaque RISCV64.configureTimer : MachineMonad RISCV64.IRQ
 opaque RISCV64.debugPrint : String → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.freeMemory : (PPtr Word) → Nat → MachineMonad Unit
+opaque RISCV64.freeMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.fromPAddr : PAddr → Word
+opaque RISCV64.fromPAddr : PAddr → RISCV64.Word
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
 opaque RISCV64.getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
@@ -43,7 +43,7 @@ opaque RISCV64.getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
 opaque RISCV64.getDeviceRegions : MachineMonad (List (PAddr × PAddr))
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
+opaque RISCV64.getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word)))
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
 opaque RISCV64.getMemoryRegions : MachineMonad (List (PAddr × PAddr))
@@ -52,7 +52,7 @@ opaque RISCV64.getMemoryRegions : MachineMonad (List (PAddr × PAddr))
 opaque RISCV64.initIRQController : MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.loadWord : (PPtr Word) → MachineMonad Word
+opaque RISCV64.loadWord : (PPtr RISCV64.Word) → MachineMonad RISCV64.Word
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
 opaque RISCV64.maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
@@ -76,10 +76,10 @@ opaque RISCV64.ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
 opaque RISCV64.resetTimer : MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.storeWord : (PPtr Word) → Word → MachineMonad Unit
+opaque RISCV64.storeWord : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.storeWordVM : (PPtr Word) → Word → MachineMonad Unit
+opaque RISCV64.storeWordVM : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque paddrBase : PAddr

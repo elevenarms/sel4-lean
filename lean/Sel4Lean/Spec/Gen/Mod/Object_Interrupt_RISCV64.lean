@@ -22,7 +22,7 @@ opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
 -- local, not translated: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
-opaque decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
+opaque decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
 
 -- external: SEL4/Model/StateData.lhs
 opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
@@ -73,7 +73,7 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `checkIRQ` -/
-def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
+def checkIRQ (irqW : RISCV64.Word) : KernelF SyscallError Unit :=
   whenH ((irqW > (fromIntegral (fromEnum maxIRQ))) || (irqW == (fromIntegral (fromEnum irqInvalid)))) (throw (SyscallError.RangeError 1 (fromIntegral (fromEnum maxIRQ))))
 
 /-- Haskell `plic_complete_claim` -/

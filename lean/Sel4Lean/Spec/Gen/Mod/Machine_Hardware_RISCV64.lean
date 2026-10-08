@@ -31,7 +31,6 @@ opaque setRegister : Register → Word → UserMonad Unit
 opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 
 /-! ## Unresolved (no stub possible)
-  ask: no signature found
   error: no signature found
   liftIO: no signature found
   putStrLn: no signature found
@@ -45,7 +44,7 @@ def toPAddr :=
   PAddr.PAddr
 
 /-- Haskell `vmFaultTypeFSR` -/
-def vmFaultTypeFSR (f : VMFaultType) : Word :=
+def vmFaultTypeFSR (f : VMFaultType) : RISCV64.Word :=
   match f with
   | VMFaultType.RISCVInstructionAccessFault => 1
   | VMFaultType.RISCVLoadAccessFault => 5
@@ -55,7 +54,7 @@ def vmFaultTypeFSR (f : VMFaultType) : Word :=
   | VMFaultType.RISCVStorePageFault => 15
 
 /-- Haskell `fromPAddr` -/
-def fromPAddr : PAddr → Word :=
+def fromPAddr : PAddr → RISCV64.Word :=
   PAddr.fromPAddr
 
 /-- Haskell `paddrBase` -/
@@ -129,13 +128,13 @@ def pageBitsForSize (x0 : VMPageSize) : Nat :=
 /-- Haskell `configureTimer` -/
 def configureTimer : MachineMonad RISCV64.IRQ :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((configureTimer) cbptr)
 
 /-- Haskell `resetTimer` -/
 def resetTimer : MachineMonad Unit :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((resetTimer) cbptr)
 
 /-- Haskell `initIRQController` -/
@@ -155,20 +154,20 @@ def setNextPC :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
 
 /-- Haskell `clearMemory` -/
-def clearMemory (ptr : PPtr Word) (byteLength : Nat) : MachineMonad Unit :=
+def clearMemory (ptr : PPtr RISCV64.Word) (byteLength : Nat) : MachineMonad Unit :=
   error "Unimplemented -- machine op"
 
 /-- Haskell `initMemory` -/
-def initMemory : (PPtr Word) → Nat → MachineMonad Unit :=
+def initMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit :=
   clearMemory
 
 /-- Haskell `freeMemory` -/
-def freeMemory (x0 : PPtr Word) (x1 : Nat) : MachineMonad Unit :=
+def freeMemory (x0 : PPtr RISCV64.Word) (x1 : Nat) : MachineMonad Unit :=
   match x0, x1 with
   | _, _ => pure ()
 
 /-- Haskell `clearMemoryVM` -/
-def clearMemoryVM (ptr : PPtr Word) (bits : Nat) : MachineMonad Unit :=
+def clearMemoryVM (ptr : PPtr RISCV64.Word) (bits : Nat) : MachineMonad Unit :=
   error "Unimplemented -- machine op"
 
 /-- Haskell `setVSpaceRoot` -/
@@ -184,7 +183,7 @@ def hwASIDFlush (asid : BitVec 64) : MachineMonad Unit :=
   error "unimplemented - machine op"
 
 /-- Haskell `vmRightsToBits` -/
-def vmRightsToBits (x0 : VMRights) : Word :=
+def vmRightsToBits (x0 : VMRights) : RISCV64.Word :=
   match x0 with
   | VMRights.VMKernelOnly => 1
   | VMRights.VMReadOnly => 2
@@ -212,7 +211,7 @@ def getVMRights (x0 : Bool) (x1 : Bool) : VMRights :=
   | _, _ => VMRights.VMKernelOnly
 
 /-- Haskell `vmRightsFromBits` -/
-def vmRightsFromBits (rw : Word) : VMRights :=
+def vmRightsFromBits (rw : RISCV64.Word) : VMRights :=
   getVMRights (testBit rw 1) (testBit rw 0)
 
 /-- Haskell `pageColourBits` -/
@@ -222,35 +221,35 @@ def pageColourBits : Nat :=
 /-- Haskell `getMemoryRegions` -/
 def getMemoryRegions : MachineMonad (List (PAddr × PAddr)) :=
   do
-    let cpbtr ← ask
+    let cpbtr ← read
     liftIO ((getMemoryRegions) cpbtr)
 
 /-- Haskell `getDeviceRegions` -/
 def getDeviceRegions : MachineMonad (List (PAddr × PAddr)) :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((getDeviceRegions) cbptr)
 
 /-- Haskell `getKernelDevices` -/
-def getKernelDevices : MachineMonad (List (PAddr × (PPtr Word))) :=
+def getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word))) :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((getKernelDevices) cbptr)
 
 /-- Haskell `storeWord` -/
-def storeWord (ptr : PPtr Word) (val : Word) : MachineMonad Unit :=
+def storeWord (ptr : PPtr RISCV64.Word) (val : RISCV64.Word) : MachineMonad Unit :=
   do
-    let cbptr ← ask
-    liftIO ((storeWordCallback) cbptr (addrFromPPtr ptr) SlotRegion.val)
+    let cbptr ← read
+    liftIO ((storeWordCallback) cbptr (addrFromPPtr ptr) Register.val)
 
 /-- Haskell `storeWordVM` -/
-def storeWordVM (ptr : PPtr Word) (val : Word) : MachineMonad Unit :=
-  storeWord ptr SlotRegion.val
+def storeWordVM (ptr : PPtr RISCV64.Word) (val : RISCV64.Word) : MachineMonad Unit :=
+  storeWord ptr Register.val
 
 /-- Haskell `loadWord` -/
-def loadWord (ptr : PPtr Word) : MachineMonad Word :=
+def loadWord (ptr : PPtr RISCV64.Word) : MachineMonad RISCV64.Word :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((loadWordCallback) cbptr (addrFromPPtr ptr))
 
 /-- Haskell `getActiveIRQ` -/
@@ -258,19 +257,19 @@ def getActiveIRQ (x0 : Bool) : MachineMonad (Option RISCV64.IRQ) :=
   match x0 with
   | _ => 
       do
-        let cbptr ← ask
+        let cbptr ← read
         liftIO ((getActiveIRQ) cbptr)
 
 /-- Haskell `ackInterrupt` -/
 def ackInterrupt (irq : RISCV64.IRQ) : MachineMonad Unit :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((ackInterrupt) cbptr irq)
 
 /-- Haskell `maskInterrupt` -/
 def maskInterrupt (maskI : Bool) (irq : RISCV64.IRQ) : MachineMonad Unit :=
   do
-    let cbptr ← ask
+    let cbptr ← read
     liftIO ((maskInterrupt) cbptr maskI irq)
 
 /-- Haskell `debugPrint` -/
@@ -278,7 +277,7 @@ def debugPrint (str : String) : MachineMonad Unit :=
   liftIO (putStrLn str)
 
 /-- Haskell `read_stval` -/
-def read_stval : MachineMonad Word :=
+def read_stval : MachineMonad RISCV64.Word :=
   error "Unimplemented - machine op"
 
 /-- Haskell `plic_complete_claim` -/

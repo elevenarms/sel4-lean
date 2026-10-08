@@ -1,8 +1,8 @@
 ✔ API
-✖ API_Failures
+✔ API_Failures
 ✔ API_Failures_RISCV64
-✖ API_Faults
-✖ API_Faults_RISCV64
+✔ API_Faults
+✔ API_Faults_RISCV64
 ✔ API_Invocation
 ✖ API_InvocationLabels
 ✔ API_InvocationLabels_RISCV64
@@ -29,12 +29,12 @@
 ✖ Machine_Hardware_RISCV64_HiFive
 ✖ Machine_Hardware_RISCV64_Spike
 ✖ Machine_RegisterSet
-✖ Machine_RegisterSet_RISCV64
+✔ Machine_RegisterSet_RISCV64
 ✔ Machine_Target
 ✔ Model
 ✖ Model_Failures
 ✖ Model_PSpace
-✖ Model_Preemption
+✔ Model_Preemption
 ✖ Model_StateData
 ✔ Model_StateData_RISCV64
 ✖ Model_Syscall
@@ -48,8 +48,7 @@
 ✖ Object_Interrupt_RISCV64
 ✔ Object_Notification
 ✖ Object_ObjectType
-✖ Object_ObjectType_RISCV64
-✖ Object_Structures
+✔ Object_Structures
 ✖ Object_Structures_RISCV64
 ✖ Object_TCB
 ✖ Object_Untyped

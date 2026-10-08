@@ -62,11 +62,11 @@ def tlsBaseRegister : RISCV64.Register :=
   RISCV64.Register.TP
 
 /-- Haskell `sstatusSPIE` -/
-def sstatusSPIE : Word :=
+def sstatusSPIE : RISCV64.Word :=
   0x20
 
 /-- Haskell `initContext` -/
-def initContext : List (RISCV64.Register × Word) :=
+def initContext : List (RISCV64.Register × RISCV64.Word) :=
   [(RISCV64.Register.SSTATUS, sstatusSPIE)]
 
 /-- Haskell `faultRegister` -/

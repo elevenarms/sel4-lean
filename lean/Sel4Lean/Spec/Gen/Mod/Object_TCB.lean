@@ -28,7 +28,7 @@ opaque RISCV64.postModifyRegisters : (PPtr TCB) → (PPtr TCB) → UserMonad Uni
 opaque RISCV64.postSetFlags : (PPtr TCB) → TcbFlags → Kernel Unit
 
 -- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.sanitiseRegister : Bool → RISCV64.Register → Word → Word
+opaque RISCV64.sanitiseRegister : Bool → RISCV64.Register → RISCV64.Word → RISCV64.Word
 
 -- external: SEL4/Object/Structures/RISCV64.hs
 opaque atcbContextGet : ArchTCB → UserContext
@@ -53,27 +53,6 @@ opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
-
--- local, not translated: record construction with unknown fields: record at line 125: 'CopyRegisters {\n 
-opaque decodeCopyRegisters : (List Word) → Capability → (List Capability) → KernelF SyscallError TCBInvocation
-
--- local, not translated: record construction with unknown fields: record at line 275: 'ThreadControl {\n 
-opaque decodeSetIPCBuffer : (List Word) → Capability → (PPtr CTE) → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
-
--- local, not translated: record construction with unknown fields: record at line 229: 'ThreadControl {\n 
-opaque decodeSetMCPriority : (List Word) → Capability → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
-
--- local, not translated: record construction with unknown fields: record at line 210: 'ThreadControl {\n 
-opaque decodeSetPriority : (List Word) → Capability → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
-
--- local, not translated: record construction with unknown fields: record at line 250: 'ThreadControl {\n 
-opaque decodeSetSchedParams : (List Word) → Capability → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
-
--- local, not translated: record construction with unknown fields: record at line 320: 'ThreadControl {\n 
-opaque decodeSetSpace : (List Word) → Capability → (PPtr CTE) → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
-
--- local, not translated: record construction with unknown fields: record at line 181: 'ThreadControl {\n 
-opaque decodeTCBConfigure : (List Word) → Capability → (PPtr CTE) → (List (Capability × (PPtr CTE))) → KernelF SyscallError TCBInvocation
 
 -- external: SEL4/Object/TCB/RISCV64.hs
 opaque decodeTransfer : (BitVec 8) → KernelF SyscallError CopyRegisterSets
@@ -251,8 +230,6 @@ opaque wordSize : Nat
 
 /-! ## Unresolved (no stub possible)
   complement: no signature found
-  copyRegsResumeTarget: no signature found
-  copyRegsTransferInteger: no signature found
   drop: no signature found
   forM: no signature found
   fromIntegral: no signature found
@@ -272,7 +249,6 @@ opaque wordSize : Nat
   runState: no signature found
   shiftR: no signature found
   take: no signature found
-  tcNewVRoot: no signature found
   testBit: no signature found
   zipWithM: no signature found
   zipWithM_: no signature found
@@ -300,6 +276,23 @@ def decodeBindNotification (cap : Capability) (extraCaps : List (Capability × (
     | _ => throw SyscallError.IllegalOperation
     pure (TCBInvocation.NotificationControl tcb (some ntfnPtr))
 
+/-- Haskell `decodeCopyRegisters` -/
+def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Capability) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2 with
+  | (flags :: _), cap, extraCaps => 
+      do
+        let suspendSource := testBit flags 0
+        let resumeTarget := testBit flags 1
+        let transferFrame := testBit flags 2
+        let transferInteger := testBit flags 3
+        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
+        whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
+        let srcTCB ← match head extraCaps with
+          | Capability.ThreadCap ptr => pure ptr
+          | _ => throw (SyscallError.InvalidCapability 1)
+        pure (TCBInvocation.CopyRegisters (Capability.capTCBPtr cap) srcTCB suspendSource resumeTarget transferFrame transferInteger transferArch)
+  | _, _, _ => throw SyscallError.TruncatedMessage
+
 /-- Haskell `decodeReadRegisters` -/
 def decodeReadRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1 with
@@ -320,6 +313,22 @@ def decodeSetFlags (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCB
         pure (TCBInvocation.SetFlags (Capability.capTCBPtr cap) flagsClear flagsSet)
   | _, _ => throw SyscallError.TruncatedMessage
 
+/-- Haskell `decodeSetIPCBuffer` -/
+def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2, x3 with
+  | (bufferPtr :: _), cap, slot, (bufferCap, bufferSlot) :: _ => 
+      do
+        let ipcBuffer := VPtr.VPtr bufferPtr
+        let bufferFrame ← if ipcBuffer == 0 then
+            pure none
+          else
+            do
+              let bufferCap' ← deriveCap bufferSlot bufferCap
+              checkValidIPCBuffer ipcBuffer bufferCap'
+              pure (some ((bufferCap', bufferSlot)))
+        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) slot none none none none none (some ((ipcBuffer, bufferFrame))))
+  | _, _, _, _ => throw SyscallError.TruncatedMessage
+
 /-- Haskell `threadGet` -/
 def threadGet (f : TCB → a) (tptr : PPtr TCB) : Kernel a :=
   liftM f (getObject tptr)
@@ -330,6 +339,43 @@ def checkPrio (prio : Word) (auth : PPtr TCB) : KernelF SyscallError Unit :=
     let mcp ← withoutFailure (threadGet TCB.tcbMCP auth)
     whenH (prio > (fromIntegral mcp)) (throw (SyscallError.RangeError (fromIntegral minPriority) (fromIntegral mcp)))
 
+/-- Haskell `decodeSetMCPriority` -/
+def decodeSetMCPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2 with
+  | (newMCP :: _), cap, (authCap, _) :: _ => 
+      do
+        let authTCB ← match authCap with
+          | Capability.ThreadCap tcbPtr => pure tcbPtr
+          | _ => throw (SyscallError.InvalidCapability 1)
+        checkPrio newMCP authTCB
+        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) none none none none)
+  | _, _, _ => throw SyscallError.TruncatedMessage
+
+/-- Haskell `decodeSetPriority` -/
+def decodeSetPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2 with
+  | (newPrio :: _), cap, (authCap, _) :: _ => 
+      do
+        let authTCB ← match authCap with
+          | Capability.ThreadCap tcbPtr => pure tcbPtr
+          | _ => throw (SyscallError.InvalidCapability 1)
+        checkPrio newPrio authTCB
+        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none none (some ((fromIntegral newPrio, authTCB))) none none none)
+  | _, _, _ => throw SyscallError.TruncatedMessage
+
+/-- Haskell `decodeSetSchedParams` -/
+def decodeSetSchedParams (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2 with
+  | (newMCP :: newPrio :: _), cap, (authCap, _) :: _ => 
+      do
+        let authTCB ← match authCap with
+          | Capability.ThreadCap tcbPtr => pure tcbPtr
+          | _ => throw (SyscallError.InvalidCapability 1)
+        checkPrio newMCP authTCB
+        checkPrio newPrio authTCB
+        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) (some ((fromIntegral newPrio, authTCB))) none none none)
+  | _, _, _ => throw SyscallError.TruncatedMessage
+
 /-- Haskell `getThreadCSpaceRoot` -/
 def getThreadCSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   do
@@ -339,6 +385,34 @@ def getThreadCSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
 def getThreadVSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   locateSlotTCB thread tcbVTableSlot
 
+/-- Haskell `decodeSetSpace` -/
+def decodeSetSpace (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2, x3 with
+  | (faultEP :: cRootData :: vRootData :: _), cap, slot, (cRootArg :: vRootArg :: _) => 
+      do
+        let canChangeCRoot ← withoutFailure (liftM not (flip bind slotCapLongRunningDelete (getThreadCSpaceRoot (Capability.capTCBPtr cap))))
+        let canChangeVRoot ← withoutFailure (liftM not (flip bind slotCapLongRunningDelete (getThreadVSpaceRoot (Capability.capTCBPtr cap))))
+        unlessH (canChangeCRoot && canChangeVRoot) (throw SyscallError.IllegalOperation)
+        let (cRootCap, cRootSlot) := cRootArg
+        let cRootCap' ← deriveCap cRootSlot (if cRootData == 0 then
+            cRootCap
+          else
+            updateCapData false cRootData cRootCap)
+        let cRoot ← match cRootCap' with
+          | Capability.CNodeCap .. => pure ((cRootCap', cRootSlot))
+          | _ => throw SyscallError.IllegalOperation
+        let (vRootCap, vRootSlot) := vRootArg
+        let vRootCap' ← deriveCap vRootSlot (if vRootData == 0 then
+            vRootCap
+          else
+            updateCapData false vRootData vRootCap)
+        let vRoot ← if isValidVTableRoot vRootCap' then
+            pure ((vRootCap', vRootSlot))
+          else
+            throw SyscallError.IllegalOperation
+        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) slot (some (CPtr.CPtr faultEP)) none none (some cRoot) (some vRoot) none)
+  | _, _, _, _ => throw SyscallError.TruncatedMessage
+
 /-- Haskell `decodeSetTLSBase` -/
 def decodeSetTLSBase (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1 with
@@ -346,6 +420,16 @@ def decodeSetTLSBase (x0 : List Word) (x1 : Capability) : KernelF SyscallError T
       do
         pure (TCBInvocation.SetTLSBase (Capability.capTCBPtr cap) tls_base)
   | _, _ => throw SyscallError.TruncatedMessage
+
+/-- Haskell `decodeTCBConfigure` -/
+def decodeTCBConfigure (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+  match x0, x1, x2, x3 with
+  | (faultEP :: cRootData :: vRootData :: buffer :: _), cap, slot, (cRoot :: vRoot :: bufferFrame :: _) => 
+      do
+        let setIPCParams ← decodeSetIPCBuffer [buffer] cap slot [bufferFrame]
+        let setSpace ← decodeSetSpace ([faultEP, cRootData, vRootData]) cap slot ([cRoot, vRoot])
+        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) (TCBInvocation.tcThreadCapSlot setSpace) (TCBInvocation.tcNewFaultEP setSpace) none none (TCBInvocation.tcNewCRoot setSpace) (TCBInvocation.tcNewVRoot setSpace) (TCBInvocation.tcNewIPCBuffer setIPCParams))
+  | _, _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeUnbindNotification` -/
 def decodeUnbindNotification (cap : Capability) : KernelF SyscallError TCBInvocation :=
