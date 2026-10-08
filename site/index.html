@@ -172,14 +172,15 @@ html { scroll-behavior: smooth; }
       <li><a href="#translator">one function, three forms</a></li>
       <li><a href="#lean">the lean side</a></li>
       <li><a href="#generated">generated lean</a></li>
+      <li><a href="#proof">first proof</a></li>
       <li><a href="#lessons">lessons</a></li>
       <li><a href="#roadmap">roadmap</a></li>
       <li><a href="#links">links</a></li>
     </ul>
     <div class="box">
       <b>status</b>
-      <span class="ok">C0&ndash;C3 complete</span><br>
-      next: C4 first proof<br>
+      <span class="ok">C0&ndash;C4 complete</span><br>
+      next: C5 Dedukti spike<br>
       <span class="stamp">updated 2026-10-07</span>
     </div>
     <div class="box">
@@ -192,11 +193,11 @@ html { scroll-behavior: smooth; }
   </aside>
 
   <main id="top">
-    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c3</p>
+    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c4</p>
     <p class="lede">
       seL4 is an operating-system kernel with a machine-checked proof, in Isabelle/HOL, that its C code does what
       its specification says. This project is moving that proof to Lean 4, one stage at a time.
-      Stages C0&ndash;C3 are done: the original Isabelle proofs pass on our own machine, Lean has l4v&rsquo;s monad, Hoare logic and <code>corres</code>, and the first slice of the kernel model is translated from Haskell into Lean by our own tool.
+      Stages C0&ndash;C3 are done: the original Isabelle proofs pass on our own machine, Lean has l4v&rsquo;s monad, Hoare logic and <code>corres</code>, the first slice of the kernel model is translated from Haskell into Lean by our own tool, and the first refinement lemma, <code>cancelSignal_corres</code>, is proved in Lean over that generated code.
     </p>
 
     <div class="grid">
@@ -220,7 +221,9 @@ html { scroll-behavior: smooth; }
             <code>corres_split</code> compiled on the first build. One hiccup: an over-eager tactic looped for 10 minutes, so builds now have a time limit. <span class="ok">C2 closed.</span> <span class="hood">(c2)</span></div></li>
           <li><time>16:59</time><div>C3: <code>hs2lean</code>, our Haskell&nbsp;&rarr;&nbsp;Lean translator built on tree-sitter, translated all 13 notification functions and their types.
             The output compiles unedited. Four translator fixes on the way, all about syntax: comments, record construction, nested <code>match</code>, operator fixity. The abstract side is translated by hand. <span class="ok">C3 closed</span> <span class="dim">(side-by-side test deferred until the kernel state is modelled)</span>. <span class="hood">(c3)</span></div></li>
-          <li><time>next</time><div class="dim">C4: <code>cancelSignal_corres</code> in Lean, connecting the two columns below.</div></li>
+          <li><time>17:14</time><div>C4: <span class="ok"><code>cancelSignal_corres</code> proved in Lean</span>, connecting the generated executable spec to the abstract spec, plus the invariant lemma <code>cancelSignal_simple</code>.
+            The proofs use only Lean&rsquo;s standard axioms; every l4v lemma they lean on is listed in one structure. Surprise of the stage: Lean&rsquo;s <code>do</code> compiles <code>let x &larr; match &hellip;</code> into a hidden join point, so <code>wp</code> needs a rule for it. <span class="ok">C4 closed.</span> <span class="hood">(c4)</span></div></li>
+          <li><time>next</time><div class="dim">C5: Dedukti spike (can Isabelle proofs be carried over mechanically?), then the crawl decision: translate or re-prove.</div></li>
         </ol>
       </section>
 
@@ -445,6 +448,27 @@ example :
           just as <code>cancelSignal_corres</code> in l4v uses lemmas proved in other files.</p>
       </section>
 
+      <section id="proof" class="wide">
+        <h2>c4: the first refinement proof <small>&middot; Refine/IpcCancel.lean</small></h2>
+<pre>theorem cancelSignal_corres (H : CancelSignalAssumptions) (t ntfn : ObjRef) :
+    corres dc
+      (fun s =&gt; invs s ∧ st_tcb_at (· = .BlockedOnNotification ntfn) t s)
+      (fun s =&gt; invs&#x27; s ∧ st_tcb_at&#x27; (· = .BlockedOnNotification (toPtr ntfn)) (toPtr t) s)
+      (Sel4Lean.Abstract.cancel_signal t ntfn)
+      (cancelSignal (toPtr t) (toPtr ntfn)) := by</pre>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>lemma</th><th>l4v</th><th class="n">l4v lines</th><th class="n">lean lines</th><th>axioms</th></tr></thead>
+          <tbody>
+            <tr><td><code>cancelSignal_corres</code></td><td>IpcCancel_R.thy:307</td><td class="n">53</td><td class="n">60</td><td>propext, Quot.sound</td></tr>
+            <tr><td><code>cancelSignal_simple</code></td><td>IpcCancel_R.thy:71</td><td class="n">3</td><td class="n">14</td><td>propext</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p><code>H : CancelSignalAssumptions</code> is the slice&rsquo;s trust base: the l4v lemmas about code outside the slice (getting and setting objects, thread state, the invariants), each tagged with its source line.
+          The 3-line l4v proof is a single <code>wpsimp</code>; our 14 lines measure the automation still to build.</p>
+      </section>
+
       <section id="lessons">
         <h2>lessons <small>&middot; from c0</small></h2>
         <ul class="plain">
@@ -453,6 +477,7 @@ example :
           <li><b>l4v's timeouts count CPU time.</b> More threads use the budget faster, so scale the timeouts with the thread count.</li>
           <li><b>Proof structure limits parallelism.</b> Big sessions average 8&ndash;11 cores busy because the theories form long import chains. A Lean port's module layout will face the same limit.</li>
           <li><b>Lean surface syntax caused every C2 build failure.</b> Keywords (<code>unless</code>, <code>assert</code>), notation precedence and <code>cases</code> renaming broke builds; l4v&rsquo;s semantics never did.</li>
+          <li><b>Lean&rsquo;s <code>do</code> hides join points.</b> <code>let x &larr; match &hellip;</code> becomes a local function plus a <code>match</code>, so proof automation has to see through it.</li>
           <li><b>Rootless Docker</b> makes the upstream per-user image unnecessary, because container root is already you.</li>
         </ul>
       </section>
@@ -465,7 +490,7 @@ example :
           <li><span class="ok">[x]</span> C1 Lean project (builds on the instance)</li>
           <li><span class="ok">[x]</span> C2 monad, <code>wp</code>, <code>corres</code> in Lean</li>
           <li><span class="ok">[x]</span> C3 translators on notifications</li>
-          <li><span class="todo">[ ]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
+          <li><span class="ok">[x]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
           <li><span class="todo">[ ]</span> C5 Dedukti spike</li>
         </ul>
         <h3>walk &middot; full abstract &harr; executable refinement</h3>

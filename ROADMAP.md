@@ -41,9 +41,10 @@ Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc
       **Deferred:** needs the kernel state model translated (stubs are opaque). Translator unit tests exist.
 
 ### C4. First proofs
-- [ ] Port one invariant-preservation lemma for the slice.
-- [ ] Port one `corres` lemma (abstract ↔ executable) for the slice.
-- [ ] Do one by hand and one with AI assistance; record hours and Lean-line/Isabelle-line ratio.
+- [x] Port one invariant-preservation lemma for the slice: `cancelSignal_simple` (over the generated code).
+- [x] Port one `corres` lemma (abstract ↔ executable) for the slice: `cancelSignal_corres`.
+- [~] Record hours and Lean-line/Isabelle-line ratio: done (`notes/c4-first-proofs.md`). Both proofs were AI-assisted,
+      so the hand-written baseline is still missing.
 
 ### C5. Dedukti spike
 - [ ] Export a small Isabelle/HOL theory to Dedukti/Lambdapi.

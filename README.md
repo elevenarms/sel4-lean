@@ -3,11 +3,11 @@
 Porting seL4's formal verification ([l4v](https://github.com/seL4/l4v), Isabelle/HOL) to **Lean 4**.
 The end goal is a Lean theorem that seL4's C implementation refines its abstract specification.
 
-**Status: C0–C3 complete (2026-10-07).** The Isabelle reference builds and every RISCV64 abstract ↔ executable
-proof passes on our hardware, in 36 minutes. In [`lean/`](lean/), Lean 4.34.1 has l4v's nondeterministic monad,
-Hoare logic and `corres` ([C2 notes](notes/c2-lean-foundations.md)). Our translator [`tools/hs2lean`](tools/hs2lean/)
-turns the notifications slice of the Haskell kernel model into Lean that compiles unedited
-([C3 notes](notes/c3-translators.md)). Next is C4: `cancelSignal_corres` in Lean. See [ROADMAP.md](ROADMAP.md).
+**Status: C0–C4 complete (2026-10-07).** The Isabelle reference builds and every RISCV64 abstract ↔ executable
+proof passes on our hardware, in 36 minutes. In [`lean/`](lean/), Lean 4.34.1 has l4v's monad, Hoare logic and `corres`
+([C2](notes/c2-lean-foundations.md)). Our translator [`tools/hs2lean`](tools/hs2lean/) generates the notifications slice
+of the Haskell model ([C3](notes/c3-translators.md)), and **`cancelSignal_corres` is proved in Lean over that generated
+code** ([C4](notes/c4-first-proofs.md)). Next: the C5 Dedukti spike, then the crawl decision. See [ROADMAP.md](ROADMAP.md).
 
 ## The idea
 
@@ -41,6 +41,7 @@ We go in three stages: **crawl** (one slice end to end), **walk** (full abstract
 | [`notes/c0-environment.md`](notes/c0-environment.md) | C0 findings: environment, timings, translator read-through |
 | [`notes/c2-lean-foundations.md`](notes/c2-lean-foundations.md) | C2: what was ported, design decisions, effort data |
 | [`notes/c3-translators.md`](notes/c3-translators.md) | C3: translator, generated slice, HOL → Lean mapping |
+| [`notes/c4-first-proofs.md`](notes/c4-first-proofs.md) | C4: first proofs, trust base, measurements |
 | [`tools/hs2lean/`](tools/hs2lean/) | Haskell → Lean translator (run with `env/remote/hs2lean.sh`) |
 | [`lean/`](lean/) | Lean 4 project (`Sel4Lean`); build with `env/remote/lean_build.sh` |
 | [`env/remote/`](env/remote/) | Reproducible reference environment (runs on an x86_64 Linux box) |
