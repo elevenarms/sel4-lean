@@ -128,8 +128,8 @@ def wordFromMessageInfo (mi : MessageInfo) : Word :=
   let len := MessageInfo.msgLength mi
   let extra := (MessageInfo.msgExtraCaps mi) <<< msgLengthBits
   let un := (MessageInfo.msgCapsUnwrapped mi) <<< (msgLengthBits + msgExtraCapBits)
-  let label := (MessageInfo.msgLabel mi) <<< otherBits
   let otherBits := (msgLengthBits + msgExtraCapBits) + msgMaxExtraCaps
+  let label := (MessageInfo.msgLabel mi) <<< otherBits
   ((label ||| extra) ||| un) ||| len
 
 /-- Haskell `msgAlignBits` -/

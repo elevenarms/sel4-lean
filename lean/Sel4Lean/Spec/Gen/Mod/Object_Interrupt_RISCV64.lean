@@ -13,7 +13,7 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.plic_complete_claim : RISCV64.IRQ → MachineMonad Unit
+opaque RISCV64.plic_complete_claim : IRQ → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
 opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
@@ -22,7 +22,7 @@ opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
 -- local, not translated: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
-opaque decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
+opaque decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
@@ -70,11 +70,11 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `checkIRQ` -/
-def checkIRQ (irqW : RISCV64.Word) : KernelF SyscallError Unit :=
+def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
   whenH ((irqW > (fromIntegral (fromEnum maxIRQ))) || (irqW == (fromIntegral (fromEnum irqInvalid)))) (throw (SyscallError.RangeError 1 (fromIntegral (fromEnum maxIRQ))))
 
 /-- Haskell `plic_complete_claim` -/
-def plic_complete_claim (x0 : RISCV64.IRQ) : MachineMonad Unit :=
+def plic_complete_claim (x0 : IRQ) : MachineMonad Unit :=
   match x0 with
   | (RISCV64.IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
 
@@ -89,12 +89,12 @@ def handleSpuriousIRQ : Kernel Unit :=
   pure ()
 
 /-- Haskell `handleReservedIRQ` -/
-def handleReservedIRQ (x0 : RISCV64.IRQ) : Kernel Unit :=
+def handleReservedIRQ (x0 : IRQ) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `maskIrqSignal` -/
-def maskIrqSignal (x0 : RISCV64.IRQ) : Kernel Unit :=
+def maskIrqSignal (x0 : IRQ) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 

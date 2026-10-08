@@ -16,7 +16,7 @@ noncomputable section
 opaque RISCV64.capUntypedPtr : ArchCapability → PPtr Unit
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.capUntypedSize : ArchCapability → RISCV64.Word
+opaque RISCV64.capUntypedSize : ArchCapability → Word
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel ArchCapability
@@ -28,7 +28,7 @@ opaque RISCV64.cteGuardBits : Nat
 opaque RISCV64.cteRightsBits : Nat
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
+opaque RISCV64.decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.deriveCap : (PPtr CTE) → ArchCapability → KernelF SyscallError Capability
@@ -49,7 +49,7 @@ opaque RISCV64.isPhysicalCap : ArchCapability → Bool
 opaque RISCV64.maskCapRights : CapRights → ArchCapability → Capability
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.performInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word)
+opaque RISCV64.performInvocation : RISCV64.Invocation → KernelP (List Word)
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.postCapDeletion : ArchCapability → Kernel Unit
@@ -64,7 +64,7 @@ opaque RISCV64.sameObjectAs : ArchCapability → ArchCapability → Bool
 opaque RISCV64.sameRegionAs : ArchCapability → ArchCapability → Bool
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.updateCapData : Bool → RISCV64.Word → ArchCapability → Capability
+opaque RISCV64.updateCapData : Bool → Word → ArchCapability → Capability
 
 -- external: SEL4/Object/Endpoint.lhs
 opaque cancelAllIPC : (PPtr Endpoint) → Kernel Unit
@@ -357,9 +357,9 @@ def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability :=
       else
         Capability.NullCap
   | _, w, cap@(Capability.CNodeCap ..) => 
-      let guard := ((w >>> ((RISCV64.cteRightsBits) + guardSizeBits)) &&& (mask (RISCV64.cteGuardBits))) &&& (mask guardSize)
-      let guardSize := fromIntegral ((w >>> (RISCV64.cteRightsBits)) &&& (mask guardSizeBits))
       let guardSizeBits := wordSizeCase 5 6
+      let guardSize := fromIntegral ((w >>> (RISCV64.cteRightsBits)) &&& (mask guardSizeBits))
+      let guard := ((w >>> ((RISCV64.cteRightsBits) + guardSizeBits)) &&& (mask (RISCV64.cteGuardBits))) &&& (mask guardSize)
       if ((guardSize + (Capability.capCNodeBits cap)) > (finiteBitSize w)) then
         Capability.NullCap
       else

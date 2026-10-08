@@ -160,7 +160,7 @@ def receiveIPC (x0 : PPtr TCB) (x1 : Capability) (x2 : Bool) : Kernel Unit :=
                         | [] => Endpoint.IdleEP
                         | _ => Endpoint.SendEP queue)
                 let senderState ← getThreadState sender
-                let _ ← assertH (isSend senderState) "TCB in send endpoint queue must be blocked on send"
+                let _ ← assertG (isSend senderState) "TCB in send endpoint queue must be blocked on send"
                 let badge := ThreadState.blockingIPCBadge senderState
                 let canGrant := ThreadState.blockingIPCCanGrant senderState
                 let canGrantReply := ThreadState.blockingIPCCanGrantReply senderState
@@ -195,21 +195,21 @@ def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
       whenH (callerCap != nullPointer) (do
         let _ ← stateAssertH (capHasProperty callerCap (fun cap => (isReplyCap cap) && (not (Capability.capReplyMaster cap)))) "replyIPCCancel: expected a reply cap"
         cteDeleteOne callerCap)
+  let isIdle := fun ep =>
+    match ep with
+    | Endpoint.IdleEP => true
+    | _ => false
   let blockedIPCCancel := fun state =>
     do
       let epptr := ThreadState.blockingObject state
       let ep ← getEndpoint epptr
-      let _ ← assertH (not (isIdle ep)) "blockedIPCCancel: endpoint must not be idle"
+      let _ ← assertG (not (isIdle ep)) "blockedIPCCancel: endpoint must not be idle"
       let queue' := deleteH tptr (Endpoint.epQueue ep)
       let ep' ← match queue' with
         | [] => pure Endpoint.IdleEP
         | _ => pure (Endpoint.set_epQueue ep queue')
       let _ ← setEndpoint epptr ep'
       setThreadState ThreadState.Inactive tptr
-  let isIdle := fun ep =>
-    match ep with
-    | Endpoint.IdleEP => true
-    | _ => false
   do
     let state ← getThreadState tptr
     match state with

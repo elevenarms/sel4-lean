@@ -28,7 +28,7 @@ opaque RISCV64.postModifyRegisters : (PPtr TCB) → (PPtr TCB) → UserMonad Uni
 opaque RISCV64.postSetFlags : (PPtr TCB) → TcbFlags → Kernel Unit
 
 -- arch: SEL4/Object/TCB/RISCV64.hs
-opaque RISCV64.sanitiseRegister : Bool → RISCV64.Register → RISCV64.Word → RISCV64.Word
+opaque RISCV64.sanitiseRegister : Bool → Register → Word → Word
 
 -- external: SEL4/Object/Structures/RISCV64.hs
 opaque atcbContextGet : ArchTCB → UserContext
@@ -290,7 +290,7 @@ def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Capability
         let srcTCB ← match head extraCaps with
           | Capability.ThreadCap ptr => pure ptr
           | _ => throw (SyscallError.InvalidCapability 1)
-        pure (TCBInvocation.CopyRegisters (Capability.capTCBPtr cap) srcTCB suspendSource resumeTarget transferFrame transferInteger transferArch)
+        pure (TCBInvocation.CopyRegisters (capTCBPtr cap) srcTCB suspendSource resumeTarget transferFrame transferInteger transferArch)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeReadRegisters` -/
@@ -348,7 +348,7 @@ def decodeSetMCPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capabilit
           | Capability.ThreadCap tcbPtr => pure tcbPtr
           | _ => throw (SyscallError.InvalidCapability 1)
         let _ ← checkPrio newMCP authTCB
-        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) none none none none)
+        pure (TCBInvocation.ThreadControl (capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) none none none none)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetPriority` -/
@@ -360,7 +360,7 @@ def decodeSetPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability 
           | Capability.ThreadCap tcbPtr => pure tcbPtr
           | _ => throw (SyscallError.InvalidCapability 1)
         let _ ← checkPrio newPrio authTCB
-        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none none (some ((fromIntegral newPrio, authTCB))) none none none)
+        pure (TCBInvocation.ThreadControl (capTCBPtr cap) 0 none none (some ((fromIntegral newPrio, authTCB))) none none none)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetSchedParams` -/
@@ -373,7 +373,7 @@ def decodeSetSchedParams (x0 : List Word) (x1 : Capability) (x2 : List (Capabili
           | _ => throw (SyscallError.InvalidCapability 1)
         let _ ← checkPrio newMCP authTCB
         let _ ← checkPrio newPrio authTCB
-        pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) (some ((fromIntegral newPrio, authTCB))) none none none)
+        pure (TCBInvocation.ThreadControl (capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) (some ((fromIntegral newPrio, authTCB))) none none none)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `getThreadCSpaceRoot` -/
@@ -634,10 +634,10 @@ def setMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (messageData : List
       | some bufferPtr => map (fun x => bufferPtr + (PPtr.mk (x * intSize))) (enumFromToH (fromIntegral ((length hardwareMRs) + 1)) msgMaxLength)
       | none => []
     let msgLength := min (length messageData) ((length hardwareMRs) + (length bufferMRs))
-    let mrs := take MessageInfo.msgLength messageData
+    let mrs := take msgLength messageData
     let _ ← asUser thread (zipWithM_ setRegister hardwareMRs mrs)
     let _ ← zipWithM_ storeWordUser bufferMRs (drop (length hardwareMRs) mrs)
-    pure (fromIntegral MessageInfo.msgLength)
+    pure (fromIntegral msgLength)
 
 /-- Haskell `getMRs` -/
 def getMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (info : MessageInfo) : Kernel (List Word) :=
@@ -709,11 +709,11 @@ def setupCallerCap (sender : PPtr TCB) (receiver : PPtr TCB) (canGrant : Bool) :
     let replySlot ← getThreadReplySlot sender
     let masterCTE ← getCTE replySlot
     let masterCap := CTE.cteCap masterCTE
-    let _ ← assertH ((isReplyCap masterCap) && ((Capability.capReplyMaster masterCap) && ((Capability.capTCBPtr masterCap) == sender))) "Sender must have a valid reply master cap"
-    let _ ← assertH ((MDBNode.mdbNext (CTE.cteMDBNode masterCTE)) == nullPointer) "Sender must not already have reply cap issued"
+    let _ ← assertG ((isReplyCap masterCap) && ((Capability.capReplyMaster masterCap) && ((Capability.capTCBPtr masterCap) == sender))) "Sender must have a valid reply master cap"
+    let _ ← assertG ((MDBNode.mdbNext (CTE.cteMDBNode masterCTE)) == nullPointer) "Sender must not already have reply cap issued"
     let callerSlot ← getThreadCallerSlot receiver
     let callerCap ← getSlotCap callerSlot
-    let _ ← assertH (isNullCap callerCap) "Caller cap must not already exist"
+    let _ ← assertG (isNullCap callerCap) "Caller cap must not already exist"
     cteInsert (Capability.ReplyCap sender false canGrant) replySlot callerSlot
 
 /-- Haskell `deleteCallerCap` -/
@@ -721,7 +721,7 @@ def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
   do
     let callerSlot ← getThreadCallerSlot receiver
     let callerCap ← getSlotCap callerSlot
-    let _ ← assertH ((isReplyCap callerCap) || (isNullCap callerCap)) "Caller cap must be a reply cap"
+    let _ ← assertG ((isReplyCap callerCap) || (isNullCap callerCap)) "Caller cap must be a reply cap"
     cteDeleteOne callerSlot
 
 /-- Haskell `archThreadGet` -/

@@ -25,7 +25,7 @@ opaque getActiveIRQ : (PtrH CallbackData) → IO (Option RISCV64.IRQ)
 opaque getDeviceRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getKernelDevices : (PtrH CallbackData) → IO (List (PAddr × (PPtr RISCV64.Word)))
+opaque getKernelDevices : (PtrH CallbackData) → IO (List (PAddr × (PPtr Word)))
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getMemoryRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
@@ -34,7 +34,7 @@ opaque getMemoryRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
 opaque irqInvalid : RISCV64.IRQ
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO RISCV64.Word
+opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque maskInterrupt : (PtrH CallbackData) → Bool → RISCV64.IRQ → IO Unit
@@ -49,7 +49,7 @@ opaque physBase : PAddr
 opaque resetTimer : (PtrH CallbackData) → IO Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWordCallback : (PtrH CallbackData) → PAddr → RISCV64.Word → IO Unit
+opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 
 /-! ## Unresolved (no stub possible)
   error: no signature found

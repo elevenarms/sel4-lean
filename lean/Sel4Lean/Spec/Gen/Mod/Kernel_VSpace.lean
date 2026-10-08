@@ -43,7 +43,7 @@ opaque RISCV64.handleVMFault : (PPtr TCB) → VMFaultType → KernelF Fault Unit
 opaque RISCV64.isValidVTableRoot : Capability → Bool
 
 -- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr RISCV64.Word))
+opaque RISCV64.lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
 
 -- arch: SEL4/Kernel/VSpace/RISCV64.hs
 opaque RISCV64.mapKernelWindow : Kernel Unit

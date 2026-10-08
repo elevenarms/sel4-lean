@@ -90,7 +90,7 @@ def isArchMDBParentOf (x0 : Capability) (x1 : Capability) (x2 : Bool) : Bool :=
   | _, _, _ => true
 
 /-- Haskell `updateCapData` -/
-def updateCapData (x0 : Bool) (x1 : RISCV64.Word) (x2 : ArchCapability) : Capability :=
+def updateCapData (x0 : Bool) (x1 : Word) (x2 : ArchCapability) : Capability :=
   match x0, x1, x2 with
   | _, _, c => Capability.ArchObjectCap c
 
@@ -162,7 +162,7 @@ def isPhysicalCap (x0 : ArchCapability) : Bool :=
 /-- Haskell `sameObjectAs` -/
 def sameObjectAs (x0 : ArchCapability) (x1 : ArchCapability) : Bool :=
   match x0, x1 with
-  | (a@(ArchCapability.FrameCap ptrA _ _ _ _)), (b@(ArchCapability.FrameCap ..)) => (ptrA == (ArchCapability.capFBasePtr b)) && (((ArchCapability.capFSize a) == (ArchCapability.capFSize b)) && ((ptrA ≤ (ptrA + (mask (pageBitsForSize (ArchCapability.capFSize a))))) && ((ArchCapability.capFIsDevice a) == (ArchCapability.capFIsDevice b))))
+  | (a@(ArchCapability.FrameCap ptrA _ _ _ _)), (b@(ArchCapability.FrameCap ..)) => (ptrA == (capFBasePtr b)) && (((ArchCapability.capFSize a) == (ArchCapability.capFSize b)) && ((ptrA ≤ (ptrA + (mask (pageBitsForSize (ArchCapability.capFSize a))))) && ((ArchCapability.capFIsDevice a) == (ArchCapability.capFIsDevice b))))
   | a, b => sameRegionAs a b
 
 /-- Haskell `placeNewDataObject` -/
@@ -173,11 +173,11 @@ def placeNewDataObject (regionBase : PPtr Unit) (sz : Nat) (isDevice : Bool) : K
     placeNewObject regionBase UserData.UserData sz
 
 /-- Haskell `decodeInvocation` -/
-def decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation :=
+def decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation :=
   decodeRISCVMMUInvocation
 
 /-- Haskell `performInvocation` -/
-def performInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word) :=
+def performInvocation : RISCV64.Invocation → KernelP (List Word) :=
   performRISCVMMUInvocation
 
 /-- Haskell `capUntypedPtr` -/
@@ -193,7 +193,7 @@ def asidPoolBits : Nat :=
   12
 
 /-- Haskell `capUntypedSize` -/
-def capUntypedSize (x0 : ArchCapability) : RISCV64.Word :=
+def capUntypedSize (x0 : ArchCapability) : Word :=
   match x0 with
   | (ArchCapability.FrameCap _ _ sz _ _) => bit (pageBitsForSize sz)
   | (ArchCapability.PageTableCap ..) => bit ptBits

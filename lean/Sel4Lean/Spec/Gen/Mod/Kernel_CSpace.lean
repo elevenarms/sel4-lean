@@ -53,7 +53,7 @@ def resolveAddressBits (x0 : Capability) (x1 : CPtr) (x2 : Nat) : KernelF Lookup
         let radixBits := Capability.capCNodeBits nodeCap
         let guardBits := Capability.capCNodeGuardSize nodeCap
         let levelBits := radixBits + guardBits
-        let _ ← assertH (levelBits != 0) "All CNodes must resolve bits"
+        let _ ← assertG (levelBits != 0) "All CNodes must resolve bits"
         let offset := ((CPtr.fromCPtr capptr) >>> (bits - levelBits)) &&& (mask radixBits)
         let slot ← withoutFailure (locateSlotCap nodeCap offset)
         let guard := ((CPtr.fromCPtr capptr) >>> (bits - guardBits)) &&& (mask guardBits)

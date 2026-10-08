@@ -144,7 +144,7 @@ def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel U
     | _ => false
   do
     let ntfn ← getNotification ntfnPtr
-    let _ ← assertH (isWaiting (Notification.ntfnObj ntfn)) "cancelSignal: notification object must be waiting"
+    let _ ← assertG (isWaiting (Notification.ntfnObj ntfn)) "cancelSignal: notification object must be waiting"
     let queue' := deleteH threadPtr (NTFN.ntfnQueue (Notification.ntfnObj ntfn))
     let ntfn' ← match queue' with
       | [] => pure NTFN.IdleNtfn

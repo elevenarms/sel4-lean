@@ -112,21 +112,21 @@ def nopBIFrameData : BIFrameData :=
 def serializeByte (input : Word) : Serializer Unit :=
   do
     let ptr ← gets SerialData.ptrCursor
-    let byte ← gets SerialData.value
+    let byte ← gets value
     let mod4 ← pure (fromIntegral (PPtr.ptr (ptr &&& 3)))
     let value ← pure ((input <<< (mod4 * 8)) ||| (fromIntegral byte))
     if (ptr &&& 3) == 3 then
       do
-        let _ ← lift (storeWordVM ((ptr >>> 2) <<< 2) SerialData.value)
+        let _ ← lift (storeWordVM ((ptr >>> 2) <<< 2) value)
         modify (fun st => { st with ptrCursor := ptr + 1, value := 0 })
     else
-      modify (fun st => { st with ptrCursor := ptr + 1, value := SerialData.value })
+      modify (fun st => { st with ptrCursor := ptr + 1, value := value })
 
 /-- Haskell `serializeStore` -/
 def serializeStore (value : Word) (intsize : Nat) : Serializer Unit :=
   do
     forM_H (enumFromToH 0 (intsize - 1)) (fun size => do
-        let byte ← pure ((SerialData.value >>> (8 * size)) &&& ((bit 8) - 1))
+        let byte ← pure ((value >>> (8 * size)) &&& ((bit 8) - 1))
         serializeByte byte)
 
 /-- Haskell `paddingTo` -/

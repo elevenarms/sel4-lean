@@ -89,8 +89,8 @@ def delete {a : Type} [Inhabited a] (x0 : List Bool) (x1 : BinaryTree a) : Binar
   match x0, x1 with
   | [], _ => BinaryTree.Empty
   | _, BinaryTree.Empty => BinaryTree.Empty
-  | (true :: a), n@(BinaryTree.Node ..) => flatten (BinaryTree.set_btTrue n (deleteH a (BinaryTree.btTrue n)))
-  | (false :: a), n@(BinaryTree.Node ..) => flatten (BinaryTree.set_btFalse n (deleteH a (BinaryTree.btFalse n)))
+  | (true :: a), n@(BinaryTree.Node ..) => flatten (BinaryTree.set_btTrue n (delete a (BinaryTree.btTrue n)))
+  | (false :: a), n@(BinaryTree.Node ..) => flatten (BinaryTree.set_btFalse n (delete a (BinaryTree.btFalse n)))
   | _, _ => error "BinaryTree.delete: cannot partially delete object"
 
 end

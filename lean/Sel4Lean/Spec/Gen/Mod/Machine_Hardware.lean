@@ -13,7 +13,7 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.fromPAddr : PAddr → RISCV64.Word
+opaque RISCV64.fromPAddr : PAddr → Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque ackInterrupt : IRQ → MachineMonad Unit

@@ -164,16 +164,16 @@ def handleRecv (isBlocking : Bool) : Kernel Unit :=
     let epCPtr ← asUser thread (liftM CPtr.CPtr (getRegister capRegister))
     let _ ← catchFailure (capFaultOnFailure epCPtr true (do
               let epCap ← lookupCap thread epCPtr
-              match CNodeInvocation.epCap with
+              match epCap with
               | Capability.EndpointCap _ _ _ true _ _ => (do
                     withoutFailure (do
                       let _ ← deleteCallerCap thread
-                      receiveIPC thread CNodeInvocation.epCap isBlocking))
+                      receiveIPC thread epCap isBlocking))
               | Capability.NotificationCap ntfnPtr _ _ true => (do
                     let ntfn ← withoutFailure (getNotification ntfnPtr)
                     let boundTCB ← pure (Notification.ntfnBoundTCB ntfn)
                     if (boundTCB == (some thread)) || (boundTCB == none) then
-                      withoutFailure (receiveSignal thread CNodeInvocation.epCap isBlocking)
+                      withoutFailure (receiveSignal thread epCap isBlocking)
                     else
                       throw (LookupFailure.MissingCapability 0))
               | _ => throw (LookupFailure.MissingCapability 0))) (handleFault thread)
@@ -187,7 +187,7 @@ def handleReply : Kernel Unit :=
     let callerCap ← getSlotCap callerSlot
     match callerCap with
     | Capability.ReplyCap caller false canGrant => (do
-          let _ ← assertH (caller != thread) "handleReply: caller must not be the current thread"
+          let _ ← assertG (caller != thread) "handleReply: caller must not be the current thread"
           doReplyTransfer thread caller callerSlot canGrant)
     | Capability.NullCap => pure ()
     | _ => failM "handleReply: invalid caller cap"

@@ -109,6 +109,7 @@ class DataInfo:
         self.ctor_type = {}  # ctor -> type
         self.arch_ctor_type = {}  # ctor -> RISCV64.T, for constructors of arch types (shadowing generic ones)
         self.integral = set()     # types with an IntegralH instance (newtypes over words, enums)
+        self.deferred = []        # instance lines to emit after everything else (full.py)
         self.field_type = {} # field -> type
 
 
@@ -417,7 +418,7 @@ class Translator:
         if t == "let_in":
             binds = n.child_by_field_name("binds")
             body = n.child_by_field_name("expression")
-            lines = [lb for lb in (self.local_bind(b, ind) for b in kids(binds)) if lb]
+            lines = [lb for lb in (self.local_bind(b, ind) for b in self.ordered_binds(kids(binds))) if lb]
             return ("\n" + " " * ind).join(lines + [self.e(body, ind)])
         if t == "arithmetic_sequence":
             frm = n.child_by_field_name("from")
@@ -590,18 +591,62 @@ class Translator:
                 ex = self.e(kids(s)[0], si + 8 if discard else si)
                 lines.append(f"let _ ← {ex}" if discard else ex)
             else:
-                for b in kids(s.child_by_field_name("binds")):
-                    lb = self.local_bind(b, si)
+                for b in self.ordered_binds(kids(s.child_by_field_name("binds"))):
+                    lb = self.local_bind(b, si, in_do=True)
                     if lb:
                         lines.append(lb)
         pad = " " * si
         return "do\n" + "\n".join(pad + l for l in lines)
 
-    def local_bind(self, b, ind):
+    def ordered_binds(self, binds):
+        """Haskell `where`/`let` groups are order-independent; Lean `let`s are sequential: sort by use."""
+        binds = [b for b in binds if b.type != "signature"]
+        def defined(b):
+            n = b.child_by_field_name("name")
+            if n is not None:
+                return {self.text(n)}
+            p = b.child_by_field_name("pattern")
+            out, st = set(), [p] if p is not None else []
+            while st:
+                m = st.pop()
+                if m.type == "variable":
+                    out.add(self.text(m))
+                st.extend(m.named_children)
+            return out
+        def used(b):
+            out, st = set(), [c for i, c in enumerate(b.children) if b.field_name_for_child(i) == "match"]
+            while st:
+                m = st.pop()
+                if m.type == "variable":
+                    out.add(self.text(m))
+                st.extend(m.named_children)
+            return out
+        defs = [defined(b) for b in binds]
+        owner = {v: i for i, d in enumerate(defs) for v in d}
+        deps = [{owner[v] for v in used(b) if v in owner} - {i} for i, b in enumerate(binds)]
+        order, state = [], {}
+        def visit(i):
+            if state.get(i) == 2:
+                return
+            if state.get(i) == 1:
+                self.fail(binds[i], "mutually recursive local bindings")
+            state[i] = 1
+            for j in sorted(deps[i]):
+                visit(j)
+            state[i] = 2
+            order.append(binds[i])
+        for i in range(len(binds)):
+            visit(i)
+        return order
+
+    def local_bind(self, b, ind, in_do=False):
         if b.type == "signature":
             return None   # local type annotation: Lean infers it
         if b.type == "bind" and b.child_by_field_name("name") is None:
             pat = b.child_by_field_name("pattern")   # destructuring: (l, h) = e
+            if pat.type not in ("variable", "tuple", "wildcard") and in_do:
+                # Haskell `let Just p = e` is lazy/irrefutable; a failed match is bottom: fail here
+                return f"let {self.pat(pat)} := {self.rhs(b, ind + 2)} | failM \"irrefutable pattern\""
             return f"let {self.pat(pat)} := {self.rhs(b, ind + 2)}"
         if b.type == "bind":
             name = self.ident(self.text(b.child_by_field_name("name")))
@@ -678,7 +723,7 @@ class Translator:
             lines = []
             wheres = eq.child_by_field_name("binds")
             if wheres is not None:
-                for b in kids(wheres):
+                for b in self.ordered_binds(kids(wheres)):
                     lb = self.local_bind(b, ind)
                     if lb:
                         lines.append(lb)

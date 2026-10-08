@@ -28,10 +28,10 @@ opaque allowRead : VMRights → Bool
 opaque allowWrite : VMRights → Bool
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque clearMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque clearMemoryVM : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+opaque clearMemoryVM : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque configureTimer : MachineMonad RISCV64.IRQ
@@ -40,10 +40,10 @@ opaque configureTimer : MachineMonad RISCV64.IRQ
 opaque debugPrint : String → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque freeMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque fromPAddr : PAddr → RISCV64.Word
+opaque fromPAddr : PAddr → Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
@@ -52,7 +52,7 @@ opaque getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
 opaque getDeviceRegions : MachineMonad (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word)))
+opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
@@ -70,7 +70,7 @@ opaque hwASIDFlush : (BitVec 64) → MachineMonad Unit
 opaque initIRQController : MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque initMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+opaque initMemory : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque kernelELFBase : VPtr
@@ -79,7 +79,7 @@ opaque kernelELFBase : VPtr
 opaque kernelELFPAddrBase : PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque loadWord : (PPtr RISCV64.Word) → MachineMonad RISCV64.Word
+opaque loadWord : (PPtr Word) → MachineMonad Word
 
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
 opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
@@ -130,7 +130,7 @@ opaque pteBits : Nat
 opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque read_stval : MachineMonad RISCV64.Word
+opaque read_stval : MachineMonad Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque resetTimer : MachineMonad Unit
@@ -148,22 +148,22 @@ opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
 opaque sfence : MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWord : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
+opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
 opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque storeWordVM : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
+opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque vmFaultTypeFSR : VMFaultType → RISCV64.Word
+opaque vmFaultTypeFSR : VMFaultType → Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque vmRightsFromBits : RISCV64.Word → VMRights
+opaque vmRightsFromBits : Word → VMRights
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque vmRightsToBits : VMRights → RISCV64.Word
+opaque vmRightsToBits : VMRights → Word
 
 /-! ## Unresolved (no stub possible)
   error: no signature found

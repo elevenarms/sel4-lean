@@ -143,6 +143,20 @@ abbrev filter {α : Type} (p : α → Bool) (xs : List α) : List α := xs.filte
 abbrev concat {α : Type} (xss : List (List α)) : List α := xss.flatten
 abbrev concatMap {α β : Type} (f : α → List β) (xs : List α) : List β := xs.flatMap f
 abbrev replicate {α : Type} (n : Nat) (x : α) : List α := List.replicate n x
+abbrev last {α : Type} [Inhabited α] (xs : List α) : α := xs.getLastD default
+abbrev genericLength {α β : Type} [IntegralH β] (xs : List α) : β := IntegralH.ofInt xs.length
+abbrev genericTake {α β : Type} [IntegralH β] (n : β) (xs : List α) : List α :=
+  xs.take (IntegralH.toInt n).toNat
+abbrev either {α β γ : Type} (f : α → γ) (g : β → γ) : Except α β → γ
+  | .error a => f a
+  | .ok b => g b
+/-- Haskell `listArray (lo, hi) xs` with arrays as functions (index → element). -/
+abbrev listArray {ι ε : Type} [IntegralH ι] [Inhabited ε] (bounds : ι × ι) (xs : List ε) : ι → ε :=
+  fun i => xs.getD ((IntegralH.toInt i - IntegralH.toInt bounds.1).toNat) default
+/-- Haskell `assocs arr`: TODO(W3) needs the index range; unspecified over the function model. -/
+opaque assocs {ι ε : Type} [Inhabited ι] [Inhabited ε] (arr : ι → ε) : List (ι × ε)
+abbrev runState {σ α : Type} (x : StateM σ α) (s : σ) : α × σ := x.run s
+abbrev runStateT {σ α : Type} {m : Type → Type} [Monad m] (x : StateT σ m α) (s : σ) : m (α × σ) := x.run s
 abbrev foldl' {α β : Type} (f : β → α → β) (z : β) (xs : List α) : β := xs.foldl f z
 abbrev listIndexH {α : Type} [Inhabited α] (xs : List α) (i : Int) : α := xs.getD i.toNat default
 abbrev enumFromToH {α : Type} [IntegralH α] (a b : α) : List α :=
@@ -163,8 +177,16 @@ instance {σ : Type} : MonadStateOf σ (NondetM σ) where
   set := NondetM.put
   modifyGet f := NondetM.bind NondetM.get (fun s => let (a, s') := f s; NondetM.bind (NondetM.put s') (fun _ => pure a))
 
-abbrev gets {σ α : Type} (f : σ → α) : NondetM σ α := NondetM.gets f
-abbrev modify {σ : Type} (f : σ → σ) : NondetM σ Unit := NondetM.modify f
+/-- Haskell `gets` / `modify` for any state monad (the kernel's `NondetM`, boot code's `StateT`).
+`MonadState` (not `MonadStateOf`) so the state type is determined by the monad. -/
+abbrev gets {σ α : Type} {m : Type → Type} [Monad m] [MonadState σ m] (f : σ → α) : m α :=
+  do let s ← MonadState.get; pure (f s)
+abbrev modify {σ : Type} {m : Type → Type} [MonadState σ m] (f : σ → σ) : m Unit :=
+  MonadState.modifyGet (fun s => ((), f s))
+
+
+
+
 abbrev whenH {m : Type → Type} [Monad m] (c : Bool) (x : m Unit) : m Unit := if c then x else pure ()
 abbrev unlessH {m : Type → Type} [Monad m] (c : Bool) (x : m Unit) : m Unit := if c then pure () else x
 abbrev liftM {m : Type → Type} [Monad m] {α β : Type} (f : α → β) (x : m α) : m β := f <$> x

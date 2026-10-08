@@ -13,13 +13,13 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.checkIRQ : RISCV64.Word → KernelF SyscallError Unit
+opaque RISCV64.checkIRQ : Word → KernelF SyscallError Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
+opaque RISCV64.decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.handleReservedIRQ : RISCV64.IRQ → Kernel Unit
+opaque RISCV64.handleReservedIRQ : IRQ → Kernel Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
 opaque RISCV64.initInterruptController : Kernel Unit
@@ -28,7 +28,7 @@ opaque RISCV64.initInterruptController : Kernel Unit
 opaque RISCV64.invokeIRQHandler : IRQHandlerInvocation → Kernel Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.maskIrqSignal : RISCV64.IRQ → Kernel Unit
+opaque RISCV64.maskIrqSignal : IRQ → Kernel Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
 opaque RISCV64.performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
@@ -234,7 +234,7 @@ def deletingIRQHandler (irq : IRQ) : Kernel Unit :=
   do
     let slot ← getIRQSlot irq
     let cap ← getSlotCap slot
-    let _ ← assertH ((isNotificationCap cap) || (isNullCap cap)) "Cap in IRQ handler slot should be Notification or Null."
+    let _ ← assertG ((isNotificationCap cap) || (isNullCap cap)) "Cap in IRQ handler slot should be Notification or Null."
     cteDeleteOne slot
 
 /-- Haskell `deletedIRQHandler` -/
@@ -246,7 +246,7 @@ def initInterruptController (rootCNCap : Capability) (biCapIRQC : Word) : Kernel
   do
     let frame ← allocFrame
     let _ ← doKernelOp (do
-              let _ ← assertH (((length (enumFromToH minBound ((maxBound : IRQ)))) <<< (objBits ((makeObject : CTE)))) ≤ (bit pageBits)) "Interrupt vector slots must fit in one frame"
+              let _ ← assertG (((length (enumFromToH minBound ((maxBound : IRQ)))) <<< (objBits ((makeObject : CTE)))) ≤ (bit pageBits)) "Interrupt vector slots must fit in one frame"
               let _ ← placeNewObject (ptrFromPAddr frame) ((makeObject : CTE)) (pageBits - (objBits ((makeObject : CTE))))
               let _ ← doMachineOp (mapM_ (maskInterrupt true) (enumFromToH minBound maxBound))
               let irqTable := funArray (const IRQState.IRQInactive)

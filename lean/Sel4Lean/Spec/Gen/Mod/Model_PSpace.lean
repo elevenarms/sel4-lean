@@ -128,7 +128,7 @@ def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat)
     let (before, _) := lookupAround2 «end» (PSpace.psMap ps)
     let _ ← match before with
             | none => pure ()
-            | some (x, _) => assertH (x < (PPtr.ptr ptr)) "Object creation would destroy an existing object"
+            | some (x, _) => assertG (x < (PPtr.ptr ptr)) "Object creation would destroy an existing object"
     let addresses := map (fun n => (PPtr.ptr ptr) + (n <<< objSizeBits)) (enumFromToH 0 ((1 <<< groupSizeBits) - 1))
     let map' := foldr (fun addr map => (MapH.insert) addr val map) (PSpace.psMap ps) addresses
     let ps' := { ps with psMap := map' }

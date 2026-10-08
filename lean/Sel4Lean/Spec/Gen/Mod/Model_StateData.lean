@@ -76,12 +76,12 @@ def assert {m : Type → Type} [Monad m] [MonadFailH m] (p : Bool) (e : String) 
 
 /-- Haskell `stateAssert` -/
 def stateAssert (f : KernelState → Bool) (e : String) : Kernel Unit :=
-  get >>= (fun s => assertH (f s) e)
+  get >>= (fun s => assert (f s) e)
 
 /-- Haskell `setCurThread` -/
 def setCurThread (tptr : PPtr TCB) : Kernel Unit :=
   do
-    let _ ← stateAssertH idleThreadNotQueued "the idle thread cannot be in the ready queues"
+    let _ ← stateAssert idleThreadNotQueued "the idle thread cannot be in the ready queues"
     modify (fun ks => { ks with ksCurThread := tptr })
 
 /-- Haskell `ready_qs_runnable` -/
@@ -161,8 +161,8 @@ def decDomainTime : Kernel Unit :=
 
 /-- Haskell `newKernelState` -/
 def newKernelState (data_start : PAddr) : KernelState × (List PAddr) :=
-  let state' := { ksPSpace := newPSpace, gsUserPages := fun _ => none, gsCNodes := fun _ => none, gsUntypedZeroRanges := empty, ksDomScheduleIdx := 0, ksDomScheduleStart := 0, ksDomSchedule := [(0, 15), (2, 42), (1, 73)], ksCurDomain := 0, ksDomainTime := 15, ksReadyQueues := funPartialArray (const emptyQueue) (((0, 0), (fromIntegral numDomains, maxPriority))), ksReadyQueuesL1Bitmap := funPartialArray (const 0) ((0, fromIntegral numDomains)), ksReadyQueuesL2Bitmap := funPartialArray (const 0) (((0, 0), (fromIntegral numDomains, l2BitmapSize))), ksCurThread := error "No initial thread", ksIdleThread := error "Idle thread has not been created", ksSchedulerAction := error "scheduler action has not been set", ksInterruptState := error "Interrupt controller is uninitialised", ksWorkUnitsCompleted := 0, ksArchState := archState : KernelState }
   let (archState, frames) := (RISCV64.newKernelState) data_start
+  let state' := { ksPSpace := newPSpace, gsUserPages := fun _ => none, gsCNodes := fun _ => none, gsUntypedZeroRanges := empty, ksDomScheduleIdx := 0, ksDomScheduleStart := 0, ksDomSchedule := [(0, 15), (2, 42), (1, 73)], ksCurDomain := 0, ksDomainTime := 15, ksReadyQueues := funPartialArray (const emptyQueue) (((0, 0), (fromIntegral numDomains, maxPriority))), ksReadyQueuesL1Bitmap := funPartialArray (const 0) ((0, fromIntegral numDomains)), ksReadyQueuesL2Bitmap := funPartialArray (const 0) (((0, 0), (fromIntegral numDomains, l2BitmapSize))), ksCurThread := error "No initial thread", ksIdleThread := error "Idle thread has not been created", ksSchedulerAction := error "scheduler action has not been set", ksInterruptState := error "Interrupt controller is uninitialised", ksWorkUnitsCompleted := 0, ksArchState := archState : KernelState }
   (state', frames)
 
 /-- Haskell `capHasProperty` -/

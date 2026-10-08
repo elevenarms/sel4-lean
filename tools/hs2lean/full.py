@@ -297,6 +297,17 @@ class FullTranslator(Translator):
                          f"instance : OrOp {name} := ⟨fun a b => {mk(f'a.{fname} ||| b.{fname}')}⟩",
                          f"instance : HShiftLeft {name} Nat {name} := ⟨fun a k => {mk(f'a.{fname} <<< k')}⟩",
                          f"instance : HShiftRight {name} Nat {name} := ⟨fun a k => {mk(f'a.{fname} >>> k')}⟩"]
+        if not ps and not (fty == "Word" or fty.startswith("BitVec")) and "→" not in fty:
+            # lifted through a non-word field (e.g. generic `newtype IRQ = IRQ Arch.IRQ`): the field's own
+            # instances may be hand-written Haskell instances, emitted at the end, so defer these
+            if "Bounded" in dtext:
+                self.data.deferred.append(f"instance : BoundedH {name} := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩")
+            if any(k in dtext for k in ("Enum", "Num", "Integral")):
+                self.data.deferred.append(f"instance : IntegralH {name} := ⟨fun a => IntegralH.toInt a.{fname}, "
+                                          f"fun i => ⟨IntegralH.ofInt i⟩⟩")
+            if "Ord" in dtext:
+                self.data.deferred += [f"instance [LT {fty}] : LT {name} := ⟨fun a b => a.{fname} < b.{fname}⟩",
+                                       f"instance [LE {fty}] : LE {name} := ⟨fun a b => a.{fname} ≤ b.{fname}⟩"]
         # IntegralH (fromIntegral/fromEnum) lifted through the field, for Enum/Num/Integral newtypes whose
         # field is a word or another such newtype
         if not ps and any(k in dtext for k in ("Enum", "Num", "Integral")) and (
@@ -335,6 +346,8 @@ def cmd_types(root, files, emit=True):
     dupes = {k[len(ARCH) + 1:] for k in idx
              if k != "__file_types__" and k.startswith(ARCH + ".") and not k.startswith(ARCH + ".sig:")
              and k[len(ARCH) + 1:] in idx and idx[k] is not idx[k[len(ARCH) + 1:]]}
+
+    deferred = []   # newtype instances lifted through non-word fields (need the hand instances first)
 
     def visit(name):
         if name in seen or name in LIB_TYPES or name in ("PPtr", "Type", "Array", "Map", "Set"):
@@ -505,6 +518,77 @@ def cmd_types(root, files, emit=True):
             if parts[n][2].strip():
                 print(parts[n][2])
         print()
+    # hand-written Haskell `instance Bounded T` / `instance Enum T` (others are derived, above)
+    print("/-! ## Hand-written Haskell instances (Bounded, Enum) -/\n")
+    chosen_platform = os.path.basename(idx[f"{ARCH}.IRQ"][2]) if f"{ARCH}.IRQ" in idx else None
+    for path in files:
+        if "/Hardware/RISCV64/" in path and chosen_platform and os.path.basename(path) != chosen_platform:
+            continue   # another RISCV64 platform
+        src, rn = parse_file(path)
+        decls = next((c for c in rn.children if c.type == "declarations"), None)
+        if decls is None:
+            continue
+        tr = FullTranslator(src, data)
+        if ARCH in path:
+            tr.in_arch_module, tr.arch_names = True, dupes
+            tr.file_types = idx["__file_types__"].get(path, set())
+        for inst in kids(decls):
+            if inst.type != "instance":
+                continue
+            cls = tr.text(inst.child_by_field_name("name"))
+            tps = inst.child_by_field_name("patterns")
+            if cls not in ("Bounded", "Enum") or tps is None or len(kids(tps)) != 1 or kids(tps)[0].type != "name":
+                continue
+            tn = tr.ty(kids(tps)[0])
+            if tn.split(".")[-1] not in out and tn not in out:
+                continue
+            body = inst.child_by_field_name("declarations")
+            methods = {}
+            for d in kids(body) if body is not None else []:
+                nm = d.child_by_field_name("name")
+                if nm is not None:
+                    methods.setdefault(tr.text(nm), []).append(d)
+            try:
+                if cls == "Bounded":
+                    print(f"-- from {os.path.relpath(path, root)}")
+                    print(f"instance : BoundedH {tn} := ⟨{tr.rhs(methods['minBound'][0], 2)}, "
+                          f"{tr.rhs(methods['maxBound'][0], 2)}⟩\n")
+                else:
+                    # a method calling `toEnum`/`fromEnum` without changing type refers to this very
+                    # instance (InvocationLabel's toEnum does: an infinite loop in Haskell for that branch);
+                    # Lean cannot refer to the instance inside its own definition
+                    def self_ref(e):
+                        txt = tr.text(e)
+                        return re.search(r"then toEnum n\b|= toEnum n$", txt, re.M) is not None
+                    if any(self_ref(e) for e in methods.get("toEnum", [])):
+                        raise Unsupported("toEnum refers to itself (non-terminating in Haskell)")
+                    print(f"-- from {os.path.relpath(path, root)}")
+                    for m, (dom, cod) in (("fromEnum", (tn, "Nat")), ("toEnum", ("Nat", tn))):
+                        eqs = methods[m]
+                        tr.bound = set().union(*(bound_names(tr, e) for e in eqs))
+                        ps0 = eqs[0].child_by_field_name("patterns")
+                        if ps0 is None:   # point-free
+                            print(f"def {m}H_{tn.replace('.', '_')} : {dom} → {cod} :=\n  {tr.rhs(eqs[0], 2)}")
+                            continue
+                        # helper outside the type's namespace: inside `def T.f`, a constructor named like a type
+                        # (ObjectType.APIObjectType) would capture type annotations
+                        print(f"def {m}H_{tn.replace('.', '_')} : {dom} → {cod} := fun x0 =>\n  match x0 with")
+                        for e in eqs:
+                            p0 = kids(e.child_by_field_name("patterns"))[0]
+                            lines = []
+                            wh = e.child_by_field_name("binds")
+                            if wh is not None:
+                                lines += [lb for lb in (tr.local_bind(b, 6) for b in tr.ordered_binds(kids(wh))) if lb]
+                            lines.append(tr.rhs(e, 6, last=(e == eqs[-1])))
+                            print(f"  | {tr.pat(p0)} =>\n      " + "\n      ".join(lines))
+                    h = tn.replace(".", "_")
+                    print(f"instance : IntegralH {tn} := ⟨fun x => (fromEnumH_{h} x : Int), "
+                          f"fun i => toEnumH_{h} i.toNat⟩\n")
+            except (Unsupported, KeyError, StopIteration) as ex:
+                print(f"-- hs2lean: instance {cls} {tn} not translated: {str(ex)[:80]}\n")
+    print("/-! ## Newtype instances lifted through non-word fields -/\n")
+    for line in data.deferred:
+        print(line)
     print("end\nend Sel4Lean.Spec")
     total = len(order) + len(failed) + len(stubs)
     print(f"hs2lean types: {len(order)} translated, {len(failed)} failed, {len(stubs)} unresolved "

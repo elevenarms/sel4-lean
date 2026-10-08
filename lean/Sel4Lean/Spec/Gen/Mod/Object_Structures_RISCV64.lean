@@ -79,7 +79,7 @@ def asidHighBitsOf (asid : ASID) : ASID :=
   (asid >>> asidLowBits) &&& (mask asidHighBits)
 
 /-- Haskell `parseTimeArg` -/
-def parseTimeArg (i : Nat) (args : List RISCV64.Word) : Ticks :=
+def parseTimeArg (i : Nat) (args : List Word) : Ticks :=
   fromIntegral (listIndexH args i)
 
 /-- Haskell `timeArgLen` -/

@@ -340,11 +340,11 @@ def provideUntypedCap (rootCNodeCap : Capability) (isDevice : Bool) (pptr : PAdd
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let i := currSlot - slotPosBefore
     let untypedObjs ← noInitFailure (gets (BIFrameData.bifUntypedObjPAddrs ∘ InitData.initBootInfo))
-    let _ ← assertH ((length untypedObjs) == (fromIntegral i)) "Untyped Object List is inconsistent"
+    let _ ← assertG ((length untypedObjs) == (fromIntegral i)) "Untyped Object List is inconsistent"
     let untypedObjs' ← noInitFailure (gets (BIFrameData.bifUntypedObjSizeBits ∘ InitData.initBootInfo))
-    let _ ← assertH ((length untypedObjs') == (fromIntegral i)) "Untyped Object List is inconsistent"
+    let _ ← assertG ((length untypedObjs') == (fromIntegral i)) "Untyped Object List is inconsistent"
     let untypedDevices ← noInitFailure (gets (BIFrameData.bifUntypedObjIsDeviceList ∘ InitData.initBootInfo))
-    let _ ← assertH ((length untypedDevices) == (fromIntegral i)) " Untyped Object List is inconsistent"
+    let _ ← assertG ((length untypedDevices) == (fromIntegral i)) " Untyped Object List is inconsistent"
     let bootInfo ← noInitFailure (gets InitData.initBootInfo)
     let bootInfo' := { bootInfo with bifUntypedObjPAddrs := untypedObjs ++ [pptr], bifUntypedObjSizeBits := untypedObjs' ++ [sizeBits], bifUntypedObjIsDeviceList := untypedDevices ++ [isDevice] }
     let _ ← noInitFailure (modify (fun st => { st with initBootInfo := bootInfo' }))

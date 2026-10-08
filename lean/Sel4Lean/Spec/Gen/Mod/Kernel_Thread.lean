@@ -319,21 +319,21 @@ def tcbQueueRemove (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
     else
       if (TcbQueue.tcbQueueHead queue) == (some tcbPtr) then
         do
-          let _ ← assertH (afterPtrOpt != none) "the queue is not a singleton"
+          let _ ← assertG (afterPtrOpt != none) "the queue is not a singleton"
           let _ ← threadSet (fun t => { t with tcbSchedPrev := none }) (fromJust afterPtrOpt)
           let _ ← threadSet (fun t => { t with tcbSchedNext := none }) tcbPtr
           pure ({ queue with tcbQueueHead := afterPtrOpt })
       else
         if (TcbQueue.tcbQueueEnd queue) == (some tcbPtr) then
           do
-            let _ ← assertH (beforePtrOpt != none) "the queue is not a singleton"
+            let _ ← assertG (beforePtrOpt != none) "the queue is not a singleton"
             let _ ← threadSet (fun t => { t with tcbSchedNext := none }) (fromJust beforePtrOpt)
             let _ ← threadSet (fun t => { t with tcbSchedPrev := none }) tcbPtr
             pure ({ queue with tcbQueueEnd := beforePtrOpt })
         else
           do
-            let _ ← assertH (afterPtrOpt != none) "the queue is not a singleton"
-            let _ ← assertH (beforePtrOpt != none) "the queue is not a singleton"
+            let _ ← assertG (afterPtrOpt != none) "the queue is not a singleton"
+            let _ ← assertG (beforePtrOpt != none) "the queue is not a singleton"
             let _ ← threadSet (fun t => { t with tcbSchedNext := afterPtrOpt }) (fromJust beforePtrOpt)
             let _ ← threadSet (fun t => { t with tcbSchedPrev := beforePtrOpt }) (fromJust afterPtrOpt)
             let _ ← threadSet (fun t => { t with tcbSchedPrev := none }) tcbPtr
@@ -358,7 +358,7 @@ def tcbSchedDequeue (thread : PPtr TCB) : Kernel Unit :=
 def switchToThread (thread : PPtr TCB) : Kernel Unit :=
   do
     let runnable ← isRunnable thread
-    let _ ← assertH runnable "thread must be runnable"
+    let _ ← assertG runnable "thread must be runnable"
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let _ ← stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
     let _ ← (RISCV64.switchToThread) thread
@@ -446,7 +446,7 @@ def tcbSchedEnqueue (thread : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let runnable ← isRunnable thread
-    let _ ← assertH runnable "thread must be runnable"
+    let _ ← assertG runnable "thread must be runnable"
     let queued ← threadGet TCB.tcbQueued thread
     unlessH queued (do
       let tdom ← threadGet TCB.tcbDomain thread
@@ -547,11 +547,11 @@ def doIPCTransfer (sender : PPtr TCB) (endpoint : Option (PPtr Endpoint)) (badge
 def doReplyTransfer (sender : PPtr TCB) (receiver : PPtr TCB) (slot : PPtr CTE) (grant : Bool) : Kernel Unit :=
   do
     let state ← getThreadState receiver
-    let _ ← assertH (isReply state) "Reply transfer to a thread that isn't listening"
+    let _ ← assertG (isReply state) "Reply transfer to a thread that isn't listening"
     let mdbNode ← liftM CTE.cteMDBNode (getCTE slot)
-    let _ ← assertH (((MDBNode.mdbPrev mdbNode) != nullPointer) && ((MDBNode.mdbNext mdbNode) == nullPointer)) "doReplyTransfer: ReplyCap not at end of MDB chain"
+    let _ ← assertG (((MDBNode.mdbPrev mdbNode) != nullPointer) && ((MDBNode.mdbNext mdbNode) == nullPointer)) "doReplyTransfer: ReplyCap not at end of MDB chain"
     let parentCap ← getSlotCap (MDBNode.mdbPrev mdbNode)
-    let _ ← assertH ((isReplyCap parentCap) && (Capability.capReplyMaster parentCap)) "doReplyTransfer: ReplyCap parent not reply master"
+    let _ ← assertG ((isReplyCap parentCap) && (Capability.capReplyMaster parentCap)) "doReplyTransfer: ReplyCap parent not reply master"
     let fault ← threadGet TCB.tcbFault receiver
     match fault with
     | none => (do
@@ -619,7 +619,7 @@ def chooseThread : Kernel Unit :=
         let queue ← getQueue curdom prio
         let thread := fromJust (TcbQueue.tcbQueueHead queue)
         let runnable ← isRunnable thread
-        let _ ← assertH runnable "Scheduled a non-runnable thread"
+        let _ ← assertG runnable "Scheduled a non-runnable thread"
         switchToThread thread
     else
       switchToIdleThread
@@ -669,7 +669,7 @@ def tcbSchedAppend (thread : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let runnable ← isRunnable thread
-    let _ ← assertH runnable "thread must be runnable"
+    let _ ← assertG runnable "thread must be runnable"
     let queued ← threadGet TCB.tcbQueued thread
     unlessH queued (do
       let tdom ← threadGet TCB.tcbDomain thread
@@ -762,9 +762,9 @@ def tcbQueueInsert (tcbPtr : PPtr TCB) (afterPtr : PPtr TCB) : Kernel Unit :=
   do
     let tcb ← getObject afterPtr
     let beforePtrOpt ← pure (TCB.tcbSchedPrev tcb)
-    let _ ← assertH (beforePtrOpt != none) "afterPtr must not be the head of the list"
+    let _ ← assertG (beforePtrOpt != none) "afterPtr must not be the head of the list"
     let beforePtr ← pure (fromJust beforePtrOpt)
-    let _ ← assertH (beforePtr != afterPtr) "the tcbSchedPrev pointer of a TCB must never point to itself"
+    let _ ← assertG (beforePtr != afterPtr) "the tcbSchedPrev pointer of a TCB must never point to itself"
     let _ ← threadSet (fun t => { t with tcbSchedPrev := some beforePtr }) tcbPtr
     let _ ← threadSet (fun t => { t with tcbSchedNext := some afterPtr }) tcbPtr
     let _ ← threadSet (fun t => { t with tcbSchedPrev := some tcbPtr }) afterPtr

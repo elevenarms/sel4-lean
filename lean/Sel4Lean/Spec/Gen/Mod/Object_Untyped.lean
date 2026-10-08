@@ -196,7 +196,7 @@ def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=
           let inRange := fun x => ((PPtr.ptr retypeBase) ≤ x) && (x ≤ (((PPtr.ptr retypeBase) + (fromIntegral totalObjectSize)) - 1))
           let _ ← stateAssertH (fun s => not (cNodeOverlap (KernelState.gsCNodes s) inRange)) "CNodes present in region to be retyped."
           let _ ← stateAssertH (fun s => not (archOverlap s inRange)) "Arch specific non-overlap requirements."
-          let _ ← assertH (canonicalAddressAssert retypeBase) "Canonical ptr required on some architectures"
+          let _ ← assertG (canonicalAddressAssert retypeBase) "Canonical ptr required on some architectures"
           let freeRef := retypeBase + (PPtr.mk (fromIntegral totalObjectSize))
           let _ ← updateFreeIndex srcSlot (getFreeIndex base freeRef)
           createNewObjects newType srcSlot destSlots retypeBase userSize isDev)

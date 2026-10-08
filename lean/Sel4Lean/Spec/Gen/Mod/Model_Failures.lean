@@ -72,7 +72,7 @@ def unifyFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] : (KernelF f 
 
 /-- Haskell `rangeCheck` -/
 def rangeCheck {a : Type} [Inhabited a] {b : Type} [Inhabited b] [IntegralH a] [IntegralH b] (value : a) (minV : b) (maxV : b) : KernelF SyscallError Unit :=
-  unlessH ((SerialData.value ≥ (fromIntegral minV)) && (SerialData.value ≤ (fromIntegral maxV))) (throw (SyscallError.RangeError (fromIntegral minV) (fromIntegral maxV)))
+  unlessH ((value ≥ (fromIntegral minV)) && (value ≤ (fromIntegral maxV))) (throw (SyscallError.RangeError (fromIntegral minV) (fromIntegral maxV)))
 
 end
 end Sel4Lean.Spec.M.Model_Failures
