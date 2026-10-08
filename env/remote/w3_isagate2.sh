@@ -19,7 +19,7 @@ for c in "$G"/chunks/c*; do
   printf 'theory Chunk\n  imports ExecSpec.ArchIntermediate_H\nbegin\nML_file "Eval2.ML"\nend\n' > "$d/Chunk.thy"
 done
 $R/env/remote/in_l4v.sh "export L4V_ARCH=RISCV64; cd /host/gate2/chunks && ls -d *.d | xargs -P ${PAR:-6} -I{} sh -c \
-  'GATE_CASES=/host/gate2/chunks/{}/cases.tsv GATE_RESULTS=/host/gate2/chunks/{}/out.tsv timeout 1800 \
+  'GATE_CASES=/host/gate2/chunks/{}/cases.tsv GATE_RESULTS=/host/gate2/chunks/{}/out.tsv timeout 600 \
    /host/isabelle/bin/isabelle process_theories -d /host/l4v -l ExecSpec -D /host/gate2/chunks/{} Chunk \
    > /host/gate2/chunks/{}/log 2>&1 || echo chunk {} failed'" > "$A/isabelle.log" 2>&1
 cat "$G"/chunks/*.d/out.tsv > "$A/isabelle2.tsv" 2>/dev/null

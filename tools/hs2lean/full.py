@@ -787,6 +787,11 @@ def cmd_types(root, files, emit=True):
                 text = tr.emit_newtype(name, node)
             else:
                 text = tr.emit_synonym(name, node)
+            if name == f"{ARCH}.IRQ":
+                # Isabelle `irq = irq_len word`, irq_len = Kernel_Config.irqBits = 6 (machine/RISCV64/Platform.thy);
+                # the Haskell platform module says Word32. The verified spec's IRQs are 6-bit.
+                assert "  val : BitVec 32\n" in text, "RISCV64.IRQ: field not found"
+                text = text.replace("  val : BitVec 32\n", "  val : BitVec 6   -- Isabelle irq_len = irqBits = 6\n", 1)
             if name == "UserContext":
                 # l4v's `datatype user_context = UserContext (user_regs : user_regs)` (machine/RISCV64/
                 # MachineOps.thy) replaces the Haskell `UC { fromUC }` (RegisterSet.lhs: NOT UserContext);

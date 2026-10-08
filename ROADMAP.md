@@ -103,8 +103,9 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
       evaluation; l4v's skeleton overrides followed (105 dropped Haskell definitions ported or aliased)
       ([notes](notes/w3-isabelle-gate.md)).
 - [x] Boot code: `Kernel/Init.lhs` in l4v's init monad; 62/62 modules compile.
-- [ ] Extend the value gate: datatype arguments (capabilities, objects), then monadic functions on generated
-      kernel states, evaluated in Isabelle and Lean.
+- [x] Value gate on datatype arguments (capabilities, objects): 74/79 functions, 429 cases agree, 0 differ;
+      specification-strength gate: 51/51 unspecified constants opaque in Lean; IRQs 6-bit as in Isabelle.
+- [ ] Value gate on monadic functions over generated kernel states (Isabelle and Lean).
 
 ### W4. Proofs
 - [ ] Port the invariant definitions (`invs`, `invs'`), then AInvs and Refine, replacing assumptions in

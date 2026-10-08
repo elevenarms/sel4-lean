@@ -321,6 +321,33 @@ def isPageTableCap : _root_.Sel4Lean.Spec.ArchCapability → Bool
   | _ => false
 noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
 
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `data ZombieType` -/
+inductive ZombieType where
+  | ZombieTCB
+  | ZombieCNode (zombieCTEBits : Nat)
+  deriving Inhabited, DecidableEq
+
+/-- Haskell selector `zombieCTEBits`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
+def ZombieType.zombieCTEBits : ZombieType → Nat
+  | .ZombieCNode v => v
+  | _ => undefinedH
+/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
+def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
+  match x with
+  | .ZombieCNode _ => .ZombieCNode v
+  | x => x
+
+/-- l4v-generated discriminator `isZombieTCB` -/
+def isZombieTCB : _root_.Sel4Lean.Spec.ZombieType → Bool
+  | .ZombieTCB .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isZombieCNode` -/
+def isZombieCNode : _root_.Sel4Lean.Spec.ZombieType → Bool
+  | .ZombieCNode .. => true
+  | _ => false
+
 -- from SEL4/API/Types.lhs
 /-- Haskell `type Priority` -/
 abbrev Priority := BitVec 8
@@ -395,12 +422,27 @@ structure ArchTCB where
 noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
 
 -- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  CPtr ::
+  fromCPtr : Word
+  deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
+instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
+instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
+instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
+instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
+instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
+instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
+instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
+instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
+instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
+instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
+instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
@@ -498,29 +540,6 @@ structure ArchFault where
   vmFaultAddress : VPtr
   vmFaultArchData : List Word
   deriving Inhabited, DecidableEq
-
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  CPtr ::
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
-instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
-instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
-instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
-instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
-instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
-instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
-instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
-instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
-instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
-instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
-instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
-instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
-instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
-instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
-
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -621,11 +640,19 @@ def isArchFault : _root_.Sel4Lean.Spec.Fault → Bool
   | .ArchFault .. => true
   | _ => false
 
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
+
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
 /-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
 structure RISCV64.IRQ where
   IRQ ::
-  val : BitVec 32
+  val : BitVec 6   -- Isabelle irq_len = irqBits = 6
   deriving Inhabited, DecidableEq
 instance : LE RISCV64.IRQ := ⟨fun a b => a.val ≤ b.val⟩
 instance : LT RISCV64.IRQ := ⟨fun a b => a.val < b.val⟩
@@ -642,33 +669,6 @@ structure IRQ where
   deriving Inhabited, DecidableEq
 instance : IntegralH IRQ := ⟨fun a => IntegralH.toInt a.theIRQ, fun i => ⟨IntegralH.ofInt i⟩⟩
 
-
--- from SEL4/Object/Structures.lhs
-/-- Haskell `data ZombieType` -/
-inductive ZombieType where
-  | ZombieTCB
-  | ZombieCNode (zombieCTEBits : Nat)
-  deriving Inhabited, DecidableEq
-
-/-- Haskell selector `zombieCTEBits`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
-def ZombieType.zombieCTEBits : ZombieType → Nat
-  | .ZombieCNode v => v
-  | _ => undefinedH
-/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
-def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
-  match x with
-  | .ZombieCNode _ => .ZombieCNode v
-  | x => x
-
-/-- l4v-generated discriminator `isZombieTCB` -/
-def isZombieTCB : _root_.Sel4Lean.Spec.ZombieType → Bool
-  | .ZombieTCB .. => true
-  | _ => false
-
-/-- l4v-generated discriminator `isZombieCNode` -/
-def isZombieCNode : _root_.Sel4Lean.Spec.ZombieType → Bool
-  | .ZombieCNode .. => true
-  | _ => false
 
 -- pointer cycle: MDBNode, CTE, NTFN, Notification, ThreadState, TCB, Endpoint, Capability
 mutual

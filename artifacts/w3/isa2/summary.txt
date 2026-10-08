@@ -1,14 +1,7 @@
-isagate2: agree 432, both-undefined 24, isabelle-unevaluated 24
+isagate2: agree 429, both-undefined 26, isabelle-unevaluated 19
   API_InvocationLabels.genInvocationType: 1/6 ['isabelle-unevaluated']
   API_InvocationLabels.invocationType: 2/6 ['isabelle-unevaluated']
-  Object_CNode.longRunningDelete: 1/6 ['isabelle-unevaluated']
-  Object_ObjectType.capUntypedSize: 1/6 ['isabelle-unevaluated']
-  Object_ObjectType.hasCancelSendRights: 1/6 ['isabelle-unevaluated']
-  Object_ObjectType.isPhysicalCap: 1/6 ['isabelle-unevaluated']
-  Object_ObjectType.sameObjectAs: 1/6 ['isabelle-unevaluated']
-  Object_ObjectType_RISCV64.isArchMDBParentOf: 1/6 ['isabelle-unevaluated']
-  Object_Structures.maxFreeIndex: 2/6 ['isabelle-unevaluated']
-  Object_Structures.objBitsKO: 1/6 ['isabelle-unevaluated']
+  Object_Structures.getFreeRef: 6/6 ['isabelle-unevaluated']
+  Object_Structures.maxFreeIndex: 4/6 ['isabelle-unevaluated']
   Object_Structures_RISCV64.parseTimeArg: 6/6 ['isabelle-unevaluated']
-  Object_Untyped.canonicalAddressAssert: 6/6 ['isabelle-unevaluated']
-isagate2: 68/80 functions agree with Isabelle on every case
+isagate2: 74/79 functions agree with Isabelle on every case

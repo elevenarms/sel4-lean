@@ -9,7 +9,9 @@ tactics; `cancelSignal_corres` is proved over generated code.
 
 At spec scale the Lean executable spec is checked against **l4v's own built Isabelle spec** (session `ExecSpec`):
 all **1319/1319** of its constants have a Lean counterpart of the same name, and all **60/60** testable functions
-agree with Isabelle's evaluation. All **62/62** generated modules compile, boot code included. Where l4v's
+agree with Isabelle's evaluation, as do 74/79 functions over capabilities and kernel objects (429 cases, 0 differ).
+All 51 constants l4v leaves unspecified are unspecified in Lean too. All **62/62** generated modules compile,
+boot code included. Where l4v's
 Isabelle differs from the Haskell model (it replaces 105 Haskell definitions by hand), the Lean follows Isabelle.
 Getting there found real differences: `pptrUserTop`, `physBase`, the boot-time `foldME` order, and a CTE-in-TCB
 case the earlier Lean port missed ([gate notes](notes/w3-isabelle-gate.md), [W3](notes/w3-difftest.md),

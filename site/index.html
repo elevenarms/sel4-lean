@@ -246,7 +246,9 @@ html { scroll-behavior: smooth; }
             It found real differences that compiled and even passed the GHC test. Haskell&rsquo;s <code>pptrUserTop</code> is wrong for the verified spec (l4v: <code>0x3FFFFFF000</code>). At boot, l4v&rsquo;s <code>foldME</code> runs <b>right to left</b>, the opposite of Haskell&rsquo;s <code>foldM</code>. And my own earlier port had missed that a CTE can live <b>inside a TCB</b>. All three now follow l4v, and the storable-object laws are proved for every instance.
             Result: <span class="ok">1319 of 1319 Isabelle constants matched by name, 60 of 60 functions agree with Isabelle&rsquo;s evaluation</span>. <span class="hood">(w3)</span></div></li>
           <li><time>Oct 8</time><div><b>Boot code done: 62 of 62 modules compile.</b> Initialisation runs in l4v&rsquo;s init monad, with the kernel state inside the init record and the bootinfo constants unspecified as in Isabelle. It took three translator fixes for Haskell features Lean lacks: let-polymorphism, unconstrained pointer types, and <code>do</code> scoping that depends on statement order. <span class="hood">(w2/w3)</span></div></li>
-          <li><time>next</time><div class="dim">Grow the Isabelle value gate to capability and object arguments, then to monadic functions on generated states. W1: <code>corres</code> automation. Then W4: invariants and refinement proofs.</div></li>
+          <li><time>Oct 8</time><div>The Isabelle gate grows two new checks. <b>Structured values:</b> 79 spec functions over capabilities and kernel objects, such as <code>sameRegionAs</code> and <code>maskCapRights</code>, get generated inputs and are evaluated by Isabelle and by Lean. <span class="ok">429 cases agree, 0 differ</span>.
+            <b>Specification strength:</b> a constant l4v deliberately leaves unspecified must not have a definition in Lean, or Lean could prove things Isabelle can&rsquo;t. That check caught 17 Haskell bodies, mostly state assertions. All 51 such constants are now unspecified in both. Along the way: Isabelle&rsquo;s IRQs are 6-bit, not 32. And recursion is now total wherever Lean proves termination itself; only the five functions l4v also argues by hand stay <code>partial</code>. <span class="hood">(w3)</span></div></li>
+          <li><time>next</time><div class="dim">Value gate for monadic functions on generated kernel states. W1: <code>corres</code> automation. Then W4: invariants and refinement proofs.</div></li>
         </ol>
       </section>
 
@@ -524,6 +526,7 @@ example :
             <tr class="hi"><td>modules compiling</td><td class="n">62 / 62</td><td>boot code and <code>SEL4.lhs</code> included; hand ports of l4v&rsquo;s skeleton theories where l4v replaces the Haskell</td></tr>
             <tr><td>names linked across modules</td><td class="n">479</td><td>real definitions via imports; 260 stubs left</td></tr>
             <tr class="hi"><td>Isabelle constants matched</td><td class="n">1319 / 1319</td><td>every constant of l4v&rsquo;s built <code>ExecSpec</code> has a Lean counterpart of the same name</td></tr>
+            <tr class="hi"><td>structured values vs Isabelle</td><td class="n">74 / 79</td><td>functions over capabilities and objects agree on every case (429 cases, 0 differ)</td></tr>
             <tr class="hi"><td>agree with Isabelle</td><td class="n">60 / 60</td><td>functions evaluated by Isabelle on l4v&rsquo;s spec vs Lean, 158 cases; GHC agrees except where l4v overrides it</td></tr>
             <tr><td>generated <code>*_inv</code> lemmas</td><td class="n">12</td><td>one <code>crunch</code> command over the notifications module</td></tr>
           </tbody>

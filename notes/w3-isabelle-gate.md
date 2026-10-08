@@ -35,6 +35,44 @@ own container image. There are two checks:
 The GHC difftest is now *adjudicated* by Isabelle: a Lean/Haskell difference is accepted (verdict `l4v`)
 only when Lean equals Isabelle.
 
+## Structured values and specification strength
+
+Two further checks, both against the same `ExecSpec` heap:
+
+- **Structured values** (`env/remote/w3_isagate2.sh`, `tools/hs2lean/isagate2.py`,
+  `env/remote/isagate/Eval2.ML`).
+  - Coverage: 80 pure spec functions over capabilities, kernel objects, enumerations, options and pairs
+    (`sameRegionAs`, `maskCapRights`, `updateCapData`, `isCapRevocable`, `objBitsKO`, …).
+  - Inputs: generated from the Lean constructors (parsed from `Gen/Types.lean`) and rendered twice, as a
+    Lean term and as a typed Isabelle term with full constant names. A Haskell newtype is a type synonym in
+    Isabelle unless l4v keeps its constructor, and the constant table says which.
+  - Isabelle evaluation: by code evaluation, else by rounds of unfolding l4v's own definitions followed by
+    simplification. Constructors and case combinators are never unfolded. The datatypes' case equations
+    are added, because types declared in `context Arch` keep their simp rules local.
+  - Isolation: the cases run in chunks of 10, each in its own `isabelle process_theories` (6 in parallel),
+    so one pathological case costs only its chunk.
+  - Comparison: as S-expressions.
+  - Result: **74/79 functions agree on every case; 474 cases: 429 agree, 26 undefined in both, 0 differ.**
+    The 19 cases Isabelle does not evaluate are its limits, not Lean's: large `nat` powers in
+    `maxFreeIndex`/`getFreeRef`, `toEnum` on invocation labels, and an out-of-range list index in
+    `parseTimeArg` (Haskell `error`).
+- **Specification strength** (`isagate.py names`). A constant l4v *declares but never defines* (`consts`,
+  or `decls_only` without a body) is unspecified in Isabelle; Lean must not define it either, or Lean
+  proves facts Isabelle cannot.
+  - What it found: 17 Haskell bodies the verified spec deliberately leaves out. Most are the state
+    assertions behind `stateAssert` (`deletionIsSafe`, `ksASIDMapSafe`, `pointerInUserData`,
+    `capHasProperty`, `ready_qs_runnable`, …); also `cNodeOverlap`, `archOverlap`,
+    `canonicalAddressAssert` and `checkPTAt`.
+  - Fix: the gate writes the list (`unspecified-names.txt`) and the translator emits those names as
+    opaque stubs. **51/51** unspecified in both.
+
+The structured gate also showed that Isabelle's `irq` is **6 bits** (`irq_len = Kernel_Config.irqBits`),
+where the Haskell has `Word32`. `RISCV64.IRQ` is now 6 bits wide.
+
+Recursive functions are now total `def`s wherever Lean proves termination itself. Only `cteDelete`,
+`cteRevoke`, `finaliseSlot`, `reduceZombie` and `resolveAddressBits` stay `partial`, plus the page-table
+lookups in `Kernel_VSpace_RISCV64`. These are the ones l4v also needs hand termination arguments for.
+
 ## What the gate found
 
 Each of these compiled, and some passed the GHC test:

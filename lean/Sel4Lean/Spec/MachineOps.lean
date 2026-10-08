@@ -104,12 +104,12 @@ def plic_complete_claim (irq : RISCV64.IRQ) : MachineMonad Unit :=
 def non_kernel_IRQs (_irq : RISCV64.IRQ) : Prop := False
 
 /-- Isabelle `maxIRQ ≡ Kernel_Config.maxIRQ` (54 on HiFive; Haskell `maxBound = IRQ 54`). -/
-def maxIRQ : RISCV64.IRQ := ⟨BitVec.ofNat 32 KernelConfig.maxIRQ⟩
+def maxIRQ : RISCV64.IRQ := ⟨BitVec.ofNat 6 KernelConfig.maxIRQ⟩
 
 /-- Isabelle `axiomatization irq_oracle :: nat ⇒ irq where irq_oracle_max_irq: ∀n. irq_oracle n ≤ maxIRQ`,
 as an opaque inhabitant of the subtype: the bound is a theorem, not an axiom. -/
 opaque irq_oracle_impl : {f : Nat → RISCV64.IRQ // ∀ n, f n ≤ maxIRQ} :=
-  ⟨fun _ => ⟨0⟩, fun _ => show (0 : BitVec 32) ≤ BitVec.ofNat 32 KernelConfig.maxIRQ by decide⟩
+  ⟨fun _ => ⟨0⟩, fun _ => show (0 : BitVec 6) ≤ BitVec.ofNat 6 KernelConfig.maxIRQ by decide⟩
 
 def irq_oracle : Nat → RISCV64.IRQ := irq_oracle_impl.val
 
