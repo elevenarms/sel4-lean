@@ -121,6 +121,57 @@ theorem whenM_wp (P : Prop) [Decidable P] (m : NondetM σ Unit) {R : σ → Prop
   · rename_i hP; exact hm s (hs.1 hP) r s' hr
   · rename_i hP; cases hr; exact hs.2 hP
 
+/-! ## Invariant-style rules (used by `crunch`: every step keeps the same `P`) -/
+
+theorem ite_wp_same (c : Prop) [Decidable c] {f g : NondetM σ α} {P : σ → Prop} {Q : α → σ → Prop}
+    (hf : ⟪P⟫ f ⟪Q⟫) (hg : ⟪P⟫ g ⟪Q⟫) : ⟪P⟫ (if c then f else g) ⟪Q⟫ := by
+  intro s hs r s' hr
+  by_cases hc : c
+  · simp only [hc, ↓reduceIte] at hr; exact hf s hs r s' hr
+  · simp only [hc, ↓reduceIte] at hr; exact hg s hs r s' hr
+
+/-- `fail` has no results, so any pre/post holds (partial correctness). -/
+theorem fail_wp_any {P : σ → Prop} {Q : α → σ → Prop} : ⟪P⟫ (fail : NondetM σ α) ⟪Q⟫ :=
+  fun _ _ _ _ hr => hr.elim
+
+theorem assertM_inv (c : Prop) [Decidable c] {P : σ → Prop} : ⟪P⟫ (assertM c) ⟪fun _ => P⟫ := by
+  intro s hs r s' hr
+  unfold assertM at hr
+  split at hr
+  · cases hr; exact hs
+  · exact hr.elim
+
+theorem stateAssert_wp (R : σ → Prop) [DecidablePred R] (Q : Unit → σ → Prop) :
+    ⟪fun s => R s → Q () s⟫ (stateAssert R) ⟪Q⟫ := by
+  intro s hs r s' ⟨x, t, hget, hr⟩
+  cases hget
+  unfold assertM at hr
+  dsimp only at hr
+  split at hr
+  · rename_i h; cases hr; exact hs h
+  · exact hr.elim
+
+theorem stateAssert_inv (R : σ → Prop) [DecidablePred R] {P : σ → Prop} :
+    ⟪P⟫ (stateAssert R) ⟪fun _ => P⟫ :=
+  hoare_pre (stateAssert_wp R _) (fun _ h _ => h)
+
+/-- `crunch`'s bind rule: fixed assertion `P` throughout, no metavariables to solve. -/
+theorem bind_inv {f : NondetM σ α} {g : α → NondetM σ β} {P : σ → Prop}
+    (hg : ∀ x, ⟪P⟫ (g x) ⟪fun _ => P⟫) (hf : ⟪P⟫ f ⟪fun _ => P⟫) : ⟪P⟫ (bind f g) ⟪fun _ => P⟫ :=
+  bind_wp hg hf
+
+theorem bind_inv' {f : NondetM σ α} {g : α → NondetM σ β} {P : σ → Prop}
+    (hg : ∀ x, ⟪P⟫ (g x) ⟪fun _ => P⟫) (hf : ⟪P⟫ f ⟪fun _ => P⟫) : ⟪P⟫ (f >>= g) ⟪fun _ => P⟫ :=
+  bind_wp hg hf
+
+theorem ret_inv (a : α) {P : σ → Prop} : ⟪P⟫ (ret a) ⟪fun _ => P⟫ := ret_wp a (fun _ => P)
+theorem pure_inv (a : α) {P : σ → Prop} : ⟪P⟫ (pure a : NondetM σ α) ⟪fun _ => P⟫ := ret_wp a (fun _ => P)
+
+theorem mapM_x_inv {f : α → NondetM σ β} {P : σ → Prop} (h : ∀ x, ⟪P⟫ (f x) ⟪fun _ => P⟫) :
+    ∀ xs, ⟪P⟫ (mapM_x f xs) ⟪fun _ => P⟫
+  | [] => ret_wp () (fun _ => P)
+  | x :: xs => bind_wp (fun _ => mapM_x_inv h xs) (h x)
+
 /-! ## no_fail rules -/
 
 theorem noFail_ret (a : α) (P : σ → Prop) : noFail P (ret a : NondetM σ α) := fun _ _ h => h

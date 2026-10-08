@@ -71,7 +71,8 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
 - [x] `[wp_rule]` attribute + `wp` tactic driven by it (l4v `[wp]` sets); extra rules as `wp [h₁, h₂]` (`Tactic/WP.lean`).
 - [x] Join-point handling in `wp` (Lean `do` compiles `let x ← match …` into `have __do_jp …; match …`).
 - [x] `wpsimp` on top; `cancelSignal_simple` is now `wpsimp [setThreadState_st_tcb]` + `simp [simple']`, like l4v's.
-- [ ] `crunch`: generate "f preserves P" lemmas for every function in a module (l4v: 629 uses in Refine alone).
+- [x] `crunch`: generate "f preserves P" lemmas for every function in a module (l4v: 629 uses in Refine alone).
+      `Tactic/Crunch.lean`; one command covers all 12 generated notification functions (`Refine/NotificationCrunch.lean`).
 - [ ] `corres` automation: `corres_split` driver, `corres_cases`, `corres_gen_asm`, a `corres` rule set.
 
 ### W2. Translators at full scale

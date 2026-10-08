@@ -229,7 +229,7 @@ theorem cancelSignal_simple
     ⟪fun _ => True⟫ (cancelSignal t ntfn) ⟪fun _ => st_tcb_at' simple' t⟫ := by
   unfold cancelSignal
   wpsimp [setThreadState_st_tcb]
-  all_goals simp [simple']
+  all_goals (try simp [simple'])
 
 end
 end Sel4Lean.Refine

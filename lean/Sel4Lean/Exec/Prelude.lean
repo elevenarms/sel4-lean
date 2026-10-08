@@ -32,19 +32,19 @@ instance {α : Type} : DecidableEq (PPtr α) := fun a b =>
     isFalse (fun e => h (congrArg PPtr.ptr e))
 
 /-- Haskell `fail msg` in the kernel monad: l4v translates it to failure, dropping the message. -/
-def failH {σ α : Type} (_msg : String) : NondetM σ α := NondetM.fail
+abbrev failH {σ α : Type} (_msg : String) : NondetM σ α := NondetM.fail
 
 /-- Haskell `assert c msg` (l4v `haskell_assert`): fail unless `c`. -/
-def assertH {σ : Type} (c : Bool) (_msg : String) : NondetM σ Unit := NondetM.assertM (c = true)
+abbrev assertH {σ : Type} (c : Bool) (_msg : String) : NondetM σ Unit := NondetM.assertM (c = true)
 
 /-- Haskell `stateAssert P msg` (l4v `stateAssert`). -/
-def stateAssertH {σ : Type} (P : σ → Bool) (_msg : String) : NondetM σ Unit :=
+abbrev stateAssertH {σ : Type} (P : σ → Bool) (_msg : String) : NondetM σ Unit :=
   NondetM.stateAssert (fun s => P s = true)
 
 /-- Haskell `forM_ xs f`. -/
-def forM_H {σ α β : Type} (xs : List α) (f : α → NondetM σ β) : NondetM σ Unit := NondetM.mapM_x f xs
+abbrev forM_H {σ α β : Type} (xs : List α) (f : α → NondetM σ β) : NondetM σ Unit := NondetM.mapM_x f xs
 
 /-- Haskell `Data.List.delete x xs`: remove the first occurrence (l4v: `remove1`). -/
-def deleteH {α : Type} [BEq α] (x : α) (xs : List α) : List α := xs.erase x
+abbrev deleteH {α : Type} [BEq α] (x : α) (xs : List α) : List α := xs.erase x
 
 end Sel4Lean.Exec
