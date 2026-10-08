@@ -77,6 +77,14 @@ Isabelle `machine_monad = (machine_state, 'a) nondet_monad`. -/
 abbrev MachineMonad := Sel4Lean.NondetM MachineState"""
 
 
+# definitions l4v's design skeletons exclude (`#INCLUDE_HASKELL … NOT x`) and take from Isabelle instead
+# (Kernel_Config.thy, Platform.thy): (module path, name) -> name in Spec/KernelConfig.lean
+L4V_OVERRIDES = {("SEL4/Config.lhs", "timeSlice"): "timeSlice",
+                 ("SEL4/Config.lhs", "numDomains"): "numDomains",
+                 ("SEL4/Config.lhs", "retypeFanOutLimit"): "retypeFanOutLimit",
+                 ("SEL4/Config.lhs", "resetChunkBits"): "resetChunkBits",
+                 (f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", "physBase"): "physBase"}
+
 # operations ported from l4v's MachineOps.thy by hand (Spec/MachineOps.lean)
 MACHINE_OPS = {"loadWord", "storeWord", "getMemoryRegions", "storeWordVM", "configureTimer", "initTimer",
                "resetTimer", "debugPrint", "setIRQTrigger", "plic_complete_claim", "getActiveIRQ",
@@ -1026,6 +1034,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                      - (set().union(*(bound_names(tr, d) for d in ns if d.type != "signature")) - {n})}
         machine = any(os.path.relpath(mpath, root).startswith(p) for p in MACHINE_INTERFACE)
         uses_machine_ops = False
+        uses_kernel_config = False
         for n in order:
             if n in PROVIDED:
                 continue   # hand-written in Spec/PSpaceStorable.lean
@@ -1051,6 +1060,13 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
             # whole words: `PPtr a` (a kernel pointer, pure arithmetic) is not the simulator's `Ptr`
             simulator = re.search(r"\b(IO|Ptr|MachineData)\b", sig_txt) is not None
             machine_op = ARCH in mpath and re.search(r"\bMachineMonad\b", sig_txt) is not None
+            ov = L4V_OVERRIDES.get((os.path.relpath(mpath, root), n))
+            if ov is not None:
+                out_defs.append((None, f"/-- Haskell `{n}`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/\n"
+                                       f"abbrev {tr.ident(n)} := Sel4Lean.Spec.KernelConfig.{ov}\n"))
+                uses_kernel_config = True
+                stats["translated"] += 1
+                continue
             if machine and machine_op and n in MACHINE_OPS:
                 # the RISCV64 module implements these with the simulator; l4v's definitions instead
                 out_defs.append((None, f"/-- Haskell `{n}`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/\n"
@@ -1095,8 +1111,9 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
             key = f"{ARCH}.{f}"
             if key in stubs or key in aliases:
                 continue
-            prov = next((hm for hm in closure if ARCH in hm and hm in mp and lean_module(hm) in compiled
-                         and f in module_defs(mp[hm], root)), None)
+            # `Arch.f` is the RISCV64 module's f, never the platform module's (that is `Platform.f`)
+            prov = next((hm for hm in closure if ARCH in hm and not hm.endswith("." + PLATFORM) and hm in mp
+                         and lean_module(hm) in compiled and f in module_defs(mp[hm], root)), None)
             if prov is not None:   # the real RISCV64 definition, under the name the translation uses
                 if lean_module(prov) not in imports:
                     imports.append(lean_module(prov))
@@ -1139,8 +1156,15 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                 unresolved[key] = "no platform signature"
     print(GEN_HEADER.format(rev="ac4a36d", path=", ".join(os.path.relpath(m, root) for m in modules)))
     print("import Sel4Lean.Spec.PSpaceStorable")
+    # the PSpaceStorable instances need generated object sizes etc.: in scope once the Haskell imports
+    # reach Object.Structures (as the Haskell instances are) and those modules have compiled in this pass
+    inst_deps = ("SEL4.Object.Structures", f"SEL4.Object.Structures.{ARCH}", "SEL4.Config")
+    if all(d in import_closure(mpath, root) and lean_module(d) in compiled for d in inst_deps):
+        print("import Sel4Lean.Spec.PSpaceInstances")
     if uses_machine_ops:
         print("import Sel4Lean.Spec.MachineOps")
+    if uses_kernel_config:
+        print("import Sel4Lean.Spec.KernelConfig")
     for im in imports:
         print(f"import Sel4Lean.Spec.Gen.Mod.{im}")
     # Haskell allows overlapping (unreachable) case alternatives; Lean rejects them unless told not to

@@ -50,6 +50,13 @@ def ty_info(t):
     return None
 
 
+# Functions where the verified spec deliberately differs from the Haskell model: l4v takes `physBase` from
+# Kernel_Config.thy (0x80200000), the Haskell HiFive module says 0x80000000 (Spec/KernelConfig.lean).
+# These are the tested functions whose value shifts by exactly 0x200000 (offsets such as
+# kernelELFBaseOffset and addrFromKPPtr cancel it and agree).
+L4V_DIVERGES = {"physBase", "kernelELFPAddrBase", "kernelELFBase"}
+
+
 def values(kind, n, rnd, count):
     if kind == "bool":
         return [rnd.random() < 0.5 for _ in range(count)]
@@ -145,7 +152,7 @@ def parse_out(path):
 def cmd_compare(outdir):
     cases = [l.rstrip("\n").split("\t") for l in open(os.path.join(outdir, "cases.tsv"))][1:]
     hs, ln = parse_out(os.path.join(outdir, "hs.out")), parse_out(os.path.join(outdir, "lean.out"))
-    stats, per_fn = {"agree": 0, "DIFFER": 0, "int-nat": 0, "hs-error": 0, "lean-missing": 0, "hs-missing": 0}, {}
+    stats, per_fn = {"agree": 0, "DIFFER": 0, "int-nat": 0, "hs-error": 0, "l4v": 0, "lean-missing": 0, "hs-missing": 0}, {}
     with open(os.path.join(outdir, "difftest.tsv"), "w") as f:
         f.write("id\tmodule\tfunction\targs\thaskell\tlean\tverdict\n")
         for cid, lm, name, ty, args in cases:
@@ -155,6 +162,7 @@ def cmd_compare(outdir):
                  # Haskell `error`: undefined there; the translation's `default` is a refinement (l4v: undefined)
                  else "hs-error" if h == "error" else "lean-missing" if l is None
                  else "agree" if h == l
+                 else "l4v" if name in L4V_DIVERGES
                  # Haskell Int is Nat in this model (as in l4v's translator): negative results truncate
                  else "int-nat" if h < 0 and l == 0 and "Int" in ty.split("->")[-1]
                  else "DIFFER")
@@ -166,8 +174,8 @@ def cmd_compare(outdir):
         if "DIFFER" in vs:
             print(f"  DIFFER  {lm}.{name}: {vs.count('DIFFER')}/{len(vs)} cases")
     fns = len(per_fn)
-    ok = sum(1 for vs in per_fn.values() if all(v in ("agree", "int-nat", "hs-error") for v in vs))
-    print(f"difftest: {ok}/{fns} functions agree on every case (int-nat: negative Haskell Int; hs-error: Haskell `error`)")
+    ok = sum(1 for vs in per_fn.values() if all(v in ("agree", "int-nat", "hs-error", "l4v") for v in vs))
+    print(f"difftest: {ok}/{fns} functions agree on every case (int-nat: negative Haskell Int; hs-error: Haskell `error`; l4v: Isabelle config value)")
 
 
 if __name__ == "__main__":

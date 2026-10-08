@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64
 
 set_option match.ignoreUnusedAlts true

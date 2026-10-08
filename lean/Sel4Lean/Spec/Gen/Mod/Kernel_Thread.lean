@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
 import Sel4Lean.Spec.Gen.Mod.API_Faults
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet

@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.Object_Untyped
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint

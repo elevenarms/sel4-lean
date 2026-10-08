@@ -2,13 +2,13 @@
 [1m[92m[ Info  ][0m[0m downloading: https://raw.githubusercontent.com/haskell/ghcup-metadata/master/ghcup-0.1.0.yaml as file /root/.ghcup/cache/ghcup-0.1.0.yaml
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  653k  100  653k    0     0  9968k      0 --:--:-- --:--:-- --:--:--  9.8M
-[1m[92m[ Info  ][0m[0m downloading: https://downloads.haskell.org/~ghc/9.2.8/ghc-9.2.8-x86_64-deb10-linux.tar.xz as file /root/.ghcup/tmp/ghcup-0c2f85bb3b8de02b/ghc-9.2.8-x86_64-deb10-linux.tar.xz
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  653k  100  653k    0     0  8975k      0 --:--:-- --:--:-- --:--:-- 9080k
+[1m[92m[ Info  ][0m[0m downloading: https://downloads.haskell.org/~ghc/9.2.8/ghc-9.2.8-x86_64-deb10-linux.tar.xz as file /root/.ghcup/tmp/ghcup-e376f53fed90b937/ghc-9.2.8-x86_64-deb10-linux.tar.xz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 44  233M   44  103M    0     0   183M      0  0:00:01 --:--:--  0:00:01  183M100  233M  100  233M    0     0   225M      0  0:00:01  0:00:01 --:--:--  225M
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 45  233M   45  105M    0     0   214M      0  0:00:01 --:--:--  0:00:01  214M100  233M  100  233M    0     0   223M      0  0:00:01  0:00:01 --:--:--  223M
 [1m[92m[ Info  ][0m[0m verifying digest of: ghc-9.2.8-x86_64-deb10-linux.tar.xz
-[1m[92m[ Info  ][0m[0m Unpacking: ghc-9.2.8-x86_64-deb10-linux.tar.xz to /root/.ghcup/tmp/ghcup-44648ce40ee6bfa9
+[1m[92m[ Info  ][0m[0m Unpacking: ghc-9.2.8-x86_64-deb10-linux.tar.xz to /root/.ghcup/tmp/ghcup-fd3383e80b095575
 [1m[92m[ Info  ][0m[0m Installing ghc
 
 

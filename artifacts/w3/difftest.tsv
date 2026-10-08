@@ -9,11 +9,11 @@ id	module	function	args	haskell	lean	verdict
 8	Config	minFreeSlots		128	128	agree
 9	Config	minSmallBlocks		16	16	agree
 10	Config	rootCNodeSize		12	12	agree
-11	Config	timeSlice		error	0	hs-error
-12	Config	numDomains		error	0	hs-error
+11	Config	timeSlice		error	5	hs-error
+12	Config	numDomains		error	16	hs-error
 13	Config	numPriorities		256	256	agree
-14	Config	retypeFanOutLimit		error	0	hs-error
-15	Config	resetChunkBits		error	0	hs-error
+14	Config	retypeFanOutLimit		error	256	hs-error
+15	Config	resetChunkBits		error	8	hs-error
 16	Kernel_Thread	invertL1Index	0	3	3	agree
 17	Kernel_Thread	invertL1Index	1	2	2	agree
 18	Kernel_Thread	invertL1Index	2	1	1	agree
@@ -103,8 +103,8 @@ id	module	function	args	haskell	lean	verdict
 102	Machine_Hardware_RISCV64	paddrBase		0	0	agree
 103	Machine_Hardware_RISCV64	pptrBase		18446743798831644672	18446743798831644672	agree
 104	Machine_Hardware_RISCV64	pptrTop		18446744071562067968	18446744071562067968	agree
-105	Machine_Hardware_RISCV64	kernelELFPAddrBase		2147483648	2147483648	agree
-106	Machine_Hardware_RISCV64	kernelELFBase		18446744071562067968	18446744071562067968	agree
+105	Machine_Hardware_RISCV64	kernelELFPAddrBase		2147483648	2149580800	l4v
+106	Machine_Hardware_RISCV64	kernelELFBase		18446744071562067968	18446744071564165120	l4v
 107	Machine_Hardware_RISCV64	pptrUserTop		18446743798831644672	18446743798831644672	agree
 108	Machine_Hardware_RISCV64	ptrFromPAddr	0	18446743798831644672	18446743798831644672	agree
 109	Machine_Hardware_RISCV64	ptrFromPAddr	1	18446743798831644673	18446743798831644673	agree
@@ -135,7 +135,7 @@ id	module	function	args	haskell	lean	verdict
 134	Machine_Hardware_RISCV64	pteBits		3	3	agree
 135	Machine_Hardware_RISCV64	ptBits		12	12	agree
 136	Machine_Hardware_RISCV64	pageColourBits		error	0	hs-error
-137	Machine_Hardware_RISCV64_HiFive	physBase		2147483648	2147483648	agree
+137	Machine_Hardware_RISCV64_HiFive	physBase		2147483648	2149580800	l4v
 138	Machine_Hardware_RISCV64_HiFive	pageColourBits		error	0	hs-error
 139	Machine_RegisterSet_RISCV64	sstatusSPIE		32	32	agree
 140	Model_StateData_RISCV64	maxPTLevel		2	2	agree

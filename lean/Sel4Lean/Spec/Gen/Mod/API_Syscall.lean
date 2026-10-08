@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
 import Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler
 import Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor

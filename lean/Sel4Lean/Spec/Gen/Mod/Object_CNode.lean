@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.API_Types
 import Sel4Lean.Spec.Gen.Mod.Object_ObjectType
 import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels

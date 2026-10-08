@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.KernelConfig
 
 set_option match.ignoreUnusedAlts true
 
@@ -50,9 +51,9 @@ opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 
 /-! ## Translated -/
 
-/-- Haskell `physBase` -/
-def physBase : PAddr :=
-  PAddr.PAddr 0x80000000
+/-- Haskell `physBase`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/
+abbrev physBase := Sel4Lean.Spec.KernelConfig.physBase
+
 
 /-- Haskell `pageColourBits` -/
 def pageColourBits : Nat :=

@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 import Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64

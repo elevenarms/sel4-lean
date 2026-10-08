@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.API_Failures

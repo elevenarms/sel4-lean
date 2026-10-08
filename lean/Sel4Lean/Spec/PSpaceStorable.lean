@@ -10,8 +10,10 @@ class, and because the Haskell version is polymorphic over `MonadFail m`, which 
 counterpart for. The shape follows l4v's Isabelle `pspace_storable` class:
 `projectKO_opt :: kernel_object ⇒ 'a option`, with failure in the nondeterministic monad.
 
-No instance overrides `loadObject` / `updateObject`, so their Haskell default methods are plain functions
-here. hs2lean leaves all names defined in this file to it (`full.py`: `PROVIDED`).
+This file has the class and the helpers that need no object sizes; it is imported by every generated
+module. `objBits`, `loadObject`/`updateObject` and the eight instances need generated definitions
+(`objBitsKO`, `newArchTCB`, …), so they live in `PSpaceInstances.lean`. hs2lean leaves all names
+defined in either file to them (`full.py`: `PROVIDED`).
 -/
 
 namespace Sel4Lean.Spec
@@ -28,13 +30,6 @@ class PSpaceStorable (a : Type) where
   projectKO_opt : KernelObject → Option a
 
 export PSpaceStorable (makeObject injectKO projectKO_opt)
-
-/-- Haskell `objBitsKO` (Object/Structures.lhs:138): object size by kind. TODO(W2): use the generated
-definition once modules import each other instead of stubbing. -/
-opaque objBitsKO : KernelObject → Nat
-
-/-- Haskell `objBits a = objBitsKO (injectKO a)` (Model/PSpace.lhs). -/
-def objBits {a : Type} [PSpaceStorable a] (x : a) : Nat := objBitsKO (injectKO x)
 
 /-- Haskell `projectKO` in a failing monad. -/
 def projectKO {a σ : Type} [PSpaceStorable a] (o : KernelObject) : NondetM σ a :=
@@ -67,25 +62,6 @@ def sizeCheck {σ : Type} (start : Word) (next : Option Word) (n : Nat) : Nondet
   | none => pure ()
   | some e => if e - start < 1 <<< n then NondetM.fail else pure ()
 
-/-- Haskell default method `loadObject` (Model/PSpace.lhs). -/
-def loadObject {a σ : Type} [PSpaceStorable a] (ptr ptr' : Word) (next : Option Word)
-    (obj : KernelObject) : NondetM σ a := do
-  if ptr != ptr' then NondetM.fail
-  let val ← projectKO obj
-  alignCheck ptr (objBits val)
-  sizeCheck ptr next (objBits val)
-  pure val
-
-/-- Haskell default method `updateObject` (Model/PSpace.lhs). The `projectKO oldObj` only checks the
-old object has the same type. -/
-def updateObject {a σ : Type} [PSpaceStorable a] (val : a) (oldObj : KernelObject) (ptr ptr' : Word)
-    (next : Option Word) : NondetM σ KernelObject := do
-  if ptr != ptr' then NondetM.fail
-  let _ : a ← projectKO oldObj
-  alignCheck ptr (objBits val)
-  sizeCheck ptr next (objBits val)
-  pure (injectKO val)
-
 /-! ## Machine operations
 
 The Haskell `MachineMonad` is `ReaderT MachineData IO` (the simulator). l4v's Isabelle replaces it with
@@ -113,55 +89,5 @@ theorem doMachineOp_wp {α : Type} {mop : MachineMonad α} {P : MachineState →
   obtain ⟨_, _, ⟨rfl, rfl⟩, ⟨r', ms'⟩, _, ⟨hres, rfl⟩, hrest⟩ := hr
   obtain ⟨_, _, ⟨-, rfl⟩, rfl, rfl⟩ := hrest
   exact hR _ _ (h _ hP _ _ hres)
-
-/-! ## Instances (Object/Instances.lhs, Object/Instances/RISCV64.hs) -/
-
-/-- Haskell `nullMDBNode` (Object/Structures.lhs:348). TODO(W2): generated definition, as above. -/
-opaque nullMDBNode : MDBNode
-/-- Haskell `makeObject` for `TCB` (a 19-field record with `minBound`s, `timeSlice`, `newArchTCB`).
-TODO(W2): generated definition, as above. -/
-opaque makeObjectTCB : TCB
-/-- Haskell `makeObject` for `ASIDPool` (`funPartialArray (const Nothing) …`). TODO(W2), as above. -/
-opaque makeObjectASIDPool : ASIDPool
-
-instance : PSpaceStorable Endpoint where
-  makeObject := Endpoint.IdleEP
-  injectKO := KernelObject.KOEndpoint
-  projectKO_opt | .KOEndpoint e => some e | _ => none
-
-instance : PSpaceStorable Notification where
-  makeObject := Notification.NTFN NTFN.IdleNtfn none
-  injectKO := KernelObject.KONotification
-  projectKO_opt | .KONotification e => some e | _ => none
-
-instance : PSpaceStorable CTE where
-  makeObject := CTE.CTE Capability.NullCap nullMDBNode
-  injectKO := KernelObject.KOCTE
-  projectKO_opt | .KOCTE e => some e | _ => none
-
-instance : PSpaceStorable TCB where
-  makeObject := makeObjectTCB
-  injectKO := KernelObject.KOTCB
-  projectKO_opt | .KOTCB e => some e | _ => none
-
-instance : PSpaceStorable UserData where
-  makeObject := UserData.UserData
-  injectKO := fun _ => KernelObject.KOUserData
-  projectKO_opt | .KOUserData => some UserData.UserData | _ => none
-
-instance : PSpaceStorable UserDataDevice where
-  makeObject := UserDataDevice.UserDataDevice
-  injectKO := fun _ => KernelObject.KOUserDataDevice
-  projectKO_opt | .KOUserDataDevice => some UserDataDevice.UserDataDevice | _ => none
-
-instance : PSpaceStorable PTE where
-  makeObject := PTE.InvalidPTE
-  injectKO := fun p => KernelObject.KOArch (ArchKernelObject.KOPTE p)
-  projectKO_opt | .KOArch (.KOPTE p) => some p | _ => none
-
-instance : PSpaceStorable ASIDPool where
-  makeObject := makeObjectASIDPool
-  injectKO := fun p => KernelObject.KOArch (ArchKernelObject.KOASIDPool p)
-  projectKO_opt | .KOArch (.KOASIDPool p) => some p | _ => none
 
 end Sel4Lean.Spec
