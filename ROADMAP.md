@@ -47,9 +47,11 @@ Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc
       so the hand-written baseline is still missing.
 
 ### C5. Dedukti spike
-- [ ] Export a small Isabelle/HOL theory to Dedukti/Lambdapi.
-- [ ] Get it into Lean (find out whether a Lean exporter exists; otherwise estimate building one).
-- [ ] Measure proof-term size and export time; extrapolate to l4v's scale.
+- [x] Export a small Isabelle/HOL theory to Dedukti/Lambdapi: Pure + HOL/Orderings/Groups (stock Isabelle2025).
+- [x] Get it into Lean: Lambdapi `export -o stt_lean` exists; with a concrete STTfa encoding + post-processing,
+      8.5 MB of generated Lean checks in 245 s. Result is a deep embedding (HOL `bool`, not Lean `Prop`).
+- [x] Measure proof-term size and export time; extrapolate to l4v's scale: not feasible today (GB-scale before
+      HOL.Main; version mismatch; no term sharing). See `notes/c5-dedukti-spike.md`.
 
 ### Crawl exit criteria
 - One abstract ↔ executable refinement lemma checks in Lean.
@@ -87,7 +89,7 @@ Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc
 
 | Decision | Decide by | Notes |
 |---|---|---|
-| Translate vs. re-prove proofs | End of crawl | Based on C4/C5 data |
+| Translate vs. re-prove proofs | End of crawl | **Proposed: re-prove** (AI-assisted, following l4v structure); Dedukti as side channel. Awaiting sign-off. |
 | Track upstream vs. pinned snapshot | End of crawl | Affects how the translators are built |
 | Mathlib dependency | ~~C1~~ decided: not during crawl | Revisit in C2 if the monad library wants `Set` theory |
 | C semantics approach | Start of run | (a) vs (b) above |

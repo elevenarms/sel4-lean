@@ -1,0 +1,8 @@
+Pure	41878 bytes	26 decls	0 errors
+session_Pure	130 bytes	0 decls	0 errors
+Tools_Code_Generator	5950 bytes	1 decls	0 errors
+HOL_Groups_wp_orphans	249 bytes	0 decls	0 errors
+HOL_HOL	2031329 bytes	47 decls	0 errors
+HOL_Orderings	2528913 bytes	72 decls	0 errors
+HOL_Groups	3946526 bytes	99 decls	0 errors
+lake build rc=0 wall=245s

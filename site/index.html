@@ -173,14 +173,15 @@ html { scroll-behavior: smooth; }
       <li><a href="#lean">the lean side</a></li>
       <li><a href="#generated">generated lean</a></li>
       <li><a href="#proof">first proof</a></li>
+      <li><a href="#dedukti">proofs by export</a></li>
       <li><a href="#lessons">lessons</a></li>
       <li><a href="#roadmap">roadmap</a></li>
       <li><a href="#links">links</a></li>
     </ul>
     <div class="box">
       <b>status</b>
-      <span class="ok">C0&ndash;C4 complete</span><br>
-      next: C5 Dedukti spike<br>
+      <span class="ok">C0&ndash;C5 complete</span><br>
+      next: crawl decision<br>
       <span class="stamp">updated 2026-10-07</span>
     </div>
     <div class="box">
@@ -193,7 +194,7 @@ html { scroll-behavior: smooth; }
   </aside>
 
   <main id="top">
-    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c4</p>
+    <p class="crumb"><b>sel4-lean</b> &gt; overview &gt; crawl &gt; c5</p>
     <p class="lede">
       seL4 is an operating-system kernel with a machine-checked proof, in Isabelle/HOL, that its C code does what
       its specification says. This project is moving that proof to Lean 4, one stage at a time.
@@ -223,7 +224,9 @@ html { scroll-behavior: smooth; }
             The output compiles unedited. Four translator fixes on the way, all about syntax: comments, record construction, nested <code>match</code>, operator fixity. The abstract side is translated by hand. <span class="ok">C3 closed</span> <span class="dim">(side-by-side test deferred until the kernel state is modelled)</span>. <span class="hood">(c3)</span></div></li>
           <li><time>17:14</time><div>C4: <span class="ok"><code>cancelSignal_corres</code> proved in Lean</span>, connecting the generated executable spec to the abstract spec, plus the invariant lemma <code>cancelSignal_simple</code>.
             The proofs use only Lean&rsquo;s standard axioms; every l4v lemma they lean on is listed in one structure. Surprise of the stage: Lean&rsquo;s <code>do</code> compiles <code>let x &larr; match &hellip;</code> into a hidden join point, so <code>wp</code> needs a rule for it. <span class="ok">C4 closed.</span> <span class="hood">(c4)</span></div></li>
-          <li><time>next</time><div class="dim">C5: Dedukti spike (can Isabelle proofs be carried over mechanically?), then the crawl decision: translate or re-prove.</div></li>
+          <li><time>17:52</time><div>C5: the Dedukti route works end to end. Isabelle&rsquo;s own proofs of HOL, Orderings and Groups went through Lambdapi into Lean, and <span class="ok">the Lean kernel checked 8.5&nbsp;MB of them in 245&nbsp;s</span>.
+            It took a hand-made encoding and several workarounds for gaps in the exporter, and the theorems speak HOL&rsquo;s <code>bool</code>, not Lean&rsquo;s <code>Prop</code>. Scaling is the problem: proof terms reach a gigabyte before HOL.Main. <span class="ok">C5 closed.</span> <span class="hood">(c5)</span></div></li>
+          <li><time>next</time><div class="dim">Crawl decision (proposed: re-prove in Lean following l4v, with AI help; Dedukti as a cross-check), then walk.</div></li>
         </ol>
       </section>
 
@@ -469,6 +472,27 @@ example :
           The 3-line l4v proof is a single <code>wpsimp</code>; our 14 lines measure the automation still to build.</p>
       </section>
 
+      <section id="dedukti" class="wide">
+        <h2>c5: proofs by export <small>&middot; Isabelle &rarr; Dedukti/Lambdapi &rarr; Lean</small></h2>
+        <div class="scroll"><pre>
+  Isabelle2025 (proof recording)  &#9472;&#9472;isabelle_dedukti&#9472;&#9472;&#9658;  Lambdapi (.lp)  &#9472;&#9472;lambdapi export -o stt_lean&#9472;&#9472;&#9658;  Lean
+        27 s build                         16 s, 8.4 MB            check 1 s                   check 245 s (8.5 MB)
+</pre></div>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>theory</th><th class="n">generated lean</th><th class="n">axioms</th><th class="n">defs + proofs</th><th class="n">lean check</th></tr></thead>
+          <tbody>
+            <tr><td>Pure</td><td class="n">41 KB</td><td class="n">23</td><td class="n">3</td><td class="n">0.6 s</td></tr>
+            <tr><td>HOL</td><td class="n">2.0 MB</td><td class="n">21</td><td class="n">26</td><td class="n">52 s</td></tr>
+            <tr><td>Orderings</td><td class="n">2.5 MB</td><td class="n">12</td><td class="n">60</td><td class="n">102 s</td></tr>
+            <tr><td>Groups</td><td class="n">3.9 MB</td><td class="n">8</td><td class="n">91</td><td class="n">88 s</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>It works, and it&rsquo;s the only route that carries Isabelle&rsquo;s actual proofs. It doesn&rsquo;t scale to seL4: the exporter&rsquo;s own measurements reach 1&nbsp;GB of proof terms at <code>HOL.Set_Interval</code>, nothing past <code>HOL.List</code> has been translated,
+          and l4v sits on HOL-Main, HOL-Library and Word_Lib before its million lines even start. The exported theorems also live in an embedding of HOL. Using them from Lean needs a bridge from HOL&rsquo;s <code>bool</code> to Lean&rsquo;s <code>Prop</code>.</p>
+      </section>
+
       <section id="lessons">
         <h2>lessons <small>&middot; from c0</small></h2>
         <ul class="plain">
@@ -478,6 +502,7 @@ example :
           <li><b>Proof structure limits parallelism.</b> Big sessions average 8&ndash;11 cores busy because the theories form long import chains. A Lean port's module layout will face the same limit.</li>
           <li><b>Lean surface syntax caused every C2 build failure.</b> Keywords (<code>unless</code>, <code>assert</code>), notation precedence and <code>cases</code> renaming broke builds; l4v&rsquo;s semantics never did.</li>
           <li><b>Lean&rsquo;s <code>do</code> hides join points.</b> <code>let x &larr; match &hellip;</code> becomes a local function plus a <code>match</code>, so proof automation has to see through it.</li>
+          <li><b>A spike can succeed and still say no.</b> The Dedukti route works end to end, but the numbers rule it out for l4v at today&rsquo;s scale.</li>
           <li><b>Rootless Docker</b> makes the upstream per-user image unnecessary, because container root is already you.</li>
         </ul>
       </section>
@@ -491,7 +516,7 @@ example :
           <li><span class="ok">[x]</span> C2 monad, <code>wp</code>, <code>corres</code> in Lean</li>
           <li><span class="ok">[x]</span> C3 translators on notifications</li>
           <li><span class="ok">[x]</span> C4 first proofs: <code>cancelSignal_corres</code></li>
-          <li><span class="todo">[ ]</span> C5 Dedukti spike</li>
+          <li><span class="ok">[x]</span> C5 Dedukti spike</li>
         </ul>
         <h3>walk &middot; full abstract &harr; executable refinement</h3>
         <p class="dim">Automated translators, Lean <code>wpsimp</code>/<code>crunch</code>, AInvs + Refine ported.</p>

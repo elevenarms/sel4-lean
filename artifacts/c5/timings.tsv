@@ -1,0 +1,11 @@
+stage_b	1	80
+stage_a	127	175
+stage_a	0	106
+lp_Pure	0	4
+lpo_Pure	0	0
+isabelle_build_HOL_Groups_wp	0	27
+lp_HOL_Groups_wp	0	16
+lpo_HOL_Groups_wp	0	1
+lean_export_session_Pure	0	0
+lean_export_session_HOL_Groups_wp	0	0
+stage_c	0	48
