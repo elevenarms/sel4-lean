@@ -1,0 +1,1773 @@
+✔ [5/64] Built Sel4Lean.Spec.Gen.Types (3.9s)
+✔ [6/64] Built Sel4Lean.Spec.Prelude (229ms)
+✔ [7/64] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (328ms)
+⚠ [8/64] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (378ms)
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:18:17: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:18:32: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [9/64] Built Sel4Lean.Spec.Gen.Mod.Object (396ms)
+⚠ [10/64] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (385ms)
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:18:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:18:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [11/64] Built Sel4Lean.Spec.Gen.Mod.Object_Instances_RISCV64 (354ms)
+✔ [12/64] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (445ms)
+✔ [13/64] Built Sel4Lean.Spec.Gen.Mod.Model (458ms)
+✖ [14/64] Building Sel4Lean.Spec.Gen.Mod.Model_Preemption (490ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Preemption.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Preemption.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Preemption.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Preemption.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Preemption.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_Preemption.lean:54:20: Unknown identifier `throwError`
+✔ [15/64] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (453ms)
+✖ [16/64] Building Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (540ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:77:32: Unknown identifier `fromEnum`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:77:78: Unknown identifier `fromEnum`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:77:110: Function expected at
+  SyscallError.RangeError 1
+but this term has type
+  SyscallError
+
+Note: Expected a function because this term is being applied to the argument
+  (fromIntegral (fromEnum maxIRQ))
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:82:5: Type mismatch
+  { theIRQ := irq }
+has type
+  IRQ
+but is expected to have type
+  RISCV64.IRQ
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:87:74: Application type mismatch: The argument
+  irq
+has type
+  IRQ
+but is expected to have type
+  RISCV64.IRQ
+in the application
+  plic_complete_claim irq
+✖ [17/64] Building Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (469ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.lean:75:6: failed to synthesize instance of type class
+  HSub Nat Nat ASID
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+⚠ [18/64] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (459ms)
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:43:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:43:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [19/64] Building Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (584ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.lean:31:10: failed to synthesize instance of type class
+  OfNat RISCV64.IRQ 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  RISCV64.IRQ
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.lean:51:16: Type mismatch
+  { theIRQ := irq }
+has type
+  IRQ
+but is expected to have type
+  RISCV64.IRQ
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.lean:71:20: Variable name `env` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _env
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_Spike.lean:75:16: Variable name `env` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _env
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [20/64] Building Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (546ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:110:14: Function expected at
+  Word
+but this term has type
+  Type
+
+Note: Expected a function because this term is being applied to the argument
+  w
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:109:17: Unknown identifier `RISCV64.getRegister`
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:115:28: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:123:2: failed to synthesize instance of type class
+  HSub (BitVec ?m.2) Nat w
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+✖ [21/64] Building Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64 (590ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean:38:2: failed to synthesize instance of type class
+  IntegralH RISCV64.Register
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean:46:103: failed to synthesize instance of type class
+  IntegralH RISCV64.Register
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean:50:3: failed to synthesize instance of type class
+  IntegralH RISCV64.Register
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean:50:61: failed to synthesize instance of type class
+  IntegralH RISCV64.Register
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean:58:79: failed to synthesize instance of type class
+  IntegralH RISCV64.Register
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet_RISCV64.lean:82:2: Unknown constant `Sel4Lean.Spec.UserContext.UC`
+✖ [22/64] Building Sel4Lean.Spec.Gen.Mod.Model_Failures (586ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Failures.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Failures.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:33:2: Unknown identifier `throwError`
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:36:40: type expected, got
+  (f : KernelF f✝ a)
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:38:17: Unknown identifier `runExceptT`
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:39:4: Unknown identifier `either`
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:44:23: Unknown identifier `runExceptT`
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:45:4: Unknown identifier `either`
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:57:35: typeclass instance problem is stuck
+  Pure ?m.7
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Pure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:61:28: typeclass instance problem is stuck
+  Pure ?m.9
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Pure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:65:25: typeclass instance problem is stuck
+  Pure ?m.7
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Pure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:69:25: typeclass instance problem is stuck
+  Pure ?m.7
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Pure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:77:32: failed to synthesize instance of type class
+  IntegralH b
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:77:12: failed to synthesize instance of type class
+  LE (SerialData → Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:77:76: failed to synthesize instance of type class
+  IntegralH b
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:77:56: failed to synthesize instance of type class
+  LE (SerialData → Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:77:130: failed to synthesize instance of type class
+  IntegralH b
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+✖ [23/64] Building Sel4Lean.Spec.Gen.Mod.Model_Syscall (594ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Syscall.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Syscall.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean:27:36: Unknown identifier `runExceptT`
+error: Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean:29:6: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+✖ [24/64] Building Sel4Lean.Spec.Gen.Mod.Machine_Hardware (639ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:115:2: failed to synthesize instance of type class
+  Inhabited a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:119:2: failed to synthesize instance of type class
+  Inhabited a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:123:2: failed to synthesize instance of type class
+  Inhabited a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:127:2: Unknown identifier `minBound`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:131:2: Unknown identifier `maxBound`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:205:2: Unknown identifier `RISCV64.getRestartPC`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware.lean:209:2: Unknown identifier `RISCV64.setNextPC`
+✖ [25/64] Building Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (604ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.lean:31:10: failed to synthesize instance of type class
+  OfNat RISCV64.IRQ 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  RISCV64.IRQ
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.lean:51:16: Type mismatch
+  { theIRQ := irq }
+has type
+  IRQ
+but is expected to have type
+  RISCV64.IRQ
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.lean:71:20: Variable name `env` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _env
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64_HiFive.lean:75:16: Variable name `env` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _env
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [26/64] Building Sel4Lean.Spec.Gen.Mod.Model_StateData (688ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_StateData.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_StateData.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_StateData.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_StateData.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_StateData.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:28:40: Function expected at
+  BinaryTree
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `BinaryTree` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:71:37: Function expected at
+  m
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  Unit
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:79:2: failed to synthesize instance of type class
+  MonadState ?m.3 Kernel
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:138:45: Application type mismatch: The argument
+  s.ksArchState
+has type
+  RISCV64.KernelState
+but is expected to have type
+  KernelState
+in the application
+  f s.ksArchState
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:164:824: Unknown identifier `archState`
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:170:2: failed to synthesize instance of type class
+  MonadLift MachineMonad Kernel
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:178:20: Function expected at
+  m
+but this term has type
+  ?m.2
+
+Note: Expected a function because this term is being applied to the argument
+  Bool
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:178:44: Function expected at
+  m
+but this term has type
+  ?m.2
+
+Note: Expected a function because this term is being applied to the argument
+  (Option a)
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+✖ [27/64] Building Sel4Lean.Spec.Gen.Mod.Object_Domain (650ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Domain.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Domain.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Domain.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Domain.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Domain.setup.json --json
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:72:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:72:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:90:50: Type mismatch
+  before_end_index
+has type
+  Int
+but is expected to have type
+  Nat
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:11: Unknown identifier `null`
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:121:49: Function expected at
+  SyscallError.RangeError 0
+but this term has type
+  SyscallError
+
+Note: Expected a function because this term is being applied to the argument
+  (fromIntegral ((length sched) - 2))
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:122:55: Function expected at
+  SyscallError.RangeError 0
+but this term has type
+  SyscallError
+
+Note: Expected a function because this term is being applied to the argument
+  (fromIntegral (numDomains - 1))
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:127:57: Application type mismatch: The argument
+  index
+has type
+  Int
+but is expected to have type
+  Nat
+in the application
+  DomainInvocation.InvokeDomainScheduleConfigure index
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:135:43: Function expected at
+  SyscallError.RangeError 0
+but this term has type
+  SyscallError
+
+Note: Expected a function because this term is being applied to the argument
+  (fromIntegral ((length sched) - 1))
+error: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:137:56: Application type mismatch: The argument
+  index
+has type
+  Int
+but is expected to have type
+  Nat
+in the application
+  DomainInvocation.InvokeDomainScheduleSetStart index
+✔ [28/64] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (680ms)
+✖ [29/64] Building Sel4Lean.Spec.Gen.Mod.Object_Structures (693ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Structures.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Structures.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Structures.lean:198:2: Type mismatch
+  bit sizeBits
+has type
+  BitVec ?m.1
+but is expected to have type
+  Nat
+error: Sel4Lean/Spec/Gen/Mod/Object_Structures.lean:202:10: typeclass instance problem is stuck
+  IntegralH ?m.6
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `IntegralH` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Object_Structures.lean:206:26: failed to synthesize instance of type class
+  HSub (PPtr Unit) (PPtr Unit) ?m.8
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_Structures.lean:214:21: typeclass instance problem is stuck
+  HAdd (PPtr Unit) (PPtr (?m.62 cap capIsDevice✝ capPtr✝ capBlockSize✝ capFreeIndex✝ h✝))
+    (?m.59 cap capIsDevice✝ capPtr✝ capBlockSize✝ capFreeIndex✝ h✝)
+
+Note: Lean will not try to resolve this typeclass instance problem because the second type argument to `HAdd` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+✔ [30/64] Built Sel4Lean.Spec.Gen.Mod.Machine (444ms)
+✖ [31/64] Building Sel4Lean.Spec.Gen.Mod.Object_Endpoint (805ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Endpoint.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Endpoint.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Endpoint.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Endpoint.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Endpoint.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Endpoint.lean:131:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Object_Endpoint.lean:143:32: Unknown constant `Sel4Lean.Spec.Notification.NTFN`
+error: Sel4Lean/Spec/Gen/Mod/Object_Endpoint.lean:201:20: Unknown identifier `isIdle`
+error: Sel4Lean/Spec/Gen/Mod/Object_Endpoint.lean:244:29: Unknown identifier `filterM`
+✖ [32/64] Building Sel4Lean.Spec.Gen.Mod.Object_Interrupt (775ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:167:20: Type mismatch
+  !?m.9
+has type
+  Bool
+but is expected to have type
+  IRQState
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:167:22: Type mismatch
+  x irq
+has type
+  IRQState
+but is expected to have type
+  Bool
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:178:20: Unknown identifier `toEnum`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:183:14: Function expected at
+  IRQControlInvocation.IssueIRQHandler irq destSlot
+but this term has type
+  IRQControlInvocation
+
+Note: Expected a function because this term is being applied to the argument
+  srcSlot
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:185:51: Application type mismatch: The argument
+  RISCV64.decodeIRQControlInvocation label args srcSlot extraCaps
+has type
+  KernelF SyscallError IRQControlInvocation
+but is expected to have type
+  KernelF SyscallError RISCV64.IRQControlInvocation
+in the application
+  liftM IRQControlInvocation.ArchIRQControl (RISCV64.decodeIRQControlInvocation label args srcSlot extraCaps)
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:198:5: Invalid pattern: Too many arguments to `IRQControlInvocation.IssueIRQHandler`; expected 2 explicit arguments
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:223:40: Unknown identifier `fromEnum`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:256:37: Unknown identifier `minBound`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:256:48: Unknown identifier `maxBound`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:256:25: failed to synthesize instance of type class
+  IntegralH IRQ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:256:82: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:257:44: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:257:86: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:258:59: Unknown identifier `minBound`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:258:68: Unknown identifier `maxBound`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:258:47: failed to synthesize instance of type class
+  IntegralH IRQ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:260:25: Unknown constant `Sel4Lean.Spec.InterruptState.InterruptState`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:271:7: failed to synthesize instance of type class
+  LT IRQ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:284:76: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:285:38: Application type mismatch: The argument
+  irq
+has type
+  IRQ
+but is expected to have type
+  RISCV64.IRQ
+in the application
+  RISCV64.maskIrqSignal irq
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:289:62: Application type mismatch: The argument
+  irq
+has type
+  IRQ
+but is expected to have type
+  RISCV64.IRQ
+in the application
+  RISCV64.handleReservedIRQ irq
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:290:70: Unknown identifier `«show»`
+✖ [33/64] Building Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64 (798ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.setup.json --json
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:88:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:88:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:116:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:154:7: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:154:42: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:154:25: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:154:24: Application type mismatch: The argument
+  topA ≥ topB
+has type
+  Prop
+but is expected to have type
+  Bool
+in the application
+  and (topA ≥ topB)
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:169:195: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+✖ [34/64] Building Sel4Lean.Spec.Gen.Mod.Object_Untyped (775ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Untyped.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Untyped.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Untyped.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Untyped.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:122:4: failed to synthesize instance of type class
+  HAdd Word Nat ?m.16
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:130:42: Unknown identifier `fromEnum`
+error: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:131:24: Unknown identifier `toEnum`
+error: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:134:49: Function expected at
+  SyscallError.RangeError 0
+but this term has type
+  SyscallError
+
+Note: Expected a function because this term is being applied to the argument
+  (fromIntegral maxUntypedSizeBits)
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:178:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:194:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+✔ [35/64] Built Sel4Lean.Spec.Gen.Mod.Kernel (382ms)
+✔ [36/64] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (447ms)
+✖ [37/64] Building Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (841ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:132:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:133:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:138:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:139:4: Unknown identifier `liftIO`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:146:19: Variable name `irq` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _irq
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:146:39: Variable name `trigger` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _trigger
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:158:17: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:158:35: Variable name `byteLength` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _byteLength
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:171:19: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:171:37: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:175:19: Variable name `addr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _addr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:175:34: Variable name `asid` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _asid
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:183:17: Variable name `asid` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _asid
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:219:4: fail to show termination for
+  Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageColourBits
+with errors
+failed to infer structural recursion:
+no parameters suitable for structural recursion
+
+well-founded recursion cannot be used, `Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageColourBits` does not take any (non-fixed) arguments
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:225:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:226:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:231:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:232:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:237:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:238:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:243:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:244:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:248:16: Application type mismatch: The argument
+  SlotRegion.val
+has type
+  SlotRegion → Word × Word
+but is expected to have type
+  Word
+in the application
+  storeWord ptr SlotRegion.val
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:253:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:254:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:261:20: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:262:8: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:267:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:268:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:273:16: Unknown identifier `ask`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:274:4: Unknown identifier `liftIO`
+error: Sel4Lean/Spec/Gen/Mod/Machine_Hardware_RISCV64.lean:278:2: Unknown identifier `liftIO`
+✖ [38/64] Building Sel4Lean.Spec.Gen.Mod.Model_PSpace (874ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_PSpace.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_PSpace.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_PSpace.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_PSpace.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:25:40: Function expected at
+  BinaryTree
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `BinaryTree` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:31:60: Function expected at
+  BinaryTree
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `BinaryTree` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:31:76: Function expected at
+  BinaryTree
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `BinaryTree` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:75:13: Unknown identifier `injectKO`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:79:13: typeclass instance problem is stuck
+  Inhabited ?m.3
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Inhabited` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:88:32: Unknown identifier `splitLookup`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:90:16: Unknown identifier `findMax`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:90:52: Unknown identifier `findMin`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:101:35: Function expected at
+  m
+but this term has type
+  ?m.2
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:112:4: Unknown identifier `loadObject`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:121:15: Unknown identifier `updateObject`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:127:27: Function expected at
+  m
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:128:43: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:133:33: Application type mismatch: The argument
+  SlotRegion.val
+has type
+  SlotRegion → Word × Word
+but is expected to have type
+  KernelObject
+in the application
+  objBitsKO SlotRegion.val
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:143:16: Unknown identifier `foldr`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:149:23: Unknown identifier `injectKO`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:153:18: Unknown identifier `split`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:155:19: Unknown identifier `split`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:156:30: Unknown identifier `keys`
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:156:15: Application type mismatch: The argument
+  deleteH
+has type
+  ?m.40 → List ?m.40 → List ?m.40
+but is expected to have type
+  ?m.47 mid snd✝ → (Word → Option a) → Word → Option a
+in the application
+  flip deleteH
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:199:5: failed to synthesize instance of type class
+  Inhabited a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:209:45: Application type mismatch: The argument
+  SlotRegion.val
+has type
+  SlotRegion → Word × Word
+but is expected to have type
+  KernelObject
+in the application
+  placeNewObject' { ptr := ptr.ptr } SlotRegion.val
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:213:50: Function expected at
+  m
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:217:38: Function expected at
+  m
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  Unit
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:221:58: Function expected at
+  m
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  Unit
+
+Hint: The identifier `m` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Model_PSpace.lean:224:108: Unknown identifier `«show»`
+✔ [39/64] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (374ms)
+✔ [40/64] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (380ms)
+✔ [41/64] Built Sel4Lean.Spec.Gen.Mod.API_Types_Universal (414ms)
+✔ [42/64] Built Sel4Lean.Spec.Gen.Mod.Config (400ms)
+✖ [43/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (529ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.lean:68:39: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.lean:68:94: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.lean:68:130: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_FaultHandler.lean:68:167: Unknown identifier `«show»`
+✔ [44/64] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (476ms)
+✔ [45/64] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (572ms)
+✖ [46/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (587ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.lean:88:16: Application type mismatch: The argument
+  configureTimer
+has type
+  MachineMonad IRQ
+but is expected to have type
+  MachineMonad Unit
+in the application
+  doMachineOp configureTimer
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace.lean:145:2: failed to synthesize instance of type class
+  Inhabited a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+✔ [47/64] Built Sel4Lean.Spec.Gen.Mod.API (368ms)
+✖ [48/64] Building Sel4Lean.Spec.Gen.Mod.API_Failures (373ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_Failures.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Failures.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Failures.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Failures.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Failures.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/API_Failures.lean:36:5: Invalid pattern: Too many arguments to `SyscallError.RangeError`; expected 1 explicit argument
+✔ [49/64] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (349ms)
+✔ [50/64] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (390ms)
+✖ [51/64] Building Sel4Lean.Spec.Gen.Mod.API_InvocationLabels (431ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.lean:28:2: Unknown identifier `toEnum`
+✔ [52/64] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (479ms)
+✖ [53/64] Building Sel4Lean.Spec.Gen.Mod.Object_ObjectType (1.1s)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_ObjectType.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_ObjectType.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:242:110: Application type mismatch: The argument
+  bit bits
+has type
+  BitVec ?m.79
+but is expected to have type
+  Nat
+in the application
+  Capability.Zombie ptr (ZombieType.ZombieCNode bits) (bit bits)
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:324:29: failed to synthesize instance of type class
+  LE (PPtr Unit)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:324:66: failed to synthesize instance of type class
+  LE (PPtr Unit)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:335:66: Unknown identifier `Arch.sameRegionAs`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:324:49: failed to synthesize instance of type class
+  LE (PPtr Unit)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:324:48: Application type mismatch: The argument
+  topB ≤ topA
+has type
+  Prop
+but is expected to have type
+  Bool
+in the application
+  and (topB ≤ topA)
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:343:66: Unknown identifier `Arch.sameObjectAs`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:356:54: Unknown identifier `guardSizeBits`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:356:115: Unknown identifier `guardSize`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:357:79: Unknown identifier `guardSizeBits`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:372:39: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:375:36: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:376:14: Function expected at
+  Capability.EndpointCap { ptr := regionBase.ptr } 0 true true
+but this term has type
+  Capability
+
+Note: Expected a function because this term is being applied to the argument
+  true
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:378:57: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:379:14: Function expected at
+  Capability.NotificationCap { ptr := regionBase.ptr } 0 true
+but this term has type
+  Capability
+
+Note: Expected a function because this term is being applied to the argument
+  true
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:381:57: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:392:180: Unknown identifier `capEPCanGrantReply`
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:405:112: Application type mismatch: The argument
+  RISCV64.decodeInvocation label args capIndex slot cap extraCaps
+has type
+  KernelF SyscallError Invocation
+but is expected to have type
+  KernelF SyscallError RISCV64.Invocation
+in the application
+  liftM Invocation.InvokeArchObject (RISCV64.decodeInvocation label args capIndex slot cap extraCaps)
+error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType.lean:446:77: Application type mismatch: The argument
+  invok
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  RISCV64.performInvocation invok
+✖ [54/64] Building Sel4Lean.Spec.Gen.Mod.Object_TCB (1.1s)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_TCB.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_TCB.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_TCB.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_TCB.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_TCB.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:286:11: Unknown identifier `null`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:293:8: Invalid pattern: Too many arguments to `Capability.NotificationCap`; expected 3 explicit arguments
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:331:46: Function expected at
+  SyscallError.RangeError (fromIntegral minPriority)
+but this term has type
+  SyscallError
+
+Note: Expected a function because this term is being applied to the argument
+  (fromIntegral mcp)
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:365:16: Unknown identifier `genericLength`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:369:89: Unknown identifier `genericTake`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:402:20: Unknown identifier `runState`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:437:31: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:450:5: Invalid pattern: Too many arguments to `TCBInvocation.ThreadControl`; expected 7 explicit arguments
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:553:15: Unknown identifier `take`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:555:39: Unknown identifier `drop`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:556:10: failed to synthesize instance of type class
+  IntegralH (MessageInfo → Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:570:10: Unknown identifier `take`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:576:23: Unknown identifier `take`
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:585:10: failed to synthesize instance of type class
+  Min Word
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:602:16: failed to synthesize instance of type class
+  HAdd (PPtr Word) (PPtr Word) ?m.18
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:610:21: failed to synthesize instance of type class
+  HAdd (PPtr Word) (PPtr Word) ?m.18
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+✖ [55/64] Building Sel4Lean.Spec.Gen.Mod.API_Faults (462ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_Faults.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Faults.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Faults.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Faults.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Faults.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/API_Faults.lean:63:65: Unknown identifier `fromEnum`
+✖ [56/64] Building Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64 (460ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.lean:26:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/API_Faults_RISCV64.lean:34:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+✖ [57/64] Building Sel4Lean.Spec.Gen.Mod.API_Syscall (568ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_Syscall.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Syscall.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Syscall.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Syscall.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Syscall.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/API_Syscall.lean:168:8: Type mismatch
+  Capability.EndpointCap ?m.19 ?m.20 ?m.21 ?m.22
+has type
+  Capability
+but is expected to have type
+  CNodeInvocation → Capability
+✖ [58/64] Building Sel4Lean.Spec.Gen.Mod.API_Types (598ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_Types.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Types.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Types.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Types.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Types.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:45:2: Unknown identifier `RISCV64.fromAPIType`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:49:2: Unknown identifier `RISCV64.toAPIType`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:57:2: Unknown identifier `RISCV64.pageType`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:61:2: Unknown constant `Sel4Lean.Spec.CapRights.CapRights`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:65:2: Unknown constant `Sel4Lean.Spec.CapRights.CapRights`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:70:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:74:2: Unknown constant `Sel4Lean.Spec.CapRights.CapRights`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:79:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:104:2: failed to synthesize instance of type class
+  HSub (BitVec ?m.2) Nat a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:108:2: failed to synthesize instance of type class
+  OfNat a 120
+numerals are polymorphic in Lean, but the numeral `120` cannot be used in a context where the expected type is
+  a
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:124:45: Unknown identifier `otherBits`
+✖ [59/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (659ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:117:14: Type mismatch
+  gets SerialData.ptrCursor
+has type
+  NondetM SerialData (PPtr Word)
+but is expected to have type
+  Serializer ?m.1
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:118:15: Type mismatch
+  gets SerialData.value
+has type
+  NondetM SerialData Word
+but is expected to have type
+  Serializer ?m.5
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:119:45: failed to synthesize instance of type class
+  HAnd Nat Nat (PPtr ?m.17)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:123:26: Application type mismatch: The argument
+  ptr >>> 2 <<< 2
+has type
+  Nat
+but is expected to have type
+  PPtr Word
+in the application
+  storeWordVM (ptr >>> 2 <<< 2)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:124:8: Type mismatch
+  modify fun st => ?m.96
+has type
+  NondetM ?m.94 Unit
+but is expected to have type
+  Serializer Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:126:6: Type mismatch
+  modify fun st => ?m.104
+has type
+  NondetM ?m.102 Unit
+but is expected to have type
+  Serializer Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:124:26: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:126:24: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:132:26: failed to synthesize instance of type class
+  HShiftRight (SerialData → Word) Nat ?m.21
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:133:8: Type mismatch
+  serializeByte byte
+has type
+  Serializer Unit
+but is expected to have type
+  NondetM ?m.1 ?m.3
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:138:14: Type mismatch
+  gets SerialData.ptrCursor
+has type
+  NondetM SerialData (PPtr Word)
+but is expected to have type
+  Serializer ?m.1
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:139:35: failed to synthesize instance of type class
+  HSub (PPtr Word) Nat ?m.1
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:164:20: Type mismatch
+  gets InitData.initBootInfo
+has type
+  NondetM InitData BIFrameData
+but is expected to have type
+  KernelInit ?m.1
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:165:16: Type mismatch
+  gets InitData.initBootInfoFrame
+has type
+  NondetM InitData PAddr
+but is expected to have type
+  KernelInit ?m.5
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:167:12: Unknown identifier `runStateT`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:179:37: Unknown identifier `last`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:186:18: Type mismatch
+  gets SerialData.ptrCursor
+has type
+  NondetM SerialData (PPtr Word)
+but is expected to have type
+  Serializer ?m.122
+✖ [60/64] Building Sel4Lean.Spec.Gen.Mod.Object_CNode (1.3s)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_CNode.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_CNode.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_CNode.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_CNode.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_CNode.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:64:60: Function expected at
+  BinaryTree
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `BinaryTree` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:64:76: Function expected at
+  BinaryTree
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  a
+
+Hint: The identifier `BinaryTree` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:201:27: failed to synthesize instance of type class
+  IntegralH GenInvocationLabels
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:203:25: failed to synthesize instance of type class
+  IntegralH GenInvocationLabels
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:224:20: Function expected at
+  (if isMove = true then CNodeInvocation.Move else CNodeInvocation.Insert) newCap srcSlot
+but this term has type
+  CNodeInvocation
+
+Note: Expected a function because this term is being applied to the argument
+  destSlot
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:250:53: Application type mismatch: The argument
+  newPivotCap
+has type
+  Capability
+but is expected to have type
+  PPtr CTE
+in the application
+  CNodeInvocation.Rotate newSrcCap newPivotCap
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:253:48: failed to synthesize instance of type class
+  IntegralH GenInvocationLabels
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:271:34: Application type mismatch: The argument
+  ks.gsUntypedZeroRanges
+has type
+  Word × Word → Prop
+but is expected to have type
+  List (Word × Word)
+in the application
+  deleteH r ks.gsUntypedZeroRanges
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:274:31: Application type mismatch: The argument
+  r
+has type
+  Word × Word
+but is expected to have type
+  List Bool
+in the application
+  insert r
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:297:4: failed to synthesize instance of type class
+  OfNat (PPtr CTE) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr CTE
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:323:9: Fields missing: `cteCap`
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:352:29: typeclass instance problem is stuck
+  HAdd (PPtr CTE) (PPtr (?m.35 __r✝)) (PPtr (?m.34 __r✝))
+
+Note: Lean will not try to resolve this typeclass instance problem because the second type argument to `HAdd` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:383:8: Type mismatch
+  assertH (ptr != slot) "Cyclic zombie passed to unexposed reduceZombie."
+has type
+  NondetM ?m.13 Unit
+but is expected to have type
+  KernelP Unit
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:386:42: Type mismatch
+  assertH (ptr2 != ptr) "Moving self-referential Zombie aside."
+has type
+  NondetM ?m.29 Unit
+but is expected to have type
+  KernelP Unit
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:392:8: Unknown identifier `cteDelete`
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:403:14: Application type mismatch: The argument
+  assertH (ptr2 == slot && ptr != slot) "Expected new Zombie to be self-referential."
+has type
+  NondetM ?m.131 Unit
+but is expected to have type
+  KernelP Unit
+in the application
+  if (ptr == ptr2 && (c2.capZombieNumber == n && z.capZombieType == c2.capZombieType)) = true then
+    withoutPreemption do
+      let endCTE ← getCTE endSlot
+      let __r ← assertH (isNullCap endCTE.cteCap) "Expected cteDelete to clear slot or overwrite existing."
+      let newCap : Capability := z.set_capZombieNumber (n - 1)
+      updateCap slot newCap
+  else assertH (ptr2 == slot && ptr != slot) "Expected new Zombie to be self-referential."
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:408:4: fail to show termination for
+  Sel4Lean.Spec.M.Object_CNode.finaliseSlot
+with errors
+failed to infer structural recursion:
+Not considering parameter slot of Sel4Lean.Spec.M.Object_CNode.finaliseSlot:
+  it is unchanged in the recursive calls
+Not considering parameter exposed of Sel4Lean.Spec.M.Object_CNode.finaliseSlot:
+  it is unchanged in the recursive calls
+no parameters suitable for structural recursion
+
+well-founded recursion cannot be used, `Sel4Lean.Spec.M.Object_CNode.finaliseSlot` does not take any (non-fixed) arguments
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:453:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:456:4: fail to show termination for
+  Sel4Lean.Spec.M.Object_CNode.cteRevoke
+with errors
+failed to infer structural recursion:
+Not considering parameter slot of Sel4Lean.Spec.M.Object_CNode.cteRevoke:
+  it is unchanged in the recursive calls
+no parameters suitable for structural recursion
+
+well-founded recursion cannot be used, `Sel4Lean.Spec.M.Object_CNode.cteRevoke` does not take any (non-fixed) arguments
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:474:5: Invalid pattern: Too many arguments to `CNodeInvocation.Insert`; expected 2 explicit arguments
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:516:40: typeclass instance problem is stuck
+  HAdd (PPtr (?m.50 __r✝ num slot)) (PPtr Unit) (PPtr Unit)
+
+Note: Lean will not try to resolve this typeclass instance problem because the first type argument to `HAdd` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:562:27: typeclass instance problem is stuck
+  HAdd (PPtr Word) (PPtr (?m.57 __r✝¹ w0 __r✝)) (PPtr Word)
+
+Note: Lean will not try to resolve this typeclass instance problem because the second type argument to `HAdd` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:571:26: typeclass instance problem is stuck
+  HAdd (PPtr Word) (PPtr (?m.57 __r✝¹ __r✝)) (PPtr Word)
+
+Note: Lean will not try to resolve this typeclass instance problem because the second type argument to `HAdd` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+✖ [61/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (983ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:195:2: typeclass instance problem is stuck, it is often due to metavariables
+  MonadLift ?m.10 KernelInit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:227:30: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:227:59: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:231:23: Unknown identifier `concat`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:232:24: Unknown identifier `take`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:236:18: Application type mismatch: The argument
+  modify fun st => ?m.49
+has type
+  NondetM ?m.47 Unit
+but is expected to have type
+  KernelInitState Unit
+in the application
+  noInitFailure (modify fun st => ?m.49)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:236:37: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:250:9: unexpected token 'break'; expected term
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:278:26: failed to synthesize instance of type class
+  OfNat (PPtr Word) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr Word
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:278:29: failed to synthesize instance of type class
+  OfNat (PPtr Word) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr Word
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:283:19: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:287:19: failed to synthesize instance of type class
+  LE (PPtr Word)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:296:39: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:299:31: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:300:48: Type mismatch
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:301:19: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  setCurThread tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:303:24: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  configureIdleThread tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:308:29: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:312:29: Unknown identifier `initTCB`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:314:41: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  getThreadCSpaceRoot tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:317:41: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  getThreadVSpaceRoot tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:320:41: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  getThreadBufferSlot tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:322:68: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  threadSet
+    (fun t =>
+      { tcbCTable := t.tcbCTable, tcbVTable := t.tcbVTable, tcbReply := t.tcbReply, tcbCaller := t.tcbCaller,
+        tcbIPCBufferFrame := t.tcbIPCBufferFrame, tcbDomain := t.tcbDomain, tcbState := t.tcbState, tcbMCP := t.tcbMCP,
+        tcbPriority := t.tcbPriority, tcbQueued := t.tcbQueued, tcbFault := t.tcbFault, tcbTimeSlice := t.tcbTimeSlice,
+        tcbFaultHandler := t.tcbFaultHandler, tcbIPCBuffer := ipcBufferVPtr,
+        tcbBoundNotification := t.tcbBoundNotification, tcbSchedPrev := t.tcbSchedPrev, tcbSchedNext := t.tcbSchedNext,
+        tcbFlags := t.tcbFlags, tcbArch := t.tcbArch })
+    tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:323:28: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  activateInitialThread tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:324:43: Application type mismatch: The argument
+  tcbPPtr
+has type
+  PPtr Unit
+but is expected to have type
+  PPtr TCB
+in the application
+  Capability.ThreadCap tcbPPtr
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:331:2: typeclass instance problem is stuck
+  Monad ?m.8
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Monad` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:336:33: Application type mismatch: The argument
+  gets InitData.initSlotPosCur
+has type
+  NondetM InitData Word
+but is expected to have type
+  KernelInitState ?m.2
+in the application
+  noInitFailure (gets InitData.initSlotPosCur)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:337:32: Application type mismatch: The argument
+  gets InitData.initSlotPosMax
+has type
+  NondetM InitData Word
+but is expected to have type
+  KernelInitState ?m.7
+in the application
+  noInitFailure (gets InitData.initSlotPosMax)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:338:32: Unknown identifier `throwError`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:341:18: Application type mismatch: The argument
+  modify fun st => ?m.26
+has type
+  NondetM ?m.24 Unit
+but is expected to have type
+  KernelInitState Unit
+in the application
+  noInitFailure (modify fun st => ?m.26)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:341:37: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:346:33: Application type mismatch: The argument
+  gets InitData.initSlotPosCur
+has type
+  NondetM InitData Word
+but is expected to have type
+  KernelInitState ?m.4
+in the application
+  noInitFailure (gets InitData.initSlotPosCur)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:348:36: Application type mismatch: The argument
+  gets (BIFrameData.bifUntypedObjPAddrs ∘ InitData.initBootInfo)
+has type
+  NondetM InitData (List PAddr)
+but is expected to have type
+  KernelInitState ?m.14
+in the application
+  noInitFailure (gets (BIFrameData.bifUntypedObjPAddrs ∘ InitData.initBootInfo))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:349:4: Type mismatch
+  assertH (length untypedObjs == fromIntegral i) "Untyped Object List is inconsistent"
+has type
+  NondetM ?m.21 Unit
+but is expected to have type
+  KernelInit Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:350:37: Application type mismatch: The argument
+  gets (BIFrameData.bifUntypedObjSizeBits ∘ InitData.initBootInfo)
+has type
+  NondetM InitData (List (BitVec 8))
+but is expected to have type
+  KernelInitState ?m.32
+in the application
+  noInitFailure (gets (BIFrameData.bifUntypedObjSizeBits ∘ InitData.initBootInfo))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:351:4: Type mismatch
+  assertH (length untypedObjs' == fromIntegral i) "Untyped Object List is inconsistent"
+has type
+  NondetM ?m.39 Unit
+but is expected to have type
+  KernelInit Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:352:39: Application type mismatch: The argument
+  gets (BIFrameData.bifUntypedObjIsDeviceList ∘ InitData.initBootInfo)
+has type
+  NondetM InitData (List Bool)
+but is expected to have type
+  KernelInitState ?m.50
+in the application
+  noInitFailure (gets (BIFrameData.bifUntypedObjIsDeviceList ∘ InitData.initBootInfo))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:353:4: Type mismatch
+  assertH (length untypedDevices == fromIntegral i) " Untyped Object List is inconsistent"
+has type
+  NondetM ?m.57 Unit
+but is expected to have type
+  KernelInit Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:354:33: Application type mismatch: The argument
+  gets InitData.initBootInfo
+has type
+  NondetM InitData BIFrameData
+but is expected to have type
+  KernelInitState ?m.68
+in the application
+  noInitFailure (gets InitData.initBootInfo)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:356:18: Application type mismatch: The argument
+  modify fun st => ?m.77
+has type
+  NondetM ?m.75 Unit
+but is expected to have type
+  KernelInitState Unit
+in the application
+  noInitFailure (modify fun st => ?m.77)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:355:21: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:356:37: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:363:28: Application type mismatch: The argument
+  gets InitData.initSlotPosCur
+has type
+  NondetM InitData Word
+but is expected to have type
+  KernelInitState ?m.2
+in the application
+  noInitFailure (gets InitData.initSlotPosCur)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:364:28: Application type mismatch: The argument
+  gets InitData.initSlotPosMax
+has type
+  NondetM InitData Word
+but is expected to have type
+  KernelInitState ?m.7
+in the application
+  noInitFailure (gets InitData.initSlotPosMax)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:365:18: Application type mismatch: The argument
+  modify fun s => ?m.14
+has type
+  NondetM ?m.12 Unit
+but is expected to have type
+  KernelInitState Unit
+in the application
+  noInitFailure (modify fun s => ?m.14)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:365:36: expected structure
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:383:10: Unknown identifier `runStateT`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:384:19: Unknown identifier `runExceptT`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:385:6: Unknown identifier `either`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:391:75: failed to synthesize instance of type class
+  HAdd (PPtr ?m.9) (BitVec ?m.11) ?m.14
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:397:4: Type mismatch
+  mapM (fun p => reserveFrame (ptrFromPAddr p) true) (kernelFrames ++ bootFrames)
+has type
+  Kernel (List Unit)
+but is expected to have type
+  Kernel Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:406:6: Type mismatch
+  initInterruptController rootCNCap biCapIRQControl
+has type
+  KernelInit Capability
+but is expected to have type
+  KernelInit Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:409:25: failed to synthesize instance of type class
+  HAdd VPtr Nat ?m.109
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:410:6: Type mismatch
+  createBIFrame rootCNCap biFrameVPtr 0 1
+has type
+  KernelInit Capability
+but is expected to have type
+  KernelInit Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:418:53: failed to synthesize instance of type class
+  OfNat (PPtr Word) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr Word
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:418:56: failed to synthesize instance of type class
+  OfNat (PPtr Word) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr Word
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:426:51: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:445:18: failed to synthesize instance of type class
+  BEq a
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+✖ [62/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (977ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.lean:56:8: Type mismatch
+  assertH (levelBits != 0) "All CNodes must resolve bits"
+has type
+  NondetM ?m.21 Unit
+but is expected to have type
+  KernelF LookupFailure Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.lean:49:4: fail to show termination for
+  Sel4Lean.Spec.M.Kernel_CSpace.resolveAddressBits
+with errors
+failed to infer structural recursion:
+Cannot use parameter x0:
+  failed to eliminate recursive application
+    resolveAddressBits nextCap capptr bitsLeft
+Cannot use parameter x1:
+  the type CPtr does not have a `.brecOn` recursor
+Cannot use parameter x2:
+  failed to eliminate recursive application
+    resolveAddressBits nextCap capptr bitsLeft
+
+
+Could not find a decreasing measure.
+The basic measures relate at each recursive call as follows:
+(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
+            x0 x1 x2
+1) 70:18-60  ?  =  ≤
+Please use `termination_by` to specify a decreasing measure.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.lean:99:42: Application type mismatch: The argument
+  capptr
+has type
+  CPtr
+but is expected to have type
+  BitVec ?m.21
+in the application
+  finiteBitSize capptr
+✖ [63/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_Thread (1.1s)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Thread.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Thread.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Thread.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Thread.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:263:54: failed to synthesize instance of type class
+  BEq SchedulerAction
+
+Hint: Adding the command `deriving instance BEq for Sel4Lean.Spec.SchedulerAction` may allow Lean to derive the missing instance.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:395:59: Unknown identifier `«show»`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:418:7: failed to synthesize instance of type class
+  BEq ThreadState
+
+Hint: Adding the command `deriving instance BEq for Sel4Lean.Spec.ThreadState` may allow Lean to derive the missing instance.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:481:9: failed to synthesize instance of type class
+  BEq SchedulerAction
+
+Hint: Adding the command `deriving instance BEq for Sel4Lean.Spec.SchedulerAction` may allow Lean to derive the missing instance.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:554:15: Unknown identifier `mdbPrev`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:555:32: Unknown identifier `mdbPrev`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:584:56: Application type mismatch: The argument
+  w
+has type
+  b
+but is expected to have type
+  BitVec ?m.16
+in the application
+  testBit w
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:584:94: Application type mismatch: The argument
+  w
+has type
+  b
+but is expected to have type
+  BitVec ?m.21
+in the application
+  finiteBitSize w
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:588:18: Application type mismatch: The argument
+  w
+has type
+  b
+but is expected to have type
+  BitVec ?m.2
+in the application
+  finiteBitSize w
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:799:6: Unknown identifier `makeObject`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_Thread.lean:799:45: Unknown identifier `maxBound`
+✖ [64/64] Building Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (1.7s)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:220:43: Application type mismatch: The argument
+  KernelState.ksArchState
+has type
+  KernelState → RISCV64.KernelState
+but is expected to have type
+  KernelState → KernelState
+in the application
+  riscvKSGlobalPT ∘ KernelState.ksArchState
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:224:22: failed to synthesize instance of type class
+  HShiftLeft (PPtr ?m.36) Nat ?m.34
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:240:30: failed to synthesize instance of type class
+  OfNat (PPtr Word) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr Word
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:254:4: Type mismatch
+  assertH (decide (asid > 0)) "ASID 0 is used for objects that are not mapped"
+has type
+  NondetM ?m.1 Unit
+but is expected to have type
+  KernelF LookupFailure Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:255:4: Type mismatch
+  assertH (decide (asid ≤ snd asidRange)) "ASID out of range"
+has type
+  NondetM ?m.7 Unit
+but is expected to have type
+  KernelF LookupFailure Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:264:26: failed to synthesize instance of type class
+  OfNat (PPtr PTE) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  PPtr PTE
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:264:10: Type mismatch
+  assertH (ptr != 0) "findVSpaceForASID: found null PD"
+has type
+  NondetM ?m.70 Unit
+but is expected to have type
+  KernelF LookupFailure Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:285:2: typeclass instance problem is stuck
+  HAdd (PPtr PTE) (PPtr ?m.1) (PPtr PTE)
+
+Note: Lean will not try to resolve this typeclass instance problem because the second type argument to `HAdd` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:4: fail to show termination for
+  Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTSlotFromLevel
+with errors
+failed to infer structural recursion:
+Cannot use parameter x0:
+  failed to eliminate recursive application
+    lookupPTSlotFromLevel (level - 1) (getPPtrFromHWPTE pte) vPtr
+Cannot use parameter x1:
+  the type PPtr PTE does not have a `.brecOn` recursor
+Cannot use parameter x2:
+  the type VPtr does not have a `.brecOn` recursor
+
+
+Could not find a decreasing measure.
+The basic measures relate at each recursive call as follows:
+(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
+             x0 x1 x2
+1) 301:12-73  ≤  ?  =
+Please use `termination_by` to specify a decreasing measure.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:311:41: Unknown constant `Sel4Lean.Spec.ArchFault.VMFault`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:312:42: Unknown constant `Sel4Lean.Spec.ArchFault.VMFault`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:313:42: Unknown constant `Sel4Lean.Spec.ArchFault.VMFault`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:336:48: failed to synthesize instance of type class
+  BEq Capability
+
+Hint: Adding the command `deriving instance BEq for Sel4Lean.Spec.Capability` may allow Lean to derive the missing instance.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:343:47: Application type mismatch: The argument
+  KernelState.ksArchState
+has type
+  KernelState → RISCV64.KernelState
+but is expected to have type
+  KernelState → KernelState
+in the application
+  riscvKSGlobalPT ∘ KernelState.ksArchState
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:352:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:376:4: Type mismatch
+  assertH (ptPtr != targetPtPtr) "never called at top-level"
+has type
+  NondetM ?m.1 Unit
+but is expected to have type
+  KernelF LookupFailure Unit
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:374:4: fail to show termination for
+  Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTFromLevel
+with errors
+failed to infer structural recursion:
+Not considering parameter vPtr of Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTFromLevel:
+  it is unchanged in the recursive calls
+Not considering parameter targetPtPtr of Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTFromLevel:
+  it is unchanged in the recursive calls
+Cannot use parameter level:
+  failed to eliminate recursive application
+    lookupPTFromLevel (level - 1) ptr vPtr targetPtPtr
+Cannot use parameter ptPtr:
+  the type PPtr PTE does not have a `.brecOn` recursor
+
+
+Could not find a decreasing measure.
+The basic measures relate at each recursive call as follows:
+(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
+            level ptPtr
+1) 387:8-58     ≤     ?
+Please use `termination_by` to specify a decreasing measure.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:425:12: Unknown identifier `capAllowRead`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:475:9: Application type mismatch: The argument
+  RISCV64.Invocation.InvokePage
+    (PageInvocation.PageMap (Capability.ArchObjectCap (cap.set_capFMappedAddress (some (asid, vptr)))) cte
+      (makeUserPTE framePAddr exec vmRights, slot))
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  pure
+    (RISCV64.Invocation.InvokePage
+      (PageInvocation.PageMap (Capability.ArchObjectCap (cap.set_capFMappedAddress (some (asid, vptr)))) cte
+        (makeUserPTE framePAddr exec vmRights, slot)))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:461:16: failed to synthesize instance of type class
+  HAdd VPtr (BitVec ?m.91) VPtr
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:485:95: Application type mismatch: The argument
+  RISCV64.Invocation.InvokePage (PageInvocation.PageUnmap cap cte)
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  pure (RISCV64.Invocation.InvokePage (PageInvocation.PageUnmap cap cte))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:486:100: Application type mismatch: The argument
+  RISCV64.Invocation.InvokePage (PageInvocation.PageGetAddr cap.capFBasePtr)
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  pure (RISCV64.Invocation.InvokePage (PageInvocation.PageGetAddr cap.capFBasePtr))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:504:16: failed to synthesize instance of type class
+  HAnd VPtr (BitVec ?m.150) ?m.155
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:505:9: Application type mismatch: The argument
+  RISCV64.Invocation.InvokePageTable
+    (PageTableInvocation.PageTableMap (Capability.ArchObjectCap (cap.set_capPTMappedAddress (some (asid, vptr)))) cte
+      pte slot)
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  pure
+    (RISCV64.Invocation.InvokePageTable
+      (PageTableInvocation.PageTableMap (Capability.ArchObjectCap (cap.set_capPTMappedAddress (some (asid, vptr)))) cte
+        pte slot))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:524:17: Application type mismatch: The argument
+  RISCV64.Invocation.InvokePageTable (PageTableInvocation.PageTableUnmap cap cte)
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  pure (RISCV64.Invocation.InvokePageTable (PageTableInvocation.PageTableUnmap cap cte))
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:540:23: Unknown identifier `p`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:541:71: Unknown identifier `p`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:542:28: Unknown identifier `filter`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:543:23: Unknown identifier `null`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:545:21: Application type mismatch: The argument
+  RISCV64.Invocation.InvokeASIDPool
+    { assignASID := asid + base, assignASIDPool := cap.capASIDPool, assignASIDCTSlot := vspaceCapSlot }
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+in the application
+  pure
+    (RISCV64.Invocation.InvokeASIDPool
+      { assignASID := asid + base, assignASIDPool := cap.capASIDPool, assignASIDCTSlot := vspaceCapSlot })
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:573:8: Missing cases:
+(Capability.ThreadCap (PPtr.mk (BitVec.ofFin (Fin.mk _ _))))
+Capability.NullCap
+(Capability.NotificationCap (PPtr.mk (BitVec.ofFin (Fin.mk _ _))) (BitVec.ofFin (Fin.mk _ _)) false)
+(Capability.NotificationCap (PPtr.mk (BitVec.ofFin (Fin.mk _ _))) (BitVec.ofFin (Fin.mk _ _)) true)
+(Capability.IRQHandlerCap (IRQ.IRQ (RISCV64.IRQ.IRQ (BitVec.ofFin (Fin.mk _ _)))))
+(further cases omitted, increase `set_option match.maxCounterExamples 5` to see more)
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:581:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:597:5: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:611:6: Type mismatch
+  RISCV64.Invocation.InvokePageTable oper
+has type
+  RISCV64.Invocation
+but is expected to have type
+  Invocation
+Some required targets logged failures:
+- Sel4Lean.Spec.Gen.Mod.Model_Preemption
+- Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64
+- Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+- Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike
+- Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+- Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64
+- Sel4Lean.Spec.Gen.Mod.Model_Failures
+- Sel4Lean.Spec.Gen.Mod.Model_Syscall
+- Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+- Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
+- Sel4Lean.Spec.Gen.Mod.Model_StateData
+- Sel4Lean.Spec.Gen.Mod.Object_Domain
+- Sel4Lean.Spec.Gen.Mod.Object_Structures
+- Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+- Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+- Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+- Sel4Lean.Spec.Gen.Mod.Object_Untyped
+- Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+- Sel4Lean.Spec.Gen.Mod.Model_PSpace
+- Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler
+- Sel4Lean.Spec.Gen.Mod.Kernel_VSpace
+- Sel4Lean.Spec.Gen.Mod.API_Failures
+- Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
+- Sel4Lean.Spec.Gen.Mod.Object_ObjectType
+- Sel4Lean.Spec.Gen.Mod.Object_TCB
+- Sel4Lean.Spec.Gen.Mod.API_Faults
+- Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64
+- Sel4Lean.Spec.Gen.Mod.API_Syscall
+- Sel4Lean.Spec.Gen.Mod.API_Types
+- Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
+- Sel4Lean.Spec.Gen.Mod.Object_CNode
+- Sel4Lean.Spec.Gen.Mod.Kernel_Init
+- Sel4Lean.Spec.Gen.Mod.Kernel_CSpace
+- Sel4Lean.Spec.Gen.Mod.Kernel_Thread
+- Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+error: build failed

@@ -75,16 +75,23 @@ FIXITY = {
     "==": ("n", 4), "/=": ("n", 4), "<": ("n", 4), "<=": ("n", 4), ">": ("n", 4), ">=": ("n", 4),
     "<$>": ("l", 4), ":": ("r", 5), "++": ("r", 5), ".|.": ("l", 5), "xor": ("l", 6),
     "+": ("l", 6), "-": ("l", 6), ".&.": ("l", 7), "*": ("l", 7), ".": ("r", 9),
+    "shiftL": ("l", 8), "shiftR": ("l", 8), "!": ("l", 9), "!!": ("l", 9), "//": ("l", 9),
+    "=<<": ("r", 1), "<*>": ("l", 4), "$!": ("r", 0), "^": ("r", 8),
 }
+DEFAULT_FIXITY = ("l", 9)   # Haskell's default for backtick functions without a fixity declaration
 # Haskell operator -> Lean operator (None: function application, handled specially)
 OPERATOR = {
     "$": None, "||": "||", "&&": "&&", "==": "==", "/=": "!=", "<": "<", "<=": "≤", ">": ">", ">=": "≥",
     ":": "::", "++": "++", ".|.": "|||", ".&.": "&&&", "+": "+", "-": "-", "*": "*",
+    "shiftL": "<<<", "shiftR": ">>>", ".": "∘", ">>=": ">>=", ">>": ">>=", "^": "^",
 }
+# operators rendered as function application: Haskell op -> Lean function (None: plain application)
+OPERATOR_APP = {"!": None, "$!": None, "!!": "listIndexH", "//": "arrayUpdH", "=<<": "flip bind", "<*>": "seqH"}
 # Haskell names -> Lean names (Prelude.lean)
 NAME = {
     "return": "pure", "fail": "failH", "assert": "assertH", "stateAssert": "stateAssertH",
-    "forM_": "forM_H", "mapM_": "forM_H", "delete": "deleteH",
+    "forM_": "forM_H", "delete": "deleteH", "when": "whenH", "unless": "unlessH",
+    "fromPPtr": "PPtr.ptr", "PPtr": "PPtr.mk",
     "Just": "some", "Nothing": "none", "True": "true", "False": "false",
 }
 TYPE = {"Maybe": "Option", "Bool": "Bool", "Word": "Word", "Int": "Int", "Integer": "Int"}
@@ -271,17 +278,35 @@ class Translator:
             if m.type != "constructor":
                 self.fail(n, "pattern")
             return " ".join([self.ctor(self.text(m))] + [self.pat_atom(p) for p in reversed(parts)])
+        if t == "as":
+            v = n.child_by_field_name("bind") or kids(n)[0]
+            p = n.child_by_field_name("pattern") or kids(n)[-1]
+            return f"{self.ident(self.text(v))}@{self.pat_atom(p)}"
         if t == "infix":
             op = self.text(n.child_by_field_name("operator"))
             if op != ":":
                 self.fail(n, "pattern operator")
             return f"{self.pat_atom(n.child_by_field_name('left_operand'))} :: {self.pat(n.child_by_field_name('right_operand'))}"
         if t == "record":
-            # `C {}` matches any C, whatever its fields
             c = n.child_by_field_name("constructor")
-            if c is None or any(x.type == "field_pattern" for x in kids(n)):
-                self.fail(n, "record pattern with fields")
-            return f"{self.ctor(self.text(c))} .."
+            fps = [x for x in kids(n) if x.type == "field_pattern"]
+            if c is None:
+                self.fail(n, "record pattern without constructor")
+            if not fps:
+                return f"{self.ctor(self.text(c))} .."   # `C {}` matches any C
+            cname = self.text(c).split(".")[-1]
+            tname = self.data.ctor_type.get(cname)
+            if tname is None:
+                self.fail(n, "record pattern of unknown constructor")
+            cfields = next(fs for cn, fs, _ in self.data.types[tname]["ctors"] if cn == cname)
+            given = {}
+            for fp in fps:
+                fname = self.text(fp.child_by_field_name("field")).split(".")[-1]
+                sub = fp.child_by_field_name("pattern")
+                given[fname] = self.pat_atom(sub) if sub is not None else self.ident(fname)  # punning
+            if self.data.types[tname]["single"]:
+                return "{ " + ", ".join(f"{f} := {v}" for f, v in given.items()) + " }"
+            return " ".join([self.ctor(cname)] + [given.get(f, "_") for f, _ in cfields])
         if t == "literal":
             return self.text(n)
         self.fail(n, "pattern")
@@ -303,6 +328,9 @@ class Translator:
             return self.text(n)
         if t == "unit":
             return "()"
+        if t == "qualified":
+            base = self.text(n).split(".")[-1]
+            return self.var(base) if base[:1].islower() else self.ctor(base)
         if t == "parens":
             return self.e(kids(n)[0], ind)
         if t == "list":
@@ -332,6 +360,39 @@ class Translator:
             return f"fun {' '.join(self.pat_atom(p) for p in kids(ps))} => {self.e(body, ind + 2)}"
         if t == "record":
             return self.record(n, ind)
+        if t == "signature":   # (e :: T)
+            ex = n.child_by_field_name("expression") or kids(n)[0]
+            return f"({self.e(ex, ind)} : {self.ty(n.child_by_field_name('type'))})"
+        if t == "negation":
+            return f"-{self.atom(kids(n)[0], ind)}"
+        if t in ("right_section", "left_section"):
+            op = next(c for c in n.children if c.type in ("operator", "infix_id", "constructor_operator"))
+            name = self.text(op).strip("`")
+            arg = next(c for c in kids(n) if c is not op)
+            lean = OPERATOR.get(name)
+            if lean is None:
+                fn = self.var(name)
+                return (f"(fun x => {fn} x {self.atom(arg, ind)})" if t == "right_section"
+                        else f"(fun x => {fn} {self.atom(arg, ind)} x)")
+            return (f"(· {lean} {self.atom(arg, ind)})" if t == "right_section"
+                    else f"({self.atom(arg, ind)} {lean} ·)")
+        if t == "prefix_id":   # (+) used as a function
+            name = self.text(n).strip("()` ")
+            lean = OPERATOR.get(name)
+            if lean is None:
+                self.fail(n, f"operator {name!r} as function")
+            return f"(· {lean} ·)"
+        if t == "let_in":
+            binds = n.child_by_field_name("binds")
+            body = n.child_by_field_name("expression")
+            lines = [lb for lb in (self.local_bind(b, ind) for b in kids(binds)) if lb]
+            return ("\n" + " " * ind).join(lines + [self.e(body, ind)])
+        if t == "arithmetic_sequence":
+            frm = n.child_by_field_name("from")
+            to = n.child_by_field_name("to")
+            if frm is None or to is None or n.child_by_field_name("step") is not None:
+                self.fail(n, "arithmetic sequence form")
+            return f"enumFromToH {self.atom(frm, ind)} {self.atom(to, ind)}"
         self.fail(n)
 
     def atom(self, n, ind):
@@ -352,8 +413,12 @@ class Translator:
                 operands.append(m)
         walk(n)
         names = [self.text(o).strip("`") for o in ops]
+        self._backtick = {nm for o, nm in zip(ops, names) if o.type == "infix_id"}
         for o, name in zip(ops, names):
-            if name not in FIXITY or (name not in OPERATOR):
+            if o.type == "infix_id" and name not in FIXITY:
+                FIXITY.setdefault(name, DEFAULT_FIXITY)
+            if name not in FIXITY or (name not in OPERATOR and name not in OPERATOR_APP
+                                      and o.type != "infix_id"):
                 self.fail(o, f"operator {name!r}")
 
         def build(lo, hi):
@@ -373,6 +438,14 @@ class Translator:
         if tree[0] == "leaf":
             return self.e(tree[1], ind)
         _, op, l, r = tree
+        if op == ">>":   # a >> b  ==  a >>= fun _ => b
+            return f"{self.render_atom(l, ind)} >>= fun _ => {self.render_atom(r, ind)}"
+        if op in OPERATOR_APP:
+            f = OPERATOR_APP[op]
+            parts = [self.render_atom(l, ind), self.render_atom(r, ind)]
+            return " ".join(([f] if f else []) + parts)
+        if op not in OPERATOR:   # backtick function: a `f` b  ==  f a b
+            return f"{self.var(op)} {self.render_atom(l, ind)} {self.render_atom(r, ind)}"
         if op == "$":
             left = self.e(l[1], ind) if l[0] == "leaf" and l[1].type in ("apply", "variable", "constructor") else self.render_atom(l, ind)
             return f"{left} {self.render_atom(r, ind)}"
@@ -391,7 +464,7 @@ class Translator:
             ctor, base = base, None
         upd = []
         for f in fields:
-            fname = self.text(f.child_by_field_name("field"))
+            fname = self.text(f.child_by_field_name("field")).split(".")[-1]
             upd.append((fname, f.child_by_field_name("expression")))
         if ctor is not None and base is None:
             # construction: C { f = v, ... } -> positional
@@ -400,12 +473,15 @@ class Translator:
             if tname is None:
                 self.fail(n, "record construction of unknown constructor")
             cfields = next(fs for c, fs, _ in self.data.types[tname]["ctors"] if c == cname)
-            given = dict(upd)
-            if set(given) != {f for f, _ in cfields}:
-                self.fail(n, "record construction must give every field")
+            given = {f.split(".")[-1]: v for f, v in upd}
+            if not set(given) <= {f for f, _ in cfields}:
+                self.fail(n, "record construction with unknown fields")
+            # Haskell allows omitted fields (reading them is bottom); here they are `default`
             if self.data.types[tname]["single"]:
-                return "{ " + ", ".join(f"{f} := {self.e(given[f], ind + 2)}" for f, _ in cfields) + f" : {tname} }}"
-            return " ".join([self.ctor(cname)] + [self.atom(given[f], ind) for f, _ in cfields])
+                return "{ " + ", ".join(f"{f} := {self.e(given[f], ind + 2) if f in given else 'default'}"
+                                        for f, _ in cfields) + f" : {tname} }}"
+            return " ".join([self.ctor(cname)] + [self.atom(given[f], ind) if f in given else "default"
+                                                   for f, _ in cfields])
         if base is None:
             self.fail(n, "record expression")
         # update: x { f = v, ... }
@@ -437,11 +513,19 @@ class Translator:
                 lines.append(self.e(kids(s)[0], si))
             else:
                 for b in kids(s.child_by_field_name("binds")):
-                    lines.append(self.local_bind(b, si))
+                    lb = self.local_bind(b, si)
+                    if lb:
+                        lines.append(lb)
         pad = " " * si
         return "do\n" + "\n".join(pad + l for l in lines)
 
     def local_bind(self, b, ind):
+        if b.type == "signature":
+            return None   # local type annotation: Lean infers it
+        if b.type == "bind" and b.child_by_field_name("name") is None:
+            pat = b.child_by_field_name("pattern")   # destructuring: (l, h) = e
+            body = b.child_by_field_name("match").child_by_field_name("expression")
+            return f"let {self.pat(pat)} := {self.e(body, ind + 2)}"
         if b.type == "bind":
             name = self.ident(self.text(b.child_by_field_name("name")))
             body = b.child_by_field_name("match").child_by_field_name("expression")
@@ -474,31 +558,66 @@ class Translator:
     def emit_function(self, name, nodes):
         sig = next((d for d in nodes if d.type == "signature"), None)
         eqs = [d for d in nodes if d.type in ("function", "bind")]
-        if sig is None or len(eqs) != 1:
-            self.fail(nodes[0], "function needs one signature and one equation")
-        eq = eqs[0]
-        # split the signature type into parameter types and result
+        if not eqs:
+            self.fail(nodes[0], "no equations")
+        if sig is None:
+            if len(eqs) == 1 and eqs[0].type == "bind":
+                # top-level constant without a signature: let Lean infer the type
+                body = eqs[0].child_by_field_name("match").child_by_field_name("expression")
+                return f"/-- Haskell `{name}` -/\ndef {self.ident(name)} :=\n  {self.e(body, 2)}"
+            self.fail(nodes[0], "function without a signature")
         params, t = [], sig.child_by_field_name("type")
+        if t.type == "context":
+            t = t.child_by_field_name("type")
         while t.type == "function":
             params.append(t.child_by_field_name("parameter"))
             t = t.child_by_field_name("result")
-        pats = eq.child_by_field_name("patterns")
-        pats = kids(pats) if pats is not None else []
-        if any(p.type != "variable" for p in pats):
-            self.fail(eq, "non-variable parameter pattern")
-        if len(pats) > len(params):
-            self.fail(eq, "more parameters than the signature")
-        binders = " ".join(f"({self.ident(self.text(p))} : {self.ty(ty)})" for p, ty in zip(pats, params))
-        rest = params[len(pats):]
+        pat_lists = []
+        for eq in eqs:
+            ps = eq.child_by_field_name("patterns")
+            pat_lists.append(kids(ps) if ps is not None else [])
+        arity = len(pat_lists[0])
+        if any(len(p) != arity for p in pat_lists):
+            self.fail(eqs[0], "equations with different numbers of parameters")
+        for eq in eqs:
+            m = eq.child_by_field_name("match")
+            if m is None or m.child_by_field_name("expression") is None:
+                self.fail(eq, "guarded equation")
+        simple = len(eqs) == 1 and all(p.type == "variable" for p in pat_lists[0])
+        typed = min(arity, len(params))
+        if simple:
+            names = [self.ident(self.text(p)) for p in pat_lists[0]]
+        else:
+            names = [f"x{i}" for i in range(arity)]
+        binders = " ".join(f"({nm} : {self.ty(ty)})" for nm, ty in zip(names[:typed], params[:typed]))
+        rest = params[typed:]
         result = " → ".join([self.ty_atom(x) for x in rest] + [self.ty(t)])
-        m = eq.child_by_field_name("match")
-        body = m.child_by_field_name("expression")
-        wheres = eq.child_by_field_name("binds")
-        out = [f"/-- Haskell `{name}` -/", f"def {self.ident(name)} {binders} : {result} :=".replace("  ", " ")]
-        if wheres is not None:
-            for b in kids(wheres):
-                out.append("  " + self.local_bind(b, 2))
-        out.append("  " + self.e(body, 2))
+        extra = names[typed:]   # more parameters than the signature shows (result is a function synonym)
+        head = f"def {self.ident(name)} {binders} : {result} :=".replace("  ", " ")
+        out = [f"/-- Haskell `{name}` -/", head]
+        lam = f"fun {' '.join(extra)} => " if extra else ""
+
+        def body_of(eq, ind):
+            m = eq.child_by_field_name("match")
+            lines = []
+            wheres = eq.child_by_field_name("binds")
+            if wheres is not None:
+                for b in kids(wheres):
+                    lb = self.local_bind(b, ind)
+                    if lb:
+                        lines.append(lb)
+            lines.append(self.e(m.child_by_field_name("expression"), ind))
+            return ("\n" + " " * ind).join(lines)
+
+        if simple:
+            out.append("  " + lam + body_of(eqs[0], 2))
+            return "\n".join(out)
+        out.append(f"  {lam}match {', '.join(names)} with")
+        for eq, pats in zip(eqs, pat_lists):
+            b = body_of(eq, 6)
+            if "\n" in b:
+                b = "\n      " + b
+            out.append(f"  | {', '.join(self.pat(p) for p in pats)} => {b}")
         return "\n".join(out)
 
     def free_names(self, node):

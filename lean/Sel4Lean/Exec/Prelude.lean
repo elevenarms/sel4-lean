@@ -31,6 +31,9 @@ instance {α : Type} : DecidableEq (PPtr α) := fun a b =>
   else
     isFalse (fun e => h (congrArg PPtr.ptr e))
 
+/-- Haskell `Foreign.Ptr a`: a raw machine address (used only by machine-interface code). -/
+abbrev PtrH (_ : Type) := Word
+
 /-- Haskell `fail msg` in the kernel monad: l4v translates it to failure, dropping the message. -/
 abbrev failH {σ α : Type} (_msg : String) : NondetM σ α := NondetM.fail
 

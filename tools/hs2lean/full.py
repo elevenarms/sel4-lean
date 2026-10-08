@@ -20,8 +20,12 @@ OTHER_ARCHES = {"ARM", "ARM_HYP", "X64", "AARCH64"}
 
 # Haskell library types -> Lean (l4v's Isabelle model makes maps and arrays functions)
 LIB_TYPES = {"Word8": "BitVec 8", "Word16": "BitVec 16", "Word32": "BitVec 32", "Word64": "BitVec 64",
-             "Int": "Int", "Integer": "Int", "Bool": "Bool", "Word": "Word", "Char": "Char",
-             "String": "String", "Maybe": "Option", "Either": "Except"}
+             # Haskell Int -> Nat, as l4v's translator maps it to nat
+             "Int": "Nat", "Integer": "Int", "Bool": "Bool", "Word": "Word", "Char": "Char",
+             "String": "String", "Maybe": "Option", "Either": "Except",
+             # monads (see notes/w2-translation.md): l4v's Isabelle model where it exists, Lean core otherwise
+             "State": "Sel4Lean.NondetM", "StateT": "StateT", "ReaderT": "ReaderT", "ExceptT": "ExceptT",
+             "IO": "IO", "Ptr": "PtrH"}
 TYPE.update(LIB_TYPES)
 
 
@@ -83,11 +87,16 @@ class FullTranslator(Translator):
         self.tyvars = []
         self.current_ctors = set()
         self.current_name = None
+        self.arch_names = set()      # types X with a translated RISCV64.X
+        self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
+        self.arch_calls = set()      # `Arch.f` references seen while translating
 
     def ty(self, n):
         t = n.type
         if t == "name" and self.text(n) in self.current_ctors:
             return f"Sel4Lean.Spec.{self.text(n)}"   # a constructor of this type has the same name
+        if t == "name" and self.in_arch_module and self.text(n) in self.arch_names:
+            return f"{ARCH}.{self.text(n)}"
         if t == "variable":
             v = self.text(n)
             if v not in self.tyvars:
@@ -121,6 +130,16 @@ class FullTranslator(Translator):
                 # resolve Arch.X etc. by base name (see `qualified` above)
                 pass
         return super().ty(n)
+
+    def e(self, n, ind):
+        # `Arch.f` names the RISCV64 implementation (generic modules dispatch with `f = Arch.f`)
+        if n.type == "qualified":
+            txt = self.text(n)
+            q, base = txt.rsplit(".", 1)
+            if q == "Arch" and base[:1].islower():
+                self.arch_calls.add(base)
+                return f"{ARCH}.{base}"
+        return super().e(n, ind)
 
     def type_names(self, n):
         """Type constructor names mentioned under n (not in `deriving` clauses; qualifiers dropped)."""
@@ -163,13 +182,39 @@ class FullTranslator(Translator):
             fname = "val"
             fty = self.ty(next(c for c in kids(nc) if c.type != "constructor"))
         d = node.child_by_field_name("deriving") or next((c for c in kids(node) if c.type == "deriving"), None)
-        eq = d is not None and "Eq" in self.text(d) and "→" not in fty
+        dtext = self.text(d) if d is not None else ""
+        eq = "Eq" in dtext and "→" not in fty
         derives = "deriving Inhabited, DecidableEq" if eq else "deriving Inhabited"
+        inst = []
+        if not ps and (fty == "Word" or fty.startswith("BitVec")):
+            # Haskell `deriving (Num, Ord, Bits, …)` on a word newtype: lift through the field
+            mk = lambda e: f"⟨{e}⟩"
+            if "Num" in dtext or "Integral" in dtext:
+                inst += [f"instance {{n : Nat}} : OfNat {name} n := ⟨⟨OfNat.ofNat n⟩⟩",
+                         f"instance : Add {name} := ⟨fun a b => {mk(f'a.{fname} + b.{fname}')}⟩",
+                         f"instance : Sub {name} := ⟨fun a b => {mk(f'a.{fname} - b.{fname}')}⟩",
+                         f"instance : Mul {name} := ⟨fun a b => {mk(f'a.{fname} * b.{fname}')}⟩",
+                         f"instance : IntegralH {name} := ⟨fun a => IntegralH.toInt a.{fname}, fun i => {mk('IntegralH.ofInt i')}⟩"]
+            if "Ord" in dtext:
+                inst += [f"instance : LE {name} := ⟨fun a b => a.{fname} ≤ b.{fname}⟩",
+                         f"instance : LT {name} := ⟨fun a b => a.{fname} < b.{fname}⟩",
+                         f"instance (a b : {name}) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.{fname} ≤ b.{fname}))",
+                         f"instance (a b : {name}) : Decidable (a < b) := inferInstanceAs (Decidable (a.{fname} < b.{fname}))"]
+            if "Bits" in dtext:
+                inst += [f"instance : AndOp {name} := ⟨fun a b => {mk(f'a.{fname} &&& b.{fname}')}⟩",
+                         f"instance : OrOp {name} := ⟨fun a b => {mk(f'a.{fname} ||| b.{fname}')}⟩",
+                         f"instance : HShiftLeft {name} Nat {name} := ⟨fun a k => {mk(f'a.{fname} <<< k')}⟩",
+                         f"instance : HShiftRight {name} Nat {name} := ⟨fun a k => {mk(f'a.{fname} >>> k')}⟩"]
+        self.data.types[name] = {"ctors": [(cname, [(fname, None)], [])], "single": True}
+        self.data.ctor_type[cname] = name
+        self.data.field_type[fname] = name
+        # name the Lean constructor like the Haskell one, so `CPtr x` patterns and expressions work
         return (f"/-- Haskell `newtype {name} = {cname} …` -/\n"
-                f"structure {name}{binders} where\n  {fname} : {fty}\n  {derives}\n")
+                f"structure {name}{binders} where\n  {cname} ::\n  {fname} : {fty}\n  {derives}\n"
+                + "".join(i + "\n" for i in inst))
 
 
-def cmd_types(root, files):
+def cmd_types(root, files, emit=True):
     idx = index_decls(root)
     data = DataInfo()
     want = []
@@ -183,7 +228,16 @@ def cmd_types(root, files):
     deps = {}
 
     def visit(name):
-        if name in seen or name in LIB_TYPES or name in ("Kernel", "PPtr", "Type", "Array", "Map", "Set"):
+        if name in seen or name in LIB_TYPES or name in ("PPtr", "Type", "Array", "Map", "Set"):
+            return
+        if name == "Kernel":
+            seen.add(name)
+            visit("KernelState")
+            deps[name] = {"KernelState"}
+            out[name] = ("/-- Haskell `type Kernel = StateT KernelState MachineMonad`, modelled as l4v's Isabelle\n"
+                         "`kernel = (kernel_state, 'a) nondet_monad` -/\n"
+                         "abbrev Kernel := Sel4Lean.NondetM KernelState", "SEL4/Model/StateData.lhs")
+            order.append(name)
             return
         seen.add(name)
         if name not in idx:
@@ -197,6 +251,8 @@ def cmd_types(root, files):
         for r in sorted(refs):
             visit(r)
         try:
+            if node.type == "data_type" and node.child_by_field_name("constructors") is None:
+                raise Unsupported("data type without constructors (opaque in Haskell)")
             if node.type == "data_type":
                 tr.collect_data(name, node)
                 tr.current_ctors = {c for c, _, _ in data.types[name]["ctors"]}
@@ -259,8 +315,10 @@ def cmd_types(root, files):
             return text, None, ""
         return "\n".join(lines[:i]), lines[i].strip()[len("deriving "):], "\n".join(lines[i + 1:])
 
+    if not emit:
+        return idx, data, {n[len(ARCH) + 1:] for n in order if n.startswith(ARCH + ".")}
     print(HEADER)
-    print("import Sel4Lean.Exec.Prelude\n\nnamespace Sel4Lean.Spec\nopen Sel4Lean.Exec (Word PPtr)\nnoncomputable section\n")
+    print("import Sel4Lean.Exec.Prelude\nimport Sel4Lean.Spec.HsPrelude\n\nnamespace Sel4Lean.Spec\nopen Sel4Lean.Exec (Word PPtr PtrH)\nnoncomputable section\n")
     print("/-! ## Stubs: types that could not be resolved or translated (hs2lean full) -/\n")
     for n in sorted(set(stubs) | set(failed)):
         why = stubs.get(n) or failed.get(n)
@@ -309,10 +367,164 @@ def cmd_types(root, files):
         print(f"  stubbed {n}: {why}", file=sys.stderr)
 
 
+# ------------------------------------------------------------------ functions (module mode)
+
+PRELUDE_NAMES = set()  # filled from hs2lean.NAME at runtime
+
+BINDER_FIELDS = {"patterns", "pattern"}
+
+
+def bound_names(tr, node):
+    """Variables bound anywhere inside a function (parameters, lambda/do/case patterns, let/where names)."""
+    out, stack = set(), [(node, False)]
+    while stack:
+        m, binding = stack.pop()
+        if m.type == "variable" and binding:
+            out.add(tr.text(m))
+        for i, c in enumerate(m.children):
+            if not c.is_named:
+                continue
+            f = m.field_name_for_child(i)
+            b = binding or f in BINDER_FIELDS or (f == "name" and m.type in ("bind", "function"))
+            stack.append((c, b))
+    return out
+
+
+def used_names(tr, node):
+    out, stack = set(), [node]
+    while stack:
+        m = stack.pop()
+        if m.type == "variable":
+            out.add(tr.text(m))
+        stack.extend(m.named_children)
+    return out
+
+
+def sig_stub(tr, name, sig_node, why):
+    """`opaque name {a : Type} … : T` from a Haskell signature, or None if the type won't translate."""
+    tr.tyvars = []
+    try:
+        t = tr.ty(sig_node.child_by_field_name("type"))
+    except Unsupported:
+        return None
+    imp = "".join(f" {{{v} : Type}}" for v in tr.tyvars)
+    inst = "".join(f" [Inhabited {v}]" for v in tr.tyvars)
+    return f"-- {why}\nopaque {tr.ident(name)}{imp}{inst} : {t}"
+
+
+def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
+    from hs2lean import NAME, HEADER as GEN_HEADER
+    idx, data, arch_names = cmd_types(root, type_roots, emit=False)
+    out_defs, stubs, unresolved, failed = [], {}, {}, {}
+    stats = {"translated": 0, "failed": 0}
+    local_all = {}
+    for mpath in modules:
+        src, rn = parse_file(mpath)
+        tr = FullTranslator(src, data)
+        tr.arch_names = arch_names
+        tr.in_arch_module = ARCH in mpath
+        decls = [(n, ns) for n, ns in top_decls(src, rn) if any(d.type in ("function", "bind") for d in ns)]
+        local = {n for n, _ in decls}
+        local_all.update({n: (tr, ns) for n, ns in decls})
+        deps = {}
+        for n, ns in decls:
+            body = [d for d in ns if d.type != "signature"]
+            used = set().union(*(used_names(tr, d) for d in body))
+            bound = set().union(*(bound_names(tr, d) for d in body))
+            free = used - bound - {n}
+            deps[n] = free & local
+            for x in sorted(free - local):
+                if x in NAME or x in data.field_type or x in stubs or x in unresolved:
+                    continue
+                sig = idx.get("sig:" + x)
+                stub = sig_stub(FullTranslator(sig[0], data), x, sig[1], f"external: {os.path.relpath(sig[2], root)}") if sig else None
+                if stub:
+                    stubs[x] = stub
+                else:
+                    unresolved[x] = "no translatable signature found" if sig else "no signature found"
+        order, done = [], set()
+
+        def visit(n, path=()):
+            if n in done or n in path:
+                return
+            for d in sorted(deps[n]):
+                visit(d, path + (n,))
+            done.add(n); order.append(n)
+        for n, _ in decls:
+            visit(n)
+        body = dict(decls)
+        recursive = {n for n, ns in decls
+                     if n in set().union(*(used_names(tr, d) for d in ns if d.type != "signature"))
+                     - set().union(*(bound_names(tr, d) for d in ns if d.type != "signature"))}
+        for n in order:
+            try:
+                text = tr.emit_function(n, body[n])
+                if n in recursive:
+                    # TODO(W4): termination proofs (l4v proves them in Isabelle); `partial` hides the body
+                    text = text.replace(f"\ndef {tr.ident(n)} ", f"\npartial def {tr.ident(n)} ", 1)
+                    stats["partial"] = stats.get("partial", 0) + 1
+                out_defs.append(text)
+                stats["translated"] += 1
+            except (Unsupported, StopIteration, AttributeError) as ex:
+                stats["failed"] += 1
+                failed[n] = str(ex)[:120]
+                sig = next((d for d in body[n] if d.type == "signature"), None)
+                st = sig_stub(tr, n, sig, f"local, not translated: {str(ex)[:80]}") if sig is not None else None
+                if st:
+                    stubs[n] = st
+                else:
+                    unresolved[n] = f"local, not translated, no signature: {str(ex)[:60]}"
+        # stubs for `Arch.f` calls, from the RISCV64 signature
+        for f in sorted(tr.arch_calls):
+            key = f"{ARCH}.{f}"
+            if key in stubs:
+                continue
+            sig = idx.get(f"{ARCH}.sig:{f}")
+            st = None
+            if sig:
+                atr = FullTranslator(sig[0], data)
+                atr.arch_names, atr.in_arch_module = arch_names, True
+                st = sig_stub(atr, key, sig[1], f"arch: {os.path.relpath(sig[2], root)}")
+            if st:
+                stubs[key] = st
+            else:
+                unresolved[key] = "no RISCV64 signature"
+    print(GEN_HEADER.format(rev="ac4a36d", path=", ".join(os.path.relpath(m, root) for m in modules)))
+    print(f"import Sel4Lean.Spec.Prelude\n\nnamespace {namespace}\nopen Sel4Lean.Spec\n"
+          "open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)\nnoncomputable section\n")
+    print("/-! ## Stubs (from Haskell signatures) -/\n")
+    for n in sorted(stubs):
+        print(stubs[n]); print()
+    if unresolved:
+        print("/-! ## Unresolved (no stub possible)")
+        for n, why in sorted(unresolved.items()):
+            print(f"  {n}: {why}")
+        print("-/\n")
+    print("/-! ## Translated -/\n")
+    for d in out_defs:
+        print(d); print()
+    print(f"end\nend {namespace}")
+    total = stats["translated"] + stats["failed"]
+    print(f"hs2lean module: {stats['translated']}/{total} functions translated "
+          f"({stats.get('partial', 0)} partial), "
+          f"{len([k for k in stubs if k not in failed])} external stubs, {len(unresolved)} unresolved", file=sys.stderr)
+    for n, why in sorted(failed.items()):
+        print(f"  failed {n}: {why}", file=sys.stderr)
+    for n, why in sorted(unresolved.items()):
+        print(f"  unresolved {n}: {why}", file=sys.stderr)
+
+
 if __name__ == "__main__":
     try:
         if sys.argv[1] == "types":
             cmd_types(sys.argv[2], sys.argv[3:])
+        elif sys.argv[1] == "module":
+            # module ROOT --types F... --modules M...
+            a = sys.argv[3:]
+            i, j = a.index("--types"), a.index("--modules")
+            k = a.index("--namespace") if "--namespace" in a else None
+            mods = a[j + 1:k] if k else a[j + 1:]
+            cmd_module(sys.argv[2], a[i + 1:j], mods, a[k + 1] if k else "Sel4Lean.Spec")
         else:
             raise SystemExit(__doc__)
     except Unsupported as ex:

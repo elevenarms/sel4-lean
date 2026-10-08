@@ -4,27 +4,62 @@
 -/
 
 import Sel4Lean.Exec.Prelude
+import Sel4Lean.Spec.HsPrelude
 
 namespace Sel4Lean.Spec
-open Sel4Lean.Exec (Word PPtr)
+open Sel4Lean.Exec (Word PPtr PtrH)
 noncomputable section
 
 /-! ## Stubs: types that could not be resolved or translated (hs2lean full) -/
+
+-- CallbackData: data type without constructors (opaque in Haskell)
+opaque CallbackDataImpl : NonemptyType
+def CallbackData : Type := CallbackDataImpl.type
+instance : Nonempty CallbackData := CallbackDataImpl.property
+noncomputable instance : Inhabited CallbackData := ⟨Classical.choice CallbackDataImpl.property⟩
 
 /-! ## Translated -/
 
 -- from SEL4/Object/Structures/RISCV64.hs
 /-- Haskell `newtype ASID = ASID …` -/
 structure ASID where
+  ASID ::
   fromASID : BitVec 64
   deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat ASID n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add ASID := ⟨fun a b => ⟨a.fromASID + b.fromASID⟩⟩
+instance : Sub ASID := ⟨fun a b => ⟨a.fromASID - b.fromASID⟩⟩
+instance : Mul ASID := ⟨fun a b => ⟨a.fromASID * b.fromASID⟩⟩
+instance : IntegralH ASID := ⟨fun a => IntegralH.toInt a.fromASID, fun i => ⟨IntegralH.ofInt i⟩⟩
+instance : LE ASID := ⟨fun a b => a.fromASID ≤ b.fromASID⟩
+instance : LT ASID := ⟨fun a b => a.fromASID < b.fromASID⟩
+instance (a b : ASID) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromASID ≤ b.fromASID))
+instance (a b : ASID) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromASID < b.fromASID))
+instance : AndOp ASID := ⟨fun a b => ⟨a.fromASID &&& b.fromASID⟩⟩
+instance : OrOp ASID := ⟨fun a b => ⟨a.fromASID ||| b.fromASID⟩⟩
+instance : HShiftLeft ASID Nat ASID := ⟨fun a k => ⟨a.fromASID <<< k⟩⟩
+instance : HShiftRight ASID Nat ASID := ⟨fun a k => ⟨a.fromASID >>> k⟩⟩
 
 
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
 /-- Haskell `newtype PAddr = PAddr …` -/
 structure PAddr where
+  PAddr ::
   fromPAddr : Word
   deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat PAddr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add PAddr := ⟨fun a b => ⟨a.fromPAddr + b.fromPAddr⟩⟩
+instance : Sub PAddr := ⟨fun a b => ⟨a.fromPAddr - b.fromPAddr⟩⟩
+instance : Mul PAddr := ⟨fun a b => ⟨a.fromPAddr * b.fromPAddr⟩⟩
+instance : IntegralH PAddr := ⟨fun a => IntegralH.toInt a.fromPAddr, fun i => ⟨IntegralH.ofInt i⟩⟩
+instance : LE PAddr := ⟨fun a b => a.fromPAddr ≤ b.fromPAddr⟩
+instance : LT PAddr := ⟨fun a b => a.fromPAddr < b.fromPAddr⟩
+instance (a b : PAddr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromPAddr ≤ b.fromPAddr))
+instance (a b : PAddr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromPAddr < b.fromPAddr))
+instance : AndOp PAddr := ⟨fun a b => ⟨a.fromPAddr &&& b.fromPAddr⟩⟩
+instance : OrOp PAddr := ⟨fun a b => ⟨a.fromPAddr ||| b.fromPAddr⟩⟩
+instance : HShiftLeft PAddr Nat PAddr := ⟨fun a k => ⟨a.fromPAddr <<< k⟩⟩
+instance : HShiftRight PAddr Nat PAddr := ⟨fun a k => ⟨a.fromPAddr >>> k⟩⟩
 
 
 -- from SEL4/Machine/Hardware/RISCV64.hs
@@ -100,6 +135,7 @@ def PTE.set_pteRights (x : PTE) (v : VMRights) : PTE :=
 -- from SEL4/Object/Structures/RISCV64.hs
 /-- Haskell `newtype ASIDPool = ASIDPool …` -/
 structure ASIDPool where
+  ASIDPool ::
   val : (ASID → (Option (PPtr PTE)))
   deriving Inhabited
 
@@ -115,8 +151,22 @@ inductive VMPageSize where
 -- from SEL4/Machine/RegisterSet.lhs
 /-- Haskell `newtype VPtr = VPtr …` -/
 structure VPtr where
+  VPtr ::
   fromVPtr : Word
   deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat VPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add VPtr := ⟨fun a b => ⟨a.fromVPtr + b.fromVPtr⟩⟩
+instance : Sub VPtr := ⟨fun a b => ⟨a.fromVPtr - b.fromVPtr⟩⟩
+instance : Mul VPtr := ⟨fun a b => ⟨a.fromVPtr * b.fromVPtr⟩⟩
+instance : IntegralH VPtr := ⟨fun a => IntegralH.toInt a.fromVPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
+instance : LE VPtr := ⟨fun a b => a.fromVPtr ≤ b.fromVPtr⟩
+instance : LT VPtr := ⟨fun a b => a.fromVPtr < b.fromVPtr⟩
+instance (a b : VPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromVPtr ≤ b.fromVPtr))
+instance (a b : VPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromVPtr < b.fromVPtr))
+instance : AndOp VPtr := ⟨fun a b => ⟨a.fromVPtr &&& b.fromVPtr⟩⟩
+instance : OrOp VPtr := ⟨fun a b => ⟨a.fromVPtr ||| b.fromVPtr⟩⟩
+instance : HShiftLeft VPtr Nat VPtr := ⟨fun a k => ⟨a.fromVPtr <<< k⟩⟩
+instance : HShiftRight VPtr Nat VPtr := ⟨fun a k => ⟨a.fromVPtr >>> k⟩⟩
 
 
 -- from SEL4/Object/Structures/RISCV64.hs
@@ -218,65 +268,84 @@ def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID
   | .PageTableCap a0 _ => .PageTableCap a0 v
   | x => x
 
--- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
-/-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
-structure RISCV64.IRQ where
-  val : BitVec 32
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  CPtr ::
+  fromCPtr : Word
   deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
+instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
+instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
+instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
+instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
+instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
+instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
+instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
+instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
+instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
+instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
 
 
--- from SEL4/Machine/Hardware.lhs
-/-- Haskell `newtype IRQ = IRQ …` -/
-structure IRQ where
-  theIRQ : RISCV64.IRQ
-  deriving Inhabited, DecidableEq
-
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
 inductive LookupFailure where
-  | MissingCapability (missingCapBitsLeft : Int)
-  | DepthMismatch (depthMismatchBitsLeft : Int) (depthMismatchBitsFound : Int)
+  | MissingCapability (missingCapBitsLeft : Nat)
+  | DepthMismatch (depthMismatchBitsLeft : Nat) (depthMismatchBitsFound : Nat)
   | InvalidRoot
-  | GuardMismatch (guardMismatchBitsLeft : Int) (guardMismatchGuardFound : Word) (guardMismatchGuardSize : Int)
+  | GuardMismatch (guardMismatchBitsLeft : Nat) (guardMismatchGuardFound : Word) (guardMismatchGuardSize : Nat)
   deriving Inhabited
 
 /-- Haskell selector `missingCapBitsLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def LookupFailure.missingCapBitsLeft : LookupFailure → Int
+def LookupFailure.missingCapBitsLeft : LookupFailure → Nat
   | .MissingCapability v => v
   | _ => default
 /-- Haskell record update `x { missingCapBitsLeft = v }` (no-op on other constructors). -/
-def LookupFailure.set_missingCapBitsLeft (x : LookupFailure) (v : Int) : LookupFailure :=
+def LookupFailure.set_missingCapBitsLeft (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .MissingCapability _ => .MissingCapability v
   | x => x
 
 /-- Haskell selector `depthMismatchBitsLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def LookupFailure.depthMismatchBitsLeft : LookupFailure → Int
+def LookupFailure.depthMismatchBitsLeft : LookupFailure → Nat
   | .DepthMismatch v _ => v
   | _ => default
 /-- Haskell record update `x { depthMismatchBitsLeft = v }` (no-op on other constructors). -/
-def LookupFailure.set_depthMismatchBitsLeft (x : LookupFailure) (v : Int) : LookupFailure :=
+def LookupFailure.set_depthMismatchBitsLeft (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .DepthMismatch _ a1 => .DepthMismatch v a1
   | x => x
 
 /-- Haskell selector `depthMismatchBitsFound` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def LookupFailure.depthMismatchBitsFound : LookupFailure → Int
+def LookupFailure.depthMismatchBitsFound : LookupFailure → Nat
   | .DepthMismatch _ v => v
   | _ => default
 /-- Haskell record update `x { depthMismatchBitsFound = v }` (no-op on other constructors). -/
-def LookupFailure.set_depthMismatchBitsFound (x : LookupFailure) (v : Int) : LookupFailure :=
+def LookupFailure.set_depthMismatchBitsFound (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .DepthMismatch a0 _ => .DepthMismatch a0 v
   | x => x
 
 /-- Haskell selector `guardMismatchBitsLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def LookupFailure.guardMismatchBitsLeft : LookupFailure → Int
+def LookupFailure.guardMismatchBitsLeft : LookupFailure → Nat
   | .GuardMismatch v _ _ => v
   | _ => default
 /-- Haskell record update `x { guardMismatchBitsLeft = v }` (no-op on other constructors). -/
-def LookupFailure.set_guardMismatchBitsLeft (x : LookupFailure) (v : Int) : LookupFailure :=
+def LookupFailure.set_guardMismatchBitsLeft (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .GuardMismatch _ a1 a2 => .GuardMismatch v a1 a2
   | x => x
@@ -292,21 +361,14 @@ def LookupFailure.set_guardMismatchGuardFound (x : LookupFailure) (v : Word) : L
   | x => x
 
 /-- Haskell selector `guardMismatchGuardSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def LookupFailure.guardMismatchGuardSize : LookupFailure → Int
+def LookupFailure.guardMismatchGuardSize : LookupFailure → Nat
   | .GuardMismatch _ _ v => v
   | _ => default
 /-- Haskell record update `x { guardMismatchGuardSize = v }` (no-op on other constructors). -/
-def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Int) : LookupFailure :=
+def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Nat) : LookupFailure :=
   match x with
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
-
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-
 
 -- from SEL4/API/Failures/RISCV64.hs
 /-- Haskell `data ArchFault = VMFault { … }` -/
@@ -394,10 +456,6 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   | .ArchFault _ => .ArchFault v
   | x => x
 
--- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
-
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data RISCV64.Register` -/
 inductive RISCV64.Register where
@@ -441,6 +499,7 @@ inductive RISCV64.Register where
 -- from SEL4/Machine/RegisterSet.lhs
 /-- Haskell `newtype Register = Register …` -/
 structure Register where
+  Register ::
   val : RISCV64.Register
   deriving Inhabited, DecidableEq
 
@@ -459,27 +518,39 @@ structure ArchTCB where
   deriving Inhabited
 
 
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
+-- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
+/-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
+structure RISCV64.IRQ where
+  IRQ ::
+  val : BitVec 32
+  deriving Inhabited, DecidableEq
+instance : LE RISCV64.IRQ := ⟨fun a b => a.val ≤ b.val⟩
+instance : LT RISCV64.IRQ := ⟨fun a b => a.val < b.val⟩
+instance (a b : RISCV64.IRQ) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.val ≤ b.val))
+instance (a b : RISCV64.IRQ) : Decidable (a < b) := inferInstanceAs (Decidable (a.val < b.val))
 
--- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
+
+-- from SEL4/Machine/Hardware.lhs
+/-- Haskell `newtype IRQ = IRQ …` -/
+structure IRQ where
+  IRQ ::
+  theIRQ : RISCV64.IRQ
+  deriving Inhabited, DecidableEq
+
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data ZombieType` -/
 inductive ZombieType where
   | ZombieTCB
-  | ZombieCNode (zombieCTEBits : Int)
+  | ZombieCNode (zombieCTEBits : Nat)
   deriving Inhabited, DecidableEq
 
 /-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def ZombieType.zombieCTEBits : ZombieType → Int
+def ZombieType.zombieCTEBits : ZombieType → Nat
   | .ZombieCNode v => v
   | _ => default
 /-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
-def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Int) : ZombieType :=
+def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
   match x with
   | .ZombieCNode _ => .ZombieCNode v
   | x => x
@@ -532,7 +603,7 @@ structure TCB where
   tcbPriority : Priority
   tcbQueued : Bool
   tcbFault : Option Fault
-  tcbTimeSlice : Int
+  tcbTimeSlice : Nat
   tcbFaultHandler : CPtr
   tcbIPCBuffer : VPtr
   tcbBoundNotification : Option (PPtr Notification)
@@ -555,11 +626,11 @@ inductive Capability where
   | IRQHandlerCap (capIRQ : IRQ)
   | EndpointCap (capEPPtr : PPtr Endpoint) (capEPBadge : Word) (capEPCanSend : Bool) (capEPCanGrant : Bool)
   | DomainCap
-  | Zombie (capZombiePtr : PPtr CTE) (capZombieType : ZombieType) (capZombieNumber : Int)
+  | Zombie (capZombiePtr : PPtr CTE) (capZombieType : ZombieType) (capZombieNumber : Nat)
   | ArchObjectCap (capCap : ArchCapability)
   | ReplyCap (capTCBPtr : PPtr TCB) (capReplyMaster : Bool) (capReplyCanGrant : Bool)
-  | UntypedCap (capIsDevice : Bool) (capPtr : PPtr Unit) (capBlockSize : Int) (capFreeIndex : Int)
-  | CNodeCap (capCNodePtr : PPtr CTE) (capCNodeBits : Int) (capCNodeGuard : Word) (capCNodeGuardSize : Int)
+  | UntypedCap (capIsDevice : Bool) (capPtr : PPtr Unit) (capBlockSize : Nat) (capFreeIndex : Nat)
+  | CNodeCap (capCNodePtr : PPtr CTE) (capCNodeBits : Nat) (capCNodeGuard : Word) (capCNodeGuardSize : Nat)
   | IRQControlCap
 end
 
@@ -781,11 +852,11 @@ def Capability.set_capZombieType (x : Capability) (v : ZombieType) : Capability 
   | x => x
 
 /-- Haskell selector `capZombieNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def Capability.capZombieNumber : Capability → Int
+def Capability.capZombieNumber : Capability → Nat
   | .Zombie _ _ v => v
   | _ => default
 /-- Haskell record update `x { capZombieNumber = v }` (no-op on other constructors). -/
-def Capability.set_capZombieNumber (x : Capability) (v : Int) : Capability :=
+def Capability.set_capZombieNumber (x : Capability) (v : Nat) : Capability :=
   match x with
   | .Zombie a0 a1 _ => .Zombie a0 a1 v
   | x => x
@@ -841,21 +912,21 @@ def Capability.set_capPtr (x : Capability) (v : PPtr Unit) : Capability :=
   | x => x
 
 /-- Haskell selector `capBlockSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def Capability.capBlockSize : Capability → Int
+def Capability.capBlockSize : Capability → Nat
   | .UntypedCap _ _ v _ => v
   | _ => default
 /-- Haskell record update `x { capBlockSize = v }` (no-op on other constructors). -/
-def Capability.set_capBlockSize (x : Capability) (v : Int) : Capability :=
+def Capability.set_capBlockSize (x : Capability) (v : Nat) : Capability :=
   match x with
   | .UntypedCap a0 a1 _ a3 => .UntypedCap a0 a1 v a3
   | x => x
 
 /-- Haskell selector `capFreeIndex` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def Capability.capFreeIndex : Capability → Int
+def Capability.capFreeIndex : Capability → Nat
   | .UntypedCap _ _ _ v => v
   | _ => default
 /-- Haskell record update `x { capFreeIndex = v }` (no-op on other constructors). -/
-def Capability.set_capFreeIndex (x : Capability) (v : Int) : Capability :=
+def Capability.set_capFreeIndex (x : Capability) (v : Nat) : Capability :=
   match x with
   | .UntypedCap a0 a1 a2 _ => .UntypedCap a0 a1 a2 v
   | x => x
@@ -871,11 +942,11 @@ def Capability.set_capCNodePtr (x : Capability) (v : PPtr CTE) : Capability :=
   | x => x
 
 /-- Haskell selector `capCNodeBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def Capability.capCNodeBits : Capability → Int
+def Capability.capCNodeBits : Capability → Nat
   | .CNodeCap _ v _ _ => v
   | _ => default
 /-- Haskell record update `x { capCNodeBits = v }` (no-op on other constructors). -/
-def Capability.set_capCNodeBits (x : Capability) (v : Int) : Capability :=
+def Capability.set_capCNodeBits (x : Capability) (v : Nat) : Capability :=
   match x with
   | .CNodeCap a0 _ a2 a3 => .CNodeCap a0 v a2 a3
   | x => x
@@ -891,11 +962,11 @@ def Capability.set_capCNodeGuard (x : Capability) (v : Word) : Capability :=
   | x => x
 
 /-- Haskell selector `capCNodeGuardSize` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def Capability.capCNodeGuardSize : Capability → Int
+def Capability.capCNodeGuardSize : Capability → Nat
   | .CNodeCap _ _ _ v => v
   | _ => default
 /-- Haskell record update `x { capCNodeGuardSize = v }` (no-op on other constructors). -/
-def Capability.set_capCNodeGuardSize (x : Capability) (v : Int) : Capability :=
+def Capability.set_capCNodeGuardSize (x : Capability) (v : Nat) : Capability :=
   match x with
   | .CNodeCap a0 a1 a2 _ => .CNodeCap a0 a1 a2 v
   | x => x
@@ -994,6 +1065,7 @@ inductive TcbFlag where
 -- from SEL4/Model/PSpace.lhs
 /-- Haskell `newtype PSpace = PSpace …` -/
 structure PSpace where
+  PSpace ::
   psMap : (Word → Option KernelObject)
   deriving Inhabited
 
@@ -1012,7 +1084,7 @@ inductive RISCVVSpaceRegionUse where
 /-- Haskell `data RISCV64.KernelState = RISCVKernelState { … }` -/
 structure RISCV64.KernelState where
   riscvKSASIDTable : (ASID → (Option (PPtr ASIDPool)))
-  riscvKSGlobalPTs : Int → List (PPtr PTE)
+  riscvKSGlobalPTs : Nat → List (PPtr PTE)
   riscvKSKernelVSpace : (PPtr Word) → RISCVVSpaceRegionUse
   deriving Inhabited
 
@@ -1030,16 +1102,16 @@ abbrev Ticks := BitVec 64
 structure KernelState where
   ksPSpace : PSpace
   gsUserPages : Word → Option VMPageSize
-  gsCNodes : Word → Option Int
+  gsCNodes : Word → Option Nat
   gsUntypedZeroRanges : ((Word × Word) → Prop)
-  ksDomScheduleIdx : Int
-  ksDomScheduleStart : Int
+  ksDomScheduleIdx : Nat
+  ksDomScheduleStart : Nat
   ksDomSchedule : List DomainScheduleItem
   ksCurDomain : Domain
   ksDomainTime : Ticks
   ksReadyQueues : ((Domain × Priority) → ReadyQueue)
   ksReadyQueuesL1Bitmap : (Domain → Word)
-  ksReadyQueuesL2Bitmap : ((Domain × Int) → Word)
+  ksReadyQueuesL2Bitmap : ((Domain × Nat) → Word)
   ksCurThread : PPtr TCB
   ksIdleThread : PPtr TCB
   ksSchedulerAction : SchedulerAction
@@ -1048,6 +1120,1057 @@ structure KernelState where
   ksArchState : RISCV64.KernelState
   deriving Inhabited
 
+
+-- from SEL4/Model/StateData.lhs
+/-- Haskell `type Kernel = StateT KernelState MachineMonad`, modelled as l4v's Isabelle
+`kernel = (kernel_state, 'a) nondet_monad` -/
+abbrev Kernel := Sel4Lean.NondetM KernelState
+
+-- from SEL4/API/Failures.lhs
+/-- Haskell `data InitFailure` -/
+inductive InitFailure where
+  | IFailure
+  deriving Inhabited
+
+-- from SEL4/API/Failures.lhs
+/-- Haskell `data SyscallError` -/
+inductive SyscallError where
+  | IllegalOperation
+  | InvalidArgument (invalidArgumentNumber : Nat)
+  | TruncatedMessage
+  | DeleteFirst
+  | RangeError (rangeErrorMin : Word)
+  | FailedLookup (failedLookupWasSource : Bool) (failedLookupDescription : LookupFailure)
+  | InvalidCapability (invalidCapNumber : Nat)
+  | RevokeFirst
+  | NotEnoughMemory (memoryLeft : Word)
+  | AlignmentError
+  deriving Inhabited
+
+/-- Haskell selector `invalidArgumentNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def SyscallError.invalidArgumentNumber : SyscallError → Nat
+  | .InvalidArgument v => v
+  | _ => default
+/-- Haskell record update `x { invalidArgumentNumber = v }` (no-op on other constructors). -/
+def SyscallError.set_invalidArgumentNumber (x : SyscallError) (v : Nat) : SyscallError :=
+  match x with
+  | .InvalidArgument _ => .InvalidArgument v
+  | x => x
+
+/-- Haskell selector `rangeErrorMin` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def SyscallError.rangeErrorMin : SyscallError → Word
+  | .RangeError v => v
+  | _ => default
+/-- Haskell record update `x { rangeErrorMin = v }` (no-op on other constructors). -/
+def SyscallError.set_rangeErrorMin (x : SyscallError) (v : Word) : SyscallError :=
+  match x with
+  | .RangeError _ => .RangeError v
+  | x => x
+
+/-- Haskell selector `failedLookupWasSource` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def SyscallError.failedLookupWasSource : SyscallError → Bool
+  | .FailedLookup v _ => v
+  | _ => default
+/-- Haskell record update `x { failedLookupWasSource = v }` (no-op on other constructors). -/
+def SyscallError.set_failedLookupWasSource (x : SyscallError) (v : Bool) : SyscallError :=
+  match x with
+  | .FailedLookup _ a1 => .FailedLookup v a1
+  | x => x
+
+/-- Haskell selector `failedLookupDescription` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def SyscallError.failedLookupDescription : SyscallError → LookupFailure
+  | .FailedLookup _ v => v
+  | _ => default
+/-- Haskell record update `x { failedLookupDescription = v }` (no-op on other constructors). -/
+def SyscallError.set_failedLookupDescription (x : SyscallError) (v : LookupFailure) : SyscallError :=
+  match x with
+  | .FailedLookup a0 _ => .FailedLookup a0 v
+  | x => x
+
+/-- Haskell selector `invalidCapNumber` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def SyscallError.invalidCapNumber : SyscallError → Nat
+  | .InvalidCapability v => v
+  | _ => default
+/-- Haskell record update `x { invalidCapNumber = v }` (no-op on other constructors). -/
+def SyscallError.set_invalidCapNumber (x : SyscallError) (v : Nat) : SyscallError :=
+  match x with
+  | .InvalidCapability _ => .InvalidCapability v
+  | x => x
+
+/-- Haskell selector `memoryLeft` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def SyscallError.memoryLeft : SyscallError → Word
+  | .NotEnoughMemory v => v
+  | _ => default
+/-- Haskell record update `x { memoryLeft = v }` (no-op on other constructors). -/
+def SyscallError.set_memoryLeft (x : SyscallError) (v : Word) : SyscallError :=
+  match x with
+  | .NotEnoughMemory _ => .NotEnoughMemory v
+  | x => x
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data CNodeInvocation` -/
+inductive CNodeInvocation where
+  | Insert (insertCap : Capability) (sourceSlot : PPtr CTE)
+  | Rotate (moveCap1 : Capability) (sourceSlot : PPtr CTE)
+  | Revoke (targetSlot : PPtr CTE)
+  | Move (moveCap : Capability) (sourceSlot : PPtr CTE)
+  | CancelBadgedSends (epCap : Capability)
+  | SaveCaller (targetSlot : PPtr CTE)
+  | Delete (targetSlot : PPtr CTE)
+  deriving Inhabited
+
+/-- Haskell selector `insertCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def CNodeInvocation.insertCap : CNodeInvocation → Capability
+  | .Insert v _ => v
+  | _ => default
+/-- Haskell record update `x { insertCap = v }` (no-op on other constructors). -/
+def CNodeInvocation.set_insertCap (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
+  match x with
+  | .Insert _ a1 => .Insert v a1
+  | x => x
+
+/-- Haskell selector `sourceSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def CNodeInvocation.sourceSlot : CNodeInvocation → PPtr CTE
+  | .Insert _ v => v
+  | .Rotate _ v => v
+  | .Move _ v => v
+  | _ => default
+/-- Haskell record update `x { sourceSlot = v }` (no-op on other constructors). -/
+def CNodeInvocation.set_sourceSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeInvocation :=
+  match x with
+  | .Insert a0 _ => .Insert a0 v
+  | .Rotate a0 _ => .Rotate a0 v
+  | .Move a0 _ => .Move a0 v
+  | x => x
+
+/-- Haskell selector `moveCap1` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def CNodeInvocation.moveCap1 : CNodeInvocation → Capability
+  | .Rotate v _ => v
+  | _ => default
+/-- Haskell record update `x { moveCap1 = v }` (no-op on other constructors). -/
+def CNodeInvocation.set_moveCap1 (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
+  match x with
+  | .Rotate _ a1 => .Rotate v a1
+  | x => x
+
+/-- Haskell selector `targetSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def CNodeInvocation.targetSlot : CNodeInvocation → PPtr CTE
+  | .Revoke v => v
+  | .SaveCaller v => v
+  | .Delete v => v
+  | _ => default
+/-- Haskell record update `x { targetSlot = v }` (no-op on other constructors). -/
+def CNodeInvocation.set_targetSlot (x : CNodeInvocation) (v : PPtr CTE) : CNodeInvocation :=
+  match x with
+  | .Revoke _ => .Revoke v
+  | .SaveCaller _ => .SaveCaller v
+  | .Delete _ => .Delete v
+  | x => x
+
+/-- Haskell selector `moveCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def CNodeInvocation.moveCap : CNodeInvocation → Capability
+  | .Move v _ => v
+  | _ => default
+/-- Haskell record update `x { moveCap = v }` (no-op on other constructors). -/
+def CNodeInvocation.set_moveCap (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
+  match x with
+  | .Move _ a1 => .Move v a1
+  | x => x
+
+/-- Haskell selector `epCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def CNodeInvocation.epCap : CNodeInvocation → Capability
+  | .CancelBadgedSends v => v
+  | _ => default
+/-- Haskell record update `x { epCap = v }` (no-op on other constructors). -/
+def CNodeInvocation.set_epCap (x : CNodeInvocation) (v : Capability) : CNodeInvocation :=
+  match x with
+  | .CancelBadgedSends _ => .CancelBadgedSends v
+  | x => x
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data DomainInvocation` -/
+inductive DomainInvocation where
+  | InvokeDomainSet (domThread : PPtr TCB) (domDomain : Domain)
+  | InvokeDomainScheduleSetStart (domIndex : Nat)
+  | InvokeDomainScheduleConfigure (domIndex : Nat) (domDomain : Domain) (domDuration : DomainDuration)
+  deriving Inhabited
+
+/-- Haskell selector `domThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def DomainInvocation.domThread : DomainInvocation → PPtr TCB
+  | .InvokeDomainSet v _ => v
+  | _ => default
+/-- Haskell record update `x { domThread = v }` (no-op on other constructors). -/
+def DomainInvocation.set_domThread (x : DomainInvocation) (v : PPtr TCB) : DomainInvocation :=
+  match x with
+  | .InvokeDomainSet _ a1 => .InvokeDomainSet v a1
+  | x => x
+
+/-- Haskell selector `domDomain` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def DomainInvocation.domDomain : DomainInvocation → Domain
+  | .InvokeDomainSet _ v => v
+  | .InvokeDomainScheduleConfigure _ v _ => v
+  | _ => default
+/-- Haskell record update `x { domDomain = v }` (no-op on other constructors). -/
+def DomainInvocation.set_domDomain (x : DomainInvocation) (v : Domain) : DomainInvocation :=
+  match x with
+  | .InvokeDomainSet a0 _ => .InvokeDomainSet a0 v
+  | .InvokeDomainScheduleConfigure a0 _ a2 => .InvokeDomainScheduleConfigure a0 v a2
+  | x => x
+
+/-- Haskell selector `domIndex` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def DomainInvocation.domIndex : DomainInvocation → Nat
+  | .InvokeDomainScheduleSetStart v => v
+  | .InvokeDomainScheduleConfigure v _ _ => v
+  | _ => default
+/-- Haskell record update `x { domIndex = v }` (no-op on other constructors). -/
+def DomainInvocation.set_domIndex (x : DomainInvocation) (v : Nat) : DomainInvocation :=
+  match x with
+  | .InvokeDomainScheduleSetStart _ => .InvokeDomainScheduleSetStart v
+  | .InvokeDomainScheduleConfigure _ a1 a2 => .InvokeDomainScheduleConfigure v a1 a2
+  | x => x
+
+/-- Haskell selector `domDuration` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def DomainInvocation.domDuration : DomainInvocation → DomainDuration
+  | .InvokeDomainScheduleConfigure _ _ v => v
+  | _ => default
+/-- Haskell record update `x { domDuration = v }` (no-op on other constructors). -/
+def DomainInvocation.set_domDuration (x : DomainInvocation) (v : DomainDuration) : DomainInvocation :=
+  match x with
+  | .InvokeDomainScheduleConfigure a0 a1 _ => .InvokeDomainScheduleConfigure a0 a1 v
+  | x => x
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data RISCV64.IRQControlInvocation = IssueIRQHandler { … }` -/
+structure RISCV64.IRQControlInvocation where
+  issueHandlerIRQ : IRQ
+  issueHandlerSlot : PPtr CTE
+  issueHandlerTrigger : Bool
+  deriving Inhabited
+
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data IRQControlInvocation` -/
+inductive IRQControlInvocation where
+  | ArchIRQControl (archIRQControl : RISCV64.IRQControlInvocation)
+  | IssueIRQHandler (issueHandlerIRQ : IRQ) (issueHandlerSlot : PPtr CTE)
+  deriving Inhabited
+
+/-- Haskell selector `archIRQControl` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def IRQControlInvocation.archIRQControl : IRQControlInvocation → RISCV64.IRQControlInvocation
+  | .ArchIRQControl v => v
+  | _ => default
+/-- Haskell record update `x { archIRQControl = v }` (no-op on other constructors). -/
+def IRQControlInvocation.set_archIRQControl (x : IRQControlInvocation) (v : RISCV64.IRQControlInvocation) : IRQControlInvocation :=
+  match x with
+  | .ArchIRQControl _ => .ArchIRQControl v
+  | x => x
+
+/-- Haskell selector `issueHandlerIRQ` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def IRQControlInvocation.issueHandlerIRQ : IRQControlInvocation → IRQ
+  | .IssueIRQHandler v _ => v
+  | _ => default
+/-- Haskell record update `x { issueHandlerIRQ = v }` (no-op on other constructors). -/
+def IRQControlInvocation.set_issueHandlerIRQ (x : IRQControlInvocation) (v : IRQ) : IRQControlInvocation :=
+  match x with
+  | .IssueIRQHandler _ a1 => .IssueIRQHandler v a1
+  | x => x
+
+/-- Haskell selector `issueHandlerSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def IRQControlInvocation.issueHandlerSlot : IRQControlInvocation → PPtr CTE
+  | .IssueIRQHandler _ v => v
+  | _ => default
+/-- Haskell record update `x { issueHandlerSlot = v }` (no-op on other constructors). -/
+def IRQControlInvocation.set_issueHandlerSlot (x : IRQControlInvocation) (v : PPtr CTE) : IRQControlInvocation :=
+  match x with
+  | .IssueIRQHandler a0 _ => .IssueIRQHandler a0 v
+  | x => x
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data IRQHandlerInvocation` -/
+inductive IRQHandlerInvocation where
+  | AckIRQ (irqHandlerIRQ : IRQ)
+  | ClearIRQHandler (irqHandlerIRQ : IRQ)
+  | SetIRQHandler (irqHandlerIRQ : IRQ) (setIRQHandlerCap : Capability) (setIRQHandlerSlot : PPtr CTE)
+  deriving Inhabited
+
+/-- Haskell selector `irqHandlerIRQ` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def IRQHandlerInvocation.irqHandlerIRQ : IRQHandlerInvocation → IRQ
+  | .AckIRQ v => v
+  | .ClearIRQHandler v => v
+  | .SetIRQHandler v _ _ => v
+/-- Haskell record update `x { irqHandlerIRQ = v }` (no-op on other constructors). -/
+def IRQHandlerInvocation.set_irqHandlerIRQ (x : IRQHandlerInvocation) (v : IRQ) : IRQHandlerInvocation :=
+  match x with
+  | .AckIRQ _ => .AckIRQ v
+  | .ClearIRQHandler _ => .ClearIRQHandler v
+  | .SetIRQHandler _ a1 a2 => .SetIRQHandler v a1 a2
+
+/-- Haskell selector `setIRQHandlerCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def IRQHandlerInvocation.setIRQHandlerCap : IRQHandlerInvocation → Capability
+  | .SetIRQHandler _ v _ => v
+  | _ => default
+/-- Haskell record update `x { setIRQHandlerCap = v }` (no-op on other constructors). -/
+def IRQHandlerInvocation.set_setIRQHandlerCap (x : IRQHandlerInvocation) (v : Capability) : IRQHandlerInvocation :=
+  match x with
+  | .SetIRQHandler a0 _ a2 => .SetIRQHandler a0 v a2
+  | x => x
+
+/-- Haskell selector `setIRQHandlerSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def IRQHandlerInvocation.setIRQHandlerSlot : IRQHandlerInvocation → PPtr CTE
+  | .SetIRQHandler _ _ v => v
+  | _ => default
+/-- Haskell record update `x { setIRQHandlerSlot = v }` (no-op on other constructors). -/
+def IRQHandlerInvocation.set_setIRQHandlerSlot (x : IRQHandlerInvocation) (v : PPtr CTE) : IRQHandlerInvocation :=
+  match x with
+  | .SetIRQHandler a0 a1 _ => .SetIRQHandler a0 a1 v
+  | x => x
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data ASIDControlInvocation = MakePool { … }` -/
+structure ASIDControlInvocation where
+  makePoolFrame : PPtr Unit
+  makePoolSlot : PPtr CTE
+  makePoolParent : PPtr CTE
+  makePoolBase : ASID
+  deriving Inhabited
+
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data ASIDPoolInvocation = Assign { … }` -/
+structure ASIDPoolInvocation where
+  assignASID : ASID
+  assignASIDPool : PPtr ASIDPool
+  assignASIDCTSlot : PPtr CTE
+  deriving Inhabited
+
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data PageInvocation` -/
+inductive PageInvocation where
+  | PageGetAddr (pageGetBasePtr : PPtr Word)
+  | PageMap (pageMapCap : Capability) (pageMapCTSlot : PPtr CTE) (pageMapEntries : PTE × (PPtr PTE))
+  | PageUnmap (pageUnmapCap : ArchCapability) (pageUnmapCapSlot : PPtr CTE)
+  deriving Inhabited
+
+/-- Haskell selector `pageGetBasePtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageInvocation.pageGetBasePtr : PageInvocation → PPtr Word
+  | .PageGetAddr v => v
+  | _ => default
+/-- Haskell record update `x { pageGetBasePtr = v }` (no-op on other constructors). -/
+def PageInvocation.set_pageGetBasePtr (x : PageInvocation) (v : PPtr Word) : PageInvocation :=
+  match x with
+  | .PageGetAddr _ => .PageGetAddr v
+  | x => x
+
+/-- Haskell selector `pageMapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageInvocation.pageMapCap : PageInvocation → Capability
+  | .PageMap v _ _ => v
+  | _ => default
+/-- Haskell record update `x { pageMapCap = v }` (no-op on other constructors). -/
+def PageInvocation.set_pageMapCap (x : PageInvocation) (v : Capability) : PageInvocation :=
+  match x with
+  | .PageMap _ a1 a2 => .PageMap v a1 a2
+  | x => x
+
+/-- Haskell selector `pageMapCTSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageInvocation.pageMapCTSlot : PageInvocation → PPtr CTE
+  | .PageMap _ v _ => v
+  | _ => default
+/-- Haskell record update `x { pageMapCTSlot = v }` (no-op on other constructors). -/
+def PageInvocation.set_pageMapCTSlot (x : PageInvocation) (v : PPtr CTE) : PageInvocation :=
+  match x with
+  | .PageMap a0 _ a2 => .PageMap a0 v a2
+  | x => x
+
+/-- Haskell selector `pageMapEntries` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageInvocation.pageMapEntries : PageInvocation → PTE × (PPtr PTE)
+  | .PageMap _ _ v => v
+  | _ => default
+/-- Haskell record update `x { pageMapEntries = v }` (no-op on other constructors). -/
+def PageInvocation.set_pageMapEntries (x : PageInvocation) (v : PTE × (PPtr PTE)) : PageInvocation :=
+  match x with
+  | .PageMap a0 a1 _ => .PageMap a0 a1 v
+  | x => x
+
+/-- Haskell selector `pageUnmapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageInvocation.pageUnmapCap : PageInvocation → ArchCapability
+  | .PageUnmap v _ => v
+  | _ => default
+/-- Haskell record update `x { pageUnmapCap = v }` (no-op on other constructors). -/
+def PageInvocation.set_pageUnmapCap (x : PageInvocation) (v : ArchCapability) : PageInvocation :=
+  match x with
+  | .PageUnmap _ a1 => .PageUnmap v a1
+  | x => x
+
+/-- Haskell selector `pageUnmapCapSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageInvocation.pageUnmapCapSlot : PageInvocation → PPtr CTE
+  | .PageUnmap _ v => v
+  | _ => default
+/-- Haskell record update `x { pageUnmapCapSlot = v }` (no-op on other constructors). -/
+def PageInvocation.set_pageUnmapCapSlot (x : PageInvocation) (v : PPtr CTE) : PageInvocation :=
+  match x with
+  | .PageUnmap a0 _ => .PageUnmap a0 v
+  | x => x
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data PageTableInvocation` -/
+inductive PageTableInvocation where
+  | PageTableUnmap (ptUnmapCap : ArchCapability) (ptUnmapCapSlot : PPtr CTE)
+  | PageTableMap (ptMapCap : Capability) (ptMapCTSlot : PPtr CTE) (ptMapPTE : PTE) (ptMapPTSlot : PPtr PTE)
+  deriving Inhabited
+
+/-- Haskell selector `ptUnmapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageTableInvocation.ptUnmapCap : PageTableInvocation → ArchCapability
+  | .PageTableUnmap v _ => v
+  | _ => default
+/-- Haskell record update `x { ptUnmapCap = v }` (no-op on other constructors). -/
+def PageTableInvocation.set_ptUnmapCap (x : PageTableInvocation) (v : ArchCapability) : PageTableInvocation :=
+  match x with
+  | .PageTableUnmap _ a1 => .PageTableUnmap v a1
+  | x => x
+
+/-- Haskell selector `ptUnmapCapSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageTableInvocation.ptUnmapCapSlot : PageTableInvocation → PPtr CTE
+  | .PageTableUnmap _ v => v
+  | _ => default
+/-- Haskell record update `x { ptUnmapCapSlot = v }` (no-op on other constructors). -/
+def PageTableInvocation.set_ptUnmapCapSlot (x : PageTableInvocation) (v : PPtr CTE) : PageTableInvocation :=
+  match x with
+  | .PageTableUnmap a0 _ => .PageTableUnmap a0 v
+  | x => x
+
+/-- Haskell selector `ptMapCap` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageTableInvocation.ptMapCap : PageTableInvocation → Capability
+  | .PageTableMap v _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { ptMapCap = v }` (no-op on other constructors). -/
+def PageTableInvocation.set_ptMapCap (x : PageTableInvocation) (v : Capability) : PageTableInvocation :=
+  match x with
+  | .PageTableMap _ a1 a2 a3 => .PageTableMap v a1 a2 a3
+  | x => x
+
+/-- Haskell selector `ptMapCTSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageTableInvocation.ptMapCTSlot : PageTableInvocation → PPtr CTE
+  | .PageTableMap _ v _ _ => v
+  | _ => default
+/-- Haskell record update `x { ptMapCTSlot = v }` (no-op on other constructors). -/
+def PageTableInvocation.set_ptMapCTSlot (x : PageTableInvocation) (v : PPtr CTE) : PageTableInvocation :=
+  match x with
+  | .PageTableMap a0 _ a2 a3 => .PageTableMap a0 v a2 a3
+  | x => x
+
+/-- Haskell selector `ptMapPTE` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageTableInvocation.ptMapPTE : PageTableInvocation → PTE
+  | .PageTableMap _ _ v _ => v
+  | _ => default
+/-- Haskell record update `x { ptMapPTE = v }` (no-op on other constructors). -/
+def PageTableInvocation.set_ptMapPTE (x : PageTableInvocation) (v : PTE) : PageTableInvocation :=
+  match x with
+  | .PageTableMap a0 a1 _ a3 => .PageTableMap a0 a1 v a3
+  | x => x
+
+/-- Haskell selector `ptMapPTSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def PageTableInvocation.ptMapPTSlot : PageTableInvocation → PPtr PTE
+  | .PageTableMap _ _ _ v => v
+  | _ => default
+/-- Haskell record update `x { ptMapPTSlot = v }` (no-op on other constructors). -/
+def PageTableInvocation.set_ptMapPTSlot (x : PageTableInvocation) (v : PPtr PTE) : PageTableInvocation :=
+  match x with
+  | .PageTableMap a0 a1 a2 _ => .PageTableMap a0 a1 a2 v
+  | x => x
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data RISCV64.Invocation` -/
+inductive RISCV64.Invocation where
+  | InvokePageTable (a0 : PageTableInvocation)
+  | InvokePage (a0 : PageInvocation)
+  | InvokeASIDControl (a0 : ASIDControlInvocation)
+  | InvokeASIDPool (a0 : ASIDPoolInvocation)
+  deriving Inhabited
+
+
+-- from SEL4/API/Invocation/RISCV64.hs
+/-- Haskell `data CopyRegisterSets` -/
+inductive CopyRegisterSets where
+  | RISCVNoExtraRegisters
+  deriving Inhabited
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data TCBInvocation` -/
+inductive TCBInvocation where
+  | Suspend (suspendThread : PPtr TCB)
+  | Resume (resumeThread : PPtr TCB)
+  | ThreadControl (tcThread : PPtr TCB) (tcThreadCapSlot : PPtr CTE) (tcNewFaultEP : Option CPtr) (tcNewMCPriority : Option (Priority × (PPtr TCB))) (tcNewPriority : Option (Priority × (PPtr TCB))) (tcNewCRoot : Option (Capability × (PPtr CTE))) (tcNewIPCBuffer : Option (VPtr × (Option (Capability × (PPtr CTE)))))
+  | NotificationControl (notificationTCB : PPtr TCB) (notificationPtr : Option (PPtr Notification))
+  | WriteRegisters (writeRegsThread : PPtr TCB) (writeRegsResume : Bool) (writeRegsValues : List Word) (writeRegsArch : CopyRegisterSets)
+  | ReadRegisters (readRegsThread : PPtr TCB) (readRegsSuspend : Bool) (readRegsLength : Word) (readRegsArch : CopyRegisterSets)
+  | CopyRegisters (copyRegsTarget : PPtr TCB) (copyRegsSource : PPtr TCB) (copyRegsSuspendSource : Bool) (copyRegsTransferFrame : Bool) (copyRegsTransferArch : CopyRegisterSets)
+  | SetTLSBase (setTLSBaseTCB : PPtr TCB) (setTLSBaseNewBase : Word)
+  | SetFlags (setFlagsTCB : PPtr TCB) (setFlagsClear : Word) (setFlagsSet : Word)
+  deriving Inhabited
+
+/-- Haskell selector `suspendThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.suspendThread : TCBInvocation → PPtr TCB
+  | .Suspend v => v
+  | _ => default
+/-- Haskell record update `x { suspendThread = v }` (no-op on other constructors). -/
+def TCBInvocation.set_suspendThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .Suspend _ => .Suspend v
+  | x => x
+
+/-- Haskell selector `resumeThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.resumeThread : TCBInvocation → PPtr TCB
+  | .Resume v => v
+  | _ => default
+/-- Haskell record update `x { resumeThread = v }` (no-op on other constructors). -/
+def TCBInvocation.set_resumeThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .Resume _ => .Resume v
+  | x => x
+
+/-- Haskell selector `tcThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcThread : TCBInvocation → PPtr TCB
+  | .ThreadControl v _ _ _ _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { tcThread = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .ThreadControl _ a1 a2 a3 a4 a5 a6 => .ThreadControl v a1 a2 a3 a4 a5 a6
+  | x => x
+
+/-- Haskell selector `tcThreadCapSlot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcThreadCapSlot : TCBInvocation → PPtr CTE
+  | .ThreadControl _ v _ _ _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { tcThreadCapSlot = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcThreadCapSlot (x : TCBInvocation) (v : PPtr CTE) : TCBInvocation :=
+  match x with
+  | .ThreadControl a0 _ a2 a3 a4 a5 a6 => .ThreadControl a0 v a2 a3 a4 a5 a6
+  | x => x
+
+/-- Haskell selector `tcNewFaultEP` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcNewFaultEP : TCBInvocation → Option CPtr
+  | .ThreadControl _ _ v _ _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { tcNewFaultEP = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcNewFaultEP (x : TCBInvocation) (v : Option CPtr) : TCBInvocation :=
+  match x with
+  | .ThreadControl a0 a1 _ a3 a4 a5 a6 => .ThreadControl a0 a1 v a3 a4 a5 a6
+  | x => x
+
+/-- Haskell selector `tcNewMCPriority` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcNewMCPriority : TCBInvocation → Option (Priority × (PPtr TCB))
+  | .ThreadControl _ _ _ v _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { tcNewMCPriority = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcNewMCPriority (x : TCBInvocation) (v : Option (Priority × (PPtr TCB))) : TCBInvocation :=
+  match x with
+  | .ThreadControl a0 a1 a2 _ a4 a5 a6 => .ThreadControl a0 a1 a2 v a4 a5 a6
+  | x => x
+
+/-- Haskell selector `tcNewPriority` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcNewPriority : TCBInvocation → Option (Priority × (PPtr TCB))
+  | .ThreadControl _ _ _ _ v _ _ => v
+  | _ => default
+/-- Haskell record update `x { tcNewPriority = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcNewPriority (x : TCBInvocation) (v : Option (Priority × (PPtr TCB))) : TCBInvocation :=
+  match x with
+  | .ThreadControl a0 a1 a2 a3 _ a5 a6 => .ThreadControl a0 a1 a2 a3 v a5 a6
+  | x => x
+
+/-- Haskell selector `tcNewCRoot` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcNewCRoot : TCBInvocation → Option (Capability × (PPtr CTE))
+  | .ThreadControl _ _ _ _ _ v _ => v
+  | _ => default
+/-- Haskell record update `x { tcNewCRoot = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcNewCRoot (x : TCBInvocation) (v : Option (Capability × (PPtr CTE))) : TCBInvocation :=
+  match x with
+  | .ThreadControl a0 a1 a2 a3 a4 _ a6 => .ThreadControl a0 a1 a2 a3 a4 v a6
+  | x => x
+
+/-- Haskell selector `tcNewIPCBuffer` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.tcNewIPCBuffer : TCBInvocation → Option (VPtr × (Option (Capability × (PPtr CTE))))
+  | .ThreadControl _ _ _ _ _ _ v => v
+  | _ => default
+/-- Haskell record update `x { tcNewIPCBuffer = v }` (no-op on other constructors). -/
+def TCBInvocation.set_tcNewIPCBuffer (x : TCBInvocation) (v : Option (VPtr × (Option (Capability × (PPtr CTE))))) : TCBInvocation :=
+  match x with
+  | .ThreadControl a0 a1 a2 a3 a4 a5 _ => .ThreadControl a0 a1 a2 a3 a4 a5 v
+  | x => x
+
+/-- Haskell selector `notificationTCB` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.notificationTCB : TCBInvocation → PPtr TCB
+  | .NotificationControl v _ => v
+  | _ => default
+/-- Haskell record update `x { notificationTCB = v }` (no-op on other constructors). -/
+def TCBInvocation.set_notificationTCB (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .NotificationControl _ a1 => .NotificationControl v a1
+  | x => x
+
+/-- Haskell selector `notificationPtr` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.notificationPtr : TCBInvocation → Option (PPtr Notification)
+  | .NotificationControl _ v => v
+  | _ => default
+/-- Haskell record update `x { notificationPtr = v }` (no-op on other constructors). -/
+def TCBInvocation.set_notificationPtr (x : TCBInvocation) (v : Option (PPtr Notification)) : TCBInvocation :=
+  match x with
+  | .NotificationControl a0 _ => .NotificationControl a0 v
+  | x => x
+
+/-- Haskell selector `writeRegsThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.writeRegsThread : TCBInvocation → PPtr TCB
+  | .WriteRegisters v _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { writeRegsThread = v }` (no-op on other constructors). -/
+def TCBInvocation.set_writeRegsThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .WriteRegisters _ a1 a2 a3 => .WriteRegisters v a1 a2 a3
+  | x => x
+
+/-- Haskell selector `writeRegsResume` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.writeRegsResume : TCBInvocation → Bool
+  | .WriteRegisters _ v _ _ => v
+  | _ => default
+/-- Haskell record update `x { writeRegsResume = v }` (no-op on other constructors). -/
+def TCBInvocation.set_writeRegsResume (x : TCBInvocation) (v : Bool) : TCBInvocation :=
+  match x with
+  | .WriteRegisters a0 _ a2 a3 => .WriteRegisters a0 v a2 a3
+  | x => x
+
+/-- Haskell selector `writeRegsValues` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.writeRegsValues : TCBInvocation → List Word
+  | .WriteRegisters _ _ v _ => v
+  | _ => default
+/-- Haskell record update `x { writeRegsValues = v }` (no-op on other constructors). -/
+def TCBInvocation.set_writeRegsValues (x : TCBInvocation) (v : List Word) : TCBInvocation :=
+  match x with
+  | .WriteRegisters a0 a1 _ a3 => .WriteRegisters a0 a1 v a3
+  | x => x
+
+/-- Haskell selector `writeRegsArch` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.writeRegsArch : TCBInvocation → CopyRegisterSets
+  | .WriteRegisters _ _ _ v => v
+  | _ => default
+/-- Haskell record update `x { writeRegsArch = v }` (no-op on other constructors). -/
+def TCBInvocation.set_writeRegsArch (x : TCBInvocation) (v : CopyRegisterSets) : TCBInvocation :=
+  match x with
+  | .WriteRegisters a0 a1 a2 _ => .WriteRegisters a0 a1 a2 v
+  | x => x
+
+/-- Haskell selector `readRegsThread` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.readRegsThread : TCBInvocation → PPtr TCB
+  | .ReadRegisters v _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { readRegsThread = v }` (no-op on other constructors). -/
+def TCBInvocation.set_readRegsThread (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .ReadRegisters _ a1 a2 a3 => .ReadRegisters v a1 a2 a3
+  | x => x
+
+/-- Haskell selector `readRegsSuspend` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.readRegsSuspend : TCBInvocation → Bool
+  | .ReadRegisters _ v _ _ => v
+  | _ => default
+/-- Haskell record update `x { readRegsSuspend = v }` (no-op on other constructors). -/
+def TCBInvocation.set_readRegsSuspend (x : TCBInvocation) (v : Bool) : TCBInvocation :=
+  match x with
+  | .ReadRegisters a0 _ a2 a3 => .ReadRegisters a0 v a2 a3
+  | x => x
+
+/-- Haskell selector `readRegsLength` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.readRegsLength : TCBInvocation → Word
+  | .ReadRegisters _ _ v _ => v
+  | _ => default
+/-- Haskell record update `x { readRegsLength = v }` (no-op on other constructors). -/
+def TCBInvocation.set_readRegsLength (x : TCBInvocation) (v : Word) : TCBInvocation :=
+  match x with
+  | .ReadRegisters a0 a1 _ a3 => .ReadRegisters a0 a1 v a3
+  | x => x
+
+/-- Haskell selector `readRegsArch` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.readRegsArch : TCBInvocation → CopyRegisterSets
+  | .ReadRegisters _ _ _ v => v
+  | _ => default
+/-- Haskell record update `x { readRegsArch = v }` (no-op on other constructors). -/
+def TCBInvocation.set_readRegsArch (x : TCBInvocation) (v : CopyRegisterSets) : TCBInvocation :=
+  match x with
+  | .ReadRegisters a0 a1 a2 _ => .ReadRegisters a0 a1 a2 v
+  | x => x
+
+/-- Haskell selector `copyRegsTarget` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.copyRegsTarget : TCBInvocation → PPtr TCB
+  | .CopyRegisters v _ _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { copyRegsTarget = v }` (no-op on other constructors). -/
+def TCBInvocation.set_copyRegsTarget (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .CopyRegisters _ a1 a2 a3 a4 => .CopyRegisters v a1 a2 a3 a4
+  | x => x
+
+/-- Haskell selector `copyRegsSource` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.copyRegsSource : TCBInvocation → PPtr TCB
+  | .CopyRegisters _ v _ _ _ => v
+  | _ => default
+/-- Haskell record update `x { copyRegsSource = v }` (no-op on other constructors). -/
+def TCBInvocation.set_copyRegsSource (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .CopyRegisters a0 _ a2 a3 a4 => .CopyRegisters a0 v a2 a3 a4
+  | x => x
+
+/-- Haskell selector `copyRegsSuspendSource` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.copyRegsSuspendSource : TCBInvocation → Bool
+  | .CopyRegisters _ _ v _ _ => v
+  | _ => default
+/-- Haskell record update `x { copyRegsSuspendSource = v }` (no-op on other constructors). -/
+def TCBInvocation.set_copyRegsSuspendSource (x : TCBInvocation) (v : Bool) : TCBInvocation :=
+  match x with
+  | .CopyRegisters a0 a1 _ a3 a4 => .CopyRegisters a0 a1 v a3 a4
+  | x => x
+
+/-- Haskell selector `copyRegsTransferFrame` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.copyRegsTransferFrame : TCBInvocation → Bool
+  | .CopyRegisters _ _ _ v _ => v
+  | _ => default
+/-- Haskell record update `x { copyRegsTransferFrame = v }` (no-op on other constructors). -/
+def TCBInvocation.set_copyRegsTransferFrame (x : TCBInvocation) (v : Bool) : TCBInvocation :=
+  match x with
+  | .CopyRegisters a0 a1 a2 _ a4 => .CopyRegisters a0 a1 a2 v a4
+  | x => x
+
+/-- Haskell selector `copyRegsTransferArch` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.copyRegsTransferArch : TCBInvocation → CopyRegisterSets
+  | .CopyRegisters _ _ _ _ v => v
+  | _ => default
+/-- Haskell record update `x { copyRegsTransferArch = v }` (no-op on other constructors). -/
+def TCBInvocation.set_copyRegsTransferArch (x : TCBInvocation) (v : CopyRegisterSets) : TCBInvocation :=
+  match x with
+  | .CopyRegisters a0 a1 a2 a3 _ => .CopyRegisters a0 a1 a2 a3 v
+  | x => x
+
+/-- Haskell selector `setTLSBaseTCB` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.setTLSBaseTCB : TCBInvocation → PPtr TCB
+  | .SetTLSBase v _ => v
+  | _ => default
+/-- Haskell record update `x { setTLSBaseTCB = v }` (no-op on other constructors). -/
+def TCBInvocation.set_setTLSBaseTCB (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .SetTLSBase _ a1 => .SetTLSBase v a1
+  | x => x
+
+/-- Haskell selector `setTLSBaseNewBase` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.setTLSBaseNewBase : TCBInvocation → Word
+  | .SetTLSBase _ v => v
+  | _ => default
+/-- Haskell record update `x { setTLSBaseNewBase = v }` (no-op on other constructors). -/
+def TCBInvocation.set_setTLSBaseNewBase (x : TCBInvocation) (v : Word) : TCBInvocation :=
+  match x with
+  | .SetTLSBase a0 _ => .SetTLSBase a0 v
+  | x => x
+
+/-- Haskell selector `setFlagsTCB` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.setFlagsTCB : TCBInvocation → PPtr TCB
+  | .SetFlags v _ _ => v
+  | _ => default
+/-- Haskell record update `x { setFlagsTCB = v }` (no-op on other constructors). -/
+def TCBInvocation.set_setFlagsTCB (x : TCBInvocation) (v : PPtr TCB) : TCBInvocation :=
+  match x with
+  | .SetFlags _ a1 a2 => .SetFlags v a1 a2
+  | x => x
+
+/-- Haskell selector `setFlagsClear` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.setFlagsClear : TCBInvocation → Word
+  | .SetFlags _ v _ => v
+  | _ => default
+/-- Haskell record update `x { setFlagsClear = v }` (no-op on other constructors). -/
+def TCBInvocation.set_setFlagsClear (x : TCBInvocation) (v : Word) : TCBInvocation :=
+  match x with
+  | .SetFlags a0 _ a2 => .SetFlags a0 v a2
+  | x => x
+
+/-- Haskell selector `setFlagsSet` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def TCBInvocation.setFlagsSet : TCBInvocation → Word
+  | .SetFlags _ _ v => v
+  | _ => default
+/-- Haskell record update `x { setFlagsSet = v }` (no-op on other constructors). -/
+def TCBInvocation.set_setFlagsSet (x : TCBInvocation) (v : Word) : TCBInvocation :=
+  match x with
+  | .SetFlags a0 a1 _ => .SetFlags a0 a1 v
+  | x => x
+
+-- from SEL4/API/Types/Universal.lhs
+/-- Haskell `data APIObjectType` -/
+inductive APIObjectType where
+  | Untyped
+  | TCBObject
+  | EndpointObject
+  | NotificationObject
+  | CapTableObject
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Types/RISCV64.hs
+/-- Haskell `data ObjectType` -/
+inductive ObjectType where
+  | APIObjectType (a0 : Sel4Lean.Spec.APIObjectType)
+  | HugePageObject
+  | SmallPageObject
+  | LargePageObject
+  | PageTableObject
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data UntypedInvocation = Retype { … }` -/
+structure UntypedInvocation where
+  retypeSource : PPtr CTE
+  retypeResetUntyped : Bool
+  retypeRegionBase : PPtr Unit
+  retypeFreeRegionBase : PPtr Unit
+  retypeNewType : ObjectType
+  retypeNewSizeBits : Nat
+  retypeSlots : List (PPtr CTE)
+  retypeIsDevice : Bool
+  deriving Inhabited
+
+
+-- from SEL4/API/Invocation.lhs
+/-- Haskell `data Invocation` -/
+inductive Invocation where
+  | InvokeUntyped (a0 : UntypedInvocation)
+  | InvokeEndpoint (a0 : PPtr Endpoint) (a1 : Word) (a2 : Bool) (a3 : Bool)
+  | InvokeNotification (a0 : PPtr Notification) (a1 : Word)
+  | InvokeReply (a0 : PPtr TCB) (a1 : PPtr CTE) (a2 : Bool)
+  | InvokeDomain (a0 : DomainInvocation)
+  | InvokeTCB (a0 : TCBInvocation)
+  | InvokeCNode (a0 : CNodeInvocation)
+  | InvokeIRQControl (a0 : IRQControlInvocation)
+  | InvokeIRQHandler (a0 : IRQHandlerInvocation)
+  | InvokeArchObject (a0 : RISCV64.Invocation)
+  deriving Inhabited
+
+
+-- from SEL4/API/InvocationLabels.lhs
+/-- Haskell `data GenInvocationLabels` -/
+inductive GenInvocationLabels where
+  | InvalidInvocation
+  | UntypedRetype
+  | TCBReadRegisters
+  | TCBWriteRegisters
+  | TCBCopyRegisters
+  | TCBConfigure
+  | TCBSetPriority
+  | TCBSetMCPriority
+  | TCBSetSchedParams
+  | TCBSetIPCBuffer
+  | TCBSetSpace
+  | TCBSuspend
+  | TCBResume
+  | TCBBindNotification
+  | TCBUnbindNotification
+  | TCBSetTLSBase
+  | TCBSetFlags
+  | CNodeRevoke
+  | CNodeDelete
+  | CNodeCancelBadgedSends
+  | CNodeCopy
+  | CNodeMint
+  | CNodeMove
+  | CNodeMutate
+  | CNodeRotate
+  | CNodeSaveCaller
+  | IRQIssueIRQHandler
+  | IRQAckIRQ
+  | IRQSetIRQHandler
+  | IRQClearIRQHandler
+  | DomainSetSet
+  | DomainScheduleConfigure
+  | DomainScheduleSetStart
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/InvocationLabels/RISCV64.hs
+/-- Haskell `data ArchInvocationLabel` -/
+inductive ArchInvocationLabel where
+  | RISCVPageTableMap
+  | RISCVPageTableUnmap
+  | RISCVPageMap
+  | RISCVPageUnmap
+  | RISCVPageGetAddress
+  | RISCVASIDControlMakePool
+  | RISCVASIDPoolAssign
+  | RISCVIRQIssueIRQHandler
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/InvocationLabels.lhs
+/-- Haskell `data InvocationLabel` -/
+inductive InvocationLabel where
+  | GenInvocationLabel (a0 : GenInvocationLabels)
+  | ArchInvocationLabel (a0 : ArchInvocationLabel)
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Haskell `data HypFaultType` -/
+inductive HypFaultType where
+  | RISCVNoHypFaults
+  deriving Inhabited
+
+-- from SEL4/API/Syscall.lhs
+/-- Haskell `data Syscall` -/
+inductive Syscall where
+  | SysCall
+  | SysReplyRecv
+  | SysSend
+  | SysNBSend
+  | SysRecv
+  | SysReply
+  | SysYield
+  | SysNBRecv
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Haskell `data VMFaultType` -/
+inductive VMFaultType where
+  | RISCVInstructionAccessFault
+  | RISCVLoadAccessFault
+  | RISCVStoreAccessFault
+  | RISCVInstructionPageFault
+  | RISCVLoadPageFault
+  | RISCVStorePageFault
+  deriving Inhabited
+
+-- from SEL4/API/Syscall.lhs
+/-- Haskell `data Event` -/
+inductive Event where
+  | SyscallEvent (a0 : Syscall)
+  | UnknownSyscall (a0 : Nat)
+  | UserLevelFault (a0 : Word) (a1 : Word)
+  | Interrupt
+  | VMFaultEvent (a0 : VMFaultType)
+  | HypervisorEvent (a0 : HypFaultType)
+  deriving Inhabited
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `data CapRights = CapRights { … }` -/
+structure CapRights where
+  capAllowWrite : Bool
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `data MessageInfo = MI { … }` -/
+structure MessageInfo where
+  msgLength : Word
+  msgExtraCaps : Word
+  msgCapsUnwrapped : Word
+  msgLabel : Word
+  deriving Inhabited
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `data CapTransfer = CT { … }` -/
+structure CapTransfer where
+  ctReceiveRoot : CPtr
+  ctReceiveIndex : CPtr
+  ctReceiveDepth : Nat
+  deriving Inhabited
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype Region = Region …` -/
+structure Region where
+  Region ::
+  fromRegion : (PPtr Word) × (PPtr Word)
+  deriving Inhabited, DecidableEq
+
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype SlotRegion = SlotRegion …` -/
+structure SlotRegion where
+  SlotRegion ::
+  val : Word × Word
+  deriving Inhabited, DecidableEq
+
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `data BIDeviceRegion = BIDeviceRegion { … }` -/
+structure BIDeviceRegion where
+  bidrBasePAddr : PAddr
+  bidrFrameSizeBits : BitVec 32
+  bidrFrameCaps : SlotRegion
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `data BIFrameData = BIFrameData { … }` -/
+structure BIFrameData where
+  bifNodeID : BitVec 32
+  bifNumNodes : BitVec 32
+  bifNumIOPTLevels : BitVec 32
+  bifIPCBufVPtr : VPtr
+  bifNullCaps : List Word
+  bifSharedFrameCaps : List Word
+  bifUIFrameCaps : List Word
+  bifUIPDCaps : List Word
+  bifUIPTCaps : List Word
+  bifUntypedObjCaps : List Word
+  bifUntypedObjPAddrs : List PAddr
+  bifUntypedObjSizeBits : List (BitVec 8)
+  bifUntypedObjIsDeviceList : List Bool
+  bifITCNodeSizeBits : BitVec 8
+  bifNumDeviceRegions : BitVec 32
+  bifDeviceRegions : List BIDeviceRegion
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `data InitData = InitData { … }` -/
+structure InitData where
+  initFreeMemory : List Region
+  initSlotPosCur : Word
+  initSlotPosMax : Word
+  initBootInfo : BIFrameData
+  initVPtrOffset : VPtr
+  initBootInfoFrame : PAddr
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/Kernel/BootInfo.lhs
+/-- Haskell `data SerialData = SerialData { … }` -/
+structure SerialData where
+  ptrCursor : PPtr Word
+  value : Word
+  deriving Inhabited
+
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Haskell `type MachineData` -/
+abbrev MachineData := PtrH CallbackData
+
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Haskell `type MachineMonad` -/
+abbrev MachineMonad := ReaderT MachineData IO
+
+-- from SEL4/Kernel/BootInfo.lhs
+/-- Haskell `type Serializer` -/
+abbrev Serializer := StateT SerialData MachineMonad
+
+-- from SEL4/Kernel/Init.lhs
+/-- Haskell `type KernelInitState` -/
+abbrev KernelInitState := StateT InitData Kernel
+
+-- from SEL4/Kernel/Init.lhs
+/-- Haskell `type KernelInit` -/
+abbrev KernelInit := ExceptT InitFailure KernelInitState
+
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Haskell `data VMAttributes = VMAttributes { … }` -/
+structure VMAttributes where
+  riscvExecuteNever : Bool
+  deriving Inhabited
+
+-- from SEL4/Machine/RegisterSet.lhs
+/-- Haskell `type UserMonad` -/
+abbrev UserMonad := Sel4Lean.NondetM UserContext
+
+-- from SEL4/Model/Failures.lhs
+/-- Haskell `type KernelF` -/
+abbrev KernelF (f : Type) := ExceptT f Kernel
+
+-- from SEL4/Model/Preemption.lhs
+/-- Haskell `type KernelP` -/
+abbrev KernelP (a : Type) := ExceptT IRQ Kernel a
 
 end
 end Sel4Lean.Spec

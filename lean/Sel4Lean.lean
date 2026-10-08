@@ -19,3 +19,4 @@ import Sel4Lean.Test.VCG
 import Sel4Lean.Test.Corres
 import Sel4Lean.Test.Axioms
 import Sel4Lean.Spec.Gen.Types
+import Sel4Lean.Spec.Prelude
