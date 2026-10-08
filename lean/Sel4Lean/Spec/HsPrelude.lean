@@ -42,6 +42,10 @@ instance {ρ : Type} {m : Type → Type} [MonadFailH m] : MonadFailH (ReaderT ρ
 /-- Haskell `fail msg` in any failing monad (message dropped, as l4v's `haskell_fail`). -/
 abbrev failM {m : Type → Type} {α : Type} [MonadFailH m] (_msg : String) : m α := MonadFailH.failM
 
+/-- Haskell `assert c msg` in any failing monad (l4v `haskell_assert`). -/
+abbrev assertG {m : Type → Type} [Monad m] [MonadFailH m] (c : Bool) (_msg : String) : m Unit :=
+  if c then pure () else MonadFailH.failM
+
 /-! ## Errors -/
 
 /-- Haskell `error msg`: bottom. As a kernel computation this is `fail` (`default` of `NondetM`). -/

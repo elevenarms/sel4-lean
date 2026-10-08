@@ -260,7 +260,9 @@ class Translator:
     # ---------------- names
 
     def var(self, name):
-        if name in NAME:
+        if name in getattr(self, "bound", ()):
+            return self.ident(name)   # a local variable, even if a selector or library name is spelled the same
+        if name in NAME and name not in getattr(self, "local_names", ()):
             return NAME[name]
         if name in self.data.field_type:
             return f"{self.data.field_type[name]}.{name}"
@@ -315,6 +317,14 @@ class Translator:
             if c is None:
                 self.fail(n, "record pattern without constructor")
             if not fps:
+                cname = self.text(c).split(".")[-1]
+                tname = self.data.ctor_type.get(cname)
+                if ".." in self.text(n) and tname is not None:
+                    # `C {..}` (RecordWildCards) binds every field under its own name
+                    cfields = next(fs for cn, fs, _ in self.data.types[tname]["ctors"] if cn == cname)
+                    if self.data.types[tname]["single"]:
+                        return "{ " + ", ".join(f"{f} := {self.ident(f)}" for f, _ in cfields) + " }"
+                    return " ".join([self.ctor(cname)] + [self.ident(f) for f, _ in cfields])
                 return f"{self.ctor(self.text(c))} .."   # `C {}` matches any C
             cname = self.text(c).split(".")[-1]
             tname = self.data.ctor_type.get(cname)

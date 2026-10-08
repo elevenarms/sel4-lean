@@ -84,6 +84,13 @@ def index_decls(root):
         rhs = kids(n)[-1]
         return rhs.type == "qualified" and src[rhs.start_byte:rhs.end_byte].decode().split(".")[-1] == name
     best = {k: next((e for e in v if not reexport(e)), v[0]) for k, v in idx.items()}
+    # type names declared per file (for Haskell's same-file scoping of arch names)
+    per_file = {}
+    for k, v in idx.items():
+        if not k.startswith("sig:"):
+            for e in v:
+                per_file.setdefault(e[2], set()).add(k)
+    best["__file_types__"] = per_file
     # arch-specific declarations, for `Arch.X` inside a generic type also named X (e.g. newtype IRQ = IRQ Arch.IRQ)
     for k, v in idx.items():
         arch = [e for e in v if ARCH in e[2] and not reexport(e)]
@@ -102,6 +109,7 @@ class FullTranslator(Translator):
         self.current_name = None
         self.arch_names = set()      # types X with a translated RISCV64.X
         self.arch_names_all = set()  # same, regardless of module (for explicit `Arch.X`)
+        self.file_types = set()      # type names declared in the file being translated
         self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
         self.arch_calls = set()      # `Arch.f` references seen while translating
         self.constraints = []        # kept class constraints of the current signature
@@ -112,7 +120,9 @@ class FullTranslator(Translator):
         t = n.type
         if t == "name" and self.text(n) in self.current_ctors:
             return f"Sel4Lean.Spec.{self.text(n)}"   # a constructor of this type has the same name
-        if t == "name" and self.in_arch_module and self.text(n) in self.arch_names:
+        if t == "name" and self.in_arch_module and self.text(n) in self.arch_names & self.file_types:
+            # Haskell scoping: unqualified X means the arch X only when declared in this same file;
+            # arch types from other files are reached through a qualifier (Arch.X, ArchInv.X, …)
             return f"{ARCH}.{self.text(n)}"
         if t == "variable":
             v = self.text(n)
@@ -180,6 +190,8 @@ class FullTranslator(Translator):
 
     def emit_function(self, name, nodes):
         self.constraints, self.hk, self.tyvars = [], set(), []
+        body = [d for d in nodes if d.type != "signature"]
+        self.bound = set().union(*(bound_names(self, d) for d in body)) | self.wildcard_fields(body)
         sig = next((d for d in nodes if d.type == "signature"), None)
         if sig is not None:
             self.ty(sig.child_by_field_name("type"))   # records constraints and higher-kinded vars
@@ -191,6 +203,20 @@ class FullTranslator(Translator):
                             + [f"[{c} {v}]" for c, v in self.constraints])
             text = text.replace(f"\ndef {self.ident(name)} ", f"\ndef {self.ident(name)} {inst} ", 1)
         return text
+
+    def wildcard_fields(self, nodes):
+        """Field names brought into scope by `C {..}` patterns."""
+        out, stack = set(), list(nodes)
+        while stack:
+            m = stack.pop()
+            if m.type == "record" and ".." in self.text(m):
+                c = m.child_by_field_name("constructor")
+                tname = self.data.ctor_type.get(self.text(c).split(".")[-1]) if c is not None else None
+                if tname:
+                    for cn, fs, _ in self.data.types[tname]["ctors"]:
+                        out |= {f for f, _ in (fs or [])}
+            stack.extend(m.named_children)
+        return out
 
     def backtick_fn(self, op):
         if "." in op:
@@ -211,7 +237,7 @@ class FullTranslator(Translator):
                 continue
             if m.type == "name":
                 nm = self.text(m)
-                out.add(f"{ARCH}.{nm}" if self.in_arch_module and nm in self.arch_names else nm)
+                out.add(f"{ARCH}.{nm}" if self.in_arch_module and nm in self.arch_names & self.file_types else nm)
             elif m.type == "qualified":
                 base = self.text(m).split(".")[-1]
                 out.add(f"{ARCH}.{base}" if base == self.current_name else base)
@@ -307,7 +333,7 @@ def cmd_types(root, files, emit=True):
     # types X declared both generically and for RISCV64 (Register, KernelState, IRQ, …): inside RISCV64
     # files, unqualified X means RISCV64.X
     dupes = {k[len(ARCH) + 1:] for k in idx
-             if k.startswith(ARCH + ".") and not k.startswith(ARCH + ".sig:")
+             if k != "__file_types__" and k.startswith(ARCH + ".") and not k.startswith(ARCH + ".sig:")
              and k[len(ARCH) + 1:] in idx and idx[k] is not idx[k[len(ARCH) + 1:]]}
 
     def visit(name):
@@ -343,6 +369,7 @@ def cmd_types(root, files, emit=True):
         tr.current_name = name.split(".")[-1] if not name.startswith(ARCH + ".") else None
         if ARCH in path:
             tr.in_arch_module, tr.arch_names = True, dupes - {name.split(".")[-1]}
+            tr.file_types = idx["__file_types__"].get(path, set())
         refs = tr.type_names(node) - {name, name.split(".")[-1]}
         deps[name] = refs
         for r in sorted(refs):
@@ -540,6 +567,7 @@ def sig_stub(tr, name, sig_node, why):
 def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
     from hs2lean import NAME, HEADER as GEN_HEADER
     NAME["fail"] = "failM"   # Spec modules: generic MonadFail (crawl code keeps NondetM-only failH)
+    NAME["assert"] = "assertG"
     idx, data, arch_names = cmd_types(root, type_roots, emit=False)
     out_defs, stubs, unresolved, failed = [], {}, {}, {}
     stats = {"translated": 0, "failed": 0}
@@ -550,8 +578,10 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
         tr.arch_names = arch_names
         tr.arch_names_all = arch_names
         tr.in_arch_module = ARCH in mpath
+        tr.file_types = idx["__file_types__"].get(mpath, set())
         decls = [(n, ns) for n, ns in top_decls(src, rn) if any(d.type in ("function", "bind") for d in ns)]
         local = {n for n, _ in decls}
+        tr.local_names = local    # a module's own definitions shadow library name mappings
         local_all.update({n: (tr, ns) for n, ns in decls})
         deps = {}
         for n, ns in decls:
@@ -623,6 +653,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
             if sig:
                 atr = FullTranslator(sig[0], data)
                 atr.arch_names, atr.arch_names_all, atr.in_arch_module = arch_names, arch_names, True
+                atr.file_types = idx["__file_types__"].get(sig[2], set())
                 st = sig_stub(atr, key, sig[1], f"arch: {os.path.relpath(sig[2], root)}")
             if st:
                 stubs[key] = st

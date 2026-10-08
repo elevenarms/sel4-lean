@@ -61,4 +61,20 @@ try:
     raise AssertionError("fall-through guards should be refused")
 except Unsupported as ex:
     print(f"ok  guards falling through to the next equation -> refused")
+# scoping (regression: a local variable named like a record field was turned into the selector)
+def fun_with_data(src_text, name, data_src):
+    from hs2lean import DataInfo as DI
+    src = (data_src + "\n" + src_text).encode()
+    root = PARSER.parse(src).root_node
+    data = DI()
+    tr = Translator(src, data)
+    decls = dict(top_decls(src, root))
+    for dn, dnodes in decls.items():
+        if dnodes[0].type == "data_type":
+            tr.collect_data(dn, dnodes[0])
+    tr.bound = {"len"}
+    return tr.emit_function(name, decls[name])
+g = fun_with_data("f :: Int -> Int\nf len = len + 1\n", "f", "data R = R { len :: Int }")
+assert "R.len" not in g and "len + 1" in g, g
+print("ok  bound variable shadows a record selector of the same name")
 print("all hs2lean tests passed")
