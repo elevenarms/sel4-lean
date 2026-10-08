@@ -82,6 +82,8 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
       Extended to every module: **93 types**. Functions: **97.7% translate**; **59/61 modules compile** (58 importing each other's definitions), with
       **90.6%** (98.0% excluding the 2 deferred boot modules) of the 594 non-machine functions translated in compiling modules (99 machine-interface functions
       are opaque by design, as in l4v) (`notes/w2-translation.md`, `artifacts/w2/`).
+      **Update (W3):** 62/62 modules compile, boot code (`Init.lhs`, `BootInfo.lhs`) and `SEL4.lhs` included; machine
+      operations are l4v's (`MachineOps.thy`), 23 simulator-only functions remain opaque.
 - [ ] Decide the translated-code shape for automation (explicit binds vs `do` sugar), based on W1.
 - [ ] Isabelle → Lean for the abstract spec: hand-assisted first, then a tool if the volume demands it.
 
@@ -96,7 +98,13 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
       replaced (`asUser` via `selectF`, `assocs`, `deleteRange`) ([notes](notes/w3-difftest.md#machine-state-model)).
 - [x] Real `PSpaceStorable` instances and object sizes (generated `objBitsKO` etc.); l4v's config overrides
       (`Kernel_Config.thy`: `physBase`, `timeSlice`, …) ([notes](notes/w3-difftest.md#object-sizes-and-configuration)).
-- [ ] Differential test of monadic functions (generated kernel states; needs computable state construction).
+- [x] **Interchangeable with l4v's Isabelle spec**: gate against l4v's built `ExecSpec` heap
+      (`env/remote/w3_isagate.sh`): 1319/1319 constants matched by name, 60/60 functions agree with Isabelle's
+      evaluation; l4v's skeleton overrides followed (105 dropped Haskell definitions ported or aliased)
+      ([notes](notes/w3-isabelle-gate.md)).
+- [x] Boot code: `Kernel/Init.lhs` in l4v's init monad; 62/62 modules compile.
+- [ ] Extend the value gate: datatype arguments (capabilities, objects), then monadic functions on generated
+      kernel states, evaluated in Isabelle and Lean.
 
 ### W4. Proofs
 - [ ] Port the invariant definitions (`invs`, `invs'`), then AInvs and Refine, replacing assumptions in

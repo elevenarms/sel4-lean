@@ -5,13 +5,15 @@ The end goal is a Lean theorem that seL4's C implementation refines its abstract
 
 **Status: crawl closed (2026-10-08), walk under way.** Decision: re-prove in Lean, following l4v's proofs.
 The Isabelle reference passes on our hardware; Lean has l4v's monad, Hoare logic, `corres`, and `wp`/`wpsimp`/`crunch`
-tactics; `cancelSignal_corres` is proved over generated code. At spec scale, all 91 RISCV64 data types and 94.9% of
-the functions translate, and 59 of 61 generated modules compile, importing each other's definitions (98% of
-translatable function bodies outside boot code)
-([W2 notes](notes/w2-translation.md)). A differential test against l4v's Haskell model (GHC) agrees on all
-60 testable pure functions, after it caught five translator bugs that compiled. The kernel state now includes
-l4v's machine state, with machine operations ported from l4v's `MachineOps.thy`, real object sizes, and
-l4v's configuration values ([W3 notes](notes/w3-difftest.md)). See [ROADMAP.md](ROADMAP.md).
+tactics; `cancelSignal_corres` is proved over generated code.
+
+At spec scale the Lean executable spec is checked against **l4v's own built Isabelle spec** (session `ExecSpec`):
+all **1319/1319** of its constants have a Lean counterpart of the same name, and all **60/60** testable functions
+agree with Isabelle's evaluation. All **62/62** generated modules compile, boot code included. Where l4v's
+Isabelle differs from the Haskell model (it replaces 105 Haskell definitions by hand), the Lean follows Isabelle.
+Getting there found real differences: `pptrUserTop`, `physBase`, the boot-time `foldME` order, and a CTE-in-TCB
+case the earlier Lean port missed ([gate notes](notes/w3-isabelle-gate.md), [W3](notes/w3-difftest.md),
+[W2](notes/w2-translation.md)). See [ROADMAP.md](ROADMAP.md).
 
 ## The idea
 

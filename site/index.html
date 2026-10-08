@@ -242,7 +242,11 @@ html { scroll-behavior: smooth; }
           <li><time>Oct 8</time><div>W3: the kernel gets a machine. <code>KernelState</code> now carries l4v&rsquo;s <code>ksMachineState</code> (IRQ masks, memory bytes, an opaque rest), <code>doMachineOp</code> is l4v&rsquo;s definition, and 20 operations are ported from <code>MachineOps.thy</code>: <code>loadWord</code>, <code>storeWord</code>, the oracle-driven <code>getActiveIRQ</code>, and others.
             l4v states one <b>axiom</b> there, a bound on the IRQ oracle. In Lean it&rsquo;s an opaque value of a subtype, so the bound is a theorem that <span class="ok">depends on no axioms</span>. The approximations are gone too: <code>asUser</code> keeps every result as l4v&rsquo;s does, and object sizes are real (<code>objBits</code> of a TCB is 10, by <code>decide</code>).
             Also found: l4v&rsquo;s verified spec <b>overrides some Haskell definitions</b>, and the HiFive <code>physBase</code> differs (<code>0x80200000</code>, not <code>0x80000000</code>). We follow l4v. <span class="hood">(w3)</span></div></li>
-          <li><time>next</time><div class="dim">W3: extend the side-by-side test to monadic functions over generated kernel states. W1: <code>corres</code> automation. Then W4: invariants and the refinement proofs.</div></li>
+          <li><time>Oct 8</time><div><b>The gate moves to l4v&rsquo;s Isabelle.</b> The proofs are about l4v&rsquo;s Isabelle spec, not the Haskell, and l4v builds that spec from skeleton files that <b>replace 105 Haskell definitions</b> with hand-written Isabelle. A new session on top of l4v&rsquo;s own built <code>ExecSpec</code> heap lists every constant it defines and evaluates our test cases with Isabelle itself.
+            It found real differences that compiled and even passed the GHC test. Haskell&rsquo;s <code>pptrUserTop</code> is wrong for the verified spec (l4v: <code>0x3FFFFFF000</code>). At boot, l4v&rsquo;s <code>foldME</code> runs <b>right to left</b>, the opposite of Haskell&rsquo;s <code>foldM</code>. And my own earlier port had missed that a CTE can live <b>inside a TCB</b>. All three now follow l4v, and the storable-object laws are proved for every instance.
+            Result: <span class="ok">1319 of 1319 Isabelle constants matched by name, 60 of 60 functions agree with Isabelle&rsquo;s evaluation</span>. <span class="hood">(w3)</span></div></li>
+          <li><time>Oct 8</time><div><b>Boot code done: 62 of 62 modules compile.</b> Initialisation runs in l4v&rsquo;s init monad, with the kernel state inside the init record and the bootinfo constants unspecified as in Isabelle. It took three translator fixes for Haskell features Lean lacks: let-polymorphism, unconstrained pointer types, and <code>do</code> scoping that depends on statement order. <span class="hood">(w2/w3)</span></div></li>
+          <li><time>next</time><div class="dim">Grow the Isabelle value gate to capability and object arguments, then to monadic functions on generated states. W1: <code>corres</code> automation. Then W4: invariants and refinement proofs.</div></li>
         </ol>
       </section>
 
@@ -517,9 +521,10 @@ example :
           <tbody>
             <tr><td>data types translated</td><td class="n">93</td><td>every type in the RISCV64 spec, incl. <code>KernelState</code>; compiles</td></tr>
             <tr><td>functions translated</td><td class="n">680 / 693</td><td>Lean text produced (98.1%)</td></tr>
-            <tr class="hi"><td>modules compiling</td><td class="n">59 / 61</td><td>98% of translatable bodies outside boot code; 20 machine ops from l4v&rsquo;s <code>MachineOps.thy</code></td></tr>
+            <tr class="hi"><td>modules compiling</td><td class="n">62 / 62</td><td>boot code and <code>SEL4.lhs</code> included; hand ports of l4v&rsquo;s skeleton theories where l4v replaces the Haskell</td></tr>
             <tr><td>names linked across modules</td><td class="n">479</td><td>real definitions via imports; 260 stubs left</td></tr>
-            <tr class="hi"><td>agree with Haskell (GHC)</td><td class="n">60 / 60</td><td>pure functions, 158 cases; 0 disagreements (W3 differential test)</td></tr>
+            <tr class="hi"><td>Isabelle constants matched</td><td class="n">1319 / 1319</td><td>every constant of l4v&rsquo;s built <code>ExecSpec</code> has a Lean counterpart of the same name</td></tr>
+            <tr class="hi"><td>agree with Isabelle</td><td class="n">60 / 60</td><td>functions evaluated by Isabelle on l4v&rsquo;s spec vs Lean, 158 cases; GHC agrees except where l4v overrides it</td></tr>
             <tr><td>generated <code>*_inv</code> lemmas</td><td class="n">12</td><td>one <code>crunch</code> command over the notifications module</td></tr>
           </tbody>
         </table>
@@ -558,8 +563,9 @@ example :
         <ul class="check">
           <li><span class="ok">[x]</span> W1 <code>wp</code>, <code>wpsimp</code>, <code>crunch</code></li>
           <li><span class="todo">[ ]</span> W1 <code>corres</code> automation</li>
-          <li><span class="ok">[x]</span> W2 translator at spec scale (59/61 modules; boot code deferred)</li>
-          <li><span class="todo">[~]</span> W3 kernel + machine state as l4v; diff test 60/60 (monadic next)</li>
+          <li><span class="ok">[x]</span> W2 translator at spec scale (62/62 modules, boot code included)</li>
+          <li><span class="ok">[x]</span> W3 interchangeable with l4v&rsquo;s Isabelle: 1319/1319 names, 60/60 values</li>
+          <li><span class="todo">[ ]</span> W3+ value gate on capabilities, objects, monadic functions</li>
           <li><span class="todo">[ ]</span> W4 proofs: AInvs, Refine</li>
         </ul>
         <h3>walk exit</h3>
