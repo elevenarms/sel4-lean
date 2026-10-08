@@ -19,11 +19,11 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `empty` -/
-def empty {a : Type} [Inhabited a] : BinaryTree a :=
+def empty {t_a : Type} [Inhabited t_a] : BinaryTree t_a :=
   BinaryTree.Empty
 
 /-- Haskell `isEmpty` -/
-partial def isEmpty {a : Type} [Inhabited a] (x0 : List Bool) (x1 : BinaryTree a) : Bool :=
+partial def isEmpty {t_a : Type} [Inhabited t_a] (x0 : List Bool) (x1 : BinaryTree t_a) : Bool :=
   match x0, x1 with
   | _, BinaryTree.Empty => true
   | (true :: a), (BinaryTree.Node t _) => isEmpty a t
@@ -31,7 +31,7 @@ partial def isEmpty {a : Type} [Inhabited a] (x0 : List Bool) (x1 : BinaryTree a
   | _, _ => false
 
 /-- Haskell `findWithDefault` -/
-partial def findWithDefault {a : Type} [Inhabited a] (x0 : a) (x1 : List Bool) (x2 : BinaryTree a) : (List Bool) × a :=
+partial def findWithDefault {t_a : Type} [Inhabited t_a] (x0 : t_a) (x1 : List Bool) (x2 : BinaryTree t_a) : (List Bool) × t_a :=
   match x0, x1, x2 with
   | _, a, (BinaryTree.Leaf v) => (a, v)
   | d, (true :: a), (BinaryTree.Node t _) => findWithDefault d a t
@@ -39,7 +39,7 @@ partial def findWithDefault {a : Type} [Inhabited a] (x0 : a) (x1 : List Bool) (
   | d, a, _ => (a, d)
 
 /-- Haskell `lookup` -/
-def lookup {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [MonadFailH m] (x0 : List Bool) (x1 : BinaryTree a) : m ((List Bool) × a) :=
+def lookup {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m] [MonadFailH t_m] (x0 : List Bool) (x1 : BinaryTree t_a) : t_m ((List Bool) × t_a) :=
   match x0, x1 with
   | a, (BinaryTree.Leaf v) => pure ((a, v))
   | (true :: a), (BinaryTree.Node t _) => (lookup) a t
@@ -47,7 +47,7 @@ def lookup {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [MonadFailH m]
   | _, _ => failM "Data.BinaryTree.lookup: Key not found"
 
 /-- Haskell `insert` -/
-partial def insert {a : Type} [Inhabited a] (x0 : List Bool) (x1 : a) (x2 : BinaryTree a) : BinaryTree a :=
+partial def insert {t_a : Type} [Inhabited t_a] (x0 : List Bool) (x1 : t_a) (x2 : BinaryTree t_a) : BinaryTree t_a :=
   match x0, x1, x2 with
   | [], v, BinaryTree.Empty => BinaryTree.Leaf v
   | (true :: a), v, n@(BinaryTree.Node ..) => BinaryTree.set_btTrue n (insert a v (BinaryTree.btTrue n))
@@ -57,7 +57,7 @@ partial def insert {a : Type} [Inhabited a] (x0 : List Bool) (x1 : a) (x2 : Bina
   | _, _, _ => error "BinaryTree.insert: location is not empty"
 
 /-- Haskell `adjust` -/
-partial def adjust {a : Type} [Inhabited a] (x0 : (List Bool) → a → a) (x1 : List Bool) (x2 : BinaryTree a) : BinaryTree a :=
+partial def adjust {t_a : Type} [Inhabited t_a] (x0 : (List Bool) → t_a → t_a) (x1 : List Bool) (x2 : BinaryTree t_a) : BinaryTree t_a :=
   match x0, x1, x2 with
   | f, a, (BinaryTree.Leaf v) => BinaryTree.Leaf (f a v)
   | f, (true :: a), n@(BinaryTree.Node ..) => BinaryTree.set_btTrue n (adjust f a (BinaryTree.btTrue n))
@@ -65,7 +65,7 @@ partial def adjust {a : Type} [Inhabited a] (x0 : (List Bool) → a → a) (x1 :
   | _, _, _ => error "BinaryTree.adjust: object not found"
 
 /-- Haskell `adjustM` -/
-partial def adjustM {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [MonadFailH m] (x0 : (List Bool) → a → m a) (x1 : List Bool) (x2 : BinaryTree a) : m (BinaryTree a) :=
+partial def adjustM {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m] [MonadFailH t_m] (x0 : (List Bool) → t_a → t_m t_a) (x1 : List Bool) (x2 : BinaryTree t_a) : t_m (BinaryTree t_a) :=
   match x0, x1, x2 with
   | f, a, (BinaryTree.Leaf v) => (f a v) >>= (pure ∘ BinaryTree.Leaf)
   | f, (true :: a), n@(BinaryTree.Node ..) => 
@@ -79,13 +79,13 @@ partial def adjustM {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [Mona
   | _, _, _ => failM "BinaryTree.adjustM: object not found"
 
 /-- Haskell `flatten` -/
-def flatten {a : Type} [Inhabited a] (x0 : BinaryTree a) : BinaryTree a :=
+def flatten {t_a : Type} [Inhabited t_a] (x0 : BinaryTree t_a) : BinaryTree t_a :=
   match x0 with
   | (BinaryTree.Node BinaryTree.Empty BinaryTree.Empty) => BinaryTree.Empty
   | t => t
 
 /-- Haskell `delete` -/
-partial def delete {a : Type} [Inhabited a] (x0 : List Bool) (x1 : BinaryTree a) : BinaryTree a :=
+partial def delete {t_a : Type} [Inhabited t_a] (x0 : List Bool) (x1 : BinaryTree t_a) : BinaryTree t_a :=
   match x0, x1 with
   | [], _ => BinaryTree.Empty
   | _, BinaryTree.Empty => BinaryTree.Empty

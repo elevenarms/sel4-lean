@@ -22,16 +22,8 @@ noncomputable section
 
 /-! ## Translated -/
 
-/-- Haskell `funPartialArray` -/
-def funPartialArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] [IntegralH i] (f : i → a) (b : i × i) : (i → a) :=
-  listArray b ((map f) (range b))
-
-/-- Haskell `funArray` -/
-def funArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] [IntegralH i] [BoundedH i] (f : i → a) : (i → a) :=
-  funPartialArray f ((minBound, maxBound))
-
 /-- Haskell `mapMaybe` -/
-def mapMaybe {a : Type} [Inhabited a] {b : Type} [Inhabited b] (f : a → b) (opt : Option a) : Option b :=
+def mapMaybe {t_a : Type} [Inhabited t_a] {t_b : Type} [Inhabited t_b] (f : t_a → t_b) (opt : Option t_a) : Option t_b :=
   match opt with
   | none => none
   | (some x) => some (f x)

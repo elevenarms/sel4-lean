@@ -17,7 +17,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `syscall` -/
-def syscall {a : Type} [Inhabited a] {c : Type} [Inhabited c] {b : Type} [Inhabited b] (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
+def syscall {t_a : Type} [Inhabited t_a] {t_c : Type} [Inhabited t_c] {t_b : Type} [Inhabited t_b] (mFault : KernelF Fault t_a) (hFault : Fault → Kernel t_c) (mError : t_a → KernelF SyscallError t_b) (hError : SyscallError → Kernel t_c) (mFinalise : t_b → KernelP t_c) : KernelP t_c :=
   do
     let rFault ← withoutPreemption (ExceptT.run mFault)
     match rFault with

@@ -5,13 +5,13 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
-import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 
 namespace Sel4Lean.Spec.M.Object_Structures_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask pageBits pteBits)
-open Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64 (newContext)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (pageBits pteBits)
+open Sel4Lean.Spec.M.Machine_RegisterSet (mask newContext)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/

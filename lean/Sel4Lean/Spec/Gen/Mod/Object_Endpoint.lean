@@ -6,20 +6,23 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Notification
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 
 namespace Sel4Lean.Spec.M.Object_Endpoint
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 open Sel4Lean.Spec.M.Machine_Hardware (nullPointer)
-open Sel4Lean.Spec.M.Object_Notification (asUser badgeRegister cancelSignal completeSignal doNBRecvFailedTransfer getBoundNotification getNotification getObject getThreadState ksReadyQueues_asrt possibleSwitchTo rescheduleRequired setObject setRegister setThreadState tcbSchedEnqueue)
+open Sel4Lean.Spec.M.Machine_RegisterSet (badgeRegister setRegister)
+open Sel4Lean.Spec.M.Model_PSpace (getObject setObject)
+open Sel4Lean.Spec.M.Model_StateData (capHasProperty ksReadyQueues_asrt)
+open Sel4Lean.Spec.M.Object_Notification (asUser cancelSignal completeSignal doNBRecvFailedTransfer getBoundNotification getNotification getThreadState possibleSwitchTo rescheduleRequired setThreadState tcbSchedEnqueue)
 open Sel4Lean.Spec.M.Object_Structures (isReceive isReplyCap isSend)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Model/StateData.lhs
-opaque capHasProperty : (PPtr CTE) → (Capability → Bool) → KernelState → Bool
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteDeleteOne : (PPtr CTE) → Kernel Unit

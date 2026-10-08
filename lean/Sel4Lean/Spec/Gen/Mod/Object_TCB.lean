@@ -40,7 +40,7 @@ opaque atcbContextSet : UserContext → ArchTCB → ArchTCB
 opaque bindNotification : (PPtr TCB) → (PPtr Notification) → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque capFaultOnFailure {a : Type} [Inhabited a] : CPtr → Bool → (KernelF LookupFailure a) → KernelF Fault a
+opaque capFaultOnFailure {t_a : Type} [Inhabited t_a] : CPtr → Bool → (KernelF LookupFailure t_a) → KernelF Fault t_a
 
 -- external: SEL4/Kernel/VSpace.lhs
 opaque checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit
@@ -79,7 +79,7 @@ opaque getExtraCPtrs : (Option (PPtr Word)) → MessageInfo → Kernel (List CPt
 opaque getNotification : (PPtr Notification) → Kernel Notification
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
+opaque getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → Kernel t_a
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque getRegister : Register → UserMonad Word
@@ -112,7 +112,7 @@ opaque locateSlotTCB : (PPtr TCB) → Word → Kernel (PPtr CTE)
 opaque lookupCapAndSlot : (PPtr TCB) → CPtr → KernelF LookupFailure (Capability × (PPtr CTE))
 
 -- external: Data/Helpers.hs
-opaque mapMaybe {a : Type} {b : Type} [Inhabited a] [Inhabited b] : (a → b) → (Option a) → Option b
+opaque mapMaybe {t_a : Type} {t_b : Type} [Inhabited t_a] [Inhabited t_b] : (t_a → t_b) → (Option t_a) → Option t_b
 
 -- external: SEL4/API/Types.lhs
 opaque messageInfoFromWord : Word → MessageInfo
@@ -124,16 +124,16 @@ opaque minPriority : Priority
 opaque msgInfoRegister : Register
 
 -- external: SEL4/API/Types.lhs
-opaque msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a
+opaque msgMaxLength {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque msgRegisters : List Register
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {a : Type} [Inhabited a] : PPtr a
+opaque nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a
 
 -- external: SEL4/Model/Failures.lhs
-opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] [IntegralH a] [IntegralH b] : a → b → b → KernelF SyscallError Unit
+opaque rangeCheck {t_a : Type} {t_b : Type} [Inhabited t_a] [Inhabited t_b] [IntegralH t_a] [OrdH t_a] [IntegralH t_b] [OrdH t_b] : t_a → t_b → t_b → KernelF SyscallError Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit
@@ -154,7 +154,7 @@ opaque setMCPriority : (PPtr TCB) → Priority → Kernel Unit
 opaque setNextPC : Word → UserMonad Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
+opaque setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → t_a → Kernel Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque setPriority : (PPtr TCB) → Priority → Kernel Unit
@@ -193,7 +193,7 @@ opaque tcbReplySlot : Word
 opaque tcbVTableSlot : Word
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque tlsBaseRegister : Register
@@ -205,10 +205,10 @@ opaque unbindNotification : (PPtr TCB) → Kernel Unit
 opaque updateCapData : Bool → Word → Capability → Capability
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 -- external: SEL4/API/Types.lhs
 opaque wordFromMessageInfo : MessageInfo → Word
@@ -317,7 +317,7 @@ def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : 
   | _, _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `threadGet` -/
-def threadGet {a : Type} [Inhabited a] (f : TCB → a) (tptr : PPtr TCB) : Kernel a :=
+def threadGet {t_a : Type} [Inhabited t_a] (f : TCB → t_a) (tptr : PPtr TCB) : Kernel t_a :=
   liftM f (getObject tptr)
 
 /-- Haskell `checkPrio` -/
@@ -467,7 +467,7 @@ def threadSet (f : TCB → TCB) (tptr : PPtr TCB) : Kernel Unit :=
     setObject tptr (f tcb)
 
 /-- Haskell `asUser` -/
-def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
+def asUser {t_a : Type} [Inhabited t_a] (tptr : PPtr TCB) (f : UserMonad t_a) : Kernel t_a :=
   do
     let uc ← threadGet (atcbContextGet ∘ TCB.tcbArch) tptr
     let (a, uc') := runStateND f uc
@@ -475,7 +475,7 @@ def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel
     pure a
 
 /-- Haskell `assertDerived` -/
-def assertDerived {a : Type} [Inhabited a] (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel a) : Kernel a :=
+def assertDerived {t_a : Type} [Inhabited t_a] (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel t_a) : Kernel t_a :=
   match x0, x1, x2 with
   | _, _, f => f
 
@@ -712,7 +712,7 @@ def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
     cteDeleteOne callerSlot
 
 /-- Haskell `archThreadGet` -/
-def archThreadGet {a : Type} [Inhabited a] (f : ArchTCB → a) (tptr : PPtr TCB) : Kernel a :=
+def archThreadGet {t_a : Type} [Inhabited t_a] (f : ArchTCB → t_a) (tptr : PPtr TCB) : Kernel t_a :=
   liftM (f ∘ TCB.tcbArch) (getObject tptr)
 
 /-- Haskell `archThreadSet` -/

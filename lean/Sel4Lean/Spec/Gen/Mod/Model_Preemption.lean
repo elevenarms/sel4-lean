@@ -5,23 +5,16 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
 
 namespace Sel4Lean.Spec.M.Model_Preemption
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 open Sel4Lean.Spec.M.Machine_Hardware (getActiveIRQ)
+open Sel4Lean.Spec.M.Model_StateData (getWorkUnits modifyWorkUnits setWorkUnits)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Model/StateData.lhs
-opaque getWorkUnits : Kernel Word
-
--- external: SEL4/Model/StateData.lhs
-opaque modifyWorkUnits : (Word → Word) → Kernel Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque setWorkUnits : Word → Kernel Unit
 
 /-! ## Unresolved (no stub possible)
   lift: no signature found
@@ -30,7 +23,7 @@ opaque setWorkUnits : Word → Kernel Unit
 /-! ## Translated -/
 
 /-- Haskell `withoutPreemption` -/
-def withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a :=
+def withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a :=
   lift
 
 /-- Haskell `workUnitsLimit` -/
@@ -46,7 +39,7 @@ def preemptionPoint : KernelP Unit :=
       let _ ← lift (setWorkUnits 0)
       let preempt ← lift (doMachineOp (getActiveIRQ true))
       match preempt with
-      | some irq => throw irq
+      | some irq => MonadExcept.throw irq
       | none => pure ())
 
 end

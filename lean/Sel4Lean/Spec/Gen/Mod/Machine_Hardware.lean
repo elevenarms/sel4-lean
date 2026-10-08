@@ -21,10 +21,10 @@ abbrev RISCV64.fromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.fromPAddr
 opaque ackInterrupt : IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
@@ -75,7 +75,7 @@ opaque maxIRQ : IRQ
 opaque minIRQ : IRQ
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque nullPointer {a : Type} [Inhabited a] : PPtr a
+opaque nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pageBits : Nat
@@ -87,7 +87,7 @@ opaque pageColourBits : Nat
 opaque pptrBaseOffset : Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque resetTimer : MachineMonad Unit

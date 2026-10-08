@@ -286,13 +286,9 @@ def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID
   | x => x
 noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
 
--- from SEL4/API/Failures/RISCV64.hs
-/-- Haskell `data ArchFault = VMFault { … }` -/
-structure ArchFault where
-  VMFault ::
-  vmFaultAddress : VPtr
-  vmFaultArchData : List Word
-  deriving Inhabited, DecidableEq
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
 
 -- from SEL4/API/Types.lhs
 /-- Haskell `newtype CPtr = CPtr …` -/
@@ -316,6 +312,14 @@ instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
 instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
 instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 
+
+-- from SEL4/API/Failures/RISCV64.hs
+/-- Haskell `data ArchFault = VMFault { … }` -/
+structure ArchFault where
+  VMFault ::
+  vmFaultAddress : VPtr
+  vmFaultArchData : List Word
+  deriving Inhabited, DecidableEq
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
@@ -465,9 +469,9 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   | .ArchFault _ => .ArchFault v
   | x => x
 
--- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `type RISCV64.Word` -/
@@ -537,12 +541,25 @@ structure ArchTCB where
 noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
 
 -- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
 
 -- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
+/-- Haskell `data ZombieType` -/
+inductive ZombieType where
+  | ZombieTCB
+  | ZombieCNode (zombieCTEBits : Nat)
+  deriving Inhabited, DecidableEq
+
+/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def ZombieType.zombieCTEBits : ZombieType → Nat
+  | .ZombieCNode v => v
+  | _ => default
+/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
+def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
+  match x with
+  | .ZombieCNode _ => .ZombieCNode v
+  | x => x
 
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
 /-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
@@ -565,23 +582,6 @@ structure IRQ where
   deriving Inhabited, DecidableEq
 instance : IntegralH IRQ := ⟨fun a => IntegralH.toInt a.theIRQ, fun i => ⟨IntegralH.ofInt i⟩⟩
 
-
--- from SEL4/Object/Structures.lhs
-/-- Haskell `data ZombieType` -/
-inductive ZombieType where
-  | ZombieTCB
-  | ZombieCNode (zombieCTEBits : Nat)
-  deriving Inhabited, DecidableEq
-
-/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def ZombieType.zombieCTEBits : ZombieType → Nat
-  | .ZombieCNode v => v
-  | _ => default
-/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
-def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
-  match x with
-  | .ZombieCNode _ => .ZombieCNode v
-  | x => x
 
 -- pointer cycle: MDBNode, CTE, NTFN, Notification, ThreadState, TCB, Endpoint, Capability
 mutual
@@ -1237,30 +1237,30 @@ abbrev Kernel := Sel4Lean.NondetM KernelState
 
 -- from Data/BinaryTree.hs
 /-- Haskell `data BinaryTree` -/
-inductive BinaryTree (a : Type) where
-  | Node (btTrue : BinaryTree a) (btFalse : BinaryTree a)
-  | Leaf (a0 : a)
+inductive BinaryTree (t_a : Type) where
+  | Node (btTrue : BinaryTree t_a) (btFalse : BinaryTree t_a)
+  | Leaf (a0 : t_a)
   | Empty
   
-instance {a : Type} : Inhabited (BinaryTree a) := ⟨.Empty⟩
+instance {t_a : Type} : Inhabited (BinaryTree t_a) := ⟨.Empty⟩
 
 
 /-- Haskell selector `btTrue` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def BinaryTree.btTrue {a : Type} : (BinaryTree a) → BinaryTree a
+def BinaryTree.btTrue {t_a : Type} : (BinaryTree t_a) → BinaryTree t_a
   | .Node v _ => v
   | _ => default
 /-- Haskell record update `x { btTrue = v }` (no-op on other constructors). -/
-def BinaryTree.set_btTrue {a : Type} (x : (BinaryTree a)) (v : BinaryTree a) : (BinaryTree a) :=
+def BinaryTree.set_btTrue {t_a : Type} (x : (BinaryTree t_a)) (v : BinaryTree t_a) : (BinaryTree t_a) :=
   match x with
   | .Node _ a1 => .Node v a1
   | x => x
 
 /-- Haskell selector `btFalse` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def BinaryTree.btFalse {a : Type} : (BinaryTree a) → BinaryTree a
+def BinaryTree.btFalse {t_a : Type} : (BinaryTree t_a) → BinaryTree t_a
   | .Node _ v => v
   | _ => default
 /-- Haskell record update `x { btFalse = v }` (no-op on other constructors). -/
-def BinaryTree.set_btFalse {a : Type} (x : (BinaryTree a)) (v : BinaryTree a) : (BinaryTree a) :=
+def BinaryTree.set_btFalse {t_a : Type} (x : (BinaryTree t_a)) (v : BinaryTree t_a) : (BinaryTree t_a) :=
   match x with
   | .Node a0 _ => .Node a0 v
   | x => x
@@ -2463,11 +2463,11 @@ abbrev UserMonad := Sel4Lean.NondetM UserContext
 
 -- from SEL4/Model/Failures.lhs
 /-- Haskell `type KernelF` -/
-abbrev KernelF (f : Type) := ExceptT f Kernel
+abbrev KernelF (t_f : Type) := ExceptT t_f Kernel
 
 -- from SEL4/Model/Preemption.lhs
 /-- Haskell `type KernelP` -/
-abbrev KernelP (a : Type) := ExceptT IRQ Kernel a
+abbrev KernelP (t_a : Type) := ExceptT IRQ Kernel t_a
 
 /-! ## Hand-written Haskell instances (Bounded, Enum) -/
 

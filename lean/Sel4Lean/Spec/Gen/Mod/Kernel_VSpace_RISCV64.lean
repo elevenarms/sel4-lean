@@ -13,10 +13,10 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- external: SEL4/Object/Structures/RISCV64.hs
 opaque asidHighBits : Nat
@@ -31,7 +31,7 @@ opaque asidLowBits : Nat
 opaque asidRange : ASID × ASID
 
 -- external: SEL4/Model/Failures.lhs
-opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → (f → Kernel a) → Kernel a
+opaque catchFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → (t_f → Kernel t_a) → Kernel t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
@@ -40,7 +40,7 @@ opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 opaque decodeRISCVASIDControlInvocation : RISCV64.Word → (List RISCV64.Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
 
 -- external: SEL4/Model/PSpace.lhs
-opaque deleteObjects {a : Type} [Inhabited a] : (PPtr a) → Nat → Kernel Unit
+opaque deleteObjects {t_a : Type} [Inhabited t_a] : (PPtr t_a) → Nat → Kernel Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
@@ -55,7 +55,7 @@ opaque getCTE : (PPtr CTE) → Kernel CTE
 opaque getCurThread : Kernel (PPtr TCB)
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
+opaque getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → Kernel t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque getSlotCap : (PPtr CTE) → Kernel Capability
@@ -70,7 +70,7 @@ opaque getThreadVSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
 opaque hwASIDFlush : (BitVec 64) → MachineMonad Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque ignoreFailure {f : Type} [Inhabited f] : (KernelF f Unit) → Kernel Unit
+opaque ignoreFailure {t_f : Type} [Inhabited t_f] : (KernelF t_f Unit) → Kernel Unit
 
 -- external: SEL4/API/InvocationLabels.lhs
 opaque invocationType : Word → InvocationLabel
@@ -79,13 +79,13 @@ opaque invocationType : Word → InvocationLabel
 opaque isFinalCapability : CTE → Kernel Bool
 
 -- external: SEL4/Model/Failures.lhs
-opaque lookupErrorOnFailure {a : Type} [Inhabited a] : Bool → (KernelF LookupFailure a) → KernelF SyscallError a
+opaque lookupErrorOnFailure {t_a : Type} [Inhabited t_a] : Bool → (KernelF LookupFailure t_a) → KernelF SyscallError t_a
 
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
+opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
 
 -- external: SEL4/Object/Structures.lhs
 opaque maxFreeIndex : Nat → Nat
@@ -103,7 +103,7 @@ opaque pageBitsForSize : VMPageSize → Nat
 opaque performPageTableInvocation : PageTableInvocation → Kernel Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque pptrBase : VPtr
@@ -121,7 +121,7 @@ opaque ptTranslationBits : Nat
 opaque pteBits : Nat
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque read_stval : MachineMonad Word
@@ -133,7 +133,7 @@ opaque rightsFromWord : Word → CapRights
 opaque riscvKSGlobalPT : RISCV64.KernelState → PPtr PTE
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
+opaque setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → t_a → Kernel Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
@@ -142,10 +142,10 @@ opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
 opaque sfence : MachineMonad Unit
 
 -- external: SEL4/Object/TCB.lhs
-opaque threadGet {a : Type} [Inhabited a] : (TCB → a) → (PPtr TCB) → Kernel a
+opaque threadGet {t_a : Type} [Inhabited t_a] : (TCB → t_a) → (PPtr TCB) → Kernel t_a
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque updateCap : (PPtr CTE) → Capability → Kernel Unit
@@ -157,10 +157,10 @@ opaque updateFreeIndex : (PPtr CTE) → Nat → Kernel Unit
 opaque vmFaultTypeFSR : VMFaultType → Word
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   assocs: no signature found
@@ -655,7 +655,7 @@ def createDeviceFrames : Capability → KernelInit Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
+def vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr :=
   error "boot code unimplemented"
 
 end

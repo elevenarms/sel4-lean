@@ -95,7 +95,8 @@ NAME = {
     "forM_": "forM_H", "delete": "deleteH", "when": "whenH", "unless": "unlessH",
     "fromPPtr": "PPtr.ptr", "PPtr": "PPtr.mk",
     # mtl classes -> Lean's monad classes
-    "throwError": "throw", "catchError": "tryCatch", "runExceptT": "ExceptT.run", "ask": "read",
+    "throwError": "MonadExcept.throw", "catchError": "MonadExcept.tryCatch", "runExceptT": "ExceptT.run",
+    "ask": "read",
     "Left": "Except.error", "Right": "Except.ok",
     "Just": "some", "Nothing": "none", "True": "true", "False": "false",
 }
@@ -410,6 +411,11 @@ class Translator:
             op = next(c for c in n.children if c.type in ("operator", "infix_id", "constructor_operator"))
             name = self.text(op).strip("`")
             arg = next(c for c in kids(n) if c is not op)
+            if name in OPERATOR_APP:   # sections of application-like operators: (! r), (// upds)
+                f = OPERATOR_APP[name]
+                pre = f"{f} " if f else ""
+                a = self.atom(arg, ind)
+                return (f"(fun x => {pre}x {a})" if t == "right_section" else f"(fun x => {pre}{a} x)")
             lean = OPERATOR.get(name)
             if lean is None:
                 fn = self.var(name)
@@ -691,11 +697,15 @@ class Translator:
 
     # ---------------- functions
 
-    def emit_function(self, name, nodes):
+    def emit_function(self, name, nodes, sig_override=None):
+        """sig_override = (param type strings, result string): a signature translated elsewhere (an arch function
+        borrowing its generic signature, resolved in the arch file's scope)."""
         sig = next((d for d in nodes if d.type == "signature"), None)
         eqs = [d for d in nodes if d.type in ("function", "bind")]
         if not eqs:
             self.fail(nodes[0], "no equations")
+        if sig is None and sig_override is not None:
+            return self._emit_with(name, eqs, sig_override[0], sig_override[1])
         if sig is None:
             if len(eqs) == 1 and eqs[0].type == "bind":
                 # top-level constant without a signature: let Lean infer the type
@@ -707,6 +717,10 @@ class Translator:
         while t.type == "function":
             params.append(t.child_by_field_name("parameter"))
             t = t.child_by_field_name("result")
+        return self._emit_with(name, eqs, [self.ty(p) for p in params], self.ty(t), atoms=[self.ty_atom(p) for p in params])
+
+    def _emit_with(self, name, eqs, ptys, rty, atoms=None):
+        atoms = atoms or [f"({x})" if " " in x else x for x in ptys]
         pat_lists = []
         for eq in eqs:
             ps = eq.child_by_field_name("patterns")
@@ -718,14 +732,14 @@ class Translator:
             if eq.child_by_field_name("match") is None:
                 self.fail(eq, "equation without right-hand side")
         simple = len(eqs) == 1 and all(p.type == "variable" for p in pat_lists[0])
-        typed = min(arity, len(params))
+        typed = min(arity, len(ptys))
         if simple:
             names = [self.ident(self.text(p)) for p in pat_lists[0]]
         else:
             names = [f"x{i}" for i in range(arity)]
-        binders = " ".join(f"({nm} : {self.ty(ty)})" for nm, ty in zip(names[:typed], params[:typed]))
-        rest = params[typed:]
-        result = " → ".join([self.ty_atom(x) for x in rest] + [self.ty(t)])
+        binders = " ".join(f"({nm} : {ty})" for nm, ty in zip(names[:typed], ptys[:typed]))
+        rest = atoms[typed:]
+        result = " → ".join(list(rest) + [rty])
         extra = names[typed:]   # more parameters than the signature shows (result is a function synonym)
         head = f"def {self.ident(name)} {binders} : {result} :=".replace("  ", " ")
         out = [f"/-- Haskell `{name}` -/", head]

@@ -35,7 +35,7 @@ def wordSize : Nat :=
   div wordBits 8
 
 /-- Haskell `wordSizeCase` -/
-def wordSizeCase {a : Type} [Inhabited a] (a : a) (b : a) : a :=
+def wordSizeCase {t_a : Type} [Inhabited t_a] (a : t_a) (b : t_a) : t_a :=
   match wordBits with
   | 32 => a
   | 64 => b
@@ -46,7 +46,7 @@ def wordRadix : Nat :=
   wordSizeCase 5 6
 
 /-- Haskell `countTrailingZeros` -/
-def countTrailingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
+def countTrailingZeros {t_b : Type} [Inhabited t_b] [BitsH t_b] (w : t_b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (map (testBit w)))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 end

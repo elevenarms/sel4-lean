@@ -4,208 +4,59 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.API_Faults
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.Config
+import Sel4Lean.Spec.Gen.Mod.Data_WordLib
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64
 
 namespace Sel4Lean.Spec.M.Kernel_Thread
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.API_Faults (handleFaultReply makeFaultMessage)
+open Sel4Lean.Spec.M.Config (numDomains timeSlice)
+open Sel4Lean.Spec.M.Data_WordLib (wordRadix)
+open Sel4Lean.Spec.M.Kernel_VSpace (lookupIPCBuffer)
+open Sel4Lean.Spec.M.Machine_Hardware (getRestartPC nullPointer setNextPC)
+open Sel4Lean.Spec.M.Machine_RegisterSet (badgeRegister capRegister faultRegister getRegister mask nextInstructionRegister setRegister)
+open Sel4Lean.Spec.M.Model_Failures (catchFailure constOnFailure throw unifyFailure withoutFailure)
+open Sel4Lean.Spec.M.Model_PSpace (getObject)
+open Sel4Lean.Spec.M.Model_StateData (curDomain decDomainTime getCurThread getDomainTime getIdleThread getQueue getSchedulerAction ksReadyQueues_asrt nextDomain ready_qs_runnable setCurThread setQueue setSchedulerAction)
+open Sel4Lean.Spec.M.Object_Endpoint (cancelIPC cteDeleteOne getCTE setMRs setMessageInfo threadSet)
+open Sel4Lean.Spec.M.Object_Interrupt (doKernelOp)
+open Sel4Lean.Spec.M.Object_Notification (asUser)
+open Sel4Lean.Spec.M.Object_Structures (emptyQueue isNullCap isReply isReplyCap l2BitmapSize)
+open Sel4Lean.Spec.M.Object_TCB (copyMRs cteInsert deriveCap getMRs getMessageInfo getSlotCap lookupExtraCaps setExtraBadge threadGet)
 noncomputable section
 
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.activateIdleThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.activateIdleThread
+abbrev RISCV64.configureIdleThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.configureIdleThread
+abbrev RISCV64.prepareNextDomain := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.prepareNextDomain
+abbrev RISCV64.switchToIdleThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.switchToIdleThread
+abbrev RISCV64.switchToThread := @Sel4Lean.Spec.M.Kernel_Thread_RISCV64.switchToThread
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Kernel/Thread/RISCV64.hs
-opaque RISCV64.activateIdleThread : (PPtr TCB) → Kernel Unit
-
--- arch: SEL4/Kernel/Thread/RISCV64.hs
-opaque RISCV64.configureIdleThread : (PPtr TCB) → KernelInit Unit
-
--- arch: SEL4/Kernel/Thread/RISCV64.hs
-opaque RISCV64.prepareNextDomain : Kernel Unit
-
--- arch: SEL4/Kernel/Thread/RISCV64.hs
-opaque RISCV64.switchToIdleThread : Kernel Unit
-
--- arch: SEL4/Kernel/Thread/RISCV64.hs
-opaque RISCV64.switchToThread : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque badgeRegister : Register
-
--- external: SEL4/Object/Endpoint.lhs
-opaque cancelIPC : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque capRegister : Register
-
--- external: SEL4/Model/Failures.lhs
-opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → (f → Kernel a) → Kernel a
-
--- external: SEL4/Model/Failures.lhs
-opaque constOnFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : a → (KernelF f a) → Kernel a
-
--- external: SEL4/Object/TCB.lhs
-opaque copyMRs : (PPtr TCB) → (Option (PPtr Word)) → (PPtr TCB) → (Option (PPtr Word)) → Word → Kernel Word
-
--- external: SEL4/Object/CNode.lhs
-opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque curDomain : Kernel Domain
-
--- external: SEL4/Model/StateData.lhs
-opaque decDomainTime : Kernel Unit
-
--- external: SEL4/Object/ObjectType.lhs
-opaque deriveCap : (PPtr CTE) → Capability → KernelF SyscallError Capability
-
--- external: SEL4/Kernel/Init.lhs
-opaque doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a
-
--- external: SEL4/Object/Structures.lhs
-opaque emptyQueue : TcbQueue
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque faultRegister : Register
-
--- external: SEL4/Object/CNode.lhs
-opaque getCTE : (PPtr CTE) → Kernel CTE
-
--- external: SEL4/Model/StateData.lhs
-opaque getCurThread : Kernel (PPtr TCB)
-
--- external: SEL4/Model/StateData.lhs
-opaque getDomainTime : Kernel Ticks
-
--- external: SEL4/Model/StateData.lhs
-opaque getIdleThread : Kernel (PPtr TCB)
-
--- external: SEL4/Object/TCB.lhs
-opaque getMRs : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo → Kernel (List Word)
-
--- external: SEL4/Object/TCB.lhs
-opaque getMessageInfo : (PPtr TCB) → Kernel MessageInfo
-
--- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
-
--- external: SEL4/Model/StateData.lhs
-opaque getQueue : Domain → Priority → Kernel ReadyQueue
 
 -- external: SEL4/Object/CNode.lhs
 opaque getReceiveSlots : (PPtr TCB) → (Option (PPtr Word)) → Kernel (List (PPtr CTE))
 
--- external: SEL4/Machine/RegisterSet.lhs
-opaque getRegister : Register → UserMonad Word
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getRestartPC : UserMonad Word
-
--- external: SEL4/Model/StateData.lhs
-opaque getSchedulerAction : Kernel SchedulerAction
-
--- external: SEL4/Object/CNode.lhs
-opaque getSlotCap : (PPtr CTE) → Kernel Capability
-
--- external: SEL4/API/Faults.lhs
-opaque handleFaultReply : Fault → (PPtr TCB) → Word → (List Word) → Kernel Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isNullCap : Capability → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isReply : ThreadState → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isReplyCap : Capability → Bool
-
--- external: SEL4/Model/StateData.lhs
-opaque ksReadyQueues_asrt : KernelState → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque l2BitmapSize : Nat
-
--- external: SEL4/Object/TCB.lhs
-opaque lookupExtraCaps : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo → KernelF Fault (List (Capability × (PPtr CTE)))
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
-
--- external: SEL4/API/Faults.lhs
-opaque makeFaultMessage : Fault → (PPtr TCB) → Kernel (Word × (List Word))
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
-
--- external: SEL4/Model/StateData.lhs
-opaque nextDomain : Kernel Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque nextInstructionRegister : Register
-
--- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {a : Type} [Inhabited a] : PPtr a
-
--- external: SEL4/Config.lhs
-opaque numDomains : Nat
-
--- external: SEL4/Model/StateData.lhs
-opaque ready_qs_runnable : KernelState → Bool
-
--- external: SEL4/Model/StateData.lhs
-opaque setCurThread : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/TCB.lhs
-opaque setExtraBadge : (PPtr Word) → Word → Nat → Kernel Unit
-
--- external: SEL4/Object/TCB.lhs
-opaque setMRs : (PPtr TCB) → (Option (PPtr Word)) → (List Word) → Kernel Word
-
--- external: SEL4/Object/TCB.lhs
-opaque setMessageInfo : (PPtr TCB) → MessageInfo → Kernel Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque setNextPC : Word → UserMonad Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque setQueue : Domain → Priority → ReadyQueue → Kernel Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque setRegister : Register → Word → UserMonad Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque setSchedulerAction : SchedulerAction → Kernel Unit
-
 -- external: SEL4/Object/CNode.lhs
 opaque setupReplyMaster : (PPtr TCB) → Kernel Unit
 
--- external: SEL4/Object/TCB.lhs
-opaque threadGet {a : Type} [Inhabited a] : (TCB → a) → (PPtr TCB) → Kernel a
-
--- external: SEL4/Object/TCB.lhs
-opaque threadSet : (TCB → TCB) → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
-
--- external: SEL4/Config.lhs
-opaque timeSlice : Nat
-
 -- local, not translated: guards that fall through to the next equation: alternative at line 279: '(Endpoi
 opaque transferCapsToSlots : (Option (PPtr Endpoint)) → (PPtr Word) → Nat → (List (Capability × (PPtr CTE))) → (List (PPtr CTE)) → MessageInfo → Kernel MessageInfo
-
--- external: SEL4/Model/Failures.lhs
-opaque unifyFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → KernelF Unit a
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
-
--- external: Data/WordLib.lhs
-opaque wordRadix : Nat
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
@@ -572,11 +423,11 @@ def l1IndexToPrio (i : Nat) : Priority :=
   shiftLH (fromIntegral i) wordRadix
 
 /-- Haskell `countLeadingZeros` -/
-def countLeadingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
+def countLeadingZeros {t_b : Type} [Inhabited t_b] [BitsH t_b] (w : t_b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (reverse ∘ (map (testBit w))))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 /-- Haskell `wordLog2` -/
-def wordLog2 {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
+def wordLog2 {t_b : Type} [Inhabited t_b] [BitsH t_b] (w : t_b) : Nat :=
   ((finiteBitSize w) - 1) - (countLeadingZeros w)
 
 /-- Haskell `getHighestPrio` -/

@@ -4,10 +4,12 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 
 namespace Sel4Lean.Spec.M.Machine_Hardware_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_RegisterSet (getRegister mask setRegister)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
@@ -16,10 +18,10 @@ noncomputable section
 opaque ackInterrupt : RISCV64.IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque allowRead : VMRights → Bool
@@ -57,9 +59,6 @@ opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
 
--- external: SEL4/Machine/RegisterSet.lhs
-opaque getRegister : Register → UserMonad Word
-
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getVMRights : Bool → Bool → VMRights
 
@@ -80,9 +79,6 @@ opaque kernelELFPAddrBase : PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque loadWord : (PPtr Word) → MachineMonad Word
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
@@ -121,7 +117,7 @@ opaque ptTranslationBits : Nat
 opaque pteBits : Nat
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque read_stval : MachineMonad Word
@@ -131,9 +127,6 @@ opaque resetTimer : MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque setRegister : Register → Word → UserMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
@@ -170,7 +163,7 @@ def toPAddr :=
   PAddr.PAddr
 
 /-- Haskell `pptrBaseOffset` -/
-def pptrBaseOffset :=
+def pptrBaseOffset : Word :=
   (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
 
 /-- Haskell `kernelELFBaseOffset` -/
@@ -178,11 +171,11 @@ def kernelELFBaseOffset :=
   (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
 
 /-- Haskell `getRestartPC` -/
-def getRestartPC :=
+def getRestartPC : UserMonad Word :=
   getRegister (Register.Register (RISCV64.Register.FaultIP))
 
 /-- Haskell `setNextPC` -/
-def setNextPC :=
+def setNextPC : Word → UserMonad Unit :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
 
 end

@@ -4,46 +4,25 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64
+import Sel4Lean.Spec.Gen.Mod.API_Failures
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
 
 namespace Sel4Lean.Spec.M.API_Faults
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.API_Failures (msgFromLookupFailure)
+open Sel4Lean.Spec.M.API_Faults_RISCV64 (handleArchFaultReply makeArchFaultMessage)
+open Sel4Lean.Spec.M.Machine_Hardware (getRestartPC)
+open Sel4Lean.Spec.M.Machine_RegisterSet (exceptionMessage getRegister setRegister syscallMessage)
+open Sel4Lean.Spec.M.Object_Notification (asUser)
+open Sel4Lean.Spec.M.Object_TCB (getSanitiseRegisterInfo sanitiseRegister)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque exceptionMessage : List Register
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque getRegister : Register → UserMonad Word
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getRestartPC : UserMonad Word
-
--- external: SEL4/Object/TCB.lhs
-opaque getSanitiseRegisterInfo : (PPtr TCB) → Kernel Bool
-
--- external: SEL4/API/Faults/RISCV64.hs
-opaque handleArchFaultReply : ArchFault → (PPtr TCB) → Word → (List Word) → Kernel Bool
-
--- external: SEL4/API/Faults/RISCV64.hs
-opaque makeArchFaultMessage : ArchFault → (PPtr TCB) → Kernel (Word × (List Word))
-
--- external: SEL4/API/Failures.lhs
-opaque msgFromLookupFailure : LookupFailure → List Word
-
--- external: SEL4/Object/TCB.lhs
-opaque sanitiseRegister : Bool → Register → Word → Word
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque setRegister : Register → Word → UserMonad Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque syscallMessage : List Register
 
 /-! ## Unresolved (no stub possible)
   fromEnum: no signature found

@@ -49,13 +49,13 @@ opaque performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
 opaque setIRQState : IRQState → IRQ → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   error: no signature found

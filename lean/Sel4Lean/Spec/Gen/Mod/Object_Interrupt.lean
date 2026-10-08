@@ -52,13 +52,10 @@ opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 opaque debugPrint : String → MachineMonad Unit
 
 -- external: SEL4/Kernel/Init.lhs
-opaque doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a
+opaque doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
-
--- external: Data/Helpers.hs
-opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [IntegralH i] [BoundedH i] : (i → a) → (i → a)
 
 -- external: SEL4/API/InvocationLabels.lhs
 opaque genInvocationType : Word → GenInvocationLabels
@@ -103,10 +100,10 @@ opaque maxIRQ : IRQ
 opaque pageBits : Nat
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque resetTimer : MachineMonad Unit
@@ -118,16 +115,16 @@ opaque sendSignal : (PPtr Notification) → Word → Kernel Unit
 opaque setInterruptState : InterruptState → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque timerTick : Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
@@ -148,7 +145,7 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 
 /-- Haskell `getIRQState` -/
 def getIRQState (irq : IRQ) : Kernel IRQState :=
-  liftM (((fun x => ! x irq)) ∘ InterruptState.intStateIRQTable) getInterruptState
+  liftM (((fun x => x irq)) ∘ InterruptState.intStateIRQTable) getInterruptState
 
 /-- Haskell `isIRQActive` -/
 def isIRQActive (irq : IRQ) : Kernel Bool :=

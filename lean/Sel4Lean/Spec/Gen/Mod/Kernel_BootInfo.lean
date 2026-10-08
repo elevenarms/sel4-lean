@@ -13,16 +13,16 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Kernel/Init.lhs
-opaque doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a
+opaque doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
+opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque pageBits : Nat
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- external: SEL4/Config.lhs
 opaque rootCNodeSize : Nat

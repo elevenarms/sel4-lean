@@ -4,19 +4,22 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+import Sel4Lean.Spec.Gen.Mod.Model_StateData
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 
 namespace Sel4Lean.Spec.M.Object_Notification
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_RegisterSet (badgeRegister setRegister)
+open Sel4Lean.Spec.M.Model_PSpace (getObject setObject)
+open Sel4Lean.Spec.M.Model_StateData (ksReadyQueues_asrt)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque badgeRegister : Register
+opaque asUser {t_a : Type} [Inhabited t_a] : (PPtr TCB) → (UserMonad t_a) → Kernel t_a
 
 -- external: SEL4/Object/Endpoint.lhs
 opaque cancelIPC : (PPtr TCB) → Kernel Unit
@@ -24,14 +27,8 @@ opaque cancelIPC : (PPtr TCB) → Kernel Unit
 -- external: SEL4/Kernel/Thread.lhs
 opaque getBoundNotification : (PPtr TCB) → Kernel (Option (PPtr Notification))
 
--- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque getThreadState : (PPtr TCB) → Kernel ThreadState
-
--- external: SEL4/Model/StateData.lhs
-opaque ksReadyQueues_asrt : KernelState → Bool
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque possibleSwitchTo : (PPtr TCB) → Kernel Unit
@@ -41,12 +38,6 @@ opaque rescheduleRequired : Kernel Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque setBoundNotification : (Option (PPtr Notification)) → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque setRegister : Register → Word → UserMonad Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque setThreadState : ThreadState → (PPtr TCB) → Kernel Unit

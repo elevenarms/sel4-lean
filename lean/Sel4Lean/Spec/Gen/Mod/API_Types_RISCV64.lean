@@ -16,18 +16,20 @@ noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
-/-! ## Unresolved (no stub possible)
-  toAPIType: local, not translated, no signature: function without a signature: function at line 56: 'toAPITyp
--/
-
 /-! ## Translated -/
 
 /-- Haskell `fromAPIType` -/
-def fromAPIType :=
+def fromAPIType : APIObjectType → ObjectType :=
   ObjectType.APIObjectType
 
+/-- Haskell `toAPIType` -/
+def toAPIType (x0 : ObjectType) : Option APIObjectType :=
+  match x0 with
+  | (ObjectType.APIObjectType a) => some a
+  | _ => none
+
 /-- Haskell `pageType` -/
-def pageType :=
+def pageType : ObjectType :=
   ObjectType.SmallPageObject
 
 /-- Haskell `tcbBlockSizeBits` -/

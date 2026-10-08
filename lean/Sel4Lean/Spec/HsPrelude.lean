@@ -79,6 +79,12 @@ abbrev fromIntegral {α β : Type} [IntegralH α] [IntegralH β] (x : α) : β :
 Low priority, so native `OfNat` instances (BitVec, Nat, newtypes) win. -/
 instance (priority := low) {α : Type} {n : Nat} [IntegralH α] : OfNat α n := ⟨IntegralH.ofInt n⟩
 
+/-- Haskell `Num` arithmetic for any integral type (via its integer value; words wrap, as in Haskell).
+Low priority: native instances win. -/
+instance (priority := low) {α : Type} [IntegralH α] : Add α := ⟨fun a b => IntegralH.ofInt (IntegralH.toInt a + IntegralH.toInt b)⟩
+instance (priority := low) {α : Type} [IntegralH α] : Sub α := ⟨fun a b => IntegralH.ofInt (IntegralH.toInt a - IntegralH.toInt b)⟩
+instance (priority := low) {α : Type} [IntegralH α] : Mul α := ⟨fun a b => IntegralH.ofInt (IntegralH.toInt a * IntegralH.toInt b)⟩
+
 instance {n : Nat} : Min (BitVec n) := minOfLe
 instance {n : Nat} : Max (BitVec n) := maxOfLe
 
@@ -180,6 +186,12 @@ abbrev listIndexH {α : Type} [Inhabited α] (xs : List α) (i : Int) : α := xs
 abbrev enumFromToH {α : Type} [IntegralH α] (a b : α) : List α :=
   (List.range ((IntegralH.toInt b - IntegralH.toInt a + 1).toNat)).map
     (fun (k : Nat) => IntegralH.ofInt (IntegralH.toInt a + Int.ofNat k))
+
+/-- Haskell `funArray f` (Data/Helpers.hs): an array holding `f i` at every index. Arrays are functions
+here, so it is `f`. -/
+abbrev funArray {ι ε : Type} (f : ι → ε) : ι → ε := f
+/-- Haskell `funPartialArray f bounds`: `f` on the valid indices (outside them, Haskell's array is bottom). -/
+abbrev funPartialArray {ι ε : Type} (f : ι → ε) (_bounds : ι × ι) : ι → ε := f
 
 /-- Haskell `arr // [(i, v), …]` on arrays, which l4v (and this translation) model as functions. -/
 abbrev arrayUpdH {ι ε : Type} [BEq ι] (arr : ι → ε) (upds : List (ι × ε)) : ι → ε :=

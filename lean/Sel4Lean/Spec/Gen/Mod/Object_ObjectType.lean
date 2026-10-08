@@ -130,13 +130,13 @@ opaque invokeUntyped : UntypedInvocation → KernelP Unit
 opaque isIRQControlCap : Capability → Bool
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
+opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque performIRQControl : IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
 
 -- external: SEL4/Object/Endpoint.lhs
 opaque sendIPC : Bool → Bool → Word → Bool → Bool → (PPtr TCB) → (PPtr Endpoint) → Kernel Unit
@@ -148,7 +148,7 @@ opaque sendSignal : (PPtr Notification) → Word → Kernel Unit
 opaque suspend : (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/API/Types.lhs
 opaque toAPIType : ObjectType → Option APIObjectType
@@ -160,10 +160,10 @@ opaque unbindMaybeNotification : (PPtr Notification) → Kernel Unit
 opaque unbindNotification : (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 -- external: Data/WordLib.lhs
-opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
+opaque wordSizeCase {t_a : Type} [Inhabited t_a] : t_a → t_a → t_a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

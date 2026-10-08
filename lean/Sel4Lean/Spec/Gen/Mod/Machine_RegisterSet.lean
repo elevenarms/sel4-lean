@@ -4,55 +4,31 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64
 
 namespace Sel4Lean.Spec.M.Machine_RegisterSet
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.badgeRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.badgeRegister
+abbrev RISCV64.capRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.capRegister
+abbrev RISCV64.exceptionMessage := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.exceptionMessage
+abbrev RISCV64.faultRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.faultRegister
+abbrev RISCV64.frameRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.frameRegisters
+abbrev RISCV64.getRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.getRegister
+abbrev RISCV64.gpRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.gpRegisters
+abbrev RISCV64.msgInfoRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.msgInfoRegister
+abbrev RISCV64.msgRegisters := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.msgRegisters
+abbrev RISCV64.newContext := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.newContext
+abbrev RISCV64.nextInstructionRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.nextInstructionRegister
+abbrev RISCV64.setRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.setRegister
+abbrev RISCV64.syscallMessage := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.syscallMessage
+abbrev RISCV64.tlsBaseRegister := @Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.tlsBaseRegister
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.badgeRegister : RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.capRegister : RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.exceptionMessage : List RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.faultRegister : RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.frameRegisters : List RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet.lhs
-opaque RISCV64.getRegister : Register → UserMonad Word
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.gpRegisters : List RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.msgInfoRegister : RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.msgRegisters : List RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.newContext : UserContext
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.nextInstructionRegister : RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet.lhs
-opaque RISCV64.setRegister : Register → Word → UserMonad Unit
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.syscallMessage : List RISCV64.Register
-
--- arch: SEL4/Machine/RegisterSet/RISCV64.hs
-opaque RISCV64.tlsBaseRegister : RISCV64.Register
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
@@ -123,7 +99,7 @@ def newContext : UserContext :=
   RISCV64.newContext
 
 /-- Haskell `mask` -/
-def mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] (bits : Nat) : w :=
+def mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] (bits : Nat) : t_w :=
   (bit bits) - 1
 
 end

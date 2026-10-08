@@ -4,43 +4,25 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Config
+import Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64
 
 namespace Sel4Lean.Spec.M.Model_StateData
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Config (numDomains)
+open Sel4Lean.Spec.M.Object_Structures (domainEndMarker dschDomain dschLength emptyQueue l2BitmapSize maxPriority)
 noncomputable section
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.newKernelState := @Sel4Lean.Spec.M.Model_StateData_RISCV64.newKernelState
 
 /-! ## Stubs (from Haskell signatures) -/
 
--- arch: SEL4/Model/StateData/RISCV64.hs
-opaque RISCV64.newKernelState : PAddr → RISCV64.KernelState × (List PAddr)
-
--- external: SEL4/Object/Structures.lhs
-opaque domainEndMarker : DomainScheduleItem
-
--- external: SEL4/Object/Structures.lhs
-opaque dschDomain : DomainScheduleItem → Domain
-
--- external: SEL4/Object/Structures.lhs
-opaque dschLength : DomainScheduleItem → DomainDuration
-
--- external: SEL4/Object/Structures.lhs
-opaque emptyQueue : TcbQueue
-
--- external: Data/Helpers.hs
-opaque funPartialArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [IntegralH i] : (i → a) → (i × i) → (i → a)
-
--- external: SEL4/Object/Structures.lhs
-opaque l2BitmapSize : Nat
-
--- external: SEL4/Object/Structures.lhs
-opaque maxPriority : Priority
-
 -- external: SEL4/Model/PSpace.lhs
 opaque newPSpace : PSpace
-
--- external: SEL4/Config.lhs
-opaque numDomains : Nat
 
 /-! ## Unresolved (no stub possible)
   const: no signature found
@@ -65,7 +47,7 @@ def idleThreadNotQueued (x0 : KernelState) : Bool :=
   | _ => true
 
 /-- Haskell `assert` -/
-def assert {m : Type → Type} [Monad m] [MonadFailH m] (p : Bool) (e : String) : m Unit :=
+def assert {t_m : Type → Type} [Monad t_m] [MonadFailH t_m] (p : Bool) (e : String) : t_m Unit :=
   if p then
     pure ()
   else
@@ -168,7 +150,7 @@ def capHasProperty (x0 : PPtr CTE) (x1 : Capability → Bool) : KernelState → 
   | _, _ => const true
 
 /-- Haskell `findM` -/
-partial def findM {m : Type → Type} {a : Type} [Inhabited a] [Monad m] (x0 : a → m Bool) (x1 : List a) : m (Option a) :=
+partial def findM {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m] (x0 : t_a → t_m Bool) (x1 : List t_a) : t_m (Option t_a) :=
   match x0, x1 with
   | _, [] => pure none
   | f, (x :: xs) => 

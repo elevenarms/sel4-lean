@@ -5,7 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 
@@ -13,7 +13,7 @@ namespace Sel4Lean.Spec.M.Model_PSpace
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 open Sel4Lean.Spec.M.Machine_Hardware (freeMemory loadWord storeWord)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask)
+open Sel4Lean.Spec.M.Machine_RegisterSet (mask)
 open Sel4Lean.Spec.M.Object_Structures (kernelObjectTypeName objBitsKO)
 noncomputable section
 
@@ -49,7 +49,7 @@ def initPSpace (x0 : List ((PPtr Unit) × (PPtr Unit))) : Kernel Unit :=
   | _ => pure ()
 
 /-- Haskell `lookupAround` -/
-def lookupAround {k : Type} [Inhabited k] {a : Type} [Inhabited a] [OrdH k] (ptr : k) (map : (k → Option a)) : (Option (k × a)) × (Option a) × (Option (k × a)) :=
+def lookupAround {t_k : Type} [Inhabited t_k] {t_a : Type} [Inhabited t_a] [OrdH t_k] (ptr : t_k) (map : (t_k → Option t_a)) : (Option (t_k × t_a)) × (Option t_a) × (Option (t_k × t_a)) :=
   let (before, «at», after) := (MapH.splitLookup) ptr map
   let nullProtect := fun f m =>
     if ((MapH.null) m) then
@@ -59,7 +59,7 @@ def lookupAround {k : Type} [Inhabited k] {a : Type} [Inhabited a] [OrdH k] (ptr
   (nullProtect (MapH.findMax) before, «at», nullProtect (MapH.findMin) after)
 
 /-- Haskell `lookupAround2` -/
-def lookupAround2 {k : Type} [Inhabited k] {a : Type} [Inhabited a] [OrdH k] (ptr : k) (mp : (k → Option a)) : (Option (k × a)) × (Option k) :=
+def lookupAround2 {t_k : Type} [Inhabited t_k] {t_a : Type} [Inhabited t_a] [OrdH t_k] (ptr : t_k) (mp : (t_k → Option t_a)) : (Option (t_k × t_a)) × (Option t_k) :=
   let (before, middle, after) := lookupAround ptr mp
   let after' := maybe none (some ∘ fst) after
   match middle with
@@ -67,13 +67,13 @@ def lookupAround2 {k : Type} [Inhabited k] {a : Type} [Inhabited a] [OrdH k] (pt
   | none => (before, after')
 
 /-- Haskell `maybeToMonad` -/
-def maybeToMonad {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [MonadFailH m] (x0 : Option a) : m a :=
+def maybeToMonad {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m] [MonadFailH t_m] (x0 : Option t_a) : t_m t_a :=
   match x0 with
   | (some x) => pure x
   | none => failM "maybeToMonad: got Nothing"
 
 /-- Haskell `getObject` -/
-def getObject {a : Type} [Inhabited a] [PSpaceStorable a] (ptr : PPtr a) : Kernel a :=
+def getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] (ptr : PPtr t_a) : Kernel t_a :=
   do
     let map ← gets (PSpace.psMap ∘ KernelState.ksPSpace)
     let (before, after) := lookupAround2 (PPtr.ptr ptr) map
@@ -81,7 +81,7 @@ def getObject {a : Type} [Inhabited a] [PSpaceStorable a] (ptr : PPtr a) : Kerne
     loadObject (PPtr.ptr ptr) ptr' after val
 
 /-- Haskell `setObject` -/
-def setObject {a : Type} [Inhabited a] [PSpaceStorable a] (ptr : PPtr a) (val : a) : Kernel Unit :=
+def setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] (ptr : PPtr t_a) (val : t_a) : Kernel Unit :=
   do
     let ps ← gets KernelState.ksPSpace
     let map := PSpace.psMap ps
@@ -110,11 +110,11 @@ def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat)
     modify (fun ks => { ks with ksPSpace := ps' })
 
 /-- Haskell `placeNewObject` -/
-def placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] (ptr : PPtr Unit) (val : a) (groupSizeBits : Nat) : Kernel Unit :=
+def placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] (ptr : PPtr Unit) (val : t_a) (groupSizeBits : Nat) : Kernel Unit :=
   placeNewObject' ptr (injectKO val) groupSizeBits
 
 /-- Haskell `deleteRange` -/
-def deleteRange {a : Type} [Inhabited a] (m : (Word → Option a)) (pstart : Word) (bits : Nat) : (Word → Option a) :=
+def deleteRange {t_a : Type} [Inhabited t_a] (m : (Word → Option t_a)) (pstart : Word) (bits : Nat) : (Word → Option t_a) :=
   let (_, lr) := (MapH.split) (pstart - 1) m
   let pend := pstart + (2 ^ bits)
   let (mid, _) := (MapH.split) pend lr
@@ -126,12 +126,12 @@ def cNodePartialOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :
   | _, _ => false
 
 /-- Haskell `deletionIsSafe` -/
-def deletionIsSafe {a : Type} [Inhabited a] (x0 : PPtr a) (x1 : Nat) (x2 : KernelState) : Bool :=
+def deletionIsSafe {t_a : Type} [Inhabited t_a] (x0 : PPtr t_a) (x1 : Nat) (x2 : KernelState) : Bool :=
   match x0, x1, x2 with
   | _, _, _ => true
 
 /-- Haskell `deletionIsSafe_delete_locale` -/
-def deletionIsSafe_delete_locale {a : Type} [Inhabited a] (x0 : PPtr a) (x1 : Nat) (x2 : KernelState) : Bool :=
+def deletionIsSafe_delete_locale {t_a : Type} [Inhabited t_a] (x0 : PPtr t_a) (x1 : Nat) (x2 : KernelState) : Bool :=
   match x0, x1, x2 with
   | _, _, _ => true
 
@@ -141,7 +141,7 @@ def ksASIDMapSafe (x0 : KernelState) : Bool :=
   | _ => true
 
 /-- Haskell `deleteObjects` -/
-def deleteObjects {a : Type} [Inhabited a] (ptr : PPtr a) (bits : Nat) : Kernel Unit :=
+def deleteObjects {t_a : Type} [Inhabited t_a] (ptr : PPtr t_a) (bits : Nat) : Kernel Unit :=
   do
     let _ ← unlessH (((PPtr.ptr ptr) &&& (mask bits)) == 0) (alignError bits)
     let _ ← stateAssertH (deletionIsSafe ptr bits) "Object deletion would leave dangling pointers"
@@ -165,7 +165,7 @@ def deleteObjects {a : Type} [Inhabited a] (ptr : PPtr a) (bits : Nat) : Kernel 
     stateAssertH ksASIDMapSafe "Object deletion would leave dangling PD pointers"
 
 /-- Haskell `reserveFrame` -/
-def reserveFrame {a : Type} [Inhabited a] (ptr : PPtr a) (isKernel : Bool) : Kernel Unit :=
+def reserveFrame {t_a : Type} [Inhabited t_a] (ptr : PPtr t_a) (isKernel : Bool) : Kernel Unit :=
   do
     let val := if isKernel then
         KernelObject.KOKernelData

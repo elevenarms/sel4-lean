@@ -25,7 +25,7 @@ opaque createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel Cap
 opaque deriveCap : (PPtr CTE) → Capability → KernelF SyscallError Capability
 
 -- external: SEL4/Model/Failures.lhs
-opaque emptyOnFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f (List a)) → Kernel (List a)
+opaque emptyOnFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f (List t_a)) → Kernel (List t_a)
 
 -- external: SEL4/Object/ObjectType.lhs
 opaque finaliseCap : Capability → Bool → Bool → Kernel (Capability × Capability)
@@ -37,7 +37,7 @@ opaque genInvocationType : Word → GenInvocationLabels
 opaque getCurThread : Kernel (PPtr TCB)
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
+opaque getObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → Kernel t_a
 
 -- external: SEL4/API/Types.lhs
 opaque getObjectSize : ObjectType → Nat → Nat
@@ -85,16 +85,16 @@ opaque maskCapRights : CapRights → Capability → Capability
 opaque maxFreeIndex : Nat → Nat
 
 -- external: SEL4/API/Types.lhs
-opaque msgMaxExtraCaps {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a
+opaque msgMaxExtraCaps {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a
 
 -- external: SEL4/API/Types.lhs
-opaque msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a
+opaque msgMaxLength {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a
 
 -- external: SEL4/Object/Structures.lhs
 opaque nullMDBNode : MDBNode
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {a : Type} [Inhabited a] : PPtr a
+opaque nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a
 
 -- external: SEL4/Object/ObjectType.lhs
 opaque postCapDeletion : Capability → Kernel Unit
@@ -112,16 +112,16 @@ opaque sameObjectAs : Capability → Capability → Bool
 opaque sameRegionAs : Capability → Capability → Bool
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
+opaque setObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr t_a) → t_a → Kernel Unit
 
 -- external: SEL4/Object/Structures.lhs
 opaque tcbReplySlot : Word
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Model/Failures.lhs
-opaque unifyFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → KernelF Unit a
+opaque unifyFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → KernelF Unit t_a
 
 -- external: SEL4/Object/Structures.lhs
 opaque untypedZeroRange : Capability → Option (Word × Word)
@@ -130,10 +130,10 @@ opaque untypedZeroRange : Capability → Option (Word × Word)
 opaque updateCapData : Bool → Word → Capability → Capability
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 -- external: Data/WordLib.lhs
 opaque wordSize : Nat

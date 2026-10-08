@@ -23,55 +23,55 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `withoutFailure` -/
-def withoutFailure {a : Type} [Inhabited a] {f : Type} [Inhabited f] : (Kernel a) → KernelF f a :=
+def withoutFailure {t_a : Type} [Inhabited t_a] {t_f : Type} [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a :=
   lift
 
 /-- Haskell `throw` -/
-def throw {f : Type} [Inhabited f] {a : Type} [Inhabited a] : f → KernelF f a :=
-  throw
+def throw {t_f : Type} [Inhabited t_f] {t_a : Type} [Inhabited t_a] : t_f → KernelF t_f t_a :=
+  MonadExcept.throw
 
 /-- Haskell `catchFailure` -/
-def catchFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] (f : KernelF f a) (h : f → Kernel a) : Kernel a :=
+def catchFailure {t_f : Type} [Inhabited t_f] {t_a : Type} [Inhabited t_a] (f : KernelF t_f t_a) (h : t_f → Kernel t_a) : Kernel t_a :=
   do
     let result ← ExceptT.run f
     either h pure result
 
 /-- Haskell `rethrowFailure` -/
-def rethrowFailure {f1 : Type} [Inhabited f1] {f2 : Type} [Inhabited f2] {a : Type} [Inhabited a] (t : f1 → f2) (m : KernelF f1 a) : KernelF f2 a :=
+def rethrowFailure {t_f1 : Type} [Inhabited t_f1] {t_f2 : Type} [Inhabited t_f2] {t_a : Type} [Inhabited t_a] (t : t_f1 → t_f2) (m : KernelF t_f1 t_a) : KernelF t_f2 t_a :=
   do
     let result ← lift (ExceptT.run m)
     either (throw ∘ t) pure result
 
 /-- Haskell `capFaultOnFailure` -/
-def capFaultOnFailure {a : Type} [Inhabited a] (cptr : CPtr) (rp : Bool) : (KernelF LookupFailure a) → KernelF Fault a :=
+def capFaultOnFailure {t_a : Type} [Inhabited t_a] (cptr : CPtr) (rp : Bool) : (KernelF LookupFailure t_a) → KernelF Fault t_a :=
   rethrowFailure (Fault.CapFault cptr rp)
 
 /-- Haskell `lookupErrorOnFailure` -/
-def lookupErrorOnFailure {a : Type} [Inhabited a] (isSource : Bool) : (KernelF LookupFailure a) → KernelF SyscallError a :=
+def lookupErrorOnFailure {t_a : Type} [Inhabited t_a] (isSource : Bool) : (KernelF LookupFailure t_a) → KernelF SyscallError t_a :=
   rethrowFailure (SyscallError.FailedLookup isSource)
 
 /-- Haskell `ignoreFailure` -/
-def ignoreFailure {f : Type} [Inhabited f] : (KernelF f Unit) → Kernel Unit :=
+def ignoreFailure {t_f : Type} [Inhabited t_f] : (KernelF t_f Unit) → Kernel Unit :=
   (fun x => catchFailure x (const (pure ())))
 
 /-- Haskell `nullCapOnFailure` -/
-def nullCapOnFailure {f : Type} [Inhabited f] : (KernelF f Capability) → Kernel Capability :=
+def nullCapOnFailure {t_f : Type} [Inhabited t_f] : (KernelF t_f Capability) → Kernel Capability :=
   flip catchFailure (const (pure Capability.NullCap))
 
 /-- Haskell `emptyOnFailure` -/
-def emptyOnFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] (m : KernelF f (List a)) : Kernel (List a) :=
+def emptyOnFailure {t_f : Type} [Inhabited t_f] {t_a : Type} [Inhabited t_a] (m : KernelF t_f (List t_a)) : Kernel (List t_a) :=
   catchFailure m (const (pure []))
 
 /-- Haskell `constOnFailure` -/
-def constOnFailure {a : Type} [Inhabited a] {f : Type} [Inhabited f] (x : a) (m : KernelF f a) : Kernel a :=
+def constOnFailure {t_a : Type} [Inhabited t_a] {t_f : Type} [Inhabited t_f] (x : t_a) (m : KernelF t_f t_a) : Kernel t_a :=
   catchFailure m (const (pure x))
 
 /-- Haskell `unifyFailure` -/
-def unifyFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] : (KernelF f a) → KernelF Unit a :=
+def unifyFailure {t_f : Type} [Inhabited t_f] {t_a : Type} [Inhabited t_a] : (KernelF t_f t_a) → KernelF Unit t_a :=
   rethrowFailure (const ())
 
 /-- Haskell `rangeCheck` -/
-def rangeCheck {a : Type} [Inhabited a] {b : Type} [Inhabited b] [IntegralH a] [IntegralH b] (value : a) (minV : b) (maxV : b) : KernelF SyscallError Unit :=
+def rangeCheck {t_a : Type} [Inhabited t_a] {t_b : Type} [Inhabited t_b] [IntegralH t_a] [OrdH t_a] [IntegralH t_b] [OrdH t_b] (value : t_a) (minV : t_b) (maxV : t_b) : KernelF SyscallError Unit :=
   unlessH ((value ≥ (fromIntegral minV)) && (value ≤ (fromIntegral maxV))) (throw (SyscallError.RangeError (fromIntegral minV) (fromIntegral maxV)))
 
 end

@@ -9,7 +9,8 @@ import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Config
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Data_WordLib
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 
 namespace Sel4Lean.Spec.M.Object_Structures
 open Sel4Lean.Spec
@@ -17,15 +18,13 @@ open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 open Sel4Lean.Spec.M.API_Types_RISCV64 (tcbBlockSizeBits)
 open Sel4Lean.Spec.M.API_Types_Universal (cteSizeBits epSizeBits ntfnSizeBits)
 open Sel4Lean.Spec.M.Config (numDomains numPriorities)
+open Sel4Lean.Spec.M.Data_WordLib (wordBits)
 open Sel4Lean.Spec.M.Machine_Hardware (config_HAVE_FPU nullPointer pageBits)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask)
+open Sel4Lean.Spec.M.Machine_RegisterSet (mask)
 open Sel4Lean.Spec.M.Object_Structures_RISCV64 (archObjSize)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: Data/WordLib.lhs
-opaque wordBits : Nat
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

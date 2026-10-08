@@ -4,34 +4,26 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Data_WordLib
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
 
 namespace Sel4Lean.Spec.M.API_Types
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Data_WordLib (wordSizeCase)
+open Sel4Lean.Spec.M.Machine_Hardware (ptrFromPAddr)
 noncomputable section
 
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.fromAPIType := @Sel4Lean.Spec.M.API_Types_RISCV64.fromAPIType
+abbrev RISCV64.getObjectSize := @Sel4Lean.Spec.M.API_Types_RISCV64.getObjectSize
+abbrev RISCV64.isFrameType := @Sel4Lean.Spec.M.API_Types_RISCV64.isFrameType
+abbrev RISCV64.pageType := @Sel4Lean.Spec.M.API_Types_RISCV64.pageType
+abbrev RISCV64.toAPIType := @Sel4Lean.Spec.M.API_Types_RISCV64.toAPIType
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/API/Types.lhs
-opaque RISCV64.fromAPIType : APIObjectType → ObjectType
-
--- arch: SEL4/API/Types/RISCV64.hs
-opaque RISCV64.getObjectSize : ObjectType → Nat → Nat
-
--- arch: SEL4/API/Types/RISCV64.hs
-opaque RISCV64.isFrameType : ObjectType → Bool
-
--- arch: SEL4/API/Types.lhs
-opaque RISCV64.pageType : ObjectType
-
--- arch: SEL4/API/Types.lhs
-opaque RISCV64.toAPIType : ObjectType → Option APIObjectType
-
--- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
-
--- external: Data/WordLib.lhs
-opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
@@ -107,11 +99,11 @@ def msgLengthBits : Nat :=
   7
 
 /-- Haskell `msgMaxExtraCaps` -/
-def msgMaxExtraCaps {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
+def msgMaxExtraCaps {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a :=
   (bit msgExtraCapBits) - 1
 
 /-- Haskell `msgMaxLength` -/
-def msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
+def msgMaxLength {t_a : Type} [Inhabited t_a] [IntegralH t_a] [BitsH t_a] : t_a :=
   120
 
 /-- Haskell `messageInfoFromWord` -/

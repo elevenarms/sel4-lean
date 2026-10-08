@@ -7,10 +7,10 @@ Status: **in progress** (2026-10-08).
 | Metric | Value | Source |
 |---|---|---|
 | Data types translated (closure of all modules) | **91+**, 1 opaque (`CallbackData` has no constructors in Haskell either) | `Spec/Gen/Types.lean`, compiles |
-| Functions translated to Lean text | **679 / 695 (97.7%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
+| Functions translated to Lean text | **680 / 693 (98.1%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
 | Machine-interface functions | **99**, opaque **by design**: the Haskell bodies are the simulator's (IO/FFI); l4v's Isabelle also treats machine operations as opaque (`MachineOps.thy`) | `full.py` `MACHINE_INTERFACE` |
-| Modules whose generated Lean compiles | **49 / 61** | `artifacts/w2/compile-status.txt` |
-| Translated bodies in compiling modules | **342 / 596 non-machine functions (57.4%)** | the honest number |
+| Modules whose generated Lean compiles | **55 / 61**; 47 of them import each other's definitions | `artifacts/w2/compile-status.txt` |
+| Translated bodies in compiling modules | **436 / 594 non-machine functions (73.4%)** | the honest number |
 | `partial def` (self-recursive) | 16 in all generated modules; each checked to be genuinely recursive | TODO(W4): termination proofs |
 
 Translation coverage is not compile coverage. A module compiles only when every function in it does, so
@@ -90,8 +90,8 @@ fields; newtype `deriving (Num, Ord, Bits, Enum)` → lifted instances; enumerat
 multi-equation functions and pattern parameters → `match`; backtick operators and fixities; sections;
 destructuring `where` bindings; `Arch.f` dispatch (`f = Arch.f` would otherwise be an infinite self-call).
 
-Two process lessons: generated files are tracked in git, so a laptop `remote_push.sh` can overwrite fresh
-output with stale copies; the sweep therefore regenerates first. And Lake prints `⚠ Built` for modules that
+Two process lessons: generated files are tracked in git, so a laptop `remote_push.sh` overwrote fresh
+output with stale copies (twice); `remote_push.sh` now never sends `artifacts/` or `Gen/`. And Lake prints `⚠ Built` for modules that
 compile with warnings; the sweep first counted only `✔`.
 
 ## Known approximations (to resolve before W4 relies on them)
@@ -105,9 +105,12 @@ compile with warnings; the sweep first counted only `✔`.
 
 ## Next
 
-**Structural next step: modules import each other** instead of stubbing everything external (stubs only for
-Haskell `{-# SOURCE #-}` cycles and for modules that don't compile yet). That gives real definitions,
-correct arch types, and is what W3/W4 need. Then the remaining 12 modules. Earlier list: type mismatches around monad stacks (`KernelF`, `KernelInit`,
+Done: **modules import each other.** A single pass in Haskell's import order (non-`SOURCE`, `TARGET` =
+RISCV64) generates and builds each module; it imports definitions only from modules already built in that
+pass, and falls back to stub-only if the import version fails. Arch functions without signatures borrow the
+generic signature, read in the arch file's scope. Remaining: the last 6 modules (`Kernel/Init`,
+`Kernel/BootInfo`, `Kernel/VSpace/RISCV64`, `Object/CNode`, `Object/Interrupt/RISCV64`,
+`API/InvocationLabels`). Earlier list: type mismatches around monad stacks (`KernelF`, `KernelInit`,
 `MachineMonad` vs `Kernel`), typeclass methods with no top-level signature (`makeObject`, `loadObject` from
 `PSpaceStorable`), `show`, `liftIO`, `maxBound`/`minBound`, and numeric literal typing. Target the large
 modules one at a time, since they hold most of the functions.

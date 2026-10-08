@@ -34,6 +34,8 @@ check("x .|. y .&. z", "x ||| (y &&& z)")  # .&. (7) tighter than .|. (5)
 check("f a $ g $ h x", "f a (g (h x))")    # $ is infixr 0 application
 check("a : b : []", "a :: (b :: [])")
 check("a == b && c", "(a == b) && c")
+check("(! r)", "(fun x => x r)")              # array index section (arrays are functions)
+check("(// [(r, v)])", "(fun x => arrayUpdH x ([(r, v)]))")
 refuses("a == b == c")                     # infix 4 non-associative: GHC rejects too
 refuses("a <|> b")                         # unknown operator
 

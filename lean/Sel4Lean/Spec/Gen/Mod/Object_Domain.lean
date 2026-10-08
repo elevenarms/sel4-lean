@@ -4,27 +4,31 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.Mod.Config
-import Sel4Lean.Spec.Gen.Mod.Object_Structures
-import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
-import Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
 
 namespace Sel4Lean.Spec.M.Object_Domain
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Config (numDomains)
-open Sel4Lean.Spec.M.Object_Structures (domainEndMarker maxDomainDuration)
-open Sel4Lean.Spec.M.Object_Structures_RISCV64 (parseTimeArg timeArgLen)
 noncomputable section
-
-/-! ## RISCV64 definitions from imported modules -/
-
-abbrev RISCV64.prepareSetDomain := @Sel4Lean.Spec.M.Object_Domain_RISCV64.prepareSetDomain
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- arch: SEL4/Object/Domain/RISCV64.hs
+opaque RISCV64.prepareSetDomain : (PPtr TCB) → Domain → Kernel Unit
+
+-- external: SEL4/Object/Structures.lhs
+opaque domainEndMarker : DomainScheduleItem
+
 -- external: SEL4/API/InvocationLabels.lhs
 opaque genInvocationType : Word → GenInvocationLabels
+
+-- external: SEL4/Object/Structures.lhs
+opaque maxDomainDuration : DomainDuration
+
+-- external: SEL4/Config.lhs
+opaque numDomains : Nat
+
+-- external: SEL4/Object/Structures/RISCV64.hs
+opaque parseTimeArg : Nat → (List Word) → Ticks
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit
@@ -33,10 +37,13 @@ opaque rescheduleRequired : Kernel Unit
 opaque setDomain : (PPtr TCB) → Domain → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
+
+-- external: SEL4/Object/Structures/RISCV64.hs
+opaque timeArgLen : Nat
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 /-! ## Unresolved (no stub possible)
   fromIntegral: no signature found
@@ -57,7 +64,7 @@ def domainSet (thread : PPtr TCB) (domain : Domain) : Kernel Unit :=
     setDomain thread domain
 
 /-- Haskell `listUpdate` -/
-partial def listUpdate {a : Type} [Inhabited a] (x0 : List a) (x1 : Nat) (x2 : a) : List a :=
+partial def listUpdate {t_a : Type} [Inhabited t_a] (x0 : List t_a) (x1 : Nat) (x2 : t_a) : List t_a :=
   match x0, x1, x2 with
   | [], i, v => []
   | (x :: xs), i, v => 

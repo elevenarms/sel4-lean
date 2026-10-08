@@ -16,7 +16,7 @@ noncomputable section
 opaque activateInitialThread : (PPtr TCB) → VPtr → VPtr → Kernel Unit
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
 
 -- external: SEL4/Kernel/BootInfo.lhs
 opaque biCapIRQControl : Word
@@ -109,16 +109,16 @@ opaque nopBIFrameData : BIFrameData
 opaque pageBits : Nat
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
 
 -- external: SEL4/API/Types.lhs
 opaque ptrFromPAddrRegion : (PAddr × PAddr) → Region
 
 -- external: SEL4/Model/PSpace.lhs
-opaque reserveFrame {a : Type} [Inhabited a] : (PPtr a) → Bool → Kernel Unit
+opaque reserveFrame {t_a : Type} [Inhabited t_a] : (PPtr t_a) → Bool → Kernel Unit
 
 -- external: SEL4/Config.lhs
 opaque rootCNodeSize : Nat
@@ -136,7 +136,7 @@ opaque syncBIFrame : KernelInit Unit
 opaque threadSet : (TCB → TCB) → (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Kernel/VSpace.lhs
-opaque vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr
+opaque vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr
 
 -- external: SEL4/Kernel/VSpace.lhs
 opaque writeITASIDPool : Capability → Capability → Kernel Unit
@@ -182,11 +182,11 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
 /-! ## Translated -/
 
 /-- Haskell `doKernelOp` -/
-def doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a :=
+def doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a :=
   lift ∘ lift
 
 /-- Haskell `noInitFailure` -/
-def noInitFailure {a : Type} [Inhabited a] : (KernelInitState a) → KernelInit a :=
+def noInitFailure {t_a : Type} [Inhabited t_a] : (KernelInitState t_a) → KernelInit t_a :=
   lift
 
 /-- Haskell `minNum4kUntypedObj` -/
@@ -329,7 +329,7 @@ def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelInit Unit 
   do
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let maxSlot ← noInitFailure (gets InitData.initSlotPosMax)
-    let _ ← whenH (currSlot ≥ maxSlot) (throw InitFailure.IFailure)
+    let _ ← whenH (currSlot ≥ maxSlot) (MonadExcept.throw InitFailure.IFailure)
     let slot ← doKernelOp (locateSlotCap rootCNodeCap currSlot)
     let _ ← doKernelOp (insertInitCap slot cap)
     noInitFailure (modify (fun st => { st with initSlotPosCur := currSlot + 1 }))
@@ -424,7 +424,7 @@ def allocFrame : KernelInit PAddr :=
   allocRegion pageBits
 
 /-- Haskell `rangesBy` -/
-partial def rangesBy {a : Type} [Inhabited a] (x0 : a → a → Bool) (x1 : List a) : List (List a) :=
+partial def rangesBy {t_a : Type} [Inhabited t_a] (x0 : t_a → t_a → Bool) (x1 : List t_a) : List (List t_a) :=
   match x0, x1 with
   | _, [] => []
   | _, [x] => [[x]]
@@ -436,7 +436,7 @@ partial def rangesBy {a : Type} [Inhabited a] (x0 : a → a → Bool) (x1 : List
         [x] :: r
 
 /-- Haskell `distinct` -/
-partial def distinct {a : Type} [Inhabited a] [DecidableEq a] (x0 : List a) : Bool :=
+partial def distinct {t_a : Type} [Inhabited t_a] [DecidableEq t_a] (x0 : List t_a) : Bool :=
   match x0 with
   | [] => true
   | (x :: xs) => (notElem x xs) && (distinct xs)

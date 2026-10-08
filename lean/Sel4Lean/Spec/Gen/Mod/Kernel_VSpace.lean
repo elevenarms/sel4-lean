@@ -51,7 +51,7 @@ opaque RISCV64.lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr RI
 opaque RISCV64.mapKernelWindow : Kernel Unit
 
 -- arch: SEL4/Kernel/VSpace/RISCV64.hs
-opaque RISCV64.vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr
+opaque RISCV64.vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr
 
 -- arch: SEL4/Kernel/VSpace/RISCV64.hs
 opaque RISCV64.writeITASIDPool : Capability → Capability → Kernel Unit
@@ -125,7 +125,7 @@ def lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word)) :=
   RISCV64.lookupIPCBuffer
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
+def vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr :=
   RISCV64.vptrFromPPtr
 
 end

@@ -4,20 +4,24 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
-import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Kernel_CSpace
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
 
 namespace Sel4Lean.Spec.M.Kernel_FaultHandler
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Kernel_CSpace (lookupCap)
-open Sel4Lean.Spec.M.Kernel_Thread (asUser catchFailure getRestartPC setThreadState threadGet threadSet throw withoutFailure)
-open Sel4Lean.Spec.M.Machine_Hardware (debugPrint)
-open Sel4Lean.Spec.M.Object_Endpoint (sendIPC)
-open Sel4Lean.Spec.M.Object_TCB (capFaultOnFailure)
+open Sel4Lean.Spec.M.Kernel_CSpace (lookupCap throw withoutFailure)
+open Sel4Lean.Spec.M.Kernel_Thread (setThreadState)
+open Sel4Lean.Spec.M.Machine_Hardware (debugPrint getRestartPC)
+open Sel4Lean.Spec.M.Model_Failures (capFaultOnFailure catchFailure)
+open Sel4Lean.Spec.M.Object_Endpoint (sendIPC threadSet)
+open Sel4Lean.Spec.M.Object_Notification (asUser)
+open Sel4Lean.Spec.M.Object_TCB (threadGet)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/

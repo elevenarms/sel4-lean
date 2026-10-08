@@ -4,20 +4,16 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
-import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 
 namespace Sel4Lean.Spec.M.Object_ObjectType_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask pageBitsForSize ptBits ptTranslationBits)
-open Sel4Lean.Spec.M.Model_PSpace (placeNewObject)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Model/Failures.lhs
-opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → (f → Kernel a) → Kernel a
+opaque catchFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → (t_f → Kernel t_a) → Kernel t_a
 
 -- local, not translated: pattern: apply at line 158: 'Arch.Types.APIObjectType _'
 opaque createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel ArchCapability
@@ -34,14 +30,29 @@ opaque deleteASIDPool : ASID → (PPtr ASIDPool) → Kernel Unit
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque findVSpaceForASID : ASID → KernelF LookupFailure (PPtr PTE)
 
+-- external: SEL4/Machine/RegisterSet.lhs
+opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
+
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque maskVMRights : VMRights → CapRights → VMRights
+
+-- external: SEL4/Machine/Hardware/RISCV64.hs
+opaque pageBitsForSize : VMPageSize → Nat
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque performRISCVMMUInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word)
 
+-- external: SEL4/Model/PSpace.lhs
+opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
+
+-- external: SEL4/Machine/Hardware/RISCV64.hs
+opaque ptBits : Nat
+
+-- external: SEL4/Machine/Hardware/RISCV64.hs
+opaque ptTranslationBits : Nat
+
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque unmapPage : VMPageSize → ASID → VPtr → (PPtr RISCV64.Word) → Kernel Unit
@@ -50,7 +61,7 @@ opaque unmapPage : VMPageSize → ASID → VPtr → (PPtr RISCV64.Word) → Kern
 opaque unmapPageTable : ASID → VPtr → (PPtr PTE) → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

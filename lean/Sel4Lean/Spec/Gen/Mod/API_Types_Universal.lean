@@ -4,16 +4,15 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Data_WordLib
 
 namespace Sel4Lean.Spec.M.API_Types_Universal
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Data_WordLib (wordSizeCase)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: Data/WordLib.lhs
-opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 
 /-! ## Translated -/
 

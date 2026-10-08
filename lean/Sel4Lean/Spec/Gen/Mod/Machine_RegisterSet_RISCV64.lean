@@ -4,22 +4,18 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.Mod.Data_Helpers
 
 namespace Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
-open Sel4Lean.Spec.M.Data_Helpers (funArray)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
 /-! ## Unresolved (no stub possible)
   const: no signature found
-  getRegister: local, not translated, no signature: function without a signature: function at line 87: 'getRegis
   gets: no signature found
   modify: no signature found
-  setRegister: local, not translated, no signature: function without a signature: function at line 89: 'setRegis
 -/
 
 /-! ## Translated -/
@@ -79,6 +75,14 @@ def nextInstructionRegister : RISCV64.Register :=
 /-- Haskell `newContext` -/
 def newContext : UserContext :=
   UserContext.UC (arrayUpdH (funArray (const 0)) initContext)
+
+/-- Haskell `getRegister` -/
+def getRegister (r : RISCV64.Register) : UserMonad RISCV64.Word :=
+  gets (((fun x => x r)) ∘ UserContext.fromUC)
+
+/-- Haskell `setRegister` -/
+def setRegister (r : RISCV64.Register) (v : RISCV64.Word) : UserMonad Unit :=
+  modify (UserContext.UC ∘ (((fun x => arrayUpdH x ([(r, v)]))) ∘ UserContext.fromUC))
 
 end
 end Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64

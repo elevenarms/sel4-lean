@@ -1,6 +1,6 @@
 module	translated	total	notes
 Data/BinaryTree.hs	9	9	hs2lean module: 9/9 functions translated (6 partial, 0 machine-opaque), 0 external stubs, 1 unresolved
-Data/Helpers.hs	3	3	hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 5 unresolved
+Data/Helpers.hs	1	1	hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 5 unresolved
 Data/WordLib.lhs	5	5	hs2lean module: 5/5 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 9 unresolved
 SEL4/API.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/API/Failures.lhs	2	2	hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 2 unresolved
@@ -13,7 +13,7 @@ SEL4/API/InvocationLabels.lhs	2	2	hs2lean module: 2/2 functions translated (0 pa
 SEL4/API/InvocationLabels/RISCV64.hs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/API/Syscall.lhs	7	7	hs2lean module: 7/7 functions translated (0 partial, 0 machine-opaque), 37 external stubs, 2 unresolved
 SEL4/API/Types.lhs	21	21	hs2lean module: 21/21 functions translated (0 partial, 0 machine-opaque), 7 external stubs, 4 unresolved
-SEL4/API/Types/RISCV64.hs	6	7	hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque), 5 external stubs, 1 unresolved
+SEL4/API/Types/RISCV64.hs	7	7	hs2lean module: 7/7 functions translated (0 partial, 0 machine-opaque), 5 external stubs, 0 unresolved
 SEL4/API/Types/Universal.lhs	3	3	hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque), 1 external stubs, 0 unresolved
 SEL4/Config.lhs	8	8	hs2lean module: 8/8 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 1 unresolved
 SEL4/Kernel.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
@@ -33,14 +33,14 @@ SEL4/Machine/Hardware/RISCV64.hs	50	50	hs2lean module: 50/50 functions translate
 SEL4/Machine/Hardware/RISCV64/HiFive.hs	13	13	hs2lean module: 13/13 functions translated (0 partial, 13 machine-opaque), 13 external stubs, 1 unresolved
 SEL4/Machine/Hardware/RISCV64/Spike.hs	13	13	hs2lean module: 13/13 functions translated (0 partial, 13 machine-opaque), 13 external stubs, 1 unresolved
 SEL4/Machine/RegisterSet.lhs	15	15	hs2lean module: 15/15 functions translated (0 partial, 0 machine-opaque), 14 external stubs, 2 unresolved
-SEL4/Machine/RegisterSet/RISCV64.hs	14	16	hs2lean module: 14/16 functions translated (0 partial, 0 machine-opaque), 1 external stubs, 5 unresolved
+SEL4/Machine/RegisterSet/RISCV64.hs	16	16	hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 3 unresolved
 SEL4/Machine/Target.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Model.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Model/Failures.lhs	12	12	hs2lean module: 12/12 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 5 unresolved
 SEL4/Model/PSpace.lhs	19	19	hs2lean module: 19/19 functions translated (0 partial, 0 machine-opaque), 7 external stubs, 11 unresolved
 SEL4/Model/PSpace/RISCV64.hs	1	1	hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Model/Preemption.lhs	3	3	hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque), 4 external stubs, 1 unresolved
-SEL4/Model/StateData.lhs	26	26	hs2lean module: 26/26 functions translated (1 partial, 0 machine-opaque), 10 external stubs, 8 unresolved
+SEL4/Model/StateData.lhs	26	26	hs2lean module: 26/26 functions translated (1 partial, 0 machine-opaque), 9 external stubs, 8 unresolved
 SEL4/Model/StateData/RISCV64.hs	3	3	hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 2 unresolved
 SEL4/Model/Syscall.lhs	1	1	hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque), 1 external stubs, 0 unresolved
 SEL4/Object.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
@@ -50,7 +50,7 @@ SEL4/Object/Domain/RISCV64.hs	1	1	hs2lean module: 1/1 functions translated (0 pa
 SEL4/Object/Endpoint.lhs	8	9	hs2lean module: 8/9 functions translated (0 partial, 0 machine-opaque), 30 external stubs, 7 unresolved
 SEL4/Object/Instances.lhs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Object/Instances/RISCV64.hs	0	0	hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
-SEL4/Object/Interrupt.lhs	14	14	hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque), 39 external stubs, 12 unresolved
+SEL4/Object/Interrupt.lhs	14	14	hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque), 38 external stubs, 12 unresolved
 SEL4/Object/Interrupt/RISCV64.hs	7	9	hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque), 13 external stubs, 4 unresolved
 SEL4/Object/Notification.lhs	13	13	hs2lean module: 13/13 functions translated (0 partial, 0 machine-opaque), 14 external stubs, 0 unresolved
 SEL4/Object/ObjectType.lhs	16	16	hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque), 51 external stubs, 13 unresolved
@@ -60,4 +60,4 @@ SEL4/Object/Structures/RISCV64.hs	13	13	hs2lean module: 13/13 functions translat
 SEL4/Object/TCB.lhs	42	43	hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 67 external stubs, 22 unresolved
 SEL4/Object/TCB/RISCV64.hs	6	6	hs2lean module: 6/6 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Object/Untyped.lhs	6	7	hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque), 27 external stubs, 13 unresolved
-TOTAL	679	695	61 modules
+TOTAL	680	693	61 modules

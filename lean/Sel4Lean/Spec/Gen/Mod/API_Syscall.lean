@@ -13,16 +13,16 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
+opaque asUser {t_a : Type} [Inhabited t_a] : (PPtr TCB) → (UserMonad t_a) → Kernel t_a
 
 -- external: SEL4/Model/Failures.lhs
-opaque capFaultOnFailure {a : Type} [Inhabited a] : CPtr → Bool → (KernelF LookupFailure a) → KernelF Fault a
+opaque capFaultOnFailure {t_a : Type} [Inhabited t_a] : CPtr → Bool → (KernelF LookupFailure t_a) → KernelF Fault t_a
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque capRegister : Register
 
 -- external: SEL4/Model/Failures.lhs
-opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → (f → Kernel a) → Kernel a
+opaque catchFailure {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : (KernelF t_f t_a) → (t_f → Kernel t_a) → Kernel t_a
 
 -- external: SEL4/Object/ObjectType.lhs
 opaque decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → Capability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
@@ -79,7 +79,7 @@ opaque lookupExtraCaps : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo →
 opaque lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
+opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque maybeHandleInterrupt : Bool → Kernel Unit
@@ -106,7 +106,7 @@ opaque rescheduleRequired : Kernel Unit
 opaque setThreadState : ThreadState → (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Model/Syscall.lhs
-opaque syscall {a : Type} {c : Type} {b : Type} [Inhabited a] [Inhabited c] [Inhabited b] : (KernelF Fault a) → (Fault → Kernel c) → (a → KernelF SyscallError b) → (SyscallError → Kernel c) → (b → KernelP c) → KernelP c
+opaque syscall {t_a : Type} {t_c : Type} {t_b : Type} [Inhabited t_a] [Inhabited t_c] [Inhabited t_b] : (KernelF Fault t_a) → (Fault → Kernel t_c) → (t_a → KernelF SyscallError t_b) → (SyscallError → Kernel t_c) → (t_b → KernelP t_c) → KernelP t_c
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque tcbSchedAppend : (PPtr TCB) → Kernel Unit
@@ -115,13 +115,13 @@ opaque tcbSchedAppend : (PPtr TCB) → Kernel Unit
 opaque tcbSchedDequeue : (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
+opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
 
 -- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
+opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
 
 -- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
+opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   fromIntegral: no signature found

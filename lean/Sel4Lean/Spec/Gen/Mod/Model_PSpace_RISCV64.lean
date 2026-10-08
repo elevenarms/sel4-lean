@@ -15,7 +15,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `deleteGhost` -/
-def deleteGhost {a : Type} [Inhabited a] (ptr : PPtr a) (bits : Nat) : Kernel Unit :=
+def deleteGhost {t_a : Type} [Inhabited t_a] (ptr : PPtr t_a) (bits : Nat) : Kernel Unit :=
   pure ()
 
 end
