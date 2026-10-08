@@ -1,4 +1,5 @@
 import Sel4Lean.Corres
+import Sel4Lean.Tactic.WP
 import Sel4Lean.Exec.Gen.Notification
 import Sel4Lean.Abstract.IpcCancel
 
@@ -220,22 +221,15 @@ lemma cancelSignal_simple[wp]:
   by (wpsimp simp: cancelSignal_def Let_def wp: setThreadState_st_tcb)
 ```
 Assumes l4v `setThreadState_st_tcb` (TcbAcc_R.thy:3735). Every earlier step only has to carry the
-state-independent fact `simple' Inactive`, which `valid_const` gives for any program. -/
+state-independent fact `simple' Inactive`, which `valid_const` (a `@[wp_rule]`) gives for any program. -/
 theorem cancelSignal_simple
     (setThreadState_st_tcb : ∀ (P : ThreadState → Prop) st t,
       ⟪fun _ => P st⟫ (setThreadState st t) ⟪fun _ => st_tcb_at' P t⟫)
     (t : PPtr TCB) (ntfn : PPtr Notification) :
     ⟪fun _ => True⟫ (cancelSignal t ntfn) ⟪fun _ => st_tcb_at' simple' t⟫ := by
   unfold cancelSignal
-  refine hoare_pre (P' := fun _ => simple' .Inactive) ?_ (fun _ _ => Or.inl rfl)
-  -- `with_reducible`: only split real binds (see the wp tactic). Lean's `do` compiles
-  -- `let x ← match …` into a join point (`have __do_jp := …; match …`): inline it, then case-split.
-  repeat' (first
-    | (with_reducible apply bind_wp'; intro)
-    | exact setThreadState_st_tcb _ _ _
-    | exact valid_const
-    | split
-    | simp only [])
+  wpsimp [setThreadState_st_tcb]
+  all_goals simp [simple']
 
 end
 end Sel4Lean.Refine

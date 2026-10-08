@@ -134,27 +134,7 @@ theorem noFail_bind {P Q : σ → Prop} {R : α → σ → Prop} {f : NondetM σ
   · exact hg x t (hv s hQ x t hx) hfail
   · exact hf s hP hfail
 
-/-! ## Tactics
-
-`wp` applies wp rules backwards until no rule fits. `wpsimp` first opens the precondition
-(`hoare_pre`), runs `wp`, then discharges the implication with `simp`.
-These are deliberately simple; the real l4v `wp` has rule sets, combinators and `crunch` (walk stage).
--/
-
--- Rules apply under `with_reducible`: a rule fires only when the program's head matches syntactically.
--- Without this, `apply` unfolds `put`/`bind` (or searches `Decidable ?c` for `ite_wp`) and `repeat'` can spin.
-macro "wp" : tactic => `(tactic| repeat' (first
-  | (with_reducible apply bind_wp; intro)
-  | (with_reducible apply bind_wp'; intro)
-  | with_reducible apply ret_wp | with_reducible apply pure_wp
-  | with_reducible apply get_wp | with_reducible apply put_wp
-  | with_reducible apply gets_wp | with_reducible apply modify_wp
-  | with_reducible apply fail_wp | with_reducible apply assertM_wp
-  | with_reducible apply assertOpt_wp | with_reducible apply select_wp
-  | with_reducible apply ite_wp))
-
-macro "wpsimp" : tactic =>
-  `(tactic| (apply hoare_pre; (focus wp); all_goals (try intro s hs); all_goals (try simp_all)))
+/-! Tactics `wp` / `wpsimp` live in `Sel4Lean/Tactic/WP.lean` (rule set via `@[wp_rule]`). -/
 
 end NondetM
 end Sel4Lean

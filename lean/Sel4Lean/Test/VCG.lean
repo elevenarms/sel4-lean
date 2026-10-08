@@ -1,4 +1,4 @@
-import Sel4Lean.Monad.Except
+import Sel4Lean.Tactic.WP
 
 /-! Tests: `wp` / `wpsimp` on `do`-blocks over `NondetM`. -/
 
@@ -45,7 +45,7 @@ def lookupE (k : Nat) : NondetM (List (Nat × Nat)) (Except String Nat) :=
   bindE (liftE get) fun st =>
     match st.lookup k with
     | some v => returnOk v
-    | none => throwError "missing"
+    | none => NondetM.throwError "missing"
 
 /-- On a state where `k ↦ 7`, the lookup succeeds with 7 and never reaches the error branch. -/
 example : validE (fun st => st.lookup 3 = some 7) (lookupE 3) (fun r _ => r = 7) (fun _ _ => False) := by

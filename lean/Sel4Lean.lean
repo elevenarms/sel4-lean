@@ -4,6 +4,8 @@ import Sel4Lean.Monad.Nondet
 import Sel4Lean.Monad.VCG
 import Sel4Lean.Monad.Except
 import Sel4Lean.Corres
+import Sel4Lean.Tactic.WPAttr
+import Sel4Lean.Tactic.WP
 import Sel4Lean.Exec.Prelude
 import Sel4Lean.Exec.Stubs
 import Sel4Lean.Exec.Gen.Structures
