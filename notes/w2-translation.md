@@ -8,7 +8,7 @@ Status: **in progress** (2026-10-08).
 |---|---|---|
 | Data types translated (closure of all modules) | **91+**, 1 opaque (`CallbackData` has no constructors in Haskell either) | `Spec/Gen/Types.lean`, compiles |
 | Functions translated to Lean text | **680 / 693 (98.1%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
-| Machine-interface functions | **99**, opaque **by design**: the Haskell bodies are the simulator's (IO/FFI); l4v's Isabelle also treats machine operations as opaque (`MachineOps.thy`) | `full.py` `MACHINE_INTERFACE` |
+| Machine-interface functions | W3 update: **20** aliased to l4v's `MachineOps.thy` ports. **23** opaque: 10 HiFive simulator callbacks (IO/FFI), 10 in the unused Spike platform module, and 3 boot-only. Pure constants are translated | `full.py` `MACHINE_INTERFACE`, `MACHINE_OPS`; [W3 notes](w3-difftest.md#machine-state-model) |
 | Modules whose generated Lean compiles | **59 / 61**; 58 of them import each other's definitions. The 2 failing are boot code | `artifacts/w2/compile-status.txt` |
 | Translated bodies in compiling modules | **538 / 594 non-machine functions (90.6%)**; **98.0%** excluding boot code (538 / 549) |
 | Names linked to real definitions in other modules | **479** (stubs left: 260, from 647 before imports) | aliases in each generated module | the honest number |
@@ -60,10 +60,9 @@ side-by-side tests (W3) matter.
 ## Machine interface (as l4v)
 
 `MachineMonad` is `ReaderT MachineData IO` in Haskell (the simulator). Following l4v's Isabelle
-(`machine_monad = (machine_state, 'a) nondet_monad`), it is `NondetM MachineState` here, with `MachineState`
-opaque for now, and machine operations are opaque stubs from their signatures. `doMachineOp` is a
-placeholder: l4v lifts machine operations through `ksMachineState`, a field the Haskell `KernelState`
-lacks (TODO(W3): model the machine state).
+(`machine_monad = (machine_state, 'a) nondet_monad`), it is `NondetM MachineState` here. Since W3,
+`MachineState` is l4v's record, `KernelState` has l4v's `ksMachineState`, `doMachineOp` is l4v's definition,
+and the operations are ported from `MachineOps.thy`. See [W3 notes](w3-difftest.md#machine-state-model).
 
 ## Second near-miss: `partial` everywhere
 
@@ -97,10 +96,15 @@ compile with warnings; the sweep first counted only `✔`.
 
 ## Known approximations (to resolve before W4 relies on them)
 
-- `runState` on `UserMonad` (used by `asUser`) picks one result by choice (`runStateND`); l4v's `as_user`
-  lifts the whole result set with `select_f`.
-- `MapH.keys`, `SetH.toList`, `assocs`: unspecified (need finiteness of the key/index type).
-- `doMachineOp`, `objBitsKO`, `nullMDBNode`, TCB/ASIDPool `makeObject`: opaque in the hand layer.
+- Resolved in W3:
+  - `asUser`'s `runState` is now `(a, uc') ← selectF (f uc)`, as in l4v's `asUser_def`.
+  - `assocs` is l4v's `map (λx. (x, f x)) enum`.
+  - `deleteRange` is l4v's mask filter, so `MapH.keys` and `SetH.toList` are no longer needed and are removed.
+  - `doMachineOp` and the machine operations are l4v's.
+- `objBitsKO`, `nullMDBNode`, TCB/ASIDPool `makeObject`: still opaque in the hand layer. The generated
+  definitions exist (Object/Structures), but `PSpaceStorable.lean` is imported by every generated module, so
+  using them needs that file split first.
+- `findMin`/`findMax` on maps use choice (as a specification); Haskell errors on an empty map.
 - Arch functions without Haskell signatures are stubbed with the generic signature (wrong types in a few
   places); fixed properly by the next structural step.
 

@@ -66,3 +66,39 @@ The harness had its own problems:
   state generator and the machine-state model, which is the next W3 item.
 - Agreement on sampled inputs is evidence, not proof. The proofs in W4 are what count; this test
   checks that the thing W4 will prove things about is the thing l4v specifies.
+
+## Machine state model
+
+The Haskell model runs machine operations against a simulator (`ReaderT MachineData IO`). Following l4v's
+Isabelle, the Lean model replaces the simulator with a machine state and definitions over it:
+
+| piece | l4v source | Lean |
+|---|---|---|
+| `MachineState` record: `irq_masks`, `irq_state`, `underlying_memory`, `device_state`, `machine_state_rest` | `spec/machine/RISCV64/MachineTypes.thy` | generated into `Spec/Gen/Types.lean` (`full.py`: `MACHINE_STATE_LEAN`); `machine_state_rest` stays opaque, as Isabelle's `typedecl` |
+| `ksMachineState` field of `KernelState` (not in Haskell) | `design/skel/KernelStateData_H.thy` | added to the generated `KernelState`, default `initMachineState` |
+| `doMachineOp` (`gets`, `select_f`, `modify`) | same file | `Spec/PSpaceStorable.lean`, with `doMachineOp_wp` |
+| `select_f` | `lib/Monads/nondet` | `NondetM.selectF`, `selectF_wp` (a `wp` rule) |
+| `machine_rest_lift`, `ignore_failure`, `machine_op_lift` | `spec/machine/MachineMonad.thy` | `Spec/MachineOps.lean` |
+| 23 operations: `loadWord`, `storeWord`, `getActiveIRQ` (oracle), `maskInterrupt`, `clearMemory`, `freeMemory`, `setVSpaceRoot`, `hwASIDFlush`, `sfence`, … | `spec/machine/RISCV64/MachineOps.thy` | `Spec/MachineOps.lean`; the generated RISCV64 hardware module aliases its 20 operations to these |
+
+Two choices differ from Isabelle in form only:
+- **`consts'` become `opaque`.** Both are unspecified constants.
+- **No axiom for the IRQ oracle.** l4v has `axiomatization irq_oracle where irq_oracle n ≤ maxIRQ`. Here
+  the oracle is an opaque value of the subtype `{f // ∀ n, f n ≤ maxIRQ}`, so `irqOracle_max_irq` is a
+  theorem; `#print axioms` lists none.
+
+`Test/Machine.lean` proves two things with `wp`. First, `maskInterrupt` sets the mask. Second, through
+`doMachineOp`, the kernel state records the new mask and keeps `ksPSpace` unchanged.
+
+Fixes to the translator along the way:
+- The generic `Hardware.lhs` dispatchers (`maskInterrupt m (IRQ i) = Arch.maskInterrupt m i`) are now
+  translated rather than stubbed.
+- Imported names now resolve only through unqualified imports. `import qualified … as Arch` had let
+  RISCV64 definitions shadow the generic ones in `Object/Interrupt`.
+
+The `asUser` approximation is also gone: a do-block `let (a, uc') = runState f uc` translates to
+`let (a, uc') ← selectF (f uc)`, which is l4v's `asUser_def`.
+
+What is still not modelled:
+- `getDeviceRegions`, `getKernelDevices` and `initIRQController` are boot-only and stay opaque.
+- User-level `getRegister`/`setRegister` come from the Haskell `UserMonad`, as in l4v's skeleton.

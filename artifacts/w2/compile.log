@@ -1,50 +1,51 @@
+✔ [5/9] Built Sel4Lean.Spec.HsPrelude (558ms)
 ✔ [6/9] Built Sel4Lean.Spec.Gen.Types (4.8s)
-✔ [7/9] Built Sel4Lean.Spec.Prelude (231ms)
-✔ [8/9] Built Sel4Lean.Spec.PSpaceStorable (492ms)
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_BinaryTree (374ms)
+✔ [7/9] Built Sel4Lean.Spec.Prelude (235ms)
+✔ [8/9] Built Sel4Lean.Spec.PSpaceStorable (500ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_BinaryTree (377ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_Helpers (270ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_Helpers (240ms)
 Build completed successfully (9 jobs).
 ✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_WordLib (282ms)
 Build completed successfully (9 jobs).
 ✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64 (302ms)
 Build completed successfully (9 jobs).
-✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (306ms)
+✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (305ms)
 Build completed successfully (10 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (295ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (263ms)
 Build completed successfully (9 jobs).
 ✔ [12/13] Built Sel4Lean.Spec.MachineOps (387ms)
-✔ [13/13] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (354ms)
+✔ [13/13] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (352ms)
 Build completed successfully (13 jobs).
-✔ [14/14] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware (330ms)
+✔ [14/14] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware (305ms)
 Build completed successfully (14 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine (235ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine (232ms)
 Build completed successfully (9 jobs).
 ✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.API_Types_Universal (238ms)
 Build completed successfully (10 jobs).
-✔ [16/16] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (293ms)
+✔ [16/16] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (292ms)
 Build completed successfully (16 jobs).
-✔ [18/18] Built Sel4Lean.Spec.Gen.Mod.API_Types (340ms)
+✔ [18/18] Built Sel4Lean.Spec.Gen.Mod.API_Types (338ms)
 Build completed successfully (18 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (233ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (232ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures (299ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures (298ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Config (271ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Config (270ms)
 Build completed successfully (9 jobs).
-✔ [14/14] Built Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (293ms)
+✔ [14/14] Built Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (261ms)
 Build completed successfully (14 jobs).
-✔ [20/20] Built Sel4Lean.Spec.Gen.Mod.Object_Structures (378ms)
+✔ [20/20] Built Sel4Lean.Spec.Gen.Mod.Object_Structures (348ms)
 Build completed successfully (20 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (233ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (232ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (234ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (233ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (272ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (271ms)
 Build completed successfully (9 jobs).
-✔ [22/22] Built Sel4Lean.Spec.Gen.Mod.Model_StateData (380ms)
+✔ [22/22] Built Sel4Lean.Spec.Gen.Mod.Model_StateData (378ms)
 Build completed successfully (22 jobs).
-⚠ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (238ms)
+⚠ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (268ms)
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -71,19 +72,19 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [22/22] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace (435ms)
+✔ [22/22] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace (420ms)
 Build completed successfully (22 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_Failures (319ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_Failures (288ms)
 Build completed successfully (9 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Model_Preemption (300ms)
+✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Model_Preemption (302ms)
 Build completed successfully (23 jobs).
 ✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Model_Syscall (287ms)
 Build completed successfully (24 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model (233ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model (232ms)
 Build completed successfully (9 jobs).
 ✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_Instances_RISCV64 (233ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (235ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (234ms)
 Build completed successfully (9 jobs).
 ⚠ [23/25] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -98,7 +99,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [25/25] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (387ms)
+✔ [25/25] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (388ms)
 Build completed successfully (25 jobs).
 ⚠ [23/26] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -113,13 +114,13 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [26/26] Built Sel4Lean.Spec.Gen.Mod.Object_Endpoint (419ms)
+✔ [26/26] Built Sel4Lean.Spec.Gen.Mod.Object_Endpoint (421ms)
 Build completed successfully (26 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (232ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (233ms)
 Build completed successfully (9 jobs).
 ✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels (274ms)
 Build completed successfully (9 jobs).
-✔ [26/26] Built Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (315ms)
+✔ [26/26] Built Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (312ms)
 Build completed successfully (26 jobs).
 ⚠ [26/31] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -157,7 +158,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
 Build completed successfully (29 jobs).
-⚠ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (272ms)
+⚠ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (237ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:20:22: Variable name `t` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -184,7 +185,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _newDom
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object_Domain (404ms)
+⚠ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object_Domain (402ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:65:8: Variable name `i` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -223,7 +224,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [29/29] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (890ms)
+⚠ [29/29] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (876ms)
 warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:246:19: Variable name `thread` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -489,9 +490,9 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _c
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [39/39] Built Sel4Lean.Spec.Gen.Mod.Object_CNode (812ms)
+✔ [39/39] Built Sel4Lean.Spec.Gen.Mod.Object_CNode (809ms)
 Build completed successfully (39 jobs).
-⚠ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (286ms)
+⚠ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (285ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:45:18: Variable name `t` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -616,7 +617,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
 ✔ [42/42] Built Sel4Lean.Spec.Gen.Mod.Object_TCB (844ms)
 Build completed successfully (42 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object (233ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Object (231ms)
 Build completed successfully (9 jobs).
 ⚠ [24/43] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -838,7 +839,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _flags
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [45/45] Built Sel4Lean.Spec.Gen.Mod.API_Faults (313ms)
+✔ [45/45] Built Sel4Lean.Spec.Gen.Mod.API_Faults (314ms)
 Build completed successfully (45 jobs).
 ⚠ [21/30] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -872,7 +873,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _attr
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [30/30] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (306ms)
+✔ [30/30] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (307ms)
 Build completed successfully (30 jobs).
 ⚠ [21/30] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -906,7 +907,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _attr
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [30/30] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (280ms)
+✔ [30/30] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (250ms)
 Build completed successfully (30 jobs).
 ⚠ [26/48] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -1017,7 +1018,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _flags
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [48/48] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread (730ms)
+✔ [48/48] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread (729ms)
 Build completed successfully (48 jobs).
 ⚠ [24/43] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -1128,7 +1129,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _flags
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [43/43] Built Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (352ms)
+✔ [43/43] Built Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (321ms)
 Build completed successfully (43 jobs).
 ⚠ [26/50] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -1239,11 +1240,11 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _flags
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [50/50] Built Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (292ms)
+✔ [50/50] Built Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (262ms)
 Build completed successfully (50 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (268ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (269ms)
 Build completed successfully (9 jobs).
-✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (237ms)
+✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (236ms)
 Build completed successfully (10 jobs).
 ⚠ [26/54] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:20:46: Variable name `ptr` is not explicitly referenced.
@@ -1354,9 +1355,9 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _flags
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [54/54] Built Sel4Lean.Spec.Gen.Mod.API_Syscall (402ms)
+✔ [54/54] Built Sel4Lean.Spec.Gen.Mod.API_Syscall (404ms)
 Build completed successfully (54 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API (234ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API (233ms)
 Build completed successfully (9 jobs).
 ✖ [22/22] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (430ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
@@ -1370,7 +1371,7 @@ but is expected to have type
 Some required targets logged failures:
 - Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
 error: build failed
-✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (431ms)
+✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (434ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:117:20: Unknown identifier `value`
 error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:132:8: Type mismatch
@@ -1716,7 +1717,7 @@ Hint: Adding type annotations and supplying implicit arguments to functions can 
 Some required targets logged failures:
 - Sel4Lean.Spec.Gen.Mod.Kernel_Init
 error: build failed
-✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (676ms)
+✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (675ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:188:2: typeclass instance problem is stuck
   MonadLiftT ?m.9 KernelInit
@@ -1942,9 +1943,9 @@ Hint: Adding type annotations and supplying implicit arguments to functions can 
 Some required targets logged failures:
 - Sel4Lean.Spec.Gen.Mod.Kernel_Init
 error: build failed
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Kernel (231ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Kernel (232ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (293ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (297ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (233ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (234ms)
 Build completed successfully (9 jobs).

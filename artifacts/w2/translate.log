@@ -97,7 +97,7 @@ hs2lean module: 26/26 functions translated (1 partial, 0 machine-opaque, 0 l4v m
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 3 modules, 6 names, 1 arch aliases
-hs2lean module: 19/19 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 11 unresolved
+hs2lean module: 18/18 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 11 unresolved
   unresolved flip: no signature found
   unresolved foldl': no signature found
   unresolved foldr: no signature found
@@ -263,7 +263,7 @@ hs2lean module: 42/43 functions translated (4 partial, 0 machine-opaque, 0 l4v m
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 6/6 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 13 modules, 54 names, 6 arch aliases
-hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 22 unresolved
+hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 23 unresolved
   failed getExtraCPtrs: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
   unresolved complement: no signature found
   unresolved drop: no signature found
@@ -282,6 +282,7 @@ hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved min: no signature found
   unresolved not: no signature found
   unresolved null: no signature found
+  unresolved runState: no signature found
   unresolved shiftR: no signature found
   unresolved take: no signature found
   unresolved testBit: no signature found

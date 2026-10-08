@@ -13,4 +13,7 @@ namespace Sel4Lean.Spec
 
 -- `Kernel` and `UserMonad` are generated in `Gen/Types.lean` (W2), modelled as l4v's Isabelle does.
 
+/-- ASIDs enumerate as their underlying words (for `assocs` over ASID-indexed tables). -/
+instance : EnumH ASID := ⟨EnumH.enumAll.map ASID.ASID⟩
+
 end Sel4Lean.Spec

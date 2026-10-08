@@ -171,15 +171,17 @@ abbrev either {α β γ : Type} (f : α → γ) (g : β → γ) : Except α β �
 /-- Haskell `listArray (lo, hi) xs` with arrays as functions (index → element). -/
 abbrev listArray {ι ε : Type} [IntegralH ι] [Inhabited ε] (bounds : ι × ι) (xs : List ε) : ι → ε :=
   fun i => xs.getD ((IntegralH.toInt i - IntegralH.toInt bounds.1).toNat) default
-/-- Haskell `assocs arr`: TODO(W3) needs the index range; unspecified over the function model. -/
-opaque assocs {ι ε : Type} [Inhabited ι] [Inhabited ε] (arr : ι → ε) : List (ι × ε)
+/-- Every value of a finite index type, in order (Isabelle `enum`, lib/Word_Lib/Enumeration.thy). -/
+class EnumH (ι : Type) where
+  enumAll : List ι
+
+instance {n : Nat} : EnumH (BitVec n) := ⟨(List.range (2 ^ n)).map (BitVec.ofNat n)⟩
+
+/-- Haskell `assocs arr`, as l4v's `assocs f ≡ map (λx. (x, f x)) enum`: arrays are functions, so the
+listing covers the whole index type. The spec's two uses (ASID tables) filter to the array bounds anyway. -/
+def assocs {ι ε : Type} [EnumH ι] (arr : ι → ε) : List (ι × ε) := EnumH.enumAll.map fun i => (i, arr i)
 abbrev runState {σ α : Type} (x : StateM σ α) (s : σ) : α × σ := x.run s
 
-/-- `runState` on the nondeterministic state monad (`UserMonad`, used by `asUser`).
-APPROXIMATION, TODO(W3): picks one result by choice. l4v's Isabelle `as_user` instead lifts the whole
-result set with `select_f`; `asUser` should be translated that way before proofs rely on it. -/
-noncomputable def runStateND {σ α : Type} [Inhabited α] [Inhabited σ] (x : NondetM σ α) (s : σ) : α × σ :=
-  Classical.epsilon (fun p => (x s).1 p)
 abbrev runStateT {σ α : Type} {m : Type → Type} [Monad m] (x : StateT σ m α) (s : σ) : m (α × σ) := x.run s
 abbrev foldl' {α β : Type} (f : β → α → β) (z : β) (xs : List α) : β := xs.foldl f z
 abbrev listIndexH {α : Type} [Inhabited α] (xs : List α) (i : Int) : α := xs.getD i.toNat default
@@ -268,8 +270,6 @@ noncomputable def findMax [OrdH k] [Inhabited k] [Inhabited v] (m : k → Option
 noncomputable def findMin [OrdH k] [Inhabited k] [Inhabited v] (m : k → Option v) : k × v :=
   Classical.epsilon (fun p : k × v => m p.1 = some p.2 ∧ ∀ y, m y ≠ none → p.1 ≤ y)
 
-/-- `Data.Map.keys`: TODO(W3) needs a finiteness argument to list a function's domain; unspecified for now. -/
-opaque keys [Inhabited k] (m : k → Option v) : List k
 
 end Sel4Lean.Spec.MapH
 
@@ -286,8 +286,6 @@ abbrev difference (s t : α → Prop) : α → Prop := fun y => s y ∧ ¬ t y
 abbrev fromList (xs : List α) : α → Prop := fun y => y ∈ xs
 noncomputable abbrev member (x : α) (s : α → Prop) : Bool := by classical exact decide (s x)
 abbrev filter (p : α → Bool) (s : α → Prop) : α → Prop := fun y => s y ∧ p y = true
-/-- `Data.Set.toList`: TODO(W3) needs finiteness; unspecified over predicates. -/
-opaque toList [Inhabited α] (s : α → Prop) : List α
 end Sel4Lean.Spec.SetH
 
 namespace Sel4Lean.Spec

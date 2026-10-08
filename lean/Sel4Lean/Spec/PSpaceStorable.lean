@@ -45,6 +45,12 @@ def projectKO {a σ : Type} [PSpaceStorable a] (o : KernelObject) : NondetM σ a
 /-- Haskell `mask n` at word type (Machine/RegisterSet.lhs:174). -/
 abbrev maskW (n : Nat) : Word := (1 <<< n) - 1
 
+/-- Haskell `deleteRange` (Model/PSpace.lhs:229), as l4v replaces it (design/skel/PSpaceFuns_H.thy):
+remove every key in the `2^bits`-aligned region at `ptr`. The Haskell version splits the map and
+deletes `Data.Map.keys` of the middle part; over maps-as-functions the filter needs no key listing. -/
+def deleteRange {α : Type} (m : Word → Option α) (ptr : Word) (bits : Nat) : Word → Option α :=
+  fun x => if x &&& ~~~(maskW bits) = ptr then none else m x
+
 /-- Haskell `alignError n = fail (…)` (Model/PSpace.lhs:308). -/
 def alignError {α σ : Type} (_n : Nat) : NondetM σ α := NondetM.fail
 

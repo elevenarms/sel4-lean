@@ -86,13 +86,15 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
 - [ ] Isabelle → Lean for the abstract spec: hand-assisted first, then a tool if the volume demands it.
 
 ### W3. Kernel state model
-- [~] Translate `KernelState`, `PSpace`, `getObject`/`setObject` instead of stubbing them. **Types done** (W2 closure);
-      `getObject`/`setObject` (typeclass `PSpaceStorable`) next.
+- [x] Translate `KernelState`, `PSpace`, `getObject`/`setObject` instead of stubbing them (types: W2 closure;
+      `getObject`/`setObject` via the hand-translated `PSpaceStorable`).
 - [x] Side-by-side test: Lean executable spec vs the Haskell model on the same inputs (from C3).
       **Pure functions done:** 60/60 functions agree with GHC on 158 cases (`env/remote/w3_difftest.sh`,
       [notes](notes/w3-difftest.md)); it caught five translator bugs that compiled. Monadic functions next,
       once the machine state is modelled.
-- [ ] Machine state: `ksMachineState` and `doMachineOp` as in l4v; replace approximations (`asUser`, map listings).
+- [x] Machine state: `ksMachineState`, `doMachineOp` and the RISCV64 `MachineOps` as in l4v; approximations
+      replaced (`asUser` via `selectF`, `assocs`, `deleteRange`) ([notes](notes/w3-difftest.md#machine-state-model)).
+- [ ] Differential test of monadic functions (generated kernel states; needs computable state construction).
 
 ### W4. Proofs
 - [ ] Port the invariant definitions (`invs`, `invs'`), then AInvs and Refine, replacing assumptions in

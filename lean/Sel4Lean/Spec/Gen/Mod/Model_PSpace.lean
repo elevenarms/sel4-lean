@@ -120,13 +120,6 @@ def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat)
 def placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] (ptr : PPtr Unit) (val : t_a) (groupSizeBits : Nat) : Kernel Unit :=
   placeNewObject' ptr (injectKO val) groupSizeBits
 
-/-- Haskell `deleteRange` -/
-def deleteRange {t_a : Type} [Inhabited t_a] (m : (Word → Option t_a)) (pstart : Word) (bits : Nat) : (Word → Option t_a) :=
-  let (_, lr) := (MapH.split) (pstart - 1) m
-  let pend := pstart + (2 ^ bits)
-  let (mid, _) := (MapH.split) pend lr
-  foldl' (flip (MapH.delete)) m ((MapH.keys) mid)
-
 /-- Haskell `cNodePartialOverlap` -/
 def cNodePartialOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
   match x0, x1 with

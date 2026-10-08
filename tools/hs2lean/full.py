@@ -16,7 +16,8 @@ ARCH = "RISCV64"
 PLATFORM = "HiFive"
 # names defined by hand-written Lean (Spec/PSpaceStorable.lean): never emitted or stubbed by hs2lean
 PROVIDED = {"makeObject", "injectKO", "projectKO", "loadObject", "updateObject", "objBits", "alignCheck",
-            "sizeCheck", "alignError", "typeError", "doMachineOp", "funArray", "funPartialArray"}
+            "sizeCheck", "alignError", "typeError", "doMachineOp", "funArray", "funPartialArray",
+            "deleteRange"}
 # Machine-interface modules: the Haskell bodies are the simulator's (FFI/IO). l4v's Isabelle treats machine
 # operations as opaque with assumed properties (MachineOps.thy), so these functions are stubbed by design.
 MACHINE_INTERFACE = ("SEL4/Machine/Hardware",)
@@ -410,6 +411,28 @@ class FullTranslator(Translator):
                 self.platform_calls.add(base)
                 return f"Platform.{base}"
         return super().e(n, ind)
+
+    def local_bind(self, b, ind, in_do=False):
+        # `let (a, s') = runState f s` in a do-block: l4v runs the inner nondeterministic monad on its state
+        # and keeps every result (`(a, s') ← select_f (f s)`, design/skel/TCB_H.thy `asUser`), rather than
+        # picking one
+        if in_do and b.type == "bind":
+            ms = [c for i, c in enumerate(b.children) if b.field_name_for_child(i) == "match"]
+            ex = ms[0].child_by_field_name("expression") if len(ms) == 1 else None
+            if ex is not None and ms[0].child_by_field_name("guards") is None:
+                args, m = [], ex
+                if m.type == "infix" and self.text(m.child_by_field_name("operator")) == "$":
+                    args.append(m.child_by_field_name("right_operand"))   # `runState f $ s`
+                    m = m.child_by_field_name("left_operand")
+                while m.type == "apply":
+                    args.append(m.child_by_field_name("argument"))
+                    m = m.child_by_field_name("function")
+                if m.type == "variable" and self.text(m) == "runState" and len(args) == 2:
+                    f, st = reversed(args)
+                    lhs = (self.pat(b.child_by_field_name("pattern")) if b.child_by_field_name("name") is None
+                           else self.ident(self.text(b.child_by_field_name("name"))))
+                    return f"let {lhs} ← Sel4Lean.NondetM.selectF ({self.atom(f, ind)} {self.atom(st, ind)})"
+        return super().local_bind(b, ind, in_do)
 
     def ctor(self, name):
         at = self.data.arch_ctor_type.get(name)
@@ -910,7 +933,6 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
     from hs2lean import NAME, HEADER as GEN_HEADER
     NAME["fail"] = "failM"   # Spec modules: generic MonadFail (crawl code keeps NondetM-only failH)
     NAME["assert"] = "assertG"
-    NAME["runState"] = "runStateND"   # UserMonad is NondetM; see HsPrelude (approximation, TODO W3)
     idx, data, arch_names = cmd_types(root, type_roots, emit=False)
     out_defs, stubs, unresolved, failed = [], {}, {}, {}
     compiled = compiled or set()
