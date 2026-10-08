@@ -31,6 +31,7 @@ t() {  # t NAME CMD... : run, log, record wall seconds
 
 stage_a() {  # Lambdapi from source via opam
   command -v opam >/dev/null || sudo -n apt-get install -y -q opam >/dev/null
+  sudo -n apt-get install -y -q libev-dev libgmp-dev libssl-dev pkg-config >/dev/null   # lambdapi depexts
   [ -d ~/.opam ] || opam init -y --disable-sandboxing --bare
   opam switch list 2>/dev/null | grep -q '^\W*c5 ' || opam switch create c5 ocaml-base-compiler.5.2.1 -y
   eval "$(opam env --switch=c5)"
@@ -53,7 +54,7 @@ stage_b() {  # stock Isabelle2025 + isabelle_dedukti component + patched HOL
   fi
   isabelle components -u "$W/isabelle_dedukti"
   isabelle scala_build
-  isabelle dedukti_generate -? 2>&1 | head -3
+  isabelle dedukti_generate -? 2>&1 | head -3 || true   # usage exits non-zero
 }
 
 stage_c() {  # export Pure and HOL_Groups_wp; check in Lambdapi; export to Lean
