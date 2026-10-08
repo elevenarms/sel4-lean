@@ -4,28 +4,17 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 
 namespace Sel4Lean.Spec.M.API_Types_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.API_Types_Universal (cteSizeBits epSizeBits ntfnSizeBits)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (pageBitsForSize ptBits)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/API/Types/Universal.lhs
-opaque cteSizeBits : Nat
-
--- external: SEL4/API/Types/Universal.lhs
-opaque epSizeBits : Nat
-
--- external: SEL4/API/Types/Universal.lhs
-opaque ntfnSizeBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pageBitsForSize : VMPageSize → Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptBits : Nat
 
 /-! ## Unresolved (no stub possible)
   toAPIType: local, not translated, no signature: function without a signature: function at line 56: 'toAPITyp

@@ -4,46 +4,25 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Config
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 
 namespace Sel4Lean.Spec.M.Object_Structures
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.API_Types_RISCV64 (tcbBlockSizeBits)
+open Sel4Lean.Spec.M.API_Types_Universal (cteSizeBits epSizeBits ntfnSizeBits)
+open Sel4Lean.Spec.M.Config (numDomains numPriorities)
+open Sel4Lean.Spec.M.Machine_Hardware (config_HAVE_FPU nullPointer pageBits)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask)
+open Sel4Lean.Spec.M.Object_Structures_RISCV64 (archObjSize)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque archObjSize : ArchKernelObject → Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque config_HAVE_FPU : Bool
-
--- external: SEL4/API/Types/Universal.lhs
-opaque cteSizeBits : Nat
-
--- external: SEL4/API/Types/Universal.lhs
-opaque epSizeBits : Nat
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
-
--- external: SEL4/API/Types/Universal.lhs
-opaque ntfnSizeBits : Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {a : Type} [Inhabited a] : PPtr a
-
--- external: SEL4/Config.lhs
-opaque numDomains : Nat
-
--- external: SEL4/Config.lhs
-opaque numPriorities : Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque pageBits : Nat
-
--- external: SEL4/API/Types/RISCV64.hs
-opaque tcbBlockSizeBits : Nat
 
 -- external: Data/WordLib.lhs
 opaque wordBits : Nat

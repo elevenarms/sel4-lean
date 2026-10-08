@@ -4,16 +4,18 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64
 
 namespace Sel4Lean.Spec.M.Kernel_Hypervisor
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
-/-! ## Stubs (from Haskell signatures) -/
+/-! ## RISCV64 definitions from imported modules -/
 
--- arch: SEL4/Kernel/Hypervisor/RISCV64.hs
-opaque RISCV64.handleHypervisorFault : (PPtr TCB) → HypFaultType → Kernel Unit
+abbrev RISCV64.handleHypervisorFault := @Sel4Lean.Spec.M.Kernel_Hypervisor_RISCV64.handleHypervisorFault
+
+/-! ## Stubs (from Haskell signatures) -/
 
 /-! ## Translated -/
 

@@ -126,6 +126,100 @@ def unqualified_imports(path):
     return _IMPORT_CACHE[path]
 
 
+_MODULE_PATHS = {}
+_DEFS_CACHE = {}
+
+
+def module_paths(root):
+    """Haskell module name -> file, for every RISCV64-relevant module."""
+    if root not in _MODULE_PATHS:
+        m = {}
+        for top in ("SEL4", "Data"):
+            for d, _, fs in os.walk(os.path.join(root, top)):
+                for f in fs:
+                    pth = os.path.join(d, f)
+                    if f.endswith((".hs", ".lhs")) and arch_ok(pth):
+                        m[module_of(pth, root)] = pth
+        _MODULE_PATHS[root] = m
+    return _MODULE_PATHS[root]
+
+
+def direct_imports(path):
+    """Modules imported without {-# SOURCE #-} (those break cycles and stay stubs), TARGET = RISCV64."""
+    src, rn = parse_file(path)
+    out = []
+    imps = next((c for c in rn.children if c.type == "imports"), None)
+    for imp in kids(imps) if imps is not None else []:
+        if "SOURCE" in src[imp.start_byte:imp.end_byte].decode():
+            continue
+        m = imp.child_by_field_name("module")
+        if m is not None:
+            out.append(src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH))
+    return out
+
+
+def import_closure(path, root):
+    """Transitive non-SOURCE imports, in breadth-first order (direct imports first)."""
+    mp = module_paths(root)
+    seen, order, queue = set(), [], [m for m in direct_imports(path)]
+    while queue:
+        m = queue.pop(0)
+        if m in seen or m not in mp:
+            continue
+        seen.add(m)
+        order.append(m)
+        queue.extend(direct_imports(mp[m]))
+    return order
+
+
+GEN_DIR = None   # where generated module files are read back from (set by --gen-dir)
+
+
+def module_defs(path, root=None):
+    """Names a module's generated Lean file actually defines in its namespace (defs, partial defs, stubs,
+    aliases). Read from the generated file: a Haskell function that could not be translated or stubbed has no
+    Lean definition. Falls back to the Haskell source when no generated file is available."""
+    key = (path, GEN_DIR)
+    if key not in _DEFS_CACHE:
+        names = None
+        if GEN_DIR and root:
+            lf = os.path.join(GEN_DIR, lean_module(module_of(path, root)) + ".lean")
+            if os.path.exists(lf):
+                names = set(re.findall(r"^(?:partial def|def|opaque|abbrev) «?([^\s»]+)»?", open(lf).read(), re.M))
+        if names is None:
+            src, rn = parse_file(path)
+            names = {n for n, ns in top_decls(src, rn) if any(d.type in ("function", "bind") for d in ns)}
+        _DEFS_CACHE[key] = names
+    return _DEFS_CACHE[key]
+
+
+def dependency_order(root, files):
+    """Files ordered so that every module comes after the modules it imports (non-SOURCE)."""
+    mp = module_paths(root)
+    inv = {v: k for k, v in mp.items()}
+    order, done = [], set()
+
+    def visit(f, path=()):
+        if f in done or f in path:
+            return
+        for m in direct_imports(f):
+            if m in mp:
+                visit(mp[m], path + (f,))
+        done.add(f)
+        order.append(f)
+    for f in files:
+        visit(f)
+    return [f for f in order if f in set(files)]
+
+
+def lean_module(hs_module):
+    """SEL4.Object.TCB.RISCV64 -> Object_TCB_RISCV64 (the generated Lean module/namespace suffix)."""
+    parts = hs_module.split(".")
+    if parts[0] == "SEL4":
+        parts = parts[1:]
+    return "_".join(parts)
+
+
 def arch_scope(path, root, idx, candidates):
     """Arch types X that an unqualified `X` means in this file (Haskell scoping): those declared in this
     file or in a module it imports unqualified, counting re-exports (`type IRQ = Platform.IRQ`)."""
@@ -700,13 +794,15 @@ def sig_stub(tr, name, sig_node, why):
     return f"-- {why}\nopaque {tr.ident(name)}{imp}{inst} : {t}"
 
 
-def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
+def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=None):
     from hs2lean import NAME, HEADER as GEN_HEADER
     NAME["fail"] = "failM"   # Spec modules: generic MonadFail (crawl code keeps NondetM-only failH)
     NAME["assert"] = "assertG"
     NAME["runState"] = "runStateND"   # UserMonad is NondetM; see HsPrelude (approximation, TODO W3)
     idx, data, arch_names = cmd_types(root, type_roots, emit=False)
     out_defs, stubs, unresolved, failed = [], {}, {}, {}
+    compiled = compiled or set()
+    imports, opens, aliases = [], {}, {}   # Lean modules to import; names opened per namespace; arch aliases
     stats = {"translated": 0, "failed": 0}
     local_all = {}
     for mpath in modules:
@@ -728,8 +824,21 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
             bound = set().union(*(bound_names(tr, d) for d in body))
             free = used - bound - {n}
             deps[n] = free & local
+            closure = import_closure(mpath, root)
+            mp = module_paths(root)
             for x in sorted(free - local):
                 if x in NAME or x in data.field_type or x in stubs or x in unresolved or x in PROVIDED:
+                    continue
+                if any(x in opens.get(ns, ()) for ns in opens):
+                    continue
+                # a definition in an imported module that compiles: use it instead of a stub
+                prov = next((hm for hm in closure if hm in mp and lean_module(hm) in compiled
+                             and x in module_defs(mp[hm], root)), None)
+                if prov is not None:
+                    ns = f"Sel4Lean.Spec.M.{lean_module(prov)}"
+                    if lean_module(prov) not in imports:
+                        imports.append(lean_module(prov))
+                    opens.setdefault(ns, set()).add(x)
                     continue
                 sig = idx.get("sig:" + x)
                 stub = None
@@ -793,9 +902,18 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
                 else:
                     unresolved[n] = f"local, not translated, no signature: {str(ex)[:60]}"
         # stubs for `Arch.f` calls, from the RISCV64 signature
+        closure = import_closure(mpath, root)
+        mp = module_paths(root)
         for f in sorted(tr.arch_calls):
             key = f"{ARCH}.{f}"
-            if key in stubs:
+            if key in stubs or key in aliases:
+                continue
+            prov = next((hm for hm in closure if ARCH in hm and hm in mp and lean_module(hm) in compiled
+                         and f in module_defs(mp[hm], root)), None)
+            if prov is not None:   # the real RISCV64 definition, under the name the translation uses
+                if lean_module(prov) not in imports:
+                    imports.append(lean_module(prov))
+                aliases[key] = f"abbrev {key} := @Sel4Lean.Spec.M.{lean_module(prov)}.{tr.ident(f)}"
                 continue
             # the arch module may define f without a signature; the generic one has the same shape
             sig = idx.get(f"{ARCH}.sig:{f}") or idx.get(f"sig:{f}")
@@ -811,8 +929,19 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
             else:
                 unresolved[key] = "no RISCV64 signature"
     print(GEN_HEADER.format(rev="ac4a36d", path=", ".join(os.path.relpath(m, root) for m in modules)))
-    print(f"import Sel4Lean.Spec.PSpaceStorable\n\nnamespace {namespace}\nopen Sel4Lean.Spec\n"
-          "open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)\nnoncomputable section\n")
+    print("import Sel4Lean.Spec.PSpaceStorable")
+    for im in imports:
+        print(f"import Sel4Lean.Spec.Gen.Mod.{im}")
+    print(f"\nnamespace {namespace}\nopen Sel4Lean.Spec\n"
+          "open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)")
+    for ns, names in sorted(opens.items()):
+        print(f"open {ns} ({' '.join(Translator.ident(n) for n in sorted(names))})")
+    print("noncomputable section\n")
+    if aliases:
+        print("/-! ## RISCV64 definitions from imported modules -/\n")
+        for k in sorted(aliases):
+            print(aliases[k])
+        print()
     print("/-! ## Stubs (from Haskell signatures) -/\n")
     for n in sorted(stubs):
         print(stubs[n]); print()
@@ -826,6 +955,8 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
         print(d); print()
     print(f"end\nend {namespace}")
     total = stats["translated"] + stats["failed"]
+    print(f"hs2lean imports: {len(imports)} modules, {sum(len(v) for v in opens.values())} names, "
+          f"{len(aliases)} arch aliases", file=sys.stderr)
     print(f"hs2lean module: {stats['translated']}/{total} functions translated "
           f"({stats.get('partial', 0)} partial, {stats.get('machine', 0)} machine-opaque), "
           f"{len([k for k in stubs if k not in failed])} external stubs, {len(unresolved)} unresolved", file=sys.stderr)
@@ -837,15 +968,27 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
 
 if __name__ == "__main__":
     try:
-        if sys.argv[1] == "types":
+        if sys.argv[1] == "order":   # order ROOT FILE...: dependency order
+            for f in dependency_order(sys.argv[2], sys.argv[3:]):
+                print(os.path.relpath(f, sys.argv[2]))
+        elif sys.argv[1] == "types":
             cmd_types(sys.argv[2], sys.argv[3:])
         elif sys.argv[1] == "module":
             # module ROOT --types F... --modules M...
             a = sys.argv[3:]
             i, j = a.index("--types"), a.index("--modules")
+            if "--gen-dir" in a:
+                g = a.index("--gen-dir")
+                globals()["GEN_DIR"] = a[g + 1]
+                del a[g:g + 2]
+            comp = set()
+            if "--compiled" in a:
+                c = a.index("--compiled")
+                comp = {l.split()[1] for l in open(a[c + 1]) if l.startswith("✔")}
+                del a[c:c + 2]
             k = a.index("--namespace") if "--namespace" in a else None
             mods = a[j + 1:k] if k else a[j + 1:]
-            cmd_module(sys.argv[2], a[i + 1:j], mods, a[k + 1] if k else "Sel4Lean.Spec")
+            cmd_module(sys.argv[2], a[i + 1:j], mods, a[k + 1] if k else "Sel4Lean.Spec", comp)
         else:
             raise SystemExit(__doc__)
     except Unsupported as ex:

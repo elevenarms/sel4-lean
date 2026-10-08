@@ -4,19 +4,15 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
 
 namespace Sel4Lean.Spec.M.API_Faults_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Object_TCB (asUser getRestartPC)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getRestartPC : UserMonad Word
 
 /-! ## Translated -/
 

@@ -4,16 +4,29 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Config
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.Model_Preemption
 
 namespace Sel4Lean.Spec.M.Object_Untyped
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.API_Types_RISCV64 (fromAPIType getObjectSize isFrameType)
+open Sel4Lean.Spec.M.Config (resetChunkBits retypeFanOutLimit)
+open Sel4Lean.Spec.M.Machine_Hardware (clearMemory)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask)
+open Sel4Lean.Spec.M.Model_PSpace (deleteObjects)
+open Sel4Lean.Spec.M.Model_Preemption (preemptionPoint withoutPreemption)
+open Sel4Lean.Spec.M.Object_Structures (getFreeIndex getFreeRef wordBits)
+open Sel4Lean.Spec.M.Object_Structures_RISCV64 (maxUntypedSizeBits minUntypedSizeBits)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Machine/Hardware.lhs
-opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
 
 -- external: SEL4/Model/Failures.lhs
 opaque constOnFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : a → (KernelF f a) → Kernel a
@@ -21,35 +34,17 @@ opaque constOnFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : a → 
 -- external: SEL4/Object/CNode.lhs
 opaque createNewObjects : ObjectType → (PPtr CTE) → (List (PPtr CTE)) → (PPtr Unit) → Nat → Bool → Kernel Unit
 
--- external: SEL4/Model/PSpace.lhs
-opaque deleteObjects {a : Type} [Inhabited a] : (PPtr a) → Nat → Kernel Unit
-
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureNoChildren : (PPtr CTE) → KernelF SyscallError Unit
 
--- external: SEL4/API/Types.lhs
-opaque fromAPIType : APIObjectType → ObjectType
-
 -- external: SEL4/API/InvocationLabels.lhs
 opaque genInvocationType : Word → GenInvocationLabels
 
--- external: SEL4/Object/Structures.lhs
-opaque getFreeIndex : (PPtr Unit) → (PPtr Unit) → Nat
-
--- external: SEL4/Object/Structures.lhs
-opaque getFreeRef : (PPtr Unit) → Nat → PPtr Unit
-
--- external: SEL4/API/Types.lhs
-opaque getObjectSize : ObjectType → Nat → Nat
-
 -- external: SEL4/Object/CNode.lhs
 opaque getSlotCap : (PPtr CTE) → Kernel Capability
-
--- external: SEL4/API/Types.lhs
-opaque isFrameType : ObjectType → Bool
 
 -- external: SEL4/Object/CNode.lhs
 opaque locateSlotCap : Capability → Word → Kernel (PPtr CTE)
@@ -57,29 +52,11 @@ opaque locateSlotCap : Capability → Word → Kernel (PPtr CTE)
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
 
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque maxUntypedSizeBits : Nat
-
--- external: SEL4/Object/Structures/RISCV64.hs
-opaque minUntypedSizeBits : Nat
-
--- external: SEL4/Model/Preemption.lhs
-opaque preemptionPoint : KernelP Unit
-
 -- external: SEL4/Model/Failures.lhs
 opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] [IntegralH a] [IntegralH b] : a → b → b → KernelF SyscallError Unit
 
--- external: SEL4/Config.lhs
-opaque resetChunkBits : Nat
-
 -- local, not translated: arithmetic sequence form: arithmetic_sequence at line 190: '[capPtr cap, capPtr 
 opaque resetUntypedCap : (PPtr CTE) → KernelP Unit
-
--- external: SEL4/Config.lhs
-opaque retypeFanOutLimit : Word
 
 -- external: SEL4/Model/Failures.lhs
 opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
@@ -89,12 +66,6 @@ opaque updateFreeIndex : (PPtr CTE) → Nat → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
 opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
-
--- external: Data/WordLib.lhs
-opaque wordBits : Nat
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found

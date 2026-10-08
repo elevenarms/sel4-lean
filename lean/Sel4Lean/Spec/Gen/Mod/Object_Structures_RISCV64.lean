@@ -4,25 +4,17 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64
 
 namespace Sel4Lean.Spec.M.Object_Structures_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask pageBits pteBits)
+open Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64 (newContext)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque newContext : UserContext
-
--- external: SEL4/Machine/Hardware.lhs
-opaque pageBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pteBits : Nat
 
 /-! ## Unresolved (no stub possible)
   fromIntegral: no signature found

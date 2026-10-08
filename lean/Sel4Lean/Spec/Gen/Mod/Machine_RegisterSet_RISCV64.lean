@@ -4,16 +4,15 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Data_Helpers
 
 namespace Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Data_Helpers (funArray)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: Data/Helpers.hs
-opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [IntegralH i] [BoundedH i] : (i → a) → (i → a)
 
 /-! ## Unresolved (no stub possible)
   const: no signature found

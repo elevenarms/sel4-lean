@@ -4,10 +4,12 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 
 namespace Sel4Lean.Spec.M.Kernel_VSpace
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_Hardware (configureTimer initIRQController initL2Cache)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
@@ -56,15 +58,6 @@ opaque RISCV64.writeITASIDPool : Capability → Capability → Kernel Unit
 
 -- arch: SEL4/Kernel/VSpace/RISCV64.hs
 opaque RISCV64.writeITPDPTs : Capability → Capability → KernelInit Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque configureTimer : MachineMonad IRQ
-
--- external: SEL4/Machine/Hardware.lhs
-opaque initIRQController : MachineMonad Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque initL2Cache : MachineMonad Unit
 
 /-! ## Translated -/
 

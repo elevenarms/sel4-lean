@@ -4,10 +4,14 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 
 namespace Sel4Lean.Spec.M.Object_ObjectType_RISCV64
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask pageBitsForSize ptBits ptTranslationBits)
+open Sel4Lean.Spec.M.Model_PSpace (placeNewObject)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
@@ -30,26 +34,11 @@ opaque deleteASIDPool : ASID → (PPtr ASIDPool) → Kernel Unit
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque findVSpaceForASID : ASID → KernelF LookupFailure (PPtr PTE)
 
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
-
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque maskVMRights : VMRights → CapRights → VMRights
 
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pageBitsForSize : VMPageSize → Nat
-
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque performRISCVMMUInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word)
-
--- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque ptTranslationBits : Nat
 
 -- external: SEL4/Model/Failures.lhs
 opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a

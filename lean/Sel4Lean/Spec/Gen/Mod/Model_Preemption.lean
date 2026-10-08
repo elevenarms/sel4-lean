@@ -4,16 +4,15 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 
 namespace Sel4Lean.Spec.M.Model_Preemption
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_Hardware (getActiveIRQ)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getActiveIRQ : Bool → MachineMonad (Option IRQ)
 
 -- external: SEL4/Model/StateData.lhs
 opaque getWorkUnits : Kernel Word

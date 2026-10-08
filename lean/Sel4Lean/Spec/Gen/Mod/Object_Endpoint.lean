@@ -4,28 +4,22 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Notification
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 
 namespace Sel4Lean.Spec.M.Object_Endpoint
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_Hardware (nullPointer)
+open Sel4Lean.Spec.M.Object_Notification (asUser badgeRegister cancelSignal completeSignal doNBRecvFailedTransfer getBoundNotification getNotification getObject getThreadState ksReadyQueues_asrt possibleSwitchTo rescheduleRequired setObject setRegister setThreadState tcbSchedEnqueue)
+open Sel4Lean.Spec.M.Object_Structures (isReceive isReplyCap isSend)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
--- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque badgeRegister : Register
-
--- external: SEL4/Object/Notification.lhs
-opaque cancelSignal : (PPtr TCB) → (PPtr Notification) → Kernel Unit
-
 -- external: SEL4/Model/StateData.lhs
 opaque capHasProperty : (PPtr CTE) → (Capability → Bool) → KernelState → Bool
-
--- external: SEL4/Object/Notification.lhs
-opaque completeSignal : (PPtr Notification) → (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
@@ -33,50 +27,14 @@ opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
 -- external: SEL4/Kernel/Thread.lhs
 opaque doIPCTransfer : (PPtr TCB) → (Option (PPtr Endpoint)) → Word → Bool → (PPtr TCB) → Kernel Unit
 
--- external: SEL4/Object/Notification.lhs
-opaque doNBRecvFailedTransfer : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque getBoundNotification : (PPtr TCB) → Kernel (Option (PPtr Notification))
-
 -- external: SEL4/Object/CNode.lhs
 opaque getCTE : (PPtr CTE) → Kernel CTE
-
--- external: SEL4/Object/Notification.lhs
-opaque getNotification : (PPtr Notification) → Kernel Notification
-
--- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadReplySlot : (PPtr TCB) → Kernel (PPtr CTE)
 
--- external: SEL4/Kernel/Thread.lhs
-opaque getThreadState : (PPtr TCB) → Kernel ThreadState
-
--- external: SEL4/Object/Structures.lhs
-opaque isReceive : ThreadState → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isReplyCap : Capability → Bool
-
--- external: SEL4/Object/Structures.lhs
-opaque isSend : ThreadState → Bool
-
--- external: SEL4/Model/StateData.lhs
-opaque ksReadyQueues_asrt : KernelState → Bool
-
 -- external: SEL4/Kernel/VSpace.lhs
 opaque lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
-
--- external: SEL4/Machine/Hardware.lhs
-opaque nullPointer {a : Type} [Inhabited a] : PPtr a
-
--- external: SEL4/Kernel/Thread.lhs
-opaque possibleSwitchTo : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque rescheduleRequired : Kernel Unit
 
 -- local, not translated: guards that fall through to the next equation: alternative at line 52: 'IdleEP |
 opaque sendIPC : Bool → Bool → Word → Bool → Bool → (PPtr TCB) → (PPtr Endpoint) → Kernel Unit
@@ -87,20 +45,8 @@ opaque setMRs : (PPtr TCB) → (Option (PPtr Word)) → (List Word) → Kernel W
 -- external: SEL4/Object/TCB.lhs
 opaque setMessageInfo : (PPtr TCB) → MessageInfo → Kernel Unit
 
--- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque setRegister : Register → Word → UserMonad Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque setThreadState : ThreadState → (PPtr TCB) → Kernel Unit
-
 -- external: SEL4/Object/TCB.lhs
 opaque setupCallerCap : (PPtr TCB) → (PPtr TCB) → Bool → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque tcbSchedEnqueue : (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Object/TCB.lhs
 opaque threadSet : (TCB → TCB) → (PPtr TCB) → Kernel Unit

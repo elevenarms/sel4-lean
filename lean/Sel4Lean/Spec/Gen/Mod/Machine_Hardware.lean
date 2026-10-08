@@ -4,16 +4,18 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 
 namespace Sel4Lean.Spec.M.Machine_Hardware
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
-/-! ## Stubs (from Haskell signatures) -/
+/-! ## RISCV64 definitions from imported modules -/
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.fromPAddr : PAddr → Word
+abbrev RISCV64.fromPAddr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.fromPAddr
+
+/-! ## Stubs (from Haskell signatures) -/
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque ackInterrupt : IRQ → MachineMonad Unit

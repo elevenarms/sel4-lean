@@ -4,34 +4,24 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 
 namespace Sel4Lean.Spec.M.Model_PSpace
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Machine_Hardware (freeMemory loadWord storeWord)
+open Sel4Lean.Spec.M.Machine_Hardware_RISCV64 (mask)
+open Sel4Lean.Spec.M.Object_Structures (kernelObjectTypeName objBitsKO)
 noncomputable section
 
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.deleteGhost := @Sel4Lean.Spec.M.Model_PSpace_RISCV64.deleteGhost
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Model/PSpace/RISCV64.hs
-opaque RISCV64.deleteGhost {a : Type} [Inhabited a] : (PPtr a) → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
-
--- external: SEL4/Object/Structures.lhs
-opaque kernelObjectTypeName : KernelObject → String
-
--- external: SEL4/Machine/Hardware.lhs
-opaque loadWord : (PPtr Word) → MachineMonad Word
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
-
--- external: SEL4/Object/Structures.lhs
-opaque objBitsKO : KernelObject → Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
 
 /-! ## Unresolved (no stub possible)
   flip: no signature found

@@ -4,52 +4,26 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.Kernel_CSpace
+import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
 
 namespace Sel4Lean.Spec.M.Kernel_FaultHandler
 open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
+open Sel4Lean.Spec.M.Kernel_CSpace (lookupCap)
+open Sel4Lean.Spec.M.Kernel_Thread (asUser catchFailure getRestartPC setThreadState threadGet threadSet throw withoutFailure)
+open Sel4Lean.Spec.M.Machine_Hardware (debugPrint)
+open Sel4Lean.Spec.M.Object_Endpoint (sendIPC)
+open Sel4Lean.Spec.M.Object_TCB (capFaultOnFailure)
 noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
--- external: SEL4/Object/TCB.lhs
-opaque asUser {a : Type} [Inhabited a] : (PPtr TCB) → (UserMonad a) → Kernel a
-
--- external: SEL4/Model/Failures.lhs
-opaque capFaultOnFailure {a : Type} [Inhabited a] : CPtr → Bool → (KernelF LookupFailure a) → KernelF Fault a
-
--- external: SEL4/Model/Failures.lhs
-opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF f a) → (f → Kernel a) → Kernel a
-
--- external: SEL4/Machine/Hardware.lhs
-opaque debugPrint : String → MachineMonad Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque getRestartPC : UserMonad Word
-
--- external: SEL4/Kernel/CSpace.lhs
-opaque lookupCap : (PPtr TCB) → CPtr → KernelF LookupFailure Capability
-
 -- local, not translated: guards that fall through to the next equation: alternative at line 56: 'Endpoint
 opaque sendFaultIPC : (PPtr TCB) → Fault → KernelF Fault Unit
-
--- external: SEL4/Object/Endpoint.lhs
-opaque sendIPC : Bool → Bool → Word → Bool → Bool → (PPtr TCB) → (PPtr Endpoint) → Kernel Unit
-
--- external: SEL4/Kernel/Thread.lhs
-opaque setThreadState : ThreadState → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/TCB.lhs
-opaque threadGet {a : Type} [Inhabited a] : (TCB → a) → (PPtr TCB) → Kernel a
-
--- external: SEL4/Object/TCB.lhs
-opaque threadSet : (TCB → TCB) → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kernel a) → KernelF f a
 
 /-! ## Unresolved (no stub possible)
   show: no signature found
