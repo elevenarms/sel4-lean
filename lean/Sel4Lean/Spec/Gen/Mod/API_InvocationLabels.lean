@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.API_InvocationLabels
 open Sel4Lean.Spec
@@ -25,7 +25,10 @@ noncomputable section
 /-- Haskell `invocationType` -/
 def invocationType (x : Word) : InvocationLabel :=
   let x' := fromIntegral x
-  toEnum x'
+  if (x' ≤ (fromEnum ((maxBound : InvocationLabel)))) then
+    toEnum x'
+  else
+    InvocationLabel.GenInvocationLabel GenInvocationLabels.InvalidInvocation
 
 /-- Haskell `genInvocationType` -/
 def genInvocationType (x : Word) : GenInvocationLabels :=

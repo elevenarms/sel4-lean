@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Model_PSpace_RISCV64
 open Sel4Lean.Spec
@@ -15,7 +15,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `deleteGhost` -/
-def deleteGhost (ptr : PPtr a) (bits : Nat) : Kernel Unit :=
+def deleteGhost {a : Type} [Inhabited a] (ptr : PPtr a) (bits : Nat) : Kernel Unit :=
   pure ()
 
 end

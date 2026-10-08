@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive
 open Sel4Lean.Spec
@@ -28,7 +28,7 @@ def pageColourBits : Nat :=
 
 /-- Haskell `irqInvalid` -/
 def irqInvalid : RISCV64.IRQ :=
-  IRQ.IRQ 0
+  RISCV64.IRQ.IRQ 0
 
 /-- Haskell `getMemoryRegions` -/
 def getMemoryRegions (x0 : PtrH CallbackData) : IO (List (PAddr × PAddr)) :=
@@ -48,7 +48,7 @@ def getKernelDevices (x0 : PtrH CallbackData) : IO (List (PAddr × (PPtr RISCV64
 /-- Haskell `maskInterrupt` -/
 def maskInterrupt (x0 : PtrH CallbackData) (x1 : Bool) (x2 : RISCV64.IRQ) : IO Unit :=
   match x0, x1, x2 with
-  | env, mask, (IRQ.IRQ irq) => error "unimplemented"
+  | env, mask, (RISCV64.IRQ.IRQ irq) => error "unimplemented"
 
 /-- Haskell `loadWordCallback` -/
 def loadWordCallback : (PtrH CallbackData) → PAddr → IO RISCV64.Word :=

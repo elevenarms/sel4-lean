@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_Endpoint
 open Sel4Lean.Spec
@@ -46,7 +46,7 @@ opaque getCTE : (PPtr CTE) → Kernel CTE
 opaque getNotification : (PPtr Notification) → Kernel Notification
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] : (PPtr a) → Kernel a
+opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadReplySlot : (PPtr TCB) → Kernel (PPtr CTE)
@@ -78,7 +78,7 @@ opaque possibleSwitchTo : (PPtr TCB) → Kernel Unit
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit
 
--- local, not translated: guarded alternative: alternative at line 52: 'IdleEP | blocking -> do\n         
+-- local, not translated: guards that fall through to the next equation: alternative at line 52: 'IdleEP |
 opaque sendIPC : Bool → Bool → Word → Bool → Bool → (PPtr TCB) → (PPtr Endpoint) → Kernel Unit
 
 -- external: SEL4/Object/TCB.lhs
@@ -88,7 +88,7 @@ opaque setMRs : (PPtr TCB) → (Option (PPtr Word)) → (List Word) → Kernel W
 opaque setMessageInfo : (PPtr TCB) → MessageInfo → Kernel Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] : (PPtr a) → a → Kernel Unit
+opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque setRegister : Register → Word → UserMonad Unit
@@ -172,8 +172,8 @@ def receiveIPC (x0 : PPtr TCB) (x1 : Capability) (x2 : Bool) : Kernel Unit :=
                       possibleSwitchTo sender)
                 | (_, true) => setupCallerCap sender thread recvCanGrant
                 | _ => setThreadState ThreadState.Inactive sender)
-          | Endpoint.SendEP [] => failH "Send endpoint queue must not be empty"
-  | _, _, _ => failH "receiveIPC: invalid cap"
+          | Endpoint.SendEP [] => failM "Send endpoint queue must not be empty"
+  | _, _, _ => failM "receiveIPC: invalid cap"
 
 /-- Haskell `replyFromKernel` -/
 def replyFromKernel (x0 : PPtr TCB) (x1 : Word × (List Word)) : Kernel Unit :=
@@ -195,7 +195,8 @@ def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
       whenH (callerCap != nullPointer) (do
         stateAssertH (capHasProperty callerCap (fun cap => (isReplyCap cap) && (not (Capability.capReplyMaster cap)))) "replyIPCCancel: expected a reply cap"
         cteDeleteOne callerCap)
-  let blockedIPCCancel := fun state => do
+  let blockedIPCCancel := fun state =>
+    do
       let epptr := ThreadState.blockingObject state
       let ep ← getEndpoint epptr
       assertH (not (isIdle ep)) "blockedIPCCancel: endpoint must not be idle"
@@ -205,7 +206,8 @@ def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
         | _ => pure (Endpoint.set_epQueue ep queue')
       setEndpoint epptr ep'
       setThreadState ThreadState.Inactive tptr
-  let isIdle := fun ep => match ep with
+  let isIdle := fun ep =>
+    match ep with
     | Endpoint.IdleEP => true
     | _ => false
   do

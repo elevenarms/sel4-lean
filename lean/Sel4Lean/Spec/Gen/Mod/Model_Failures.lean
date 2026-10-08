@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Model_Failures
 open Sel4Lean.Spec
@@ -23,55 +23,55 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `withoutFailure` -/
-def withoutFailure : (Kernel a) → KernelF f a :=
+def withoutFailure {a : Type} [Inhabited a] {f : Type} [Inhabited f] : (Kernel a) → KernelF f a :=
   lift
 
 /-- Haskell `throw` -/
-def throw : f → KernelF f a :=
+def throw {f : Type} [Inhabited f] {a : Type} [Inhabited a] : f → KernelF f a :=
   throw
 
 /-- Haskell `catchFailure` -/
-def catchFailure (f : KernelF f a) (h : f → Kernel a) : Kernel a :=
+def catchFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] (f : KernelF f a) (h : f → Kernel a) : Kernel a :=
   do
     let result ← ExceptT.run f
     either h pure result
 
 /-- Haskell `rethrowFailure` -/
-def rethrowFailure (t : f1 → f2) (m : KernelF f1 a) : KernelF f2 a :=
+def rethrowFailure {f1 : Type} [Inhabited f1] {f2 : Type} [Inhabited f2] {a : Type} [Inhabited a] (t : f1 → f2) (m : KernelF f1 a) : KernelF f2 a :=
   do
     let result ← lift (ExceptT.run m)
     either (throw ∘ t) pure result
 
 /-- Haskell `capFaultOnFailure` -/
-def capFaultOnFailure (cptr : CPtr) (rp : Bool) : (KernelF LookupFailure a) → KernelF Fault a :=
+def capFaultOnFailure {a : Type} [Inhabited a] (cptr : CPtr) (rp : Bool) : (KernelF LookupFailure a) → KernelF Fault a :=
   rethrowFailure (Fault.CapFault cptr rp)
 
 /-- Haskell `lookupErrorOnFailure` -/
-def lookupErrorOnFailure (isSource : Bool) : (KernelF LookupFailure a) → KernelF SyscallError a :=
+def lookupErrorOnFailure {a : Type} [Inhabited a] (isSource : Bool) : (KernelF LookupFailure a) → KernelF SyscallError a :=
   rethrowFailure (SyscallError.FailedLookup isSource)
 
 /-- Haskell `ignoreFailure` -/
-def ignoreFailure : (KernelF f Unit) → Kernel Unit :=
+def ignoreFailure {f : Type} [Inhabited f] : (KernelF f Unit) → Kernel Unit :=
   (fun x => catchFailure x (const (pure ())))
 
 /-- Haskell `nullCapOnFailure` -/
-def nullCapOnFailure : (KernelF f Capability) → Kernel Capability :=
+def nullCapOnFailure {f : Type} [Inhabited f] : (KernelF f Capability) → Kernel Capability :=
   flip catchFailure (const (pure Capability.NullCap))
 
 /-- Haskell `emptyOnFailure` -/
-def emptyOnFailure (m : KernelF f (List a)) : Kernel (List a) :=
+def emptyOnFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] (m : KernelF f (List a)) : Kernel (List a) :=
   catchFailure m (const (pure []))
 
 /-- Haskell `constOnFailure` -/
-def constOnFailure (x : a) (m : KernelF f a) : Kernel a :=
+def constOnFailure {a : Type} [Inhabited a] {f : Type} [Inhabited f] (x : a) (m : KernelF f a) : Kernel a :=
   catchFailure m (const (pure x))
 
 /-- Haskell `unifyFailure` -/
-def unifyFailure : (KernelF f a) → KernelF Unit a :=
+def unifyFailure {f : Type} [Inhabited f] {a : Type} [Inhabited a] : (KernelF f a) → KernelF Unit a :=
   rethrowFailure (const ())
 
 /-- Haskell `rangeCheck` -/
-def rangeCheck (value : a) (minV : b) (maxV : b) : KernelF SyscallError Unit :=
+def rangeCheck {a : Type} [Inhabited a] {b : Type} [Inhabited b] (value : a) (minV : b) (maxV : b) : KernelF SyscallError Unit :=
   unlessH ((SerialData.value ≥ (fromIntegral minV)) && (SerialData.value ≤ (fromIntegral maxV))) (throw (SyscallError.RangeError (fromIntegral minV) (fromIntegral maxV)))
 
 end

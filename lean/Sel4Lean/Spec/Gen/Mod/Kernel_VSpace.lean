@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Kernel_VSpace
 open Sel4Lean.Spec
@@ -141,7 +141,7 @@ def lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word)) :=
   RISCV64.lookupIPCBuffer
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr : (PPtr a) → KernelInit VPtr :=
+def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
   RISCV64.vptrFromPPtr
 
 end

@@ -519,6 +519,43 @@ class Translator:
             s = f"({s})"
         return s[1:-1]
 
+    def rhs(self, node, ind, last=True):
+        """Right-hand side of an equation / binding / alternative: one `match`, or several guarded ones.
+        Guards become if-chains; `otherwise`/`True` is the final else. If guards can all fail, the result is
+        `default` (Haskell pattern-match failure) for the last equation, and refused otherwise (falling
+        through to a later equation has no direct Lean counterpart)."""
+        ms = [c for i, c in enumerate(node.children) if node.field_name_for_child(i) == "match"]
+        if not ms:
+            self.fail(node, "no right-hand side")
+        if len(ms) == 1 and ms[0].child_by_field_name("guards") is None:
+            return self.e(ms[0].child_by_field_name("expression"), ind)
+        branches, final = [], None
+        for m in ms:
+            gs = m.child_by_field_name("guards")
+            body = m.child_by_field_name("expression")
+            if gs is None:
+                final = body; break
+            conds = []
+            for g in kids(gs):
+                if g.type != "boolean":
+                    self.fail(g, "pattern guard")
+                c = kids(g)[0]
+                if self.text(c) in ("otherwise", "True"):
+                    continue
+                conds.append(self.atom(c, ind))
+            if not conds:
+                final = body; break
+            branches.append((" && ".join(conds), body))
+        if final is None and not last:
+            self.fail(node, "guards that fall through to the next equation")
+        pad = " " * (ind + 2)
+        out = []
+        for i, (c, b) in enumerate(branches):
+            kw = "if" if i == 0 else "else if"
+            out.append(f"{kw} {c} then\n{pad}{self.e(b, ind + 2)}")
+        out.append(f"else\n{pad}{self.e(final, ind + 2) if final is not None else 'default'}")
+        return ("\n" + " " * ind).join(out)
+
     def do(self, n, ind):
         stmts = [c for c in kids(n) if c.type in ("bind", "exp", "let")]
         if len(stmts) != len(kids(n)):
@@ -545,17 +582,14 @@ class Translator:
             return None   # local type annotation: Lean infers it
         if b.type == "bind" and b.child_by_field_name("name") is None:
             pat = b.child_by_field_name("pattern")   # destructuring: (l, h) = e
-            body = b.child_by_field_name("match").child_by_field_name("expression")
-            return f"let {self.pat(pat)} := {self.e(body, ind + 2)}"
+            return f"let {self.pat(pat)} := {self.rhs(b, ind + 2)}"
         if b.type == "bind":
             name = self.ident(self.text(b.child_by_field_name("name")))
-            body = b.child_by_field_name("match").child_by_field_name("expression")
-            return f"let {name} := {self.e(body, ind + 2)}"
+            return f"let {name} := {self.rhs(b, ind + 2)}"
         if b.type == "function":
             name = self.ident(self.text(b.child_by_field_name("name")))
             ps = kids(b.child_by_field_name("patterns"))
-            body = b.child_by_field_name("match").child_by_field_name("expression")
-            return f"let {name} := fun {' '.join(self.pat_atom(p) for p in ps)} => {self.e(body, ind + 2)}"
+            return f"let {name} := fun {' '.join(self.pat_atom(p) for p in ps)} =>\n{' ' * (ind + 2)}{self.rhs(b, ind + 2)}"
         self.fail(b, "local binding")
 
     def case(self, n, ind):
@@ -564,13 +598,17 @@ class Translator:
         lines = [f"match {self.e(scrut, ind + 2)} with"]
         for a in kids(alts):
             p = self.pat(a.child_by_field_name("pattern"))
-            m = a.child_by_field_name("match")
-            if m.child_by_field_name("guards") is not None or any(c.type == "guards" for c in kids(m)):
-                self.fail(a, "guarded alternative")
-            body = m.child_by_field_name("expression")
-            b = self.e(body, ind + 4)
-            if body.type in ("case", "do", "conditional", "lambda"):
-                b = f"({b})"
+            ms = [c for i, c in enumerate(a.children) if a.field_name_for_child(i) == "match"]
+            guarded = len(ms) > 1 or ms[0].child_by_field_name("guards") is not None
+            if guarded:
+                # Haskell falls through to the next alternative when all guards fail; refuse unless
+                # this is the last alternative or an `otherwise` closes the chain
+                b = "(" + self.rhs(a, ind + 4, last=(a == kids(alts)[-1])) + ")"
+            else:
+                body = ms[0].child_by_field_name("expression")
+                b = self.e(body, ind + 4)
+                if body.type in ("case", "do", "conditional", "lambda"):
+                    b = f"({b})"
             lines.append(f"{' ' * ind}| {p} => {b}")
         return "\n".join(lines)
 
@@ -584,8 +622,7 @@ class Translator:
         if sig is None:
             if len(eqs) == 1 and eqs[0].type == "bind":
                 # top-level constant without a signature: let Lean infer the type
-                body = eqs[0].child_by_field_name("match").child_by_field_name("expression")
-                return f"/-- Haskell `{name}` -/\ndef {self.ident(name)} :=\n  {self.e(body, 2)}"
+                return f"/-- Haskell `{name}` -/\ndef {self.ident(name)} :=\n  {self.rhs(eqs[0], 2)}"
             self.fail(nodes[0], "function without a signature")
         params, t = [], sig.child_by_field_name("type")
         if t.type == "context":
@@ -601,9 +638,8 @@ class Translator:
         if any(len(p) != arity for p in pat_lists):
             self.fail(eqs[0], "equations with different numbers of parameters")
         for eq in eqs:
-            m = eq.child_by_field_name("match")
-            if m is None or m.child_by_field_name("expression") is None:
-                self.fail(eq, "guarded equation")
+            if eq.child_by_field_name("match") is None:
+                self.fail(eq, "equation without right-hand side")
         simple = len(eqs) == 1 and all(p.type == "variable" for p in pat_lists[0])
         typed = min(arity, len(params))
         if simple:
@@ -619,7 +655,6 @@ class Translator:
         lam = f"fun {' '.join(extra)} => " if extra else ""
 
         def body_of(eq, ind):
-            m = eq.child_by_field_name("match")
             lines = []
             wheres = eq.child_by_field_name("binds")
             if wheres is not None:
@@ -627,7 +662,7 @@ class Translator:
                     lb = self.local_bind(b, ind)
                     if lb:
                         lines.append(lb)
-            lines.append(self.e(m.child_by_field_name("expression"), ind))
+            lines.append(self.rhs(eq, ind, last=(eq == eqs[-1])))
             return ("\n" + " " * ind).join(lines)
 
         if simple:

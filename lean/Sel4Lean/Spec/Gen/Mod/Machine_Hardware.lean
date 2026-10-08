@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Machine_Hardware
 open Sel4Lean.Spec
@@ -111,15 +111,15 @@ def pptrBaseOffset : Word :=
   (VPtr.fromVPtr (RISCV64.pptrBase)) - (PAddr.fromPAddr (RISCV64.paddrBase))
 
 /-- Haskell `ptrFromPAddr` -/
-def ptrFromPAddr : PAddr → PPtr a :=
+def ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a :=
   RISCV64.ptrFromPAddr
 
 /-- Haskell `addrFromPPtr` -/
-def addrFromPPtr : (PPtr a) → PAddr :=
+def addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr :=
   RISCV64.addrFromPPtr
 
 /-- Haskell `addrFromKPPtr` -/
-def addrFromKPPtr : (PPtr a) → PAddr :=
+def addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr :=
   RISCV64.addrFromKPPtr
 
 /-- Haskell `minIRQ` -/
@@ -209,7 +209,7 @@ def setNextPC : Word → UserMonad Unit :=
   RISCV64.setNextPC
 
 /-- Haskell `nullPointer` -/
-def nullPointer : PPtr a :=
+def nullPointer {a : Type} [Inhabited a] : PPtr a :=
   PPtr.mk 0
 
 /-- Haskell `config_HAVE_FPU` -/

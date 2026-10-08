@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.API_Types
 open Sel4Lean.Spec
@@ -77,7 +77,8 @@ def rightsFromWord (p : Word) : CapRights :=
 def wordFromRights (x0 : CapRights) : Word :=
   match x0 with
   | (CapRights.CapRights r1 r2 r3 r4) => 
-      let bitIf := fun b n => if b then
+      let bitIf := fun b n =>
+        if b then
           bit n
         else
           0
@@ -100,11 +101,11 @@ def msgLengthBits : Nat :=
   7
 
 /-- Haskell `msgMaxExtraCaps` -/
-def msgMaxExtraCaps : a :=
+def msgMaxExtraCaps {a : Type} [Inhabited a] : a :=
   (bit msgExtraCapBits) - 1
 
 /-- Haskell `msgMaxLength` -/
-def msgMaxLength : a :=
+def msgMaxLength {a : Type} [Inhabited a] : a :=
   120
 
 /-- Haskell `messageInfoFromWord` -/

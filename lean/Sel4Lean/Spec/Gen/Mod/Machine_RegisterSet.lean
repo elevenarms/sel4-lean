@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Machine_RegisterSet
 open Sel4Lean.Spec
@@ -119,7 +119,7 @@ def newContext : UserContext :=
   RISCV64.newContext
 
 /-- Haskell `mask` -/
-def mask (bits : Nat) : w :=
+def mask {w : Type} [Inhabited w] (bits : Nat) : w :=
   (bit bits) - 1
 
 end

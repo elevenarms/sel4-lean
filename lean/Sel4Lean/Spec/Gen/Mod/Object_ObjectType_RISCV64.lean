@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_ObjectType_RISCV64
 open Sel4Lean.Spec
@@ -36,9 +36,6 @@ opaque mask {w : Type} [Inhabited w] : Nat → w
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque maskVMRights : VMRights → CapRights → VMRights
 
--- external: SEL4/Model/PSpace.lhs
-opaque objBits {a : Type} [Inhabited a] : a → Nat
-
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque pageBitsForSize : VMPageSize → Nat
 
@@ -46,7 +43,7 @@ opaque pageBitsForSize : VMPageSize → Nat
 opaque performRISCVMMUInvocation : Invocation → KernelP (List Word)
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque ptBits : Nat
@@ -69,7 +66,6 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-! ## Unresolved (no stub possible)
   bit: no signature found
   error: no signature found
-  makeObject: no signature found
   modify: no signature found
 -/
 

@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Model_Preemption
 open Sel4Lean.Spec
@@ -34,7 +34,7 @@ opaque setWorkUnits : Word → Kernel Unit
 /-! ## Translated -/
 
 /-- Haskell `withoutPreemption` -/
-def withoutPreemption : (Kernel a) → KernelP a :=
+def withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a :=
   lift
 
 /-- Haskell `workUnitsLimit` -/

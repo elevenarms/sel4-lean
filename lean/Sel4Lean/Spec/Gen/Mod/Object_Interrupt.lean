@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_Interrupt
 open Sel4Lean.Spec
@@ -111,14 +111,11 @@ opaque maskIrqSignal : IRQ → Kernel Unit
 -- external: SEL4/Machine/Hardware.lhs
 opaque maxIRQ : IRQ
 
--- external: SEL4/Model/PSpace.lhs
-opaque objBits {a : Type} [Inhabited a] : a → Nat
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque pageBits : Nat
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
@@ -151,7 +148,6 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
   fromIntegral: no signature found
   length: no signature found
   liftM: no signature found
-  makeObject: no signature found
   mapM_: no signature found
   maxBound: no signature found
   minBound: no signature found
@@ -287,7 +283,7 @@ def handleInterrupt (irq : IRQ) : Kernel Unit :=
               timerTick
               doMachineOp resetTimer)
         | IRQState.IRQReserved => (RISCV64.handleReservedIRQ) irq
-        | IRQState.IRQInactive => failH ("Received disabled IRQ " ++ («show» irq))
+        | IRQState.IRQInactive => failM ("Received disabled IRQ " ++ («show» irq))
         doMachineOp (ackInterrupt irq)
 
 /-- Haskell `maybeHandleInterrupt` -/

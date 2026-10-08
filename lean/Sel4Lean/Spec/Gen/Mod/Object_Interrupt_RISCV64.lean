@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_Interrupt_RISCV64
 open Sel4Lean.Spec
@@ -79,7 +79,7 @@ def checkIRQ (irqW : RISCV64.Word) : KernelF SyscallError Unit :=
 /-- Haskell `plic_complete_claim` -/
 def plic_complete_claim (x0 : RISCV64.IRQ) : MachineMonad Unit :=
   match x0 with
-  | (IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
+  | (RISCV64.IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
 
 /-- Haskell `invokeIRQHandler` -/
 def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=

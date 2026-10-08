@@ -90,7 +90,8 @@ def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
 
 /-- Haskell `cancelSignal` -/
 def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
-  let isWaiting := fun ntfn => match ntfn with
+  let isWaiting := fun ntfn =>
+    match ntfn with
     | NTFN.WaitingNtfn .. => true
     | _ => false
   do

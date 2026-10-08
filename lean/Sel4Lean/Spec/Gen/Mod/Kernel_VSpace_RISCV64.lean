@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Kernel_VSpace_RISCV64
 open Sel4Lean.Spec
@@ -36,7 +36,7 @@ opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
--- local, not translated: guarded alternative: alternative at line 447: 'UntypedCap { capIsDevice = False 
+-- local, not translated: guards that fall through to the next equation: alternative at line 447: 'Untyped
 opaque decodeRISCVASIDControlInvocation : RISCV64.Word → (List RISCV64.Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
 
 -- external: SEL4/Model/PSpace.lhs
@@ -58,7 +58,7 @@ opaque getCTE : (PPtr CTE) → Kernel CTE
 opaque getCurThread : Kernel (PPtr TCB)
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] : (PPtr a) → Kernel a
+opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/Object/CNode.lhs
 opaque getSlotCap : (PPtr CTE) → Kernel Capability
@@ -96,9 +96,6 @@ opaque maxFreeIndex : Nat → Nat
 -- external: SEL4/Model/StateData/RISCV64.hs
 opaque maxPTLevel : Nat
 
--- external: SEL4/Model/PSpace.lhs
-opaque objBits {a : Type} [Inhabited a] : a → Nat
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque pageBits : Nat
 
@@ -109,7 +106,7 @@ opaque pageBitsForSize : VMPageSize → Nat
 opaque performPageTableInvocation : PageTableInvocation → Kernel Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque pptrBase : VPtr
@@ -139,7 +136,7 @@ opaque rightsFromWord : Word → CapRights
 opaque riscvKSGlobalPT : KernelState → PPtr PTE
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] : (PPtr a) → a → Kernel Unit
+opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
@@ -183,7 +180,6 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
   isJust: no signature found
   isNothing: no signature found
   liftM: no signature found
-  makeObject: no signature found
   mapM_: no signature found
   modify: no signature found
   not: no signature found
@@ -307,9 +303,12 @@ def lookupPTSlot : (PPtr PTE) → VPtr → Kernel (Nat × (PPtr PTE)) :=
 
 /-- Haskell `handleVMFault` -/
 def handleVMFault (thread : PPtr TCB) (f : VMFaultType) : KernelF Fault Unit :=
-  let loadf := fun a => Fault.ArchFault (ArchFault.VMFault a ([0, vmFaultTypeFSR VMFaultType.RISCVLoadAccessFault]))
-  let storef := fun a => Fault.ArchFault (ArchFault.VMFault a ([0, vmFaultTypeFSR VMFaultType.RISCVStoreAccessFault]))
-  let instrf := fun a => Fault.ArchFault (ArchFault.VMFault a ([1, vmFaultTypeFSR VMFaultType.RISCVInstructionAccessFault]))
+  let loadf := fun a =>
+    Fault.ArchFault (ArchFault.VMFault a ([0, vmFaultTypeFSR VMFaultType.RISCVLoadAccessFault]))
+  let storef := fun a =>
+    Fault.ArchFault (ArchFault.VMFault a ([0, vmFaultTypeFSR VMFaultType.RISCVStoreAccessFault]))
+  let instrf := fun a =>
+    Fault.ArchFault (ArchFault.VMFault a ([1, vmFaultTypeFSR VMFaultType.RISCVInstructionAccessFault]))
   do
     let w ← withoutFailure (doMachineOp read_stval)
     let addr := VPtr.VPtr w
@@ -484,7 +483,7 @@ def decodeRISCVFrameInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 
       | (InvocationLabel.ArchInvocationLabel ArchInvocationLabel.RISCVPageUnmap, _, _) => pure (RISCV64.Invocation.InvokePage (PageInvocation.PageUnmap cap cte))
       | (InvocationLabel.ArchInvocationLabel ArchInvocationLabel.RISCVPageGetAddress, _, _) => pure (RISCV64.Invocation.InvokePage (PageInvocation.PageGetAddr (ArchCapability.capFBasePtr cap)))
       | _ => throw SyscallError.IllegalOperation
-  | _, _, _, _, _ => failH "Unreachable"
+  | _, _, _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVPageTableInvocationMap` -/
 def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (attr : RISCV64.Word) (vspaceCap : Capability) : KernelF SyscallError Invocation :=
@@ -522,7 +521,7 @@ def decodeRISCVPageTableInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) 
             | _ => pure ()
             pure (RISCV64.Invocation.InvokePageTable (PageTableInvocation.PageTableUnmap cap cte)))
       | _ => throw SyscallError.IllegalOperation
-  | _, _, _, _, _ => failH "Unreachable"
+  | _, _, _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVASIDPoolInvocation` -/
 def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError Invocation :=
@@ -545,7 +544,7 @@ def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 
           | _ => throw (SyscallError.InvalidCapability 1))
       | (InvocationLabel.ArchInvocationLabel ArchInvocationLabel.RISCVASIDPoolAssign, _) => throw SyscallError.TruncatedMessage
       | _ => throw SyscallError.IllegalOperation
-  | _, _, _ => failH "Unreachable"
+  | _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVMMUInvocation` -/
 def decodeRISCVMMUInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : ArchCapability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError Invocation :=
@@ -659,7 +658,7 @@ def createDeviceFrames : Capability → KernelInit Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr : (PPtr a) → KernelInit VPtr :=
+def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
   error "boot code unimplemented"
 
 end

@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Kernel_Init
 open Sel4Lean.Spec
@@ -108,14 +108,11 @@ opaque maxFreeIndex : Nat → Nat
 -- external: SEL4/Kernel/BootInfo.lhs
 opaque nopBIFrameData : BIFrameData
 
--- external: SEL4/Model/PSpace.lhs
-opaque objBits {a : Type} [Inhabited a] : a → Nat
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque pageBits : Nat
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
@@ -167,7 +164,6 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
   length: no signature found
   lift: no signature found
   liftM: no signature found
-  makeObject: no signature found
   map: no signature found
   mapM: no signature found
   mapM_: no signature found
@@ -189,11 +185,11 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
 /-! ## Translated -/
 
 /-- Haskell `doKernelOp` -/
-def doKernelOp : (Kernel a) → KernelInit a :=
+def doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a :=
   lift ∘ lift
 
 /-- Haskell `noInitFailure` -/
-def noInitFailure : (KernelInitState a) → KernelInit a :=
+def noInitFailure {a : Type} [Inhabited a] : (KernelInitState a) → KernelInit a :=
   lift
 
 /-- Haskell `minNum4kUntypedObj` -/
@@ -236,10 +232,13 @@ def initFreemem (kernelFrameEnd : PAddr) (uiRegion : Region) : KernelInit Unit :
 /-- Haskell `allocRegion` -/
 def allocRegion (bits : Nat) : KernelInit PAddr :=
   let s := 1 <<< bits
-  let align := fun b => (((b - 1) >>> bits) + 1) <<< bits
-  let isUsable := fun reg => let r := (align ∘ (fst ∘ Region.fromRegion)) reg
+  let align := fun b =>
+    (((b - 1) >>> bits) + 1) <<< bits
+  let isUsable := fun reg =>
+    let r := (align ∘ (fst ∘ Region.fromRegion)) reg
     (r ≥ (fst (Region.fromRegion reg))) && (((r + s) - 1) ≤ (snd (Region.fromRegion reg)))
-  let isAlignedUsable := fun reg => let b := fst (Region.fromRegion reg)
+  let isAlignedUsable := fun reg =>
+    let b := fst (Region.fromRegion reg)
     let t := snd (Region.fromRegion reg)
     let (r, q) := (align b, align t)
     ((r == b) || (q == t)) && ((t - b) ≥ s)
@@ -268,7 +267,7 @@ def allocRegion (bits : Nat) : KernelInit PAddr :=
                   [Region.Region ((result + s, t))]
               noInitFailure (modify (fun st => { st with initFreeMemory := small ++ (below ++ (above ++ rest)) }))
               pure (addrFromPPtr result))
-        | _ => failH "Unable to allocate memory")
+        | _ => failM "Unable to allocate memory")
 
 /-- Haskell `coverOf` -/
 def coverOf (x0 : List Region) : Region :=
@@ -380,7 +379,7 @@ def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
     let initData := { initFreeMemory := [], initSlotPosCur := 0, initSlotPosMax := bit (pageBits), initBootInfo := nopBIFrameData, initVPtrOffset := vptr, initBootInfoFrame := 0 : InitData }
     (flip runStateT) initData (do
       let result ← ExceptT.run oper
-      either (fun _ => failH "initKernel Fail") pure result)
+      either (fun _ => failM "initKernel Fail") pure result)
     pure ()
 
 /-- Haskell `initKernel` -/
@@ -421,23 +420,26 @@ def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAddr) (ker
 /-- Haskell `mapTaskRegions` -/
 def mapTaskRegions (taskMappings : List (PAddr × VPtr)) : KernelInit ((VPtr × (PPtr CTE)) × (VPtr × (PPtr Word))) :=
   do
-    failH ("mapTaskRegions is not Implemented" ++ («show» taskMappings))
+    failM ("mapTaskRegions is not Implemented" ++ («show» taskMappings))
 
 /-- Haskell `allocFrame` -/
 def allocFrame : KernelInit PAddr :=
   allocRegion pageBits
 
 /-- Haskell `rangesBy` -/
-def rangesBy (x0 : a → a → Bool) (x1 : List a) : List (List a) :=
+def rangesBy {a : Type} [Inhabited a] (x0 : a → a → Bool) (x1 : List a) : List (List a) :=
   match x0, x1 with
   | _, [] => []
   | _, [x] => [[x]]
   | adj, (x :: y :: xs) => 
       let r := rangesBy adj (y :: xs)
-      (x :: (head r)) :: (tail r)
+      if (adj x y) then
+        (x :: (head r)) :: (tail r)
+      else
+        [x] :: r
 
 /-- Haskell `distinct` -/
-def distinct (x0 : List a) : Bool :=
+def distinct {a : Type} [Inhabited a] [DecidableEq a] (x0 : List a) : Bool :=
   match x0 with
   | [] => true
   | (x :: xs) => (notElem x xs) && (distinct xs)

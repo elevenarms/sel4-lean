@@ -30,7 +30,6 @@ instance {n : Nat} : OfNat ASID n := ⟨⟨OfNat.ofNat n⟩⟩
 instance : Add ASID := ⟨fun a b => ⟨a.fromASID + b.fromASID⟩⟩
 instance : Sub ASID := ⟨fun a b => ⟨a.fromASID - b.fromASID⟩⟩
 instance : Mul ASID := ⟨fun a b => ⟨a.fromASID * b.fromASID⟩⟩
-instance : IntegralH ASID := ⟨fun a => IntegralH.toInt a.fromASID, fun i => ⟨IntegralH.ofInt i⟩⟩
 instance : LE ASID := ⟨fun a b => a.fromASID ≤ b.fromASID⟩
 instance : LT ASID := ⟨fun a b => a.fromASID < b.fromASID⟩
 instance (a b : ASID) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromASID ≤ b.fromASID))
@@ -39,6 +38,7 @@ instance : AndOp ASID := ⟨fun a b => ⟨a.fromASID &&& b.fromASID⟩⟩
 instance : OrOp ASID := ⟨fun a b => ⟨a.fromASID ||| b.fromASID⟩⟩
 instance : HShiftLeft ASID Nat ASID := ⟨fun a k => ⟨a.fromASID <<< k⟩⟩
 instance : HShiftRight ASID Nat ASID := ⟨fun a k => ⟨a.fromASID >>> k⟩⟩
+instance : IntegralH ASID := ⟨fun a => IntegralH.toInt a.fromASID, fun i => ⟨IntegralH.ofInt i⟩⟩
 
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
@@ -157,7 +157,6 @@ instance {n : Nat} : OfNat VPtr n := ⟨⟨OfNat.ofNat n⟩⟩
 instance : Add VPtr := ⟨fun a b => ⟨a.fromVPtr + b.fromVPtr⟩⟩
 instance : Sub VPtr := ⟨fun a b => ⟨a.fromVPtr - b.fromVPtr⟩⟩
 instance : Mul VPtr := ⟨fun a b => ⟨a.fromVPtr * b.fromVPtr⟩⟩
-instance : IntegralH VPtr := ⟨fun a => IntegralH.toInt a.fromVPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 instance : LE VPtr := ⟨fun a b => a.fromVPtr ≤ b.fromVPtr⟩
 instance : LT VPtr := ⟨fun a b => a.fromVPtr < b.fromVPtr⟩
 instance (a b : VPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromVPtr ≤ b.fromVPtr))
@@ -166,6 +165,7 @@ instance : AndOp VPtr := ⟨fun a b => ⟨a.fromVPtr &&& b.fromVPtr⟩⟩
 instance : OrOp VPtr := ⟨fun a b => ⟨a.fromVPtr ||| b.fromVPtr⟩⟩
 instance : HShiftLeft VPtr Nat VPtr := ⟨fun a k => ⟨a.fromVPtr <<< k⟩⟩
 instance : HShiftRight VPtr Nat VPtr := ⟨fun a k => ⟨a.fromVPtr >>> k⟩⟩
+instance : IntegralH VPtr := ⟨fun a => IntegralH.toInt a.fromVPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 
 
 -- from SEL4/Object/Structures/RISCV64.hs
@@ -267,30 +267,6 @@ def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID
   | .PageTableCap a0 _ => .PageTableCap a0 v
   | x => x
 
--- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
-/-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
-structure RISCV64.IRQ where
-  IRQ ::
-  val : BitVec 32
-  deriving Inhabited, DecidableEq
-instance : LE RISCV64.IRQ := ⟨fun a b => a.val ≤ b.val⟩
-instance : LT RISCV64.IRQ := ⟨fun a b => a.val < b.val⟩
-instance (a b : RISCV64.IRQ) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.val ≤ b.val))
-instance (a b : RISCV64.IRQ) : Decidable (a < b) := inferInstanceAs (Decidable (a.val < b.val))
-
-
--- from SEL4/Machine/Hardware.lhs
-/-- Haskell `newtype IRQ = IRQ …` -/
-structure IRQ where
-  IRQ ::
-  theIRQ : RISCV64.IRQ
-  deriving Inhabited, DecidableEq
-
-
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
-
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
 inductive LookupFailure where
@@ -360,14 +336,6 @@ def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Nat) : Loo
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
 
--- from SEL4/API/Failures/RISCV64.hs
-/-- Haskell `data ArchFault = VMFault { … }` -/
-structure ArchFault where
-  VMFault ::
-  vmFaultAddress : VPtr
-  vmFaultArchData : List RISCV64.Word
-  deriving Inhabited, DecidableEq
-
 -- from SEL4/API/Types.lhs
 /-- Haskell `newtype CPtr = CPtr …` -/
 structure CPtr where
@@ -378,7 +346,6 @@ instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
 instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
 instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
 instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
-instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
 instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
 instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
@@ -387,7 +354,16 @@ instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
 instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
 instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
 instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
 
+
+-- from SEL4/API/Failures/RISCV64.hs
+/-- Haskell `data ArchFault = VMFault { … }` -/
+structure ArchFault where
+  VMFault ::
+  vmFaultAddress : VPtr
+  vmFaultArchData : List RISCV64.Word
+  deriving Inhabited, DecidableEq
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -469,12 +445,16 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   | x => x
 
 -- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
-
--- from SEL4/API/Types.lhs
 /-- Haskell `type Domain` -/
 abbrev Domain := BitVec 8
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data RISCV64.Register` -/
@@ -534,6 +514,28 @@ structure ArchTCB where
   ArchThread ::
   atcbContext : UserContext
   deriving Inhabited
+
+
+-- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
+/-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
+structure RISCV64.IRQ where
+  IRQ ::
+  val : BitVec 32
+  deriving Inhabited, DecidableEq
+instance : LE RISCV64.IRQ := ⟨fun a b => a.val ≤ b.val⟩
+instance : LT RISCV64.IRQ := ⟨fun a b => a.val < b.val⟩
+instance (a b : RISCV64.IRQ) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.val ≤ b.val))
+instance (a b : RISCV64.IRQ) : Decidable (a < b) := inferInstanceAs (Decidable (a.val < b.val))
+instance : IntegralH RISCV64.IRQ := ⟨fun a => IntegralH.toInt a.val, fun i => ⟨IntegralH.ofInt i⟩⟩
+
+
+-- from SEL4/Machine/Hardware.lhs
+/-- Haskell `newtype IRQ = IRQ …` -/
+structure IRQ where
+  IRQ ::
+  theIRQ : RISCV64.IRQ
+  deriving Inhabited, DecidableEq
+instance : IntegralH IRQ := ⟨fun a => IntegralH.toInt a.theIRQ, fun i => ⟨IntegralH.ofInt i⟩⟩
 
 
 -- from SEL4/Object/Structures.lhs
@@ -1183,6 +1185,36 @@ structure KernelState where
 /-- Haskell `type Kernel = StateT KernelState MachineMonad`, modelled as l4v's Isabelle
 `kernel = (kernel_state, 'a) nondet_monad` -/
 abbrev Kernel := Sel4Lean.NondetM KernelState
+
+-- from Data/BinaryTree.hs
+/-- Haskell `data BinaryTree` -/
+inductive BinaryTree (a : Type) where
+  | Node (btTrue : BinaryTree a) (btFalse : BinaryTree a)
+  | Leaf (a0 : a)
+  | Empty
+  
+instance {a : Type} : Inhabited (BinaryTree a) := ⟨.Empty⟩
+
+
+/-- Haskell selector `btTrue` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def BinaryTree.btTrue {a : Type} : (BinaryTree a) → BinaryTree a
+  | .Node v _ => v
+  | _ => default
+/-- Haskell record update `x { btTrue = v }` (no-op on other constructors). -/
+def BinaryTree.set_btTrue {a : Type} (x : (BinaryTree a)) (v : BinaryTree a) : (BinaryTree a) :=
+  match x with
+  | .Node _ a1 => .Node v a1
+  | x => x
+
+/-- Haskell selector `btFalse` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def BinaryTree.btFalse {a : Type} : (BinaryTree a) → BinaryTree a
+  | .Node _ v => v
+  | _ => default
+/-- Haskell record update `x { btFalse = v }` (no-op on other constructors). -/
+def BinaryTree.set_btFalse {a : Type} (x : (BinaryTree a)) (v : BinaryTree a) : (BinaryTree a) :=
+  match x with
+  | .Node a0 _ => .Node a0 v
+  | x => x
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data InitFailure` -/

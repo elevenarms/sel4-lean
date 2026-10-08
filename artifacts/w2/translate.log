@@ -1,3 +1,21 @@
+hs2lean module: 9/9 functions translated (0 partial), 0 external stubs, 1 unresolved
+  unresolved error: no signature found
+hs2lean module: 3/3 functions translated (0 partial), 0 external stubs, 5 unresolved
+  unresolved listArray: no signature found
+  unresolved map: no signature found
+  unresolved maxBound: no signature found
+  unresolved minBound: no signature found
+  unresolved range: no signature found
+hs2lean module: 5/5 functions translated (0 partial), 0 external stubs, 9 unresolved
+  unresolved div: no signature found
+  unresolved error: no signature found
+  unresolved finiteBitSize: no signature found
+  unresolved length: no signature found
+  unresolved map: no signature found
+  unresolved not: no signature found
+  unresolved takeWhile: no signature found
+  unresolved testBit: no signature found
+  unresolved undefined: no signature found
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
 hs2lean module: 2/2 functions translated (0 partial), 0 external stubs, 2 unresolved
   unresolved fromEnum: no signature found
@@ -57,11 +75,11 @@ hs2lean module: 8/8 functions translated (0 partial), 8 external stubs, 4 unreso
   unresolved liftM: no signature found
   unresolved shiftR: no signature found
 hs2lean module: 2/3 functions translated (0 partial), 13 external stubs, 1 unresolved
-  failed sendFaultIPC: guarded alternative: alternative at line 56: 'EndpointCap { capEPCanSend = True, capEPCanGrant = canGrant,\n            
+  failed sendFaultIPC: guards that fall through to the next equation: alternative at line 56: 'EndpointCap { capEPCanSend = True, capEPCanGrant
   unresolved show: no signature found
 hs2lean module: 1/1 functions translated (0 partial), 1 external stubs, 0 unresolved
 hs2lean module: 1/1 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 33 unresolved
+hs2lean module: 21/22 functions translated (0 partial), 44 external stubs, 32 unresolved
   failed createUntypedObject: arithmetic sequence form: arithmetic_sequence at line 289: '[regStartPAddr bootMemReuseReg, (regStartPAddr bootMemReuseR
   unresolved bit: no signature found
   unresolved break: no signature found
@@ -79,7 +97,6 @@ hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 33 un
   unresolved length: no signature found
   unresolved lift: no signature found
   unresolved liftM: no signature found
-  unresolved makeObject: no signature found
   unresolved map: no signature found
   unresolved mapM: no signature found
   unresolved mapM_: no signature found
@@ -96,8 +113,8 @@ hs2lean module: 21/22 functions translated (0 partial), 45 external stubs, 33 un
   unresolved tail: no signature found
   unresolved take: no signature found
   unresolved undefined: no signature found
-hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 21 unresolved
-  failed transferCapsToSlots: guarded alternative: alternative at line 279: '(EndpointCap { capEPPtr = p1 }, Just p2, _) | p1 == p2 -> do\n           
+hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 20 unresolved
+  failed transferCapsToSlots: guards that fall through to the next equation: alternative at line 279: '(EndpointCap { capEPPtr = p1 }, Just p2, _) | p
   unresolved bit: no signature found
   unresolved complement: no signature found
   unresolved const: no signature found
@@ -107,7 +124,6 @@ hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 21 un
   unresolved gets: no signature found
   unresolved length: no signature found
   unresolved liftM: no signature found
-  unresolved makeObject: no signature found
   unresolved map: no signature found
   unresolved maxBound: no signature found
   unresolved modify: no signature found
@@ -122,8 +138,8 @@ hs2lean module: 52/53 functions translated (0 partial), 66 external stubs, 21 un
 hs2lean module: 5/5 functions translated (0 partial), 2 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean module: 16/16 functions translated (0 partial), 21 external stubs, 0 unresolved
-hs2lean module: 51/53 functions translated (0 partial), 50 external stubs, 23 unresolved
-  failed decodeRISCVASIDControlInvocation: guarded alternative: alternative at line 447: 'UntypedCap { capIsDevice = False } | capBlockSize untyped == objBits pool
+hs2lean module: 51/53 functions translated (0 partial), 49 external stubs, 22 unresolved
+  failed decodeRISCVASIDControlInvocation: guards that fall through to the next equation: alternative at line 447: 'UntypedCap { capIsDevice = False } | capBlockSi
   failed performPageTableInvocation: arithmetic sequence form: arithmetic_sequence at line 520: '[ptr, ptr + bit pteBits .. ptr + bit ptBits - 1]'
   unresolved assocs: no signature found
   unresolved bit: no signature found
@@ -139,7 +155,6 @@ hs2lean module: 51/53 functions translated (0 partial), 50 external stubs, 23 un
   unresolved isJust: no signature found
   unresolved isNothing: no signature found
   unresolved liftM: no signature found
-  unresolved makeObject: no signature found
   unresolved mapM_: no signature found
   unresolved modify: no signature found
   unresolved not: no signature found
@@ -186,7 +201,7 @@ hs2lean module: 12/12 functions translated (0 partial), 0 external stubs, 5 unre
   unresolved flip: no signature found
   unresolved fromIntegral: no signature found
   unresolved lift: no signature found
-hs2lean module: 24/24 functions translated (0 partial), 11 external stubs, 20 unresolved
+hs2lean module: 19/19 functions translated (0 partial), 11 external stubs, 17 unresolved
   unresolved findMax: no signature found
   unresolved findMin: no signature found
   unresolved flip: no signature found
@@ -194,9 +209,7 @@ hs2lean module: 24/24 functions translated (0 partial), 11 external stubs, 20 un
   unresolved foldr: no signature found
   unresolved fst: no signature found
   unresolved gets: no signature found
-  unresolved injectKO: no signature found
   unresolved keys: no signature found
-  unresolved loadObject: no signature found
   unresolved maybe: no signature found
   unresolved modify: no signature found
   unresolved not: no signature found
@@ -206,7 +219,6 @@ hs2lean module: 24/24 functions translated (0 partial), 11 external stubs, 20 un
   unresolved show: no signature found
   unresolved split: no signature found
   unresolved splitLookup: no signature found
-  unresolved updateObject: no signature found
 hs2lean module: 1/1 functions translated (0 partial), 0 external stubs, 0 unresolved
 hs2lean module: 3/3 functions translated (0 partial), 5 external stubs, 1 unresolved
   unresolved lift: no signature found
@@ -224,7 +236,8 @@ hs2lean module: 3/3 functions translated (0 partial), 0 external stubs, 2 unreso
   unresolved head: no signature found
 hs2lean module: 1/1 functions translated (0 partial), 1 external stubs, 0 unresolved
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 43/43 functions translated (0 partial), 43 external stubs, 13 unresolved
+hs2lean module: 42/43 functions translated (0 partial), 42 external stubs, 13 unresolved
+  failed isMDBParentOf: guards that fall through to the next equation: alternative at line 657: 'EndpointCap { capEPBadge = badge } | badge /= 0
   unresolved const: no signature found
   unresolved elem: no signature found
   unresolved error: no signature found
@@ -248,7 +261,7 @@ hs2lean module: 9/9 functions translated (0 partial), 12 external stubs, 7 unres
   unresolved null: no signature found
 hs2lean module: 1/1 functions translated (0 partial), 0 external stubs, 0 unresolved
 hs2lean module: 8/9 functions translated (0 partial), 30 external stubs, 7 unresolved
-  failed sendIPC: guarded alternative: alternative at line 52: 'IdleEP | blocking -> do\n                setThreadState (BlockedOnSend {\n
+  failed sendIPC: guards that fall through to the next equation: alternative at line 52: 'IdleEP | blocking -> do\n                setThre
   unresolved filterM: no signature found
   unresolved flip: no signature found
   unresolved fromJust: no signature found
@@ -258,14 +271,13 @@ hs2lean module: 8/9 functions translated (0 partial), 30 external stubs, 7 unres
   unresolved not: no signature found
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
 hs2lean module: 0/0 functions translated (0 partial), 0 external stubs, 0 unresolved
-hs2lean module: 14/14 functions translated (0 partial), 44 external stubs, 13 unresolved
+hs2lean module: 14/14 functions translated (0 partial), 43 external stubs, 12 unresolved
   unresolved bit: no signature found
   unresolved const: no signature found
   unresolved fromEnum: no signature found
   unresolved fromIntegral: no signature found
   unresolved length: no signature found
   unresolved liftM: no signature found
-  unresolved makeObject: no signature found
   unresolved mapM_: no signature found
   unresolved maxBound: no signature found
   unresolved minBound: no signature found
@@ -280,14 +292,13 @@ hs2lean module: 7/9 functions translated (0 partial), 15 external stubs, 4 unres
   unresolved fromIntegral: no signature found
   unresolved toEnum: no signature found
 hs2lean module: 13/13 functions translated (0 partial), 14 external stubs, 0 unresolved
-hs2lean module: 16/16 functions translated (0 partial), 54 external stubs, 14 unresolved
+hs2lean module: 16/16 functions translated (0 partial), 53 external stubs, 13 unresolved
   unresolved bit: no signature found
   unresolved error: no signature found
   unresolved finiteBitSize: no signature found
   unresolved fromIntegral: no signature found
   unresolved fst: no signature found
   unresolved liftM: no signature found
-  unresolved makeObject: no signature found
   unresolved map: no signature found
   unresolved modify: no signature found
   unresolved not: no signature found
@@ -295,11 +306,10 @@ hs2lean module: 16/16 functions translated (0 partial), 54 external stubs, 14 un
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
   unresolved undefined: no signature found
-hs2lean module: 20/21 functions translated (0 partial), 17 external stubs, 4 unresolved
+hs2lean module: 20/21 functions translated (0 partial), 16 external stubs, 3 unresolved
   failed createObject: pattern: apply at line 158: 'Arch.Types.APIObjectType _'
   unresolved bit: no signature found
   unresolved error: no signature found
-  unresolved makeObject: no signature found
   unresolved modify: no signature found
 hs2lean module: 34/34 functions translated (0 partial), 12 external stubs, 5 unresolved
   unresolved bit: no signature found

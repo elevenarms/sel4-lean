@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Model_Syscall
 open Sel4Lean.Spec
@@ -18,7 +18,7 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `syscall` -/
-def syscall (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
+def syscall {a : Type} [Inhabited a] {c : Type} [Inhabited c] {b : Type} [Inhabited b] (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
   do
     let rFault ← withoutPreemption (ExceptT.run mFault)
     match rFault with

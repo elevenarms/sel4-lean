@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Machine_Hardware_RISCV64
 open Sel4Lean.Spec
@@ -86,11 +86,11 @@ def pptrBaseOffset :=
   (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
 
 /-- Haskell `ptrFromPAddr` -/
-def ptrFromPAddr (addr : PAddr) : PPtr a :=
+def ptrFromPAddr {a : Type} [Inhabited a] (addr : PAddr) : PPtr a :=
   PPtr.mk ((PAddr.fromPAddr addr) + pptrBaseOffset)
 
 /-- Haskell `addrFromPPtr` -/
-def addrFromPPtr (addr : PPtr a) : PAddr :=
+def addrFromPPtr {a : Type} [Inhabited a] (addr : PPtr a) : PAddr :=
   toPAddr ((PPtr.ptr addr) - pptrBaseOffset)
 
 /-- Haskell `kernelELFBaseOffset` -/
@@ -98,7 +98,7 @@ def kernelELFBaseOffset :=
   (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
 
 /-- Haskell `addrFromKPPtr` -/
-def addrFromKPPtr (x0 : PPtr a) : PAddr :=
+def addrFromKPPtr {a : Type} [Inhabited a] (x0 : PPtr a) : PAddr :=
   match x0 with
   | (PPtr.mk addr) => toPAddr (addr - kernelELFBaseOffset)
 
@@ -240,11 +240,11 @@ def getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word))) :=
 def storeWord (ptr : PPtr RISCV64.Word) (val : RISCV64.Word) : MachineMonad Unit :=
   do
     let cbptr ← read
-    liftIO ((storeWordCallback) cbptr (addrFromPPtr ptr) Register.val)
+    liftIO ((storeWordCallback) cbptr (addrFromPPtr ptr) val)
 
 /-- Haskell `storeWordVM` -/
 def storeWordVM (ptr : PPtr RISCV64.Word) (val : RISCV64.Word) : MachineMonad Unit :=
-  storeWord ptr Register.val
+  storeWord ptr val
 
 /-- Haskell `loadWord` -/
 def loadWord (ptr : PPtr RISCV64.Word) : MachineMonad RISCV64.Word :=

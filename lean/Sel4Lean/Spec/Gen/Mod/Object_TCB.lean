@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_TCB
 open Sel4Lean.Spec
@@ -82,7 +82,7 @@ opaque getExtraCPtrs : (Option (PPtr Word)) → MessageInfo → Kernel (List CPt
 opaque getNotification : (PPtr Notification) → Kernel Notification
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] : (PPtr a) → Kernel a
+opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque getRegister : Register → UserMonad Word
@@ -166,7 +166,7 @@ opaque setMCPriority : (PPtr TCB) → Priority → Kernel Unit
 opaque setNextPC : Word → UserMonad Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] : (PPtr a) → a → Kernel Unit
+opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque setPriority : (PPtr TCB) → Priority → Kernel Unit
@@ -330,7 +330,7 @@ def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : 
   | _, _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `threadGet` -/
-def threadGet (f : TCB → a) (tptr : PPtr TCB) : Kernel a :=
+def threadGet {a : Type} [Inhabited a] (f : TCB → a) (tptr : PPtr TCB) : Kernel a :=
   liftM f (getObject tptr)
 
 /-- Haskell `checkPrio` -/
@@ -480,7 +480,7 @@ def threadSet (f : TCB → TCB) (tptr : PPtr TCB) : Kernel Unit :=
     setObject tptr (f tcb)
 
 /-- Haskell `asUser` -/
-def asUser (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
+def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
   do
     let uc ← threadGet (atcbContextGet ∘ TCB.tcbArch) tptr
     let (a, uc') := runState f uc
@@ -488,7 +488,7 @@ def asUser (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
     pure a
 
 /-- Haskell `assertDerived` -/
-def assertDerived (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel a) : Kernel a :=
+def assertDerived {a : Type} [Inhabited a] (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel a) : Kernel a :=
   match x0, x1, x2 with
   | _, _, f => f
 
@@ -725,7 +725,7 @@ def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
     cteDeleteOne callerSlot
 
 /-- Haskell `archThreadGet` -/
-def archThreadGet (f : ArchTCB → a) (tptr : PPtr TCB) : Kernel a :=
+def archThreadGet {a : Type} [Inhabited a] (f : ArchTCB → a) (tptr : PPtr TCB) : Kernel a :=
   liftM (f ∘ TCB.tcbArch) (getObject tptr)
 
 /-- Haskell `archThreadSet` -/

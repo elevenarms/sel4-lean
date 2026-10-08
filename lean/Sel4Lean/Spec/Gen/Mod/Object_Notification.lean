@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_Notification
 open Sel4Lean.Spec
@@ -25,7 +25,7 @@ opaque cancelIPC : (PPtr TCB) → Kernel Unit
 opaque getBoundNotification : (PPtr TCB) → Kernel (Option (PPtr Notification))
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] : (PPtr a) → Kernel a
+opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque getThreadState : (PPtr TCB) → Kernel ThreadState
@@ -43,7 +43,7 @@ opaque rescheduleRequired : Kernel Unit
 opaque setBoundNotification : (Option (PPtr Notification)) → (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] : (PPtr a) → a → Kernel Unit
+opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque setRegister : Register → Word → UserMonad Unit
@@ -93,7 +93,7 @@ def sendSignal (ntfnPtr : PPtr Notification) (badge : Word) : Kernel Unit :=
           setThreadState ThreadState.Running dest
           asUser dest (setRegister badgeRegister badge)
           possibleSwitchTo dest)
-    | (NTFN.WaitingNtfn [], _) => failH "WaitingNtfn Notification must have non-empty queue"
+    | (NTFN.WaitingNtfn [], _) => failM "WaitingNtfn Notification must have non-empty queue"
     | (NTFN.ActiveNtfn badge', _) => (do
           let newBadge := badge ||| badge'
           setNotification ntfnPtr ({ nTFN with ntfnObj := NTFN.ActiveNtfn newBadge }))
@@ -138,7 +138,8 @@ def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
 
 /-- Haskell `cancelSignal` -/
 def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
-  let isWaiting := fun ntfn => match ntfn with
+  let isWaiting := fun ntfn =>
+    match ntfn with
     | NTFN.WaitingNtfn .. => true
     | _ => false
   do
@@ -159,7 +160,7 @@ def completeSignal (ntfnPtr : PPtr Notification) (tcb : PPtr TCB) : Kernel Unit 
     | NTFN.ActiveNtfn badge => (do
           asUser tcb (setRegister badgeRegister badge)
           setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn }))
-    | _ => failH "tried to complete signal with inactive notification object"
+    | _ => failM "tried to complete signal with inactive notification object"
 
 /-- Haskell `bindNotification` -/
 def bindNotification (tcb : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=

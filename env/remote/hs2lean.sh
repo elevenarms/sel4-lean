@@ -20,7 +20,7 @@ wc -l "$OUT"/*.lean
 # W2: full types closure from every RISCV64-relevant module's data types
 SPEC=~/c0/sel4-lean/lean/Sel4Lean/Spec/Gen
 mkdir -p "$SPEC/Mod"
-ALL=$(cd $L4V/spec/haskell/src && find SEL4 \( -name "*.hs" -o -name "*.lhs" \) | grep -v -E "/(ARM|ARM_HYP|X64|AARCH64)(/|\.)" | sort)
+ALL=$(cd $L4V/spec/haskell/src && find SEL4 Data \( -name "*.hs" -o -name "*.lhs" \) | grep -v -E "/(ARM|ARM_HYP|X64|AARCH64)(/|\.)" | sort)
 ROOTS="$HS/Object/Structures.lhs $HS/Object/Structures/RISCV64.hs $HS/Model/StateData.lhs $HS/Model/StateData/RISCV64.hs $HS/Model/PSpace.lhs"
 for m in $ALL; do ROOTS="$ROOTS $L4V/spec/haskell/src/$m"; done
 (cd ~/c0/sel4-lean/tools/hs2lean && $PY full.py types $L4V/spec/haskell/src $ROOTS > "$SPEC/Types.lean")

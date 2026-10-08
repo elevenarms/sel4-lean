@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Kernel_FaultHandler
 open Sel4Lean.Spec
@@ -33,7 +33,7 @@ opaque getRestartPC : UserMonad Word
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupCap : (PPtr TCB) → CPtr → KernelF LookupFailure Capability
 
--- local, not translated: guarded alternative: alternative at line 56: 'EndpointCap { capEPCanSend = True,
+-- local, not translated: guards that fall through to the next equation: alternative at line 56: 'Endpoint
 opaque sendFaultIPC : (PPtr TCB) → Fault → KernelF Fault Unit
 
 -- external: SEL4/Object/Endpoint.lhs

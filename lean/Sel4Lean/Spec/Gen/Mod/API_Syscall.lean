@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.API_Syscall
 open Sel4Lean.Spec
@@ -190,7 +190,7 @@ def handleReply : Kernel Unit :=
           assertH (caller != thread) "handleReply: caller must not be the current thread"
           doReplyTransfer thread caller callerSlot canGrant)
     | Capability.NullCap => pure ()
-    | _ => failH "handleReply: invalid caller cap"
+    | _ => failM "handleReply: invalid caller cap"
 
 /-- Haskell `handleSend` -/
 def handleSend : Bool → KernelP Unit :=

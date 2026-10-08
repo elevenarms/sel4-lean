@@ -15,7 +15,7 @@ TYPE_ROOTS = ["SEL4/Object/Structures.lhs", "SEL4/Object/Structures/RISCV64.hs",
 
 def main(root, out_tsv):
     mods = []
-    for d, _, fs in os.walk(os.path.join(root, "SEL4")):
+    for d, _, fs in [w for top in ("SEL4", "Data") for w in os.walk(os.path.join(root, top))]:
         for f in sorted(fs):
             p = os.path.join(d, f)
             if f.endswith((".hs", ".lhs")) and full.arch_ok(p) and not f.endswith("-boot"):

@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_CNode
 open Sel4Lean.Spec
@@ -37,7 +37,7 @@ opaque genInvocationType : Word → GenInvocationLabels
 opaque getCurThread : Kernel (PPtr TCB)
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] : (PPtr a) → Kernel a
+opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/API/Types.lhs
 opaque getObjectSize : ObjectType → Nat → Nat
@@ -56,6 +56,9 @@ opaque isArchMDBParentOf : Capability → Capability → Bool → Bool
 
 -- external: SEL4/Object/ObjectType.lhs
 opaque isCapRevocable : Capability → Capability → Bool
+
+-- local, not translated: guards that fall through to the next equation: alternative at line 657: 'Endpoin
+opaque isMDBParentOf : CTE → CTE → Bool
 
 -- external: SEL4/Object/Structures.lhs
 opaque isNullCap : Capability → Bool
@@ -96,9 +99,6 @@ opaque nullMDBNode : MDBNode
 -- external: SEL4/Machine/Hardware.lhs
 opaque nullPointer {a : Type} [Inhabited a] : PPtr a
 
--- external: SEL4/Model/PSpace.lhs
-opaque objBits {a : Type} [Inhabited a] : a → Nat
-
 -- external: SEL4/Object/ObjectType.lhs
 opaque postCapDeletion : Capability → Kernel Unit
 
@@ -115,7 +115,7 @@ opaque sameObjectAs : Capability → Capability → Bool
 opaque sameRegionAs : Capability → Capability → Bool
 
 -- external: SEL4/Model/PSpace.lhs
-opaque setObject {a : Type} [Inhabited a] : (PPtr a) → a → Kernel Unit
+opaque setObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → a → Kernel Unit
 
 -- external: SEL4/Object/Structures.lhs
 opaque tcbReplySlot : Word
@@ -231,7 +231,7 @@ def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability) (x3 : L
         SyscallError.TruncatedMessage
       else
         SyscallError.IllegalOperation)
-  | _, _, _, _ => failH "decodeCNodeInvocation: invalid cap"
+  | _, _, _, _ => failM "decodeCNodeInvocation: invalid cap"
 
 /-- Haskell `getSlotCap` -/
 def getSlotCap (ptr : PPtr CTE) : Kernel Capability :=
@@ -382,12 +382,12 @@ def locateSlotCap (x0 : Capability) (x1 : Word) : Kernel (PPtr CTE) :=
       match Capability.capZombieType cap with
       | ZombieType.ZombieTCB => locateSlotTCB (PPtr.mk (PPtr.ptr (Capability.capZombiePtr cap))) offset
       | ZombieType.ZombieCNode bits => locateSlotCNode (Capability.capZombiePtr cap) bits offset
-  | _, _ => failH "locateSlotCap: not a cap with slots"
+  | _, _ => failM "locateSlotCap: not a cap with slots"
 
 /-- Haskell `reduceZombie` -/
 def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
   match x0, x1, x2 with
-  | (Capability.Zombie _ _ 0), _, _ => failH "reduceZombie expected unremovable Zombie"
+  | (Capability.Zombie _ _ 0), _, _ => failM "reduceZombie expected unremovable Zombie"
   | (Capability.Zombie ptr _ _), slot, false => 
       do
         assertH (ptr != slot) "Cyclic zombie passed to unexposed reduceZombie."
@@ -411,8 +411,8 @@ def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
                 updateCap slot newCap)
             else
               assertH ((ptr2 == slot) && (ptr != slot)) "Expected new Zombie to be self-referential.")
-        | _ => failH "Expected recursion to result in Zombie."
-  | _, _, _ => failH "reduceZombie expected Zombie"
+        | _ => failM "Expected recursion to result in Zombie."
+  | _, _, _ => failM "reduceZombie expected Zombie"
 
 /-- Haskell `finaliseSlot` -/
 def finaliseSlot (slot : PPtr CTE) (exposed : Bool) : KernelP (Bool × Capability) :=
@@ -490,11 +490,6 @@ def cteMove (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : K
     updateMDB (MDBNode.mdbPrev mdb) (fun m => { m with mdbNext := destSlot })
     updateMDB (MDBNode.mdbNext mdb) (fun m => { m with mdbPrev := destSlot })
 
-/-- Haskell `isMDBParentOf` -/
-def isMDBParentOf (x0 : CTE) (x1 : CTE) : Bool :=
-  match x0, x1 with
-  | (CTE.CTE a mdbA), (CTE.CTE b mdbB) => false
-
 /-- Haskell `cteRevoke` -/
 def cteRevoke (slot : PPtr CTE) : KernelP Unit :=
   do
@@ -513,7 +508,7 @@ def invokeCNode (x0 : CNodeInvocation) : KernelP Unit :=
   | (CNodeInvocation.Revoke destSlot) => cteRevoke destSlot
   | (CNodeInvocation.Delete destSlot) => cteDelete destSlot true
   | (CNodeInvocation.CancelBadgedSends (Capability.EndpointCap ptr b _ _ _ _)) => withoutPreemption (unlessH (b == 0) (cancelBadgedSends ptr b))
-  | (CNodeInvocation.CancelBadgedSends _) => failH "should never happen"
+  | (CNodeInvocation.CancelBadgedSends _) => failM "should never happen"
   | (CNodeInvocation.Insert cap srcSlot destSlot) => withoutPreemption (cteInsert cap srcSlot destSlot)
   | (CNodeInvocation.Move cap srcSlot destSlot) => withoutPreemption (cteMove cap srcSlot destSlot)
   | (CNodeInvocation.Rotate cap1 cap2 slot1 slot2 slot3) => 
@@ -531,7 +526,7 @@ def invokeCNode (x0 : CNodeInvocation) : KernelP Unit :=
         match cap with
         | Capability.NullCap => pure ()
         | Capability.ReplyCap _ false _ => cteMove cap srcSlot destSlot
-        | _ => failH "caller capability must be null or reply")
+        | _ => failM "caller capability must be null or reply")
 
 /-- Haskell `cteDeleteOne` -/
 def cteDeleteOne (slot : PPtr CTE) : Kernel Unit :=

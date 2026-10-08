@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Kernel_Thread
 open Sel4Lean.Spec
@@ -94,7 +94,7 @@ opaque getMRs : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo → Kernel (
 opaque getMessageInfo : (PPtr TCB) → Kernel MessageInfo
 
 -- external: SEL4/Model/PSpace.lhs
-opaque getObject {a : Type} [Inhabited a] : (PPtr a) → Kernel a
+opaque getObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr a) → Kernel a
 
 -- external: SEL4/Model/StateData.lhs
 opaque getQueue : Domain → Priority → Kernel ReadyQueue
@@ -201,7 +201,7 @@ opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f
 -- external: SEL4/Config.lhs
 opaque timeSlice : Nat
 
--- local, not translated: guarded alternative: alternative at line 279: '(EndpointCap { capEPPtr = p1 }, J
+-- local, not translated: guards that fall through to the next equation: alternative at line 279: '(Endpoi
 opaque transferCapsToSlots : (Option (PPtr Endpoint)) → (PPtr Word) → Nat → (List (Capability × (PPtr CTE))) → (List (PPtr CTE)) → MessageInfo → Kernel MessageInfo
 
 -- external: SEL4/Model/Failures.lhs
@@ -223,7 +223,6 @@ opaque wordRadix : Nat
   gets: no signature found
   length: no signature found
   liftM: no signature found
-  makeObject: no signature found
   map: no signature found
   maxBound: no signature found
   modify: no signature found
@@ -391,7 +390,7 @@ def activateThread : Kernel Unit :=
           setThreadState ThreadState.Running thread)
     | ThreadState.IdleThreadState => (do
           (RISCV64.activateIdleThread) thread)
-    | _ => failH ("Current thread is blocked, state: " ++ («show» state))
+    | _ => failM ("Current thread is blocked, state: " ++ («show» state))
 
 /-- Haskell `isStopped` -/
 def isStopped (thread : PPtr TCB) : Kernel Bool :=
@@ -501,7 +500,7 @@ def doFaultTransfer (badge : Word) (sender : PPtr TCB) (receiver : PPtr TCB) (re
     let fault ← threadGet TCB.tcbFault sender
     let f ← match fault with
       | some f => pure f
-      | none => failH "doFaultTransfer: no fault found"
+      | none => failM "doFaultTransfer: no fault found"
     let (faultLabel, faultMsg) ← makeFaultMessage f sender
     let sent ← setMRs receiver receiverIPCBuffer faultMsg
     let msgInfo := { msgLength := sent, msgExtraCaps := 0, msgCapsUnwrapped := 0, msgLabel := faultLabel : MessageInfo }
@@ -579,11 +578,11 @@ def l1IndexToPrio (i : Nat) : Priority :=
   (fromIntegral i) <<< wordRadix
 
 /-- Haskell `countLeadingZeros` -/
-def countLeadingZeros (w : b) : Nat :=
+def countLeadingZeros {b : Type} [Inhabited b] (w : b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (reverse ∘ (map (testBit w))))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 /-- Haskell `wordLog2` -/
-def wordLog2 (w : b) : Nat :=
+def wordLog2 {b : Type} [Inhabited b] (w : b) : Nat :=
   ((finiteBitSize w) - 1) - (countLeadingZeros w)
 
 /-- Haskell `getHighestPrio` -/

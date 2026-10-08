@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_Domain
 open Sel4Lean.Spec
@@ -67,7 +67,7 @@ def domainSet (thread : PPtr TCB) (domain : Domain) : Kernel Unit :=
     setDomain thread domain
 
 /-- Haskell `listUpdate` -/
-def listUpdate (x0 : List a) (x1 : Nat) (x2 : a) : List a :=
+def listUpdate {a : Type} [Inhabited a] (x0 : List a) (x1 : Nat) (x2 : a) : List a :=
   match x0, x1, x2 with
   | [], i, v => []
   | (x :: xs), i, v => 

@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Object_ObjectType
 open Sel4Lean.Spec
@@ -135,14 +135,11 @@ opaque isIRQControlCapDescendant : ArchCapability → Bool
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque mask {w : Type} [Inhabited w] : Nat → w
 
--- external: SEL4/Model/PSpace.lhs
-opaque objBits {a : Type} [Inhabited a] : a → Nat
-
 -- external: SEL4/Object/Interrupt.lhs
 opaque performIRQControl : IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {a : Type} [Inhabited a] : (PPtr Unit) → a → Nat → Kernel Unit
+opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
 
 -- external: SEL4/Object/ObjectType/RISCV64.hs
 opaque prepareThreadDelete : (PPtr TCB) → Kernel Unit
@@ -181,7 +178,6 @@ opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
   fromIntegral: no signature found
   fst: no signature found
   liftM: no signature found
-  makeObject: no signature found
   map: no signature found
   modify: no signature found
   not: no signature found
@@ -232,7 +228,7 @@ def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability �
   | (Capability.ReplyCap ..), _, _ => pure ((Capability.NullCap, Capability.NullCap))
   | Capability.NullCap, _, _ => pure ((Capability.NullCap, Capability.NullCap))
   | Capability.DomainCap, _, _ => pure ((Capability.NullCap, Capability.NullCap))
-  | _, _, true => failH "finaliseCap: failed to finalise immediately."
+  | _, _, true => failM "finaliseCap: failed to finalise immediately."
   | (Capability.CNodeCap ptr bits _ _), true, _ => pure ((Capability.Zombie ptr (ZombieType.ZombieCNode bits) (bit bits), Capability.NullCap))
   | (Capability.ThreadCap tcb), true, _ => 
       do
@@ -247,7 +243,7 @@ def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability �
       do
         deletingIRQHandler irq
         pure ((Capability.NullCap, cap))
-  | (Capability.Zombie ..), false, _ => failH "Finalising a non-final zombie cap"
+  | (Capability.Zombie ..), false, _ => failM "Finalising a non-final zombie cap"
   | _, _, _ => pure ((Capability.NullCap, Capability.NullCap))
 
 /-- Haskell `postCapDeletion` -/
@@ -344,13 +340,24 @@ def badgeBits : Nat :=
 /-- Haskell `updateCapData` -/
 def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability :=
   match x0, x1, x2 with
-  | preserve, new, cap@(Capability.EndpointCap ..) => Capability.set_capEPBadge cap (new &&& (mask badgeBits))
-  | preserve, new, cap@(Capability.NotificationCap ..) => Capability.set_capNtfnBadge cap (new &&& (mask badgeBits))
+  | preserve, new, cap@(Capability.EndpointCap ..) => 
+      if ((not preserve) && ((Capability.capEPBadge cap) == 0)) then
+        Capability.set_capEPBadge cap (new &&& (mask badgeBits))
+      else
+        Capability.NullCap
+  | preserve, new, cap@(Capability.NotificationCap ..) => 
+      if ((not preserve) && ((Capability.capNtfnBadge cap) == 0)) then
+        Capability.set_capNtfnBadge cap (new &&& (mask badgeBits))
+      else
+        Capability.NullCap
   | _, w, cap@(Capability.CNodeCap ..) => 
       let guard := ((w >>> ((RISCV64.cteRightsBits) + guardSizeBits)) &&& (mask (RISCV64.cteGuardBits))) &&& (mask guardSize)
       let guardSize := fromIntegral ((w >>> (RISCV64.cteRightsBits)) &&& (mask guardSizeBits))
       let guardSizeBits := wordSizeCase 5 6
-      Capability.NullCap
+      if ((guardSize + (Capability.capCNodeBits cap)) > (finiteBitSize w)) then
+        Capability.NullCap
+      else
+        Capability.set_capCNodeGuardSize (Capability.set_capCNodeGuard cap guard) guardSize
   | p, w, (Capability.ArchObjectCap aoCap) => (RISCV64.updateCapData) p w aoCap
   | _, _, cap => cap
 

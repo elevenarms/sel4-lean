@@ -36,4 +36,29 @@ check("a : b : []", "a :: (b :: [])")
 check("a == b && c", "(a == b) && c")
 refuses("a == b == c")                     # infix 4 non-associative: GHC rejects too
 refuses("a <|> b")                         # unknown operator
+
+
+def fun(src_text, name):
+    src = src_text.encode()
+    root = PARSER.parse(src).root_node
+    tr = Translator(src, DataInfo())
+    nodes = dict(top_decls(src, root))[name]
+    return tr.emit_function(name, nodes)
+
+
+# guards (regression: guards were once silently dropped, keeping only the first branch)
+g = fun("h :: Int -> Int\nh x | x > 0 = 1\n    | otherwise = 2\n", "h")
+assert "if (x > 0) then" in g and "else" in g and "2" in g, g
+print("ok  guarded equation -> if/else")
+g = fun("f :: Int -> Int\nf x = g x\n  where g a | a == 0 = 1\n            | otherwise = a\n", "f")
+assert "if (a == 0) then" in g, g
+print("ok  guarded where-function -> if/else")
+g = fun("k :: Int -> Int\nk x | x > 0 = 1\n", "k")
+assert "default" in g, g
+print("ok  guards without otherwise (last equation) -> default")
+try:
+    fun("m :: Int -> Int\nm 0 | False = 1\nm x = x\n", "m")
+    raise AssertionError("fall-through guards should be refused")
+except Unsupported as ex:
+    print(f"ok  guards falling through to the next equation -> refused")
 print("all hs2lean tests passed")

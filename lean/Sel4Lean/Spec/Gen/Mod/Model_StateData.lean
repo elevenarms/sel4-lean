@@ -3,7 +3,7 @@
   Do not edit by hand; regenerate with env/remote/hs2lean.sh.
 -/
 
-import Sel4Lean.Spec.Prelude
+import Sel4Lean.Spec.PSpaceStorable
 
 namespace Sel4Lean.Spec.M.Model_StateData
 open Sel4Lean.Spec
@@ -68,11 +68,11 @@ def idleThreadNotQueued (x0 : KernelState) : Bool :=
   | _ => true
 
 /-- Haskell `assert` -/
-def assert (p : Bool) (e : String) : m Unit :=
+def assert {m : Type → Type} [Monad m] [MonadFailH m] (p : Bool) (e : String) : m Unit :=
   if p then
     pure ()
   else
-    failH ("Assertion failed: " ++ e)
+    failM ("Assertion failed: " ++ e)
 
 /-- Haskell `stateAssert` -/
 def stateAssert (f : KernelState → Bool) (e : String) : Kernel Unit :=
@@ -166,7 +166,7 @@ def newKernelState (data_start : PAddr) : KernelState × (List PAddr) :=
   (state', frames)
 
 /-- Haskell `doMachineOp` -/
-def doMachineOp : (MachineMonad a) → Kernel a :=
+def doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a :=
   lift
 
 /-- Haskell `capHasProperty` -/
@@ -175,7 +175,7 @@ def capHasProperty (x0 : PPtr CTE) (x1 : Capability → Bool) : KernelState → 
   | _, _ => const true
 
 /-- Haskell `findM` -/
-def findM (x0 : a → m Bool) (x1 : List a) : m (Option a) :=
+def findM {m : Type → Type} {a : Type} [Inhabited a] [Monad m] (x0 : a → m Bool) (x1 : List a) : m (Option a) :=
   match x0, x1 with
   | _, [] => pure none
   | f, (x :: xs) => 
