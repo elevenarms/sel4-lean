@@ -108,6 +108,7 @@ class DataInfo:
         self.types = {}      # type -> {"ctors": [(ctor, [(field, type_node)] or None, [arg type nodes])], "single": bool}
         self.ctor_type = {}  # ctor -> type
         self.arch_ctor_type = {}  # ctor -> RISCV64.T, for constructors of arch types (shadowing generic ones)
+        self.integral = set()     # types with an IntegralH instance (newtypes over words, enums)
         self.field_type = {} # field -> type
 
 

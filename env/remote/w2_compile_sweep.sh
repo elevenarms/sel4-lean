@@ -24,8 +24,9 @@ done
 export PATH=~/.elan/bin:$PATH
 cd ~/c0/sel4-lean/lean
 timeout 1800 lake build $TARGETS > "$ART/compile.log" 2>&1
-ok=$(grep -cE "^✔ .*Built Sel4Lean\.Spec\.Gen\.Mod\." "$ART/compile.log")
+# ✔ = built, ⚠ = built with warnings (both compile), ✖ = failed
+ok=$(grep -cE "^(✔|⚠) .*Built Sel4Lean\.Spec\.Gen\.Mod\." "$ART/compile.log")
 bad=$(grep -cE "^✖ .*Building Sel4Lean\.Spec\.Gen\.Mod\." "$ART/compile.log")
 echo "modules compiling: $ok / $((ok + bad))"
-grep -E "Sel4Lean\.Spec\.Gen\.Mod\." "$ART/compile.log" | grep -E "^(✔|✖)" | sed -E 's/^(✔|✖) \[[0-9/]+\] (Built|Building) Sel4Lean.Spec.Gen.Mod.([A-Za-z0-9_]+).*/\1 \3/' | sort -k2 > "$ART/compile-status.txt"
+grep -E "Sel4Lean\.Spec\.Gen\.Mod\." "$ART/compile.log" | grep -E "^(✔|⚠|✖)" | sed -E 's/^(✔|⚠|✖) \[[0-9/]+\] (Built|Building) Sel4Lean.Spec.Gen.Mod.([A-Za-z0-9_]+).*/\1 \3/' | sed 's/^⚠/✔/' | sort -k2 > "$ART/compile-status.txt"
 grep -E "^error: " "$ART/compile.log" | sed -E 's/^error: [^:]+:[0-9]+:[0-9]+: //' | cut -c1-60 | sort | uniq -c | sort -rn | head -15

@@ -34,6 +34,7 @@
 ✔ Model
 ✖ Model_Failures
 ✖ Model_PSpace
+✔ Model_PSpace_RISCV64
 ✔ Model_Preemption
 ✖ Model_StateData
 ✔ Model_StateData_RISCV64
@@ -41,6 +42,7 @@
 ✔ Object
 ✖ Object_CNode
 ✖ Object_Domain
+✔ Object_Domain_RISCV64
 ✖ Object_Endpoint
 ✔ Object_Instances
 ✔ Object_Instances_RISCV64
@@ -48,7 +50,9 @@
 ✖ Object_Interrupt_RISCV64
 ✔ Object_Notification
 ✖ Object_ObjectType
+✔ Object_ObjectType_RISCV64
 ✔ Object_Structures
 ✖ Object_Structures_RISCV64
 ✖ Object_TCB
+✔ Object_TCB_RISCV64
 ✖ Object_Untyped

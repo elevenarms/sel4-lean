@@ -200,7 +200,7 @@ class FullTranslator(Translator):
                          f"instance : Add {name} := ⟨fun a b => {mk(f'a.{fname} + b.{fname}')}⟩",
                          f"instance : Sub {name} := ⟨fun a b => {mk(f'a.{fname} - b.{fname}')}⟩",
                          f"instance : Mul {name} := ⟨fun a b => {mk(f'a.{fname} * b.{fname}')}⟩",
-                         f"instance : IntegralH {name} := ⟨fun a => IntegralH.toInt a.{fname}, fun i => {mk('IntegralH.ofInt i')}⟩"]
+                         ]
             if "Ord" in dtext:
                 inst += [f"instance : LE {name} := ⟨fun a b => a.{fname} ≤ b.{fname}⟩",
                          f"instance : LT {name} := ⟨fun a b => a.{fname} < b.{fname}⟩",
@@ -211,8 +211,19 @@ class FullTranslator(Translator):
                          f"instance : OrOp {name} := ⟨fun a b => {mk(f'a.{fname} ||| b.{fname}')}⟩",
                          f"instance : HShiftLeft {name} Nat {name} := ⟨fun a k => {mk(f'a.{fname} <<< k')}⟩",
                          f"instance : HShiftRight {name} Nat {name} := ⟨fun a k => {mk(f'a.{fname} >>> k')}⟩"]
+        # IntegralH (fromIntegral/fromEnum) lifted through the field, for Enum/Num/Integral newtypes whose
+        # field is a word or another such newtype
+        if not ps and any(k in dtext for k in ("Enum", "Num", "Integral")) and (
+                fty == "Word" or fty.startswith("BitVec") or fty in self.data.integral):
+            inst.append(f"instance : IntegralH {name} := ⟨fun a => IntegralH.toInt a.{fname}, "
+                        f"fun i => ⟨IntegralH.ofInt i⟩⟩")
+            self.data.integral.add(name)
         self.data.types[name] = {"ctors": [(cname, [(fname, None)], [])], "single": True}
-        self.data.ctor_type[cname] = name
+        if name.startswith(ARCH + "."):
+            self.data.arch_ctor_type[cname] = name   # arch modules resolve `IRQ` to RISCV64.IRQ.IRQ
+            self.data.ctor_type.setdefault(cname, name)
+        else:
+            self.data.ctor_type[cname] = name
         self.data.field_type[fname] = name
         # name the Lean constructor like the Haskell one, so `CPtr x` patterns and expressions work
         return (f"/-- Haskell `newtype {name} = {cname} …` -/\n"
