@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 KEY=keys/harbor.pem
 HOST=$(grep -oE '[a-z]+@[A-Za-z0-9.-]+' aws_harbor.sh | head -1)
 LOG=project.log
-REMOTE_LOGS="~/c0/image-build.log ~/c0/repo-sync.log ~/c0/isabelle-setup.log ~/c0/proofs-riscv64.log ~/c0/lean-build.log"
+REMOTE_LOGS="~/c0/image-build.log ~/c0/repo-sync.log ~/c0/isabelle-setup.log ~/c0/proofs-riscv64.log ~/c0/lean-build.log ~/c0/c5-dedukti.log"
 echo $$ > .watch_remote.pid
 
 ts() { date '+%H:%M:%S'; }
