@@ -168,6 +168,12 @@ abbrev listArray {ι ε : Type} [IntegralH ι] [Inhabited ε] (bounds : ι × ι
 /-- Haskell `assocs arr`: TODO(W3) needs the index range; unspecified over the function model. -/
 opaque assocs {ι ε : Type} [Inhabited ι] [Inhabited ε] (arr : ι → ε) : List (ι × ε)
 abbrev runState {σ α : Type} (x : StateM σ α) (s : σ) : α × σ := x.run s
+
+/-- `runState` on the nondeterministic state monad (`UserMonad`, used by `asUser`).
+APPROXIMATION, TODO(W3): picks one result by choice. l4v's Isabelle `as_user` instead lifts the whole
+result set with `select_f`; `asUser` should be translated that way before proofs rely on it. -/
+noncomputable def runStateND {σ α : Type} [Inhabited α] [Inhabited σ] (x : NondetM σ α) (s : σ) : α × σ :=
+  Classical.epsilon (fun p => (x s).1 p)
 abbrev runStateT {σ α : Type} {m : Type → Type} [Monad m] (x : StateT σ m α) (s : σ) : m (α × σ) := x.run s
 abbrev foldl' {α β : Type} (f : β → α → β) (z : β) (xs : List α) : β := xs.foldl f z
 abbrev listIndexH {α : Type} [Inhabited α] (xs : List α) (i : Int) : α := xs.getD i.toNat default

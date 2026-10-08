@@ -91,6 +91,9 @@ def index_decls(root):
             for e in v:
                 per_file.setdefault(e[2], set()).add(k)
     best["__file_types__"] = per_file
+    # every RISCV64 file declaring X in any form (incl. re-exports), for arch scoping
+    best["__arch_decl_files__"] = {k: {e[2] for e in v if ARCH in e[2]} for k, v in idx.items()
+                                   if not k.startswith("sig:")}
     # arch-specific declarations, for `Arch.X` inside a generic type also named X (e.g. newtype IRQ = IRQ Arch.IRQ)
     for k, v in idx.items():
         arch = [e for e in v if ARCH in e[2] and not reexport(e)]
@@ -125,10 +128,11 @@ def unqualified_imports(path):
 
 def arch_scope(path, root, idx, candidates):
     """Arch types X that an unqualified `X` means in this file (Haskell scoping): those declared in this
-    file or in a module it imports unqualified."""
+    file or in a module it imports unqualified, counting re-exports (`type IRQ = Platform.IRQ`)."""
     visible = unqualified_imports(path) | {module_of(path, root)}
+    files = idx.get("__arch_decl_files__", {})
     return {x for x in candidates
-            if f"{ARCH}.{x}" in idx and module_of(idx[f"{ARCH}.{x}"][2], root) in visible}
+            if f"{ARCH}.{x}" in idx and ({module_of(f, root) for f in files.get(x, ())} & visible)}
 
 
 class FullTranslator(Translator):
@@ -384,7 +388,7 @@ def cmd_types(root, files, emit=True):
     # types X declared both generically and for RISCV64 (Register, KernelState, IRQ, …): inside RISCV64
     # files, unqualified X means RISCV64.X
     dupes = {k[len(ARCH) + 1:] for k in idx
-             if k != "__file_types__" and k.startswith(ARCH + ".") and not k.startswith(ARCH + ".sig:")
+             if not k.startswith("__") and k.startswith(ARCH + ".") and not k.startswith(ARCH + ".sig:")
              and k[len(ARCH) + 1:] in idx and idx[k] is not idx[k[len(ARCH) + 1:]]}
 
     deferred = []   # newtype instances lifted through non-word fields (need the hand instances first)
@@ -700,6 +704,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
     from hs2lean import NAME, HEADER as GEN_HEADER
     NAME["fail"] = "failM"   # Spec modules: generic MonadFail (crawl code keeps NondetM-only failH)
     NAME["assert"] = "assertG"
+    NAME["runState"] = "runStateND"   # UserMonad is NondetM; see HsPrelude (approximation, TODO W3)
     idx, data, arch_names = cmd_types(root, type_roots, emit=False)
     out_defs, stubs, unresolved, failed = [], {}, {}, {}
     stats = {"translated": 0, "failed": 0}

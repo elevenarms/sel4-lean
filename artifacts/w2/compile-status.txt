@@ -56,6 +56,6 @@
 ✔ Object_ObjectType_RISCV64
 ✔ Object_Structures
 ✔ Object_Structures_RISCV64
-✖ Object_TCB
+✔ Object_TCB
 ✔ Object_TCB_RISCV64
 ✔ Object_Untyped

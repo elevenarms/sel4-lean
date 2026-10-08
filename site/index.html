@@ -232,7 +232,9 @@ html { scroll-behavior: smooth; }
             <code>crunch</code> now proves &ldquo;every function preserves P&rdquo; for all 12 generated notification functions from one command. <span class="hood">(w1)</span></div></li>
           <li><time>Oct 8</time><div>W2: the translator goes spec-wide. <b>91 data types</b>, the whole RISCV64 kernel state included, translate and compile. <b>94.9%</b> of the 684 functions translate to Lean text, and stubs for everything outside a module are generated from its Haskell signatures.
             Honest number: <b>30 of 58 modules compile, holding 18% of the functions</b>. The big modules still trip on monad stacks and type classes. <span class="hood">(w2)</span></div></li>
-          <li><time>next</time><div class="dim">W2: get the large modules compiling (Init, VSpace, PSpace, CNode, TCB). W1: <code>corres</code> automation.</div></li>
+          <li><time>Oct 8</time><div>W2 grind: <b>49 of 61 modules compile, holding 57% of the translatable function bodies</b>, including <code>Model/PSpace</code> (<code>getObject</code>/<code>setObject</code>) on a hand-translated <code>PSpaceStorable</code> class.
+            Two silent bugs caught on the way, both of which compiled: guards were dropped (<code>f x | c = a | otherwise = b</code> became <code>a</code>), and 58 non-recursive functions were marked <code>partial</code>. Both fixed, with regression tests. Hardware operations are opaque by design, as in l4v. <span class="hood">(w2)</span></div></li>
+          <li><time>next</time><div class="dim">W2: generated modules import each other instead of stubbing; then the last 12 modules. W1: <code>corres</code> automation.</div></li>
         </ol>
       </section>
 
@@ -505,9 +507,9 @@ example :
         <table>
           <thead><tr><th>measure</th><th class="n">now</th><th>what it means</th></tr></thead>
           <tbody>
-            <tr><td>data types translated</td><td class="n">91</td><td>every type in the RISCV64 spec, incl. <code>KernelState</code>; compiles</td></tr>
-            <tr><td>functions translated</td><td class="n">649 / 684</td><td>Lean text produced (94.9%)</td></tr>
-            <tr class="hi"><td>modules compiling</td><td class="n">30 / 58</td><td>18% of the functions; large modules still failing</td></tr>
+            <tr><td>data types translated</td><td class="n">93</td><td>every type in the RISCV64 spec, incl. <code>KernelState</code>; compiles</td></tr>
+            <tr><td>functions translated</td><td class="n">679 / 695</td><td>Lean text produced (97.7%)</td></tr>
+            <tr class="hi"><td>modules compiling</td><td class="n">49 / 61</td><td>57% of translatable function bodies; 99 hardware functions opaque by design</td></tr>
             <tr><td>generated <code>*_inv</code> lemmas</td><td class="n">12</td><td>one <code>crunch</code> command over the notifications module</td></tr>
           </tbody>
         </table>
@@ -525,6 +527,7 @@ example :
           <li><b>Proof structure limits parallelism.</b> Big sessions average 8&ndash;11 cores busy because the theories form long import chains. A Lean port's module layout will face the same limit.</li>
           <li><b>Lean surface syntax caused every C2 build failure.</b> Keywords (<code>unless</code>, <code>assert</code>), notation precedence and <code>cases</code> renaming broke builds; l4v&rsquo;s semantics never did.</li>
           <li><b>Lean&rsquo;s <code>do</code> hides join points.</b> <code>let x &larr; match &hellip;</code> becomes a local function plus a <code>match</code>, so proof automation has to see through it.</li>
+          <li><b>&ldquo;It compiles&rdquo; is not &ldquo;it&rsquo;s right&rdquo;.</b> Dropped guards and over-eager <code>partial</code> both compiled cleanly; only audits and tests caught them.</li>
           <li><b>A spike can succeed and still say no.</b> The Dedukti route works end to end, but the numbers rule it out for l4v at today&rsquo;s scale.</li>
           <li><b>Rootless Docker</b> makes the upstream per-user image unnecessary, because container root is already you.</li>
         </ul>
@@ -545,7 +548,7 @@ example :
         <ul class="check">
           <li><span class="ok">[x]</span> W1 <code>wp</code>, <code>wpsimp</code>, <code>crunch</code></li>
           <li><span class="todo">[ ]</span> W1 <code>corres</code> automation</li>
-          <li><span class="todo">[~]</span> W2 translator at spec scale (30/58 modules)</li>
+          <li><span class="todo">[~]</span> W2 translator at spec scale (49/61 modules)</li>
           <li><span class="todo">[~]</span> W3 kernel state model (types done)</li>
           <li><span class="todo">[ ]</span> W4 proofs: AInvs, Refine</li>
         </ul>

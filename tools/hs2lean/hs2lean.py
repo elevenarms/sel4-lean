@@ -590,8 +590,12 @@ class Translator:
         si = ind + 2
         for s in stmts:
             if s.type == "bind":
-                p = self.pat(s.child_by_field_name("pattern"))
-                lines.append(f"let {p} ← {self.e(s.child_by_field_name('expression'), si + 2)}")
+                pn = s.child_by_field_name("pattern")
+                p = self.pat(pn)
+                line = f"let {p} ← {self.e(s.child_by_field_name('expression'), si + 2)}"
+                if pn.type not in ("variable", "tuple", "wildcard", "parens") and getattr(self, "discard_stmts", False):
+                    line += ' | failM "pattern match failure"'   # Haskell MonadFail on a refutable bind
+                lines.append(line)
             elif s.type == "exp":
                 # Haskell drops non-Unit results of non-final statements; Lean needs `let _ ←`. The prefix
                 # moves the term 8 columns right, and continuation lines must stay right of the term's start

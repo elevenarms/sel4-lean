@@ -234,7 +234,6 @@ opaque wordSize : Nat
   min: no signature found
   not: no signature found
   null: no signature found
-  runState: no signature found
   shiftR: no signature found
   take: no signature found
   testBit: no signature found
@@ -471,7 +470,7 @@ def threadSet (f : TCB → TCB) (tptr : PPtr TCB) : Kernel Unit :=
 def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
   do
     let uc ← threadGet (atcbContextGet ∘ TCB.tcbArch) tptr
-    let (a, uc') := runState f uc
+    let (a, uc') := runStateND f uc
     let _ ← threadSet (fun tcb => { tcb with tcbArch := atcbContextSet uc' (TCB.tcbArch tcb) }) tptr
     pure a
 

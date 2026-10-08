@@ -9,8 +9,8 @@ Status: **in progress** (2026-10-08).
 | Data types translated (closure of all modules) | **91+**, 1 opaque (`CallbackData` has no constructors in Haskell either) | `Spec/Gen/Types.lean`, compiles |
 | Functions translated to Lean text | **679 / 695 (97.7%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
 | Machine-interface functions | **99**, opaque **by design**: the Haskell bodies are the simulator's (IO/FFI); l4v's Isabelle also treats machine operations as opaque (`MachineOps.thy`) | `full.py` `MACHINE_INTERFACE` |
-| Modules whose generated Lean compiles | **48 / 61** | `artifacts/w2/compile-status.txt` |
-| Translated bodies in compiling modules | **300 / 596 non-machine functions (50.3%)**; 8 of them `partial` | the honest number |
+| Modules whose generated Lean compiles | **49 / 61** | `artifacts/w2/compile-status.txt` |
+| Translated bodies in compiling modules | **342 / 596 non-machine functions (57.4%)** | the honest number |
 | `partial def` (self-recursive) | 16 in all generated modules; each checked to be genuinely recursive | TODO(W4): termination proofs |
 
 Translation coverage is not compile coverage. A module compiles only when every function in it does, so
@@ -94,9 +94,20 @@ Two process lessons: generated files are tracked in git, so a laptop `remote_pus
 output with stale copies; the sweep therefore regenerates first. And Lake prints `⚠ Built` for modules that
 compile with warnings; the sweep first counted only `✔`.
 
+## Known approximations (to resolve before W4 relies on them)
+
+- `runState` on `UserMonad` (used by `asUser`) picks one result by choice (`runStateND`); l4v's `as_user`
+  lifts the whole result set with `select_f`.
+- `MapH.keys`, `SetH.toList`, `assocs`: unspecified (need finiteness of the key/index type).
+- `doMachineOp`, `objBitsKO`, `nullMDBNode`, TCB/ASIDPool `makeObject`: opaque in the hand layer.
+- Arch functions without Haskell signatures are stubbed with the generic signature (wrong types in a few
+  places); fixed properly by the next structural step.
+
 ## Next
 
-The remaining failures are concentrated: type mismatches around monad stacks (`KernelF`, `KernelInit`,
+**Structural next step: modules import each other** instead of stubbing everything external (stubs only for
+Haskell `{-# SOURCE #-}` cycles and for modules that don't compile yet). That gives real definitions,
+correct arch types, and is what W3/W4 need. Then the remaining 12 modules. Earlier list: type mismatches around monad stacks (`KernelF`, `KernelInit`,
 `MachineMonad` vs `Kernel`), typeclass methods with no top-level signature (`makeObject`, `loadObject` from
 `PSpaceStorable`), `show`, `liftIO`, `maxBound`/`minBound`, and numeric literal typing. Target the large
 modules one at a time, since they hold most of the functions.

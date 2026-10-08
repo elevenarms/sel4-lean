@@ -249,7 +249,7 @@ def findVSpaceForASID (asid : ASID) : KernelF LookupFailure (PPtr PTE) :=
     let poolPtr := asidTable (asidHighBitsOf asid)
     let ASIDPool.ASIDPool pool ← match poolPtr with
       | some ptr => withoutFailure (getObject ptr)
-      | none => throw LookupFailure.InvalidRoot
+      | none => throw LookupFailure.InvalidRoot | failM "pattern match failure"
     let pm := pool (asid &&& (mask asidLowBits))
     match pm with
     | some ptr => (do
@@ -344,7 +344,7 @@ def deleteASIDPool (base : ASID) (ptr : PPtr ASIDPool) : Kernel Unit :=
     let _ ← assertG ((base &&& (mask asidLowBits)) == 0) "ASID pool's base must be aligned"
     let asidTable ← gets (RISCV64.KernelState.riscvKSASIDTable ∘ KernelState.ksArchState)
     whenH ((asidTable (asidHighBitsOf base)) == (some ptr)) (do
-      let ASIDPool.ASIDPool pool ← getObject ptr
+      let ASIDPool.ASIDPool pool ← getObject ptr | failM "pattern match failure"
       let asidTable' := arrayUpdH asidTable ([(asidHighBitsOf base, none)])
       let _ ← modify (fun s => { s with ksArchState := { (KernelState.ksArchState s) with riscvKSASIDTable := asidTable' } })
       let tcb ← getCurThread
@@ -357,7 +357,7 @@ def deleteASID (asid : ASID) (pt : PPtr PTE) : Kernel Unit :=
     match asidTable (asidHighBitsOf asid) with
     | none => pure ()
     | some poolPtr => (do
-          let ASIDPool.ASIDPool pool ← getObject poolPtr
+          let ASIDPool.ASIDPool pool ← getObject poolPtr | failM "pattern match failure"
           whenH ((pool (asid &&& (mask asidLowBits))) == (some pt)) (do
             let _ ← doMachineOp (hwASIDFlush (ASID.fromASID asid))
             let pool' := arrayUpdH pool ([(asid &&& (mask asidLowBits), none)])
@@ -533,7 +533,7 @@ def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 
                 let _ ← whenH (isNothing poolPtr) (throw (SyscallError.FailedLookup false LookupFailure.InvalidRoot))
                 let some p := poolPtr | failM "irrefutable pattern"
                 let _ ← whenH (p != (ArchCapability.capASIDPool cap)) (throw (SyscallError.InvalidCapability 0))
-                let ASIDPool.ASIDPool pool ← withoutFailure (getObject p)
+                let ASIDPool.ASIDPool pool ← withoutFailure (getObject p) | failM "pattern match failure"
                 let free := filter (fun (x, y) => (x ≤ ((shiftLH 1 asidLowBits) - 1)) && (((x + base) != 0) && (isNothing y))) (assocs pool)
                 let _ ← whenH (null free) (throw SyscallError.DeleteFirst)
                 let asid := fst (head free)
@@ -565,7 +565,7 @@ def performPageInvocation (x0 : PageInvocation) : Kernel (List RISCV64.Word) :=
         let _ ← match ArchCapability.capFMappedAddress cap with
                 | some (asid, vaddr) => unmapPage (ArchCapability.capFSize cap) asid vaddr (ArchCapability.capFBasePtr cap)
                 | _ => pure ()
-        let Capability.ArchObjectCap cap ← getSlotCap ctSlot
+        let Capability.ArchObjectCap cap ← getSlotCap ctSlot | failM "pattern match failure"
         let _ ← updateCap ctSlot (Capability.ArchObjectCap (ArchCapability.set_capFMappedAddress cap none))
         pure []
   | (PageInvocation.PageGetAddr ptr) => pure ([PAddr.fromPAddr (addrFromPPtr ptr)])
@@ -595,7 +595,7 @@ def performASIDPoolInvocation (x0 : ASIDPoolInvocation) : Kernel Unit :=
         let Capability.ArchObjectCap cap := oldcap | failM "irrefutable pattern"
         let _ ← updateCap ctSlot (Capability.ArchObjectCap (ArchCapability.set_capPTMappedAddress cap (some ((asid, 0)))))
         let _ ← copyGlobalMappings (ArchCapability.capPTBasePtr cap)
-        let ASIDPool.ASIDPool pool ← getObject poolPtr
+        let ASIDPool.ASIDPool pool ← getObject poolPtr | failM "pattern match failure"
         let pool' := arrayUpdH pool ([(asid &&& (mask asidLowBits), some (ArchCapability.capPTBasePtr cap))])
         setObject poolPtr (ASIDPool.ASIDPool pool')
 

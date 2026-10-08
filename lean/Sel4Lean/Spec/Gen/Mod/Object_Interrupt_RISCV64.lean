@@ -16,7 +16,7 @@ noncomputable section
 opaque RISCV64.plic_complete_claim : IRQ → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.setIRQTrigger : IRQ → Bool → MachineMonad Unit
+opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit

@@ -308,7 +308,7 @@ hs2lean module: 13/13 functions translated (0 partial, 0 machine-opaque), 4 exte
   unresolved fromIntegral: no signature found
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
-hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 67 external stubs, 23 unresolved
+hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 67 external stubs, 22 unresolved
   failed getExtraCPtrs: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
   unresolved complement: no signature found
   unresolved drop: no signature found
@@ -327,7 +327,6 @@ hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 67 ext
   unresolved min: no signature found
   unresolved not: no signature found
   unresolved null: no signature found
-  unresolved runState: no signature found
   unresolved shiftR: no signature found
   unresolved take: no signature found
   unresolved testBit: no signature found

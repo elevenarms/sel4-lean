@@ -57,7 +57,7 @@ SEL4/Object/ObjectType.lhs	16	16	hs2lean module: 16/16 functions translated (0 p
 SEL4/Object/ObjectType/RISCV64.hs	20	21	hs2lean module: 20/21 functions translated (0 partial, 0 machine-opaque), 16 external stubs, 3 unresolved
 SEL4/Object/Structures.lhs	34	34	hs2lean module: 34/34 functions translated (0 partial, 0 machine-opaque), 12 external stubs, 5 unresolved
 SEL4/Object/Structures/RISCV64.hs	13	13	hs2lean module: 13/13 functions translated (0 partial, 0 machine-opaque), 4 external stubs, 3 unresolved
-SEL4/Object/TCB.lhs	42	43	hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 67 external stubs, 23 unresolved
+SEL4/Object/TCB.lhs	42	43	hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 67 external stubs, 22 unresolved
 SEL4/Object/TCB/RISCV64.hs	6	6	hs2lean module: 6/6 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
 SEL4/Object/Untyped.lhs	6	7	hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque), 27 external stubs, 13 unresolved
 TOTAL	679	695	61 modules
