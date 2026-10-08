@@ -232,102 +232,6 @@ structure IRQ where
   deriving Inhabited, DecidableEq
 
 
--- from SEL4/Object/Structures.lhs
-/-- Haskell `data ZombieType` -/
-inductive ZombieType where
-  | ZombieTCB
-  | ZombieCNode (zombieCTEBits : Int)
-  deriving Inhabited, DecidableEq
-
-/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
-def ZombieType.zombieCTEBits : ZombieType → Int
-  | .ZombieCNode v => v
-  | _ => default
-/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
-def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Int) : ZombieType :=
-  match x with
-  | .ZombieCNode _ => .ZombieCNode v
-  | x => x
-
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `data RISCV64.Register` -/
-inductive RISCV64.Register where
-  | LR
-  | SP
-  | GP
-  | S0
-  | S1
-  | S2
-  | S3
-  | S4
-  | S5
-  | S6
-  | S7
-  | S8
-  | S9
-  | S10
-  | S11
-  | A0
-  | A1
-  | A2
-  | A3
-  | A4
-  | A5
-  | A6
-  | A7
-  | T0
-  | T1
-  | T2
-  | T3
-  | T4
-  | T5
-  | T6
-  | TP
-  | SCAUSE
-  | SSTATUS
-  | FaultIP
-  | NextIP
-  deriving Inhabited, DecidableEq
-
--- from SEL4/Machine/RegisterSet.lhs
-/-- Haskell `newtype Register = Register …` -/
-structure Register where
-  val : RISCV64.Register
-  deriving Inhabited, DecidableEq
-
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `data UserContext = UC { … }` -/
-structure UserContext where
-  fromUC : (Register → Word)
-  deriving Inhabited
-
-
--- from SEL4/Object/Structures/RISCV64.hs
-/-- Haskell `data ArchTCB = ArchThread { … }` -/
-structure ArchTCB where
-  atcbContext : UserContext
-  deriving Inhabited
-
-
--- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
-
--- from SEL4/API/Failures/RISCV64.hs
-/-- Haskell `data ArchFault = VMFault { … }` -/
-structure ArchFault where
-  vmFaultAddress : VPtr
-  vmFaultArchData : List Word
-  deriving Inhabited
-
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
 inductive LookupFailure where
@@ -396,6 +300,20 @@ def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Int) : Loo
   match x with
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  fromCPtr : Word
+  deriving Inhabited, DecidableEq
+
+
+-- from SEL4/API/Failures/RISCV64.hs
+/-- Haskell `data ArchFault = VMFault { … }` -/
+structure ArchFault where
+  vmFaultAddress : VPtr
+  vmFaultArchData : List Word
+  deriving Inhabited
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -476,13 +394,95 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   | .ArchFault _ => .ArchFault v
   | x => x
 
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Haskell `data RISCV64.Register` -/
+inductive RISCV64.Register where
+  | LR
+  | SP
+  | GP
+  | S0
+  | S1
+  | S2
+  | S3
+  | S4
+  | S5
+  | S6
+  | S7
+  | S8
+  | S9
+  | S10
+  | S11
+  | A0
+  | A1
+  | A2
+  | A3
+  | A4
+  | A5
+  | A6
+  | A7
+  | T0
+  | T1
+  | T2
+  | T3
+  | T4
+  | T5
+  | T6
+  | TP
+  | SCAUSE
+  | SSTATUS
+  | FaultIP
+  | NextIP
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/Machine/RegisterSet.lhs
+/-- Haskell `newtype Register = Register …` -/
+structure Register where
+  val : RISCV64.Register
+  deriving Inhabited, DecidableEq
+
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Haskell `data UserContext = UC { … }` -/
+structure UserContext where
+  fromUC : (Register → Word)
+  deriving Inhabited
+
+
+-- from SEL4/Object/Structures/RISCV64.hs
+/-- Haskell `data ArchTCB = ArchThread { … }` -/
+structure ArchTCB where
+  atcbContext : UserContext
+  deriving Inhabited
+
+
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `type TcbFlags` -/
 abbrev TcbFlags := Word
 
 -- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `data ZombieType` -/
+inductive ZombieType where
+  | ZombieTCB
+  | ZombieCNode (zombieCTEBits : Int)
+  deriving Inhabited, DecidableEq
+
+/-- Haskell selector `zombieCTEBits` (partial in Haskell; `default` elsewhere, like Isabelle). -/
+def ZombieType.zombieCTEBits : ZombieType → Int
+  | .ZombieCNode v => v
+  | _ => default
+/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
+def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Int) : ZombieType :=
+  match x with
+  | .ZombieCNode _ => .ZombieCNode v
+  | x => x
 
 -- pointer cycle: MDBNode, CTE, NTFN, Notification, ThreadState, TCB, Endpoint, Capability
 mutual
@@ -990,6 +990,64 @@ structure TcbQueue where
 inductive TcbFlag where
   | FpuDisabled
   deriving Inhabited
+
+-- from SEL4/Model/PSpace.lhs
+/-- Haskell `newtype PSpace = PSpace …` -/
+structure PSpace where
+  psMap : (Word → Option KernelObject)
+  deriving Inhabited
+
+
+-- from SEL4/Model/StateData/RISCV64.hs
+/-- Haskell `data RISCVVSpaceRegionUse` -/
+inductive RISCVVSpaceRegionUse where
+  | RISCVVSpaceUserRegion
+  | RISCVVSpaceInvalidRegion
+  | RISCVVSpaceKernelWindow
+  | RISCVVSpaceKernelELFWindow
+  | RISCVVSpaceDeviceWindow
+  deriving Inhabited
+
+-- from SEL4/Model/StateData/RISCV64.hs
+/-- Haskell `data RISCV64.KernelState = RISCVKernelState { … }` -/
+structure RISCV64.KernelState where
+  riscvKSASIDTable : (ASID → (Option (PPtr ASIDPool)))
+  riscvKSGlobalPTs : Int → List (PPtr PTE)
+  riscvKSKernelVSpace : (PPtr Word) → RISCVVSpaceRegionUse
+  deriving Inhabited
+
+
+-- from SEL4/Model/StateData.lhs
+/-- Haskell `type ReadyQueue` -/
+abbrev ReadyQueue := TcbQueue
+
+-- from SEL4/Machine/RegisterSet.lhs
+/-- Haskell `type Ticks` -/
+abbrev Ticks := BitVec 64
+
+-- from SEL4/Model/StateData.lhs
+/-- Haskell `data KernelState = KState { … }` -/
+structure KernelState where
+  ksPSpace : PSpace
+  gsUserPages : Word → Option VMPageSize
+  gsCNodes : Word → Option Int
+  gsUntypedZeroRanges : ((Word × Word) → Prop)
+  ksDomScheduleIdx : Int
+  ksDomScheduleStart : Int
+  ksDomSchedule : List DomainScheduleItem
+  ksCurDomain : Domain
+  ksDomainTime : Ticks
+  ksReadyQueues : ((Domain × Priority) → ReadyQueue)
+  ksReadyQueuesL1Bitmap : (Domain → Word)
+  ksReadyQueuesL2Bitmap : ((Domain × Int) → Word)
+  ksCurThread : PPtr TCB
+  ksIdleThread : PPtr TCB
+  ksSchedulerAction : SchedulerAction
+  ksInterruptState : InterruptState
+  ksWorkUnitsCompleted : Word
+  ksArchState : RISCV64.KernelState
+  deriving Inhabited
+
 
 end
 end Sel4Lean.Spec

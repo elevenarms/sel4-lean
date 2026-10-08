@@ -102,7 +102,7 @@ class FullTranslator(Translator):
             # `Arch.IRQ` etc.: the spec imports the RISCV64 module qualified; resolve by the base name,
             # or to the arch declaration if the base name is the type being defined (a wrapper)
             base = self.text(n).split(".")[-1]
-            return f"{ARCH}.{base}" if base == self.current_name else base
+            return f"{ARCH}.{base}" if base == self.current_name else TYPE.get(base, base)
         if t == "apply":
             # collect head and args to handle library types with arity
             args, m = [], n
@@ -113,6 +113,8 @@ class FullTranslator(Translator):
             head = self.text(m)
             if head in ("Data.Map.Map", "Map") and len(args) == 2:
                 return f"({self.ty_atom(args[0])} → Option {self.ty_atom(args[1])})"
+            if head in ("Set", "Data.Set.Set") and len(args) == 1:
+                return f"({self.ty_atom(args[0])} → Prop)"   # Isabelle sets are predicates
             if head == "Array" and len(args) == 2:
                 return f"({self.ty_atom(args[0])} → {self.ty_atom(args[1])})"
             if m.type == "qualified" and head not in ("Data.Map.Map",):
@@ -181,7 +183,7 @@ def cmd_types(root, files):
     deps = {}
 
     def visit(name):
-        if name in seen or name in LIB_TYPES or name in ("Kernel", "PPtr", "Type", "Array", "Map"):
+        if name in seen or name in LIB_TYPES or name in ("Kernel", "PPtr", "Type", "Array", "Map", "Set"):
             return
         seen.add(name)
         if name not in idx:
@@ -272,7 +274,11 @@ def cmd_types(root, files):
         if not cyclic:
             n = comp[0]
             print(f"-- from {out[n][1]}")
-            print(out[n][0] if n not in has_fn else split(n)[0] + "\n  deriving Inhabited\n" + split(n)[2])
+            dec, der, post = split(n)
+            if n in has_fn and der is not None:
+                print(dec + "\n  deriving Inhabited\n" + post)
+            else:
+                print(out[n][0])
             print()
             continue
         comp = sorted(comp, key=names.index)
