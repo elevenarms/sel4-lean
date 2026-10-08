@@ -5,6 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Platform
 
 set_option match.ignoreUnusedAlts true
 
@@ -51,17 +52,17 @@ opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 
 /-! ## Translated -/
 
-/-- Haskell `physBase`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/
-abbrev physBase := Sel4Lean.Spec.KernelConfig.physBase
+/-- Haskell `physBase`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev physBase := @Sel4Lean.Spec.KernelConfig.physBase
 
 
-/-- Haskell `pageColourBits` -/
-def pageColourBits : Nat :=
-  error "unused on this architecture"
+/-- Haskell `pageColourBits`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev pageColourBits := @Sel4Lean.Spec.Platform.pageColourBits
 
-/-- Haskell `irqInvalid` -/
-def irqInvalid : RISCV64.IRQ :=
-  RISCV64.IRQ.IRQ 0
+
+/-- Haskell `irqInvalid`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev irqInvalid := @Sel4Lean.Spec.Platform.irqInvalid
+
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive

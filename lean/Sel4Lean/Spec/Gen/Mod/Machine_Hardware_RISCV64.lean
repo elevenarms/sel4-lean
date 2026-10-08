@@ -5,6 +5,8 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.MachineOps
+import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
 
@@ -25,7 +27,6 @@ abbrev setRegister := @Sel4Lean.Spec.M.Machine_RegisterSet.setRegister
 
 abbrev Platform.fromPAddr := @PAddr.fromPAddr
 abbrev Platform.pageColourBits := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.pageColourBits
-abbrev Platform.physBase := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.physBase
 
 /-! ## Stubs (from Haskell signatures) -/
 
@@ -47,9 +48,9 @@ opaque initIRQController : MachineMonad Unit
 
 /-! ## Translated -/
 
-/-- Haskell `toPAddr` -/
-def toPAddr :=
-  PAddr.PAddr
+/-- Haskell `toPAddr`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev toPAddr := @Sel4Lean.Spec.Platform.toPAddr
+
 
 /-- Haskell `vmFaultTypeFSR` -/
 def vmFaultTypeFSR (f : VMFaultType) : Word :=
@@ -65,50 +66,49 @@ def vmFaultTypeFSR (f : VMFaultType) : Word :=
 def fromPAddr : PAddr → Word :=
   Platform.fromPAddr
 
-/-- Haskell `paddrBase` -/
-def paddrBase : PAddr :=
-  (PAddr.PAddr) 0x0
+/-- Haskell `paddrBase`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev paddrBase := @Sel4Lean.Spec.Platform.paddrBase
 
-/-- Haskell `pptrBase` -/
-def pptrBase : VPtr :=
-  VPtr.VPtr 0xFFFFFFC000000000
 
-/-- Haskell `pptrTop` -/
-def pptrTop : VPtr :=
-  VPtr.VPtr 0xFFFFFFFF80000000
+/-- Haskell `pptrBase`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev pptrBase := @Sel4Lean.Spec.Platform.pptrBase
 
-/-- Haskell `kernelELFPAddrBase` -/
-def kernelELFPAddrBase : PAddr :=
-  Platform.physBase
 
-/-- Haskell `kernelELFBase` -/
-def kernelELFBase : VPtr :=
-  VPtr.VPtr ((VPtr.fromVPtr pptrTop) + ((PAddr.fromPAddr kernelELFPAddrBase) &&& (mask 30)))
+/-- Haskell `pptrTop`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev pptrTop := @Sel4Lean.Spec.Platform.pptrTop
 
-/-- Haskell `pptrUserTop` -/
-def pptrUserTop : VPtr :=
-  pptrBase
 
-/-- Haskell `pptrBaseOffset` -/
-def pptrBaseOffset : Word :=
-  (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
+/-- Haskell `kernelELFPAddrBase`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev kernelELFPAddrBase := @Sel4Lean.Spec.Platform.kernelELFPAddrBase
 
-/-- Haskell `ptrFromPAddr` -/
-def ptrFromPAddr {t_a : Type} [Inhabited t_a] (addr : PAddr) : PPtr t_a :=
-  PPtr.mk ((PAddr.fromPAddr addr) + pptrBaseOffset)
 
-/-- Haskell `addrFromPPtr` -/
-def addrFromPPtr {t_a : Type} [Inhabited t_a] (addr : PPtr t_a) : PAddr :=
-  toPAddr ((PPtr.ptr addr) - pptrBaseOffset)
+/-- Haskell `kernelELFBase`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev kernelELFBase := @Sel4Lean.Spec.Platform.kernelELFBase
 
-/-- Haskell `kernelELFBaseOffset` -/
-def kernelELFBaseOffset :=
-  (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
 
-/-- Haskell `addrFromKPPtr` -/
-def addrFromKPPtr {t_a : Type} [Inhabited t_a] (x0 : PPtr t_a) : PAddr :=
-  match x0 with
-  | (PPtr.mk addr) => toPAddr (addr - kernelELFBaseOffset)
+/-- Haskell `pptrUserTop`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev pptrUserTop := @Sel4Lean.Spec.Platform.pptrUserTop
+
+
+/-- Haskell `pptrBaseOffset`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev pptrBaseOffset := @Sel4Lean.Spec.Platform.pptrBaseOffset
+
+
+/-- Haskell `ptrFromPAddr`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev ptrFromPAddr := @Sel4Lean.Spec.Platform.ptrFromPAddr
+
+
+/-- Haskell `addrFromPPtr`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev addrFromPPtr := @Sel4Lean.Spec.Platform.addrFromPPtr
+
+
+/-- Haskell `kernelELFBaseOffset`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev kernelELFBaseOffset := @Sel4Lean.Spec.Platform.kernelELFBaseOffset
+
+
+/-- Haskell `addrFromKPPtr`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev addrFromKPPtr := @Sel4Lean.Spec.Platform.addrFromKPPtr
+
 
 /-- Haskell `pageBits` -/
 def pageBits : Nat :=

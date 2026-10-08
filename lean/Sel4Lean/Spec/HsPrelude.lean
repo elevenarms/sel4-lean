@@ -48,8 +48,12 @@ abbrev assertG {m : Type → Type} [Monad m] [MonadFailH m] (c : Bool) (_msg : S
 
 /-! ## Errors -/
 
-/-- Haskell `error msg`: bottom. As a kernel computation this is `fail` (`default` of `NondetM`). -/
-abbrev error {α : Type} [Inhabited α] (_msg : String) : α := default
+/-- Isabelle `undefined`: an arbitrary value of the type, about which nothing can be proved. -/
+opaque undefinedH {α : Type} [Inhabited α] : α
+
+/-- Haskell `error msg`, as l4v's `error ≡ λx. undefined` (lib/HaskellLib_H.thy:128): an unspecified value,
+not a provable one (with `default` Lean could prove facts, e.g. `timeSlice = 0`, that Isabelle cannot). -/
+abbrev error {α : Type} [Inhabited α] (_msg : String) : α := undefinedH
 /-- Haskell `undefined` (l4v: `undefined`). -/
 abbrev undefined {α : Type} [Inhabited α] : α := default
 

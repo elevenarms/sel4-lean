@@ -31,7 +31,7 @@ hs2lean module: 15/15 functions translated (0 partial, 0 machine-opaque, 0 l4v m
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 13/13 functions translated (0 partial, 10 machine-opaque, 0 l4v machine ops), 10 external stubs, 1 unresolved
   unresolved error: no signature found
-hs2lean imports: 2 modules, 3 names, 3 arch aliases
+hs2lean imports: 2 modules, 3 names, 2 arch aliases
 hs2lean module: 50/50 functions translated (0 partial, 3 machine-opaque, 20 l4v machine ops), 3 external stubs, 4 unresolved
   unresolved error: no signature found
   unresolved liftIO: no signature found

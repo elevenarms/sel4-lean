@@ -5,6 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.KernelConfig
+import Sel4Lean.Spec.Platform
 
 set_option match.ignoreUnusedAlts true
 
@@ -33,24 +34,24 @@ def minSmallBlocks : Nat :=
 def rootCNodeSize : Nat :=
   12
 
-/-- Haskell `timeSlice`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/
-abbrev timeSlice := Sel4Lean.Spec.KernelConfig.timeSlice
+/-- Haskell `timeSlice`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev timeSlice := @Sel4Lean.Spec.KernelConfig.timeSlice
 
 
-/-- Haskell `numDomains`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/
-abbrev numDomains := Sel4Lean.Spec.KernelConfig.numDomains
+/-- Haskell `numDomains`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev numDomains := @Sel4Lean.Spec.KernelConfig.numDomains
 
 
 /-- Haskell `numPriorities` -/
 def numPriorities : Nat :=
   256
 
-/-- Haskell `retypeFanOutLimit`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/
-abbrev retypeFanOutLimit := Sel4Lean.Spec.KernelConfig.retypeFanOutLimit
+/-- Haskell `retypeFanOutLimit`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev retypeFanOutLimit := @Sel4Lean.Spec.KernelConfig.retypeFanOutLimit
 
 
-/-- Haskell `resetChunkBits`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/
-abbrev resetChunkBits := Sel4Lean.Spec.KernelConfig.resetChunkBits
+/-- Haskell `resetChunkBits`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev resetChunkBits := @Sel4Lean.Spec.KernelConfig.resetChunkBits
 
 
 end

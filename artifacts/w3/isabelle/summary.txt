@@ -1,0 +1,43 @@
+isagate: agree 155, both-undefined 3
+isagate: 60/60 functions agree with Isabelle on every case
+isagate names: 1117/2360 ExecSpec constants have a Lean declaration of the same name
+  ExecSpec.Structures_H: 150/407
+  ExecSpec.Invocations_H: 96/259
+  ExecSpec.ArchRetypeDecls_H: 58/160
+  ExecSpec.Fault_H: 41/136
+  ExecSpec.Types_H: 63/150
+  ExecSpec.ArchStructures_H: 31/104
+  ExecSpec.MachineTypes: 67/125
+  ExecSpec.Kernel_Config: 10/47
+  ExecSpec.ObjectInstances_H: 0/36
+  ExecSpec.Hardware_H: 25/57
+  ExecSpec.PSpaceStorable_H: 5/36
+  ExecSpec.InvocationLabels_H: 35/63
+  ExecSpec.ArchTypes_H: 20/47
+  ExecSpec.Event_H: 14/41
+  ExecSpec.KernelInitMonad_H: 6/26
+  ExecSpec.KI_Decls_H: 1/17
+  ExecSpec.Structs_B: 4/18
+  ExecSpec.ArchInvocationLabels_H: 8/21
+  ExecSpec.Arch_Structs_B: 6/19
+  ExecSpec.ArchStateData_H: 7/20
+  ExecSpec.ArchFault_H: 3/16
+  ExecSpec.MachineOps: 40/53
+  ExecSpec.ArchObjInsts_H: 0/12
+  ExecSpec.Delete_H: 0/12
+  ExecSpec.KernelInit_H: 1/11
+  ExecSpec.ArchVSpace_H: 2/10
+  ExecSpec.KernelStateData_H: 42/47
+  ExecSpec.Intermediate_H: 0/5
+  ExecSpec.CSpace_H: 1/5
+  ExecSpec.CNode_H: 43/47
+  ExecSpec.State_H: 21/24
+  ExecSpec.MachineMonad: 0/3
+  ExecSpec.API_H: 0/3
+  ExecSpec.ArchIntermediate_H: 0/2
+  ExecSpec.PSpaceStruct_H: 2/4
+  ExecSpec.Platform: 19/20
+  ExecSpec.FaultMonad_H: 15/16
+isagate names: 690 Lean names with no ExecSpec constant
+difftest: agree 142, DIFFER 0, int-nat 0, hs-error 8, l4v 8, lean-missing 0, hs-missing 0
+difftest: 60/60 functions agree on every case (int-nat: negative Haskell Int; hs-error: Haskell `error`; l4v: Lean = l4v's Isabelle spec, which differs from the Haskell)

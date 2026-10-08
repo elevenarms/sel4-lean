@@ -1,0 +1,41 @@
+Started at Thu Oct 8 06:14:18 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+ISABELLE_TOOL_JAVA_OPTIONS="-Djava.awt.headless=true -Xms512m -Xmx4g -Xss16m"
+ISABELLE_BUILD_OPTIONS="threads=32"
+
+ML_PLATFORM="x86_64_32-linux"
+ML_HOME="/root/.isabelle/contrib/polyml-5.9.2-2/x86_64_32-linux"
+ML_SYSTEM="polyml-5.9.2"
+ML_OPTIONS="--minheap 500"
+
+Session Pure/Pure
+Session FOL/FOL
+Session Misc/Tools
+Session HOL/HOL (main)
+Session HOL/HOL-Cardinals (timing)
+Session HOL/HOL-Library (main timing)
+Session HOL/HOL-Combinatorics (main timing)
+Session HOL/HOL-Computational_Algebra (main timing)
+Session HOL/HOL-Algebra (main timing)
+Session HOL/HOL-Decision_Procs (timing)
+Session HOL/HOL-Real_Asymp
+Session HOL/HOL-Analysis (main timing)
+Session HOL/HOL-Eisbach
+Session Lib/ML_Utils (lib)
+Session Lib/Eisbach_Tools (lib)
+Session Lib/Monads (lib)
+Session Lib/Word_Lib (lib)
+Session Lib/Basics (lib)
+Session Lib/Lib (lib)
+Session Specifications/ExecSpec
+Session Unsorted/LeanGate
+Running LeanGate ...
+LeanGate: theory LeanGate.Consts
+LeanGate: theory LeanGate.Values
+LeanGate: theory LeanGate.Consts 100% (0.456s cumulated time)
+LeanGate: theory LeanGate.Values 100% (21.897s cumulated time)
+Timing LeanGate (32 threads, 21.996s elapsed time, 24.434s cpu time, 2.558s GC time, factor 1.11)
+Finished LeanGate (0:00:23 elapsed time, 0:00:27 cpu time, factor 1.14)
+
+Finished at Thu Oct 8 06:14:49 GMT 2026
+0:00:31 elapsed time, 0:00:27 cpu time, factor 0.87
+isabelle exit 0

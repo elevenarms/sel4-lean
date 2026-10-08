@@ -18,10 +18,10 @@ id	module	function	args	haskell	lean	verdict
 17	Kernel_Thread	invertL1Index	1	2	2	agree
 18	Kernel_Thread	invertL1Index	2	1	1	agree
 19	Kernel_Thread	invertL1Index	3	0	0	agree
-20	Kernel_Thread	invertL1Index	8	-5	0	int-nat
-21	Kernel_Thread	invertL1Index	12	-9	0	int-nat
-22	Kernel_Thread	invertL1Index	31	-28	0	int-nat
-23	Kernel_Thread	invertL1Index	32	-29	0	int-nat
+20	Kernel_Thread	invertL1Index	8	-5	0	l4v
+21	Kernel_Thread	invertL1Index	12	-9	0	l4v
+22	Kernel_Thread	invertL1Index	31	-28	0	l4v
+23	Kernel_Thread	invertL1Index	32	-29	0	l4v
 24	Kernel_Thread	prioToL1Index	0	0	0	agree
 25	Kernel_Thread	prioToL1Index	1	0	0	agree
 26	Kernel_Thread	prioToL1Index	2	0	0	agree
@@ -89,7 +89,7 @@ id	module	function	args	haskell	lean	verdict
 88	Machine_Hardware	addrFromKPPtr	18446744073709551615	4294967295	4294967295	agree
 89	Machine_Hardware	addrFromKPPtr	9223372036854775808	9223372041149743104	9223372041149743104	agree
 90	Machine_Hardware	pageBits		12	12	agree
-91	Machine_Hardware	pageColourBits		error	0	hs-error
+91	Machine_Hardware	pageColourBits		error	None	hs-error
 92	Machine_Hardware	nullPointer		0	0	agree
 93	Machine_Hardware	config_HAVE_FPU		error	0	hs-error
 94	Machine_Hardware_RISCV64	fromPAddr	0	0	0	agree
@@ -105,7 +105,7 @@ id	module	function	args	haskell	lean	verdict
 104	Machine_Hardware_RISCV64	pptrTop		18446744071562067968	18446744071562067968	agree
 105	Machine_Hardware_RISCV64	kernelELFPAddrBase		2147483648	2149580800	l4v
 106	Machine_Hardware_RISCV64	kernelELFBase		18446744071562067968	18446744071564165120	l4v
-107	Machine_Hardware_RISCV64	pptrUserTop		18446743798831644672	18446743798831644672	agree
+107	Machine_Hardware_RISCV64	pptrUserTop		18446743798831644672	274877902848	l4v
 108	Machine_Hardware_RISCV64	ptrFromPAddr	0	18446743798831644672	18446743798831644672	agree
 109	Machine_Hardware_RISCV64	ptrFromPAddr	1	18446743798831644673	18446743798831644673	agree
 110	Machine_Hardware_RISCV64	ptrFromPAddr	2	18446743798831644674	18446743798831644674	agree
@@ -134,9 +134,9 @@ id	module	function	args	haskell	lean	verdict
 133	Machine_Hardware_RISCV64	ptTranslationBits		9	9	agree
 134	Machine_Hardware_RISCV64	pteBits		3	3	agree
 135	Machine_Hardware_RISCV64	ptBits		12	12	agree
-136	Machine_Hardware_RISCV64	pageColourBits		error	0	hs-error
+136	Machine_Hardware_RISCV64	pageColourBits		error	None	hs-error
 137	Machine_Hardware_RISCV64_HiFive	physBase		2147483648	2149580800	l4v
-138	Machine_Hardware_RISCV64_HiFive	pageColourBits		error	0	hs-error
+138	Machine_Hardware_RISCV64_HiFive	pageColourBits		error	None	hs-error
 139	Machine_RegisterSet_RISCV64	sstatusSPIE		32	32	agree
 140	Model_StateData_RISCV64	maxPTLevel		2	2	agree
 141	Object_ObjectType	badgeBits		64	64	agree

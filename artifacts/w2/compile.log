@@ -1,93 +1,53 @@
-✔ [6/9] Built Sel4Lean.Spec.Gen.Types (4.8s)
-✔ [7/9] Built Sel4Lean.Spec.Prelude (237ms)
-✔ [8/9] Built Sel4Lean.Spec.PSpaceStorable (444ms)
+✔ [6/9] Built Sel4Lean.Spec.Gen.Types (4.9s)
+✔ [7/9] Built Sel4Lean.Spec.Prelude (239ms)
+✔ [8/9] Built Sel4Lean.Spec.PSpaceStorable (443ms)
 ✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_BinaryTree (374ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_Helpers (240ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_Helpers (271ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_WordLib (282ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Data_WordLib (283ms)
 Build completed successfully (9 jobs).
 ✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64 (303ms)
 Build completed successfully (9 jobs).
-✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (304ms)
+✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (309ms)
 Build completed successfully (10 jobs).
-✔ [9/10] Built Sel4Lean.Spec.KernelConfig (273ms)
-✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (293ms)
-Build completed successfully (10 jobs).
-✔ [13/14] Built Sel4Lean.Spec.MachineOps (388ms)
-✔ [14/14] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (352ms)
-Build completed successfully (14 jobs).
-✔ [15/15] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware (333ms)
+✔ [9/11] Built Sel4Lean.Spec.KernelConfig (272ms)
+✔ [10/11] Built Sel4Lean.Spec.Platform (302ms)
+✔ [11/11] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (264ms)
+Build completed successfully (11 jobs).
+✔ [14/15] Built Sel4Lean.Spec.MachineOps (386ms)
+✔ [15/15] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (339ms)
 Build completed successfully (15 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine (232ms)
+✔ [16/16] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware (330ms)
+Build completed successfully (16 jobs).
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine (233ms)
 Build completed successfully (9 jobs).
 ✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.API_Types_Universal (270ms)
 Build completed successfully (10 jobs).
-✔ [17/17] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (291ms)
-Build completed successfully (17 jobs).
-✔ [19/19] Built Sel4Lean.Spec.Gen.Mod.API_Types (341ms)
-Build completed successfully (19 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (232ms)
+✔ [18/18] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (289ms)
+Build completed successfully (18 jobs).
+✔ [20/20] Built Sel4Lean.Spec.Gen.Mod.API_Types (340ms)
+Build completed successfully (20 jobs).
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (268ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures (300ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_Failures (298ms)
 Build completed successfully (9 jobs).
-✔ [10/10] Built Sel4Lean.Spec.Gen.Mod.Config (240ms)
-Build completed successfully (10 jobs).
-✔ [15/15] Built Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (262ms)
-Build completed successfully (15 jobs).
-✔ [21/21] Built Sel4Lean.Spec.Gen.Mod.Object_Structures (377ms)
-Build completed successfully (21 jobs).
-✔ [22/23] Built Sel4Lean.Spec.PSpaceInstances (329ms)
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (236ms)
-Build completed successfully (23 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (236ms)
-Build completed successfully (23 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (241ms)
-Build completed successfully (9 jobs).
-✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Model_StateData (383ms)
+✔ [11/11] Built Sel4Lean.Spec.Gen.Mod.Config (271ms)
+Build completed successfully (11 jobs).
+✔ [16/16] Built Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (264ms)
+Build completed successfully (16 jobs).
+✔ [22/22] Built Sel4Lean.Spec.Gen.Mod.Object_Structures (379ms)
+Build completed successfully (22 jobs).
+✔ [23/24] Built Sel4Lean.Spec.PSpaceInstances (332ms)
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (235ms)
 Build completed successfully (24 jobs).
-⚠ [23/23] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (270ms)
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (23 jobs).
-⚠ [23/24] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace (419ms)
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (234ms)
 Build completed successfully (24 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Model_Failures (319ms)
-Build completed successfully (23 jobs).
-✔ [25/25] Built Sel4Lean.Spec.Gen.Mod.Model_Preemption (301ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (271ms)
+Build completed successfully (9 jobs).
+✔ [25/25] Built Sel4Lean.Spec.Gen.Mod.Model_StateData (383ms)
 Build completed successfully (25 jobs).
-✔ [26/26] Built Sel4Lean.Spec.Gen.Mod.Model_Syscall (286ms)
-Build completed successfully (26 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Model (236ms)
-Build completed successfully (23 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Object_Instances_RISCV64 (233ms)
-Build completed successfully (23 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (235ms)
-Build completed successfully (23 jobs).
-⚠ [25/27] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+⚠ [24/24] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (240ms)
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -100,1154 +60,8 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [27/27] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (390ms)
-Build completed successfully (27 jobs).
-⚠ [25/28] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [28/28] Built Sel4Lean.Spec.Gen.Mod.Object_Endpoint (419ms)
-Build completed successfully (28 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (235ms)
-Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels (273ms)
-Build completed successfully (9 jobs).
-✔ [28/28] Built Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (318ms)
-Build completed successfully (28 jobs).
-⚠ [28/33] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [33/33] Built Sel4Lean.Spec.Gen.Mod.Object_Interrupt (435ms)
-Build completed successfully (33 jobs).
-⚠ [26/31] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/31] Built Sel4Lean.Spec.Gen.Mod.Object_Untyped (447ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (31 jobs).
-⚠ [23/23] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (269ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (23 jobs).
-⚠ [25/26] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [26/26] Built Sel4Lean.Spec.Gen.Mod.Object_Domain (403ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (26 jobs).
-⚠ [23/31] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/31] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (879ms)
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (31 jobs).
-⚠ [23/32] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/32] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [32/32] Built Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64 (404ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (32 jobs).
-⚠ [26/40] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/40] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/40] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/40] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/40] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/40] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [40/40] Built Sel4Lean.Spec.Gen.Mod.Object_ObjectType (667ms)
-Build completed successfully (40 jobs).
-⚠ [26/41] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/41] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [41/41] Built Sel4Lean.Spec.Gen.Mod.Object_CNode (813ms)
-Build completed successfully (41 jobs).
-⚠ [23/23] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (284ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (23 jobs).
-⚠ [26/44] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/44] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/44] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/44] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/44] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/44] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/44] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [44/44] Built Sel4Lean.Spec.Gen.Mod.Object_TCB (842ms)
-Build completed successfully (44 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Object (233ms)
-Build completed successfully (23 jobs).
-⚠ [26/45] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/45] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [45/45] Built Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64 (286ms)
-Build completed successfully (45 jobs).
-⚠ [26/47] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/47] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/47] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/47] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/47] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/47] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/47] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [47/47] Built Sel4Lean.Spec.Gen.Mod.API_Faults (318ms)
-Build completed successfully (47 jobs).
-⚠ [23/32] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/32] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [32/32] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (309ms)
-Build completed successfully (32 jobs).
-⚠ [23/32] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/32] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [32/32] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (281ms)
-Build completed successfully (32 jobs).
-⚠ [28/50] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [34/50] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/50] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/50] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/50] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/50] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/50] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [50/50] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread (739ms)
-Build completed successfully (50 jobs).
-⚠ [26/45] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/45] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [45/45] Built Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (352ms)
-Build completed successfully (45 jobs).
-⚠ [28/52] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [34/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _i
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _v
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _extraCaps
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/52] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _srcCap
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _c
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [52/52] Built Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (261ms)
-Build completed successfully (52 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (241ms)
-Build completed successfully (23 jobs).
-✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (240ms)
 Build completed successfully (24 jobs).
-⚠ [28/56] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+⚠ [24/25] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1260,14 +74,93 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [34/56] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+✔ [25/25] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace (422ms)
+Build completed successfully (25 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Model_Failures (289ms)
+Build completed successfully (24 jobs).
+✔ [26/26] Built Sel4Lean.Spec.Gen.Mod.Model_Preemption (302ms)
+Build completed successfully (26 jobs).
+✔ [27/27] Built Sel4Lean.Spec.Gen.Mod.Model_Syscall (258ms)
+Build completed successfully (27 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Model (235ms)
+Build completed successfully (24 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object_Instances_RISCV64 (233ms)
+Build completed successfully (24 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (234ms)
+Build completed successfully (24 jobs).
+⚠ [26/28] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [28/28] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (391ms)
+Build completed successfully (28 jobs).
+⚠ [26/29] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [29/29] Built Sel4Lean.Spec.Gen.Mod.Object_Endpoint (419ms)
+Build completed successfully (29 jobs).
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (233ms)
+Build completed successfully (9 jobs).
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels (244ms)
+Build completed successfully (9 jobs).
+✔ [29/29] Built Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (312ms)
+Build completed successfully (29 jobs).
+⚠ [29/34] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [34/34] Built Sel4Lean.Spec.Gen.Mod.Object_Interrupt (434ms)
+Build completed successfully (34 jobs).
+⚠ [27/32] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/32] Built Sel4Lean.Spec.Gen.Mod.Object_Untyped (448ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _p
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/56] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+Build completed successfully (32 jobs).
+⚠ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (271ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1280,7 +173,21 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _newDom
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [37/56] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+Build completed successfully (24 jobs).
+⚠ [26/27] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [27/27] Built Sel4Lean.Spec.Gen.Mod.Object_Domain (402ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1305,7 +212,21 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _extraCaps
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/56] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+Build completed successfully (27 jobs).
+⚠ [24/32] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/32] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (896ms)
 warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1324,7 +245,40 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _attr
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/56] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+Build completed successfully (32 jobs).
+⚠ [24/33] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/33] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [33/33] Built Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64 (407ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1343,48 +297,8 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _c
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [43/56] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [56/56] Built Sel4Lean.Spec.Gen.Mod.API_Syscall (403ms)
-Build completed successfully (56 jobs).
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.API (235ms)
-Build completed successfully (23 jobs).
-✖ [24/24] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (431ms)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:115:20: Unknown identifier `value`
-error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:130:8: Type mismatch
-  serializeByte byte
-has type
-  Serializer Unit
-but is expected to have type
-  NondetM ?m.1 ?m.3
-Some required targets logged failures:
-- Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
-error: build failed
-✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (430ms)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:117:20: Unknown identifier `value`
-error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:132:8: Type mismatch
-  serializeByte byte
-has type
-  Serializer Unit
-but is expected to have type
-  NondetM ?m.1 ?m.3
-Some required targets logged failures:
-- Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
-error: build failed
-⚠ [24/51] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+Build completed successfully (33 jobs).
+⚠ [27/41] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1397,33 +311,14 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _bits
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [31/51] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _thread
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _pool
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _attr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [36/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+⚠ [32/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
 warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _p
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [38/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+⚠ [37/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1436,7 +331,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _newDom
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [39/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+⚠ [38/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -1459,6 +354,638 @@ warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCa
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/41] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/41] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [41/41] Built Sel4Lean.Spec.Gen.Mod.Object_ObjectType (662ms)
+Build completed successfully (41 jobs).
+⚠ [27/42] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/42] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/42] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/42] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/42] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/42] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [42/42] Built Sel4Lean.Spec.Gen.Mod.Object_CNode (811ms)
+Build completed successfully (42 jobs).
+⚠ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (288ms)
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (24 jobs).
+⚠ [27/45] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/45] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [44/45] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [45/45] Built Sel4Lean.Spec.Gen.Mod.Object_TCB (845ms)
+Build completed successfully (45 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Object (234ms)
+Build completed successfully (24 jobs).
+⚠ [27/46] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/46] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [44/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [46/46] Built Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64 (255ms)
+Build completed successfully (46 jobs).
+⚠ [27/48] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/48] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/48] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/48] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/48] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/48] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [44/48] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [48/48] Built Sel4Lean.Spec.Gen.Mod.API_Faults (315ms)
+Build completed successfully (48 jobs).
+⚠ [24/33] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/33] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [33/33] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (308ms)
+Build completed successfully (33 jobs).
+⚠ [24/33] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/33] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [33/33] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (249ms)
+Build completed successfully (33 jobs).
+⚠ [29/51] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [35/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/51] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
 ⚠ [40/51] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
@@ -1493,7 +1020,481 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _flags
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✖ [51/51] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (651ms)
+✔ [51/51] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread (726ms)
+Build completed successfully (51 jobs).
+⚠ [27/46] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/46] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [44/46] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [46/46] Built Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (325ms)
+Build completed successfully (46 jobs).
+⚠ [29/53] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [35/53] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/53] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/53] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/53] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/53] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [44/53] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [53/53] Built Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (291ms)
+Build completed successfully (53 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (277ms)
+Build completed successfully (24 jobs).
+✔ [25/25] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (238ms)
+Build completed successfully (25 jobs).
+⚠ [29/57] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [35/57] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/57] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [38/57] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/57] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/57] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [44/57] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [57/57] Built Sel4Lean.Spec.Gen.Mod.API_Syscall (403ms)
+Build completed successfully (57 jobs).
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.API (234ms)
+Build completed successfully (24 jobs).
+✖ [25/25] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (428ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:115:20: Unknown identifier `value`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:130:8: Type mismatch
+  serializeByte byte
+has type
+  Serializer Unit
+but is expected to have type
+  NondetM ?m.1 ?m.3
+Some required targets logged failures:
+- Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
+error: build failed
+✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (432ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:117:20: Unknown identifier `value`
+error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:132:8: Type mismatch
+  serializeByte byte
+has type
+  Serializer Unit
+but is expected to have type
+  NondetM ?m.1 ?m.3
+Some required targets logged failures:
+- Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
+error: build failed
+⚠ [25/52] Replayed Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:46: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:21:63: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [32/52] Replayed Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:247:19: Variable name `thread` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _thread
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:292:28: Variable name `pool` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pool
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:431:93: Variable name `attr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [37/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_Untyped
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:150:28: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [39/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:22: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:21:37: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [40/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_Domain
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:8: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:66:11: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:108:46: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:124:45: Variable name `extraCaps` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _extraCaps
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [41/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:20: Variable name `newCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:61:42: Variable name `srcCap` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _srcCap
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:89:21: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [45/52] Replayed Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:18: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:46:33: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [52/52] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (648ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:130:2: typeclass instance problem is stuck
   MonadLiftT ?m.9 KernelInit
@@ -1718,7 +1719,7 @@ Hint: Adding type annotations and supplying implicit arguments to functions can 
 Some required targets logged failures:
 - Sel4Lean.Spec.Gen.Mod.Kernel_Init
 error: build failed
-✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (676ms)
+✖ [9/9] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (678ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:188:2: typeclass instance problem is stuck
   MonadLiftT ?m.9 KernelInit
@@ -1959,9 +1960,9 @@ Hint: Adding type annotations and supplying implicit arguments to functions can 
 Some required targets logged failures:
 - Sel4Lean.Spec.Gen.Mod.Kernel_Init
 error: build failed
-✔ [23/23] Built Sel4Lean.Spec.Gen.Mod.Kernel (234ms)
-Build completed successfully (23 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (266ms)
+✔ [24/24] Built Sel4Lean.Spec.Gen.Mod.Kernel (234ms)
+Build completed successfully (24 jobs).
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (294ms)
 Build completed successfully (9 jobs).
-✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (233ms)
+✔ [9/9] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (234ms)
 Build completed successfully (9 jobs).

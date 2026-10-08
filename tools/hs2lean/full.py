@@ -77,13 +77,19 @@ Isabelle `machine_monad = (machine_state, 'a) nondet_monad`. -/
 abbrev MachineMonad := Sel4Lean.NondetM MachineState"""
 
 
-# definitions l4v's design skeletons exclude (`#INCLUDE_HASKELL … NOT x`) and take from Isabelle instead
-# (Kernel_Config.thy, Platform.thy): (module path, name) -> name in Spec/KernelConfig.lean
-L4V_OVERRIDES = {("SEL4/Config.lhs", "timeSlice"): "timeSlice",
-                 ("SEL4/Config.lhs", "numDomains"): "numDomains",
-                 ("SEL4/Config.lhs", "retypeFanOutLimit"): "retypeFanOutLimit",
-                 ("SEL4/Config.lhs", "resetChunkBits"): "resetChunkBits",
-                 (f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", "physBase"): "physBase"}
+# definitions l4v's design skeletons exclude (`#INCLUDE_HASKELL … NOT x`, see skel.py) and take from hand-written
+# Isabelle instead: (module path, name) -> the Lean port of that Isabelle definition. The Isabelle gate
+# (isagate.py) checks the values; `skel.py dropped` lists what l4v drops.
+_HW = f"SEL4/Machine/Hardware/{ARCH}.hs"
+L4V_OVERRIDES = {("SEL4/Config.lhs", n): f"Sel4Lean.Spec.KernelConfig.{n}"     # Kernel_Config.thy
+                 for n in ("timeSlice", "numDomains", "retypeFanOutLimit", "resetChunkBits")}
+L4V_OVERRIDES[(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", "physBase")] = "Sel4Lean.Spec.KernelConfig.physBase"
+L4V_OVERRIDES.update({(_HW, n): f"Sel4Lean.Spec.Platform.{n}"                   # Platform.thy
+                      for n in ("toPAddr", "paddrBase", "pptrBase", "pptrTop", "kernelELFPAddrBase", "kernelELFBase",
+                                "pptrUserTop", "pptrBaseOffset", "ptrFromPAddr", "addrFromPPtr",
+                                "kernelELFBaseOffset", "addrFromKPPtr")})
+L4V_OVERRIDES.update({(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", n): f"Sel4Lean.Spec.Platform.{n}"
+                      for n in ("irqInvalid", "pageColourBits")})
 
 # operations ported from l4v's MachineOps.thy by hand (Spec/MachineOps.lean)
 MACHINE_OPS = {"loadWord", "storeWord", "getMemoryRegions", "storeWordVM", "configureTimer", "initTimer",
@@ -1062,9 +1068,10 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
             machine_op = ARCH in mpath and re.search(r"\bMachineMonad\b", sig_txt) is not None
             ov = L4V_OVERRIDES.get((os.path.relpath(mpath, root), n))
             if ov is not None:
-                out_defs.append((None, f"/-- Haskell `{n}`: l4v's Isabelle definition (Spec/KernelConfig.lean) -/\n"
-                                       f"abbrev {tr.ident(n)} := Sel4Lean.Spec.KernelConfig.{ov}\n"))
+                out_defs.append((None, f"/-- Haskell `{n}`: dropped by l4v's skeleton; its Isabelle definition -/\n"
+                                       f"abbrev {tr.ident(n)} := @{ov}\n"))
                 uses_kernel_config = True
+                stats["l4v"] = stats.get("l4v", 0) + 1
                 stats["translated"] += 1
                 continue
             if machine and machine_op and n in MACHINE_OPS:
@@ -1165,6 +1172,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
         print("import Sel4Lean.Spec.MachineOps")
     if uses_kernel_config:
         print("import Sel4Lean.Spec.KernelConfig")
+        print("import Sel4Lean.Spec.Platform")
     for im in imports:
         print(f"import Sel4Lean.Spec.Gen.Mod.{im}")
     # Haskell allows overlapping (unreachable) case alternatives; Lean rejects them unless told not to

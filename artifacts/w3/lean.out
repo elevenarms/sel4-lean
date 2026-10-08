@@ -88,7 +88,7 @@
 88|4294967295
 89|9223372041149743104
 90|12
-91|0
+DiffTest.lean:106:0: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Sel4Lean.Spec.M.Machine_Hardware.pageColourBits', which is 'noncomputable'
 92|0
 93|0
 94|0
@@ -104,7 +104,7 @@
 104|18446744071562067968
 105|2149580800
 106|18446744071564165120
-107|18446743798831644672
+107|274877902848
 108|18446743798831644672
 109|18446743798831644673
 110|18446743798831644674
@@ -133,9 +133,9 @@
 133|9
 134|3
 135|12
-136|0
+DiffTest.lean:151:0: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pageColourBits', which is 'noncomputable'
 137|2149580800
-138|0
+DiffTest.lean:153:0: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.pageColourBits', which is 'noncomputable'
 139|32
 140|2
 141|64

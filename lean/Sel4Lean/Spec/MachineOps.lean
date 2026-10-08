@@ -1,6 +1,5 @@
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.KernelConfig
-import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
+import Sel4Lean.Spec.Platform
 
 /-!
 # Machine operations (hand-written, W3)
@@ -19,7 +18,7 @@ stay opaque stubs in the generated module.
 namespace Sel4Lean.Spec.MachineOps
 open Sel4Lean (NondetM)
 open Sel4Lean.Exec (Word PPtr)
-open Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive (irqInvalid)
+open Sel4Lean.Spec.Platform (irqInvalid)
 
 /-! ## Lifting (MachineMonad.thy) -/
 

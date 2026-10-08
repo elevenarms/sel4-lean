@@ -1,0 +1,6 @@
+(* Lean <-> Isabelle gate: sessions on top of l4v's built ExecSpec heap (the design spec as l4v builds it) *)
+session LeanGate = ExecSpec +
+  options [document = false]
+  theories
+    Consts
+    Values
