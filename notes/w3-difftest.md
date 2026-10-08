@@ -29,9 +29,10 @@ Getting there found five translator bugs, every one of which compiled cleanly.
 
 | verdict | cases | meaning |
 |---|---:|---|
-| agree | 146 | same value |
+| agree | 143 | same value |
 | int-nat | 4 | Haskell `Int` went negative, while Lean's `Nat` truncates to 0 (`invertL1Index` for i ≥ 4, outside its domain) |
 | hs-error | 8 | Haskell calls `error`, e.g. `Config` values that live in `Kernel_Config.thy`. The translation's `default` refines `undefined`, as in l4v |
+| l4v | 3 | the verified spec deliberately differs: `physBase` is `0x80200000` (Kernel_Config.thy), not the Haskell `0x80000000`; `physBase`, `kernelELFPAddrBase`, `kernelELFBase` shift by exactly `0x200000` |
 | DIFFER | 0 | |
 | lean-missing / hs-missing | 0 | |
 
@@ -102,3 +103,27 @@ The `asUser` approximation is also gone: a do-block `let (a, uc') = runState f u
 What is still not modelled:
 - `getDeviceRegions`, `getKernelDevices` and `initIRQController` are boot-only and stay opaque.
 - User-level `getRegister`/`setRegister` come from the Haskell `UserMonad`, as in l4v's skeleton.
+
+## Object sizes and configuration
+
+**The instances are no longer opaque.** `PSpaceStorable.lean` is imported by every generated module, so it
+could not use generated definitions. It is now split in two:
+- the class and the size-free helpers stay in `PSpaceStorable.lean`;
+- `objBits`, `loadObject`/`updateObject` and the eight instances move to `PSpaceInstances.lean`. That file
+  imports the generated `Object/Structures` and `Config` modules, so `objBitsKO`, `nullMDBNode`,
+  `newArchTCB`, `asidLowBits` and `timeSlice` are real.
+
+hs2lean imports the instances file where the Haskell imports reach those modules, which is also where the
+Haskell instances come into scope. Object sizes now evaluate, and `objBits makeObjectTCB = 10` holds by
+`decide`. The sizes are TCB 10, CTE 5, endpoint 4 and ASID pool 12 bits, matching seL4's RISCV64 constants.
+
+**The spec follows l4v's overrides.** l4v's design skeletons drop some Haskell definitions with
+`#INCLUDE_HASKELL … NOT x` and take Isabelle ones from `Kernel_Config.thy` and `Platform.thy` instead.
+`Spec/KernelConfig.lean` ports `Kernel_Config.thy`, and `full.py`'s `L4V_OVERRIDES` aliases those names:
+- `numDomains`, `timeSlice`, `resetChunkBits` and `retypeFanOutLimit`, which are `error` in the Haskell model;
+- `physBase`. The verified spec uses `0x80200000`, the kernel's load address as in C. The Haskell HiFive
+  module says `0x80000000`.
+
+`pptrBase`, `pptrTop` and `paddrBase` in `Platform.thy` have the same values as in the Haskell model; the
+difftest confirms these and `pptrBaseOffset`. The rest of `Hardware_H.thy`'s exclusion list has not yet been
+compared one by one. That is a W4 entry check.

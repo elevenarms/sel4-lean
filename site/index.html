@@ -239,7 +239,10 @@ html { scroll-behavior: smooth; }
           <li><time>Oct 8</time><div>W3: the Lean model runs <b>side by side with l4v&rsquo;s Haskell model</b>, GHC on one side and <code>#eval</code> on the other, with the same seeded inputs. First run: 24 disagreements, 88 cases that wouldn&rsquo;t run.
             All five root causes were translator bugs that compiled fine. Hardware constants had been stubbed to 0. The platform placeholder wasn&rsquo;t resolved, and resolving it showed <b>l4v builds HiFive, not Spike</b> (<code>maxIRQ</code> 54, not 53). Import lists were ignored, and <code>"Ptr "</code> matched <code>PPtr</code>.
             Now <span class="ok">60 of 60 functions agree on all 158 cases</span>. The one deliberate gap is Haskell <code>Int</code> as <code>Nat</code>, the same mapping l4v makes. <span class="hood">(w3)</span></div></li>
-          <li><time>next</time><div class="dim">W3: model the machine state (<code>ksMachineState</code>), replace the approximations (<code>asUser</code>, map/set listings), then extend the side-by-side test to monadic functions. W1: <code>corres</code> automation.</div></li>
+          <li><time>Oct 8</time><div>W3: the kernel gets a machine. <code>KernelState</code> now carries l4v&rsquo;s <code>ksMachineState</code> (IRQ masks, memory bytes, an opaque rest), <code>doMachineOp</code> is l4v&rsquo;s definition, and 20 operations are ported from <code>MachineOps.thy</code>: <code>loadWord</code>, <code>storeWord</code>, the oracle-driven <code>getActiveIRQ</code>, and others.
+            l4v states one <b>axiom</b> there, a bound on the IRQ oracle. In Lean it&rsquo;s an opaque value of a subtype, so the bound is a theorem that <span class="ok">depends on no axioms</span>. The approximations are gone too: <code>asUser</code> keeps every result as l4v&rsquo;s does, and object sizes are real (<code>objBits</code> of a TCB is 10, by <code>decide</code>).
+            Also found: l4v&rsquo;s verified spec <b>overrides some Haskell definitions</b>, and the HiFive <code>physBase</code> differs (<code>0x80200000</code>, not <code>0x80000000</code>). We follow l4v. <span class="hood">(w3)</span></div></li>
+          <li><time>next</time><div class="dim">W3: extend the side-by-side test to monadic functions over generated kernel states. W1: <code>corres</code> automation. Then W4: invariants and the refinement proofs.</div></li>
         </ol>
       </section>
 
@@ -514,7 +517,7 @@ example :
           <tbody>
             <tr><td>data types translated</td><td class="n">93</td><td>every type in the RISCV64 spec, incl. <code>KernelState</code>; compiles</td></tr>
             <tr><td>functions translated</td><td class="n">680 / 693</td><td>Lean text produced (98.1%)</td></tr>
-            <tr class="hi"><td>modules compiling</td><td class="n">59 / 61</td><td>98% of translatable bodies outside boot code; 59 hardware operations opaque by design</td></tr>
+            <tr class="hi"><td>modules compiling</td><td class="n">59 / 61</td><td>98% of translatable bodies outside boot code; 20 machine ops from l4v&rsquo;s <code>MachineOps.thy</code></td></tr>
             <tr><td>names linked across modules</td><td class="n">479</td><td>real definitions via imports; 260 stubs left</td></tr>
             <tr class="hi"><td>agree with Haskell (GHC)</td><td class="n">60 / 60</td><td>pure functions, 158 cases; 0 disagreements (W3 differential test)</td></tr>
             <tr><td>generated <code>*_inv</code> lemmas</td><td class="n">12</td><td>one <code>crunch</code> command over the notifications module</td></tr>
@@ -556,7 +559,7 @@ example :
           <li><span class="ok">[x]</span> W1 <code>wp</code>, <code>wpsimp</code>, <code>crunch</code></li>
           <li><span class="todo">[ ]</span> W1 <code>corres</code> automation</li>
           <li><span class="ok">[x]</span> W2 translator at spec scale (59/61 modules; boot code deferred)</li>
-          <li><span class="todo">[~]</span> W3 kernel state model (types done; diff test 60/60 pure fns)</li>
+          <li><span class="todo">[~]</span> W3 kernel + machine state as l4v; diff test 60/60 (monadic next)</li>
           <li><span class="todo">[ ]</span> W4 proofs: AInvs, Refine</li>
         </ul>
         <h3>walk exit</h3>

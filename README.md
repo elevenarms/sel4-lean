@@ -9,7 +9,9 @@ tactics; `cancelSignal_corres` is proved over generated code. At spec scale, all
 the functions translate, and 59 of 61 generated modules compile, importing each other's definitions (98% of
 translatable function bodies outside boot code)
 ([W2 notes](notes/w2-translation.md)). A differential test against l4v's Haskell model (GHC) agrees on all
-60 testable pure functions, after it caught five translator bugs that compiled ([W3 notes](notes/w3-difftest.md)). See [ROADMAP.md](ROADMAP.md).
+60 testable pure functions, after it caught five translator bugs that compiled. The kernel state now includes
+l4v's machine state, with machine operations ported from l4v's `MachineOps.thy`, real object sizes, and
+l4v's configuration values ([W3 notes](notes/w3-difftest.md)). See [ROADMAP.md](ROADMAP.md).
 
 ## The idea
 

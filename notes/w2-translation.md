@@ -101,9 +101,8 @@ compile with warnings; the sweep first counted only `✔`.
   - `assocs` is l4v's `map (λx. (x, f x)) enum`.
   - `deleteRange` is l4v's mask filter, so `MapH.keys` and `SetH.toList` are no longer needed and are removed.
   - `doMachineOp` and the machine operations are l4v's.
-- `objBitsKO`, `nullMDBNode`, TCB/ASIDPool `makeObject`: still opaque in the hand layer. The generated
-  definitions exist (Object/Structures), but `PSpaceStorable.lean` is imported by every generated module, so
-  using them needs that file split first.
+- Also resolved in W3: `objBitsKO`, `nullMDBNode` and the TCB/ASIDPool `makeObject` are no longer opaque.
+  `PSpaceStorable.lean` was split, and `PSpaceInstances.lean` uses the generated definitions.
 - `findMin`/`findMax` on maps use choice (as a specification); Haskell errors on an empty map.
 - Arch functions without Haskell signatures are stubbed with the generic signature (wrong types in a few
   places); fixed properly by the next structural step.

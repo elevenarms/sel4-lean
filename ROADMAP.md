@@ -94,6 +94,8 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
       once the machine state is modelled.
 - [x] Machine state: `ksMachineState`, `doMachineOp` and the RISCV64 `MachineOps` as in l4v; approximations
       replaced (`asUser` via `selectF`, `assocs`, `deleteRange`) ([notes](notes/w3-difftest.md#machine-state-model)).
+- [x] Real `PSpaceStorable` instances and object sizes (generated `objBitsKO` etc.); l4v's config overrides
+      (`Kernel_Config.thy`: `physBase`, `timeSlice`, …) ([notes](notes/w3-difftest.md#object-sizes-and-configuration)).
 - [ ] Differential test of monadic functions (generated kernel states; needs computable state construction).
 
 ### W4. Proofs
