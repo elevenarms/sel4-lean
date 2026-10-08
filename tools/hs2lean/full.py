@@ -300,6 +300,12 @@ def import_closure(path, root):
 
 
 GEN_DIR = None   # where generated module files are read back from (set by --gen-dir)
+# recursive functions that must stay `partial` (Lean could not show termination; set by --partial FILE).
+# None: every recursive function is `partial` (the old behaviour)
+PARTIAL = None
+# names l4v's Isabelle spec declares but never defines (`consts`; listed by the Isabelle gate,
+# artifacts/w3/isabelle/unspecified-names.txt): emitted as opaque stubs, not with the Haskell body
+UNSPECIFIED = set()
 
 
 def module_defs(path, root=None):
@@ -1186,6 +1192,15 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
             # whole words: `PPtr a` (a kernel pointer, pure arithmetic) is not the simulator's `Ptr`
             simulator = re.search(r"\b(IO|Ptr|MachineData)\b", sig_txt) is not None
             machine_op = ARCH in mpath and re.search(r"\bMachineMonad\b", sig_txt) is not None
+            if n in UNSPECIFIED:
+                sig = next((d for d in body[n] if d.type == "signature"), None)
+                st = sig_stub(tr, n, sig, "unspecified in l4v's Isabelle spec (declared, never defined)") \
+                    if sig is not None else None
+                if st:
+                    stubs[n] = st
+                    stats["unspecified"] = stats.get("unspecified", 0) + 1
+                    stats["translated"] += 1
+                    continue
             ov = L4V_OVERRIDES.get((os.path.relpath(mpath, root), n))
             if ov is not None:
                 out_defs.append((None, f"/-- Haskell `{n}`: dropped by l4v's skeleton; its Isabelle definition -/\n"
@@ -1218,10 +1233,13 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                 text = tr.emit_function(n, body[n], sig_override=override)
                 if n in mutual_of:
                     recursive.add(n)
-                if n in recursive:
-                    # TODO(W4): termination proofs (l4v proves them in Isabelle); `partial` hides the body
+                if n in recursive and (PARTIAL is None or "*" in PARTIAL or tr.ident(n) in PARTIAL):
+                    # Lean could not show termination (or we did not try): `partial` hides the body.
+                    # TODO(W4): termination proofs (l4v proves them in Isabelle)
                     text = text.replace(f"\ndef {tr.ident(n)} ", f"\npartial def {tr.ident(n)} ", 1)
                     stats["partial"] = stats.get("partial", 0) + 1
+                elif n in recursive:
+                    stats["total-recursive"] = stats.get("total-recursive", 0) + 1
                 out_defs.append((mutual_of.get(n), text))
                 stats["translated"] += 1
             except (Unsupported, StopIteration, AttributeError) as ex:
@@ -1342,7 +1360,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
     print(f"hs2lean imports: {len(imports)} modules, {sum(len(v) for v in opens.values())} names, "
           f"{len(aliases)} arch aliases", file=sys.stderr)
     print(f"hs2lean module: {stats['translated']}/{total} functions translated "
-          f"({stats.get('partial', 0)} partial, {stats.get('machine', 0)} machine-opaque, {stats.get('machine-ops', 0)} l4v machine ops), "
+          f"({stats.get('partial', 0)} partial, {stats.get('total-recursive', 0)} recursive total, {stats.get('machine', 0)} machine-opaque, {stats.get('machine-ops', 0)} l4v machine ops), "
           f"{len([k for k in stubs if k not in failed])} external stubs, {len(unresolved)} unresolved", file=sys.stderr)
     for n, why in sorted(failed.items()):
         print(f"  failed {n}: {why}", file=sys.stderr)
@@ -1365,6 +1383,16 @@ if __name__ == "__main__":
                 g = a.index("--gen-dir")
                 globals()["GEN_DIR"] = a[g + 1]
                 del a[g:g + 2]
+            if "--unspecified" in a:
+                uu = a.index("--unspecified")
+                if os.path.exists(a[uu + 1]):
+                    UNSPECIFIED.update(l.strip() for l in open(a[uu + 1]) if l.strip())
+                del a[uu:uu + 2]
+            if "--partial" in a:
+                pp = a.index("--partial")
+                globals()["PARTIAL"] = ({l.strip() for l in open(a[pp + 1]) if l.strip()}
+                                        if os.path.exists(a[pp + 1]) else set())
+                del a[pp:pp + 2]
             comp = set()
             if "--compiled" in a:
                 c = a.index("--compiled")

@@ -1,4 +1,4 @@
-Started at Thu Oct 8 07:15:43 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
+Started at Thu Oct 8 09:05:47 GMT 2026 (polyml-5.9.2_x86_64_32-linux on in-container)
 ISABELLE_TOOL_JAVA_OPTIONS="-Djava.awt.headless=true -Xms512m -Xmx4g -Xss16m"
 ISABELLE_BUILD_OPTIONS="threads=32"
 
@@ -29,6 +29,6 @@ Session Lib/Lib (lib)
 Session Specifications/ExecSpec
 Session Unsorted/LeanGate
 
-Finished at Thu Oct 8 07:15:51 GMT 2026
-0:00:07 elapsed time
+Finished at Thu Oct 8 09:05:55 GMT 2026
+0:00:08 elapsed time
 isabelle exit 0

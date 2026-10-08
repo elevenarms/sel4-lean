@@ -61,7 +61,7 @@ def domainSet (thread : PPtr TCB) (domain : Domain) : Kernel Unit :=
     setDomain thread domain
 
 /-- Haskell `listUpdate` -/
-partial def listUpdate {t_a : Type} [Inhabited t_a] (x0 : List t_a) (x1 : Nat) (x2 : t_a) : List t_a :=
+def listUpdate {t_a : Type} [Inhabited t_a] (x0 : List t_a) (x1 : Nat) (x2 : t_a) : List t_a :=
   match x0, x1, x2 with
   | [], i, v => []
   | (x :: xs), i, v => 

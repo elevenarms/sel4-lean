@@ -1,0 +1,14 @@
+isagate2: agree 432, both-undefined 24, isabelle-unevaluated 24
+  API_InvocationLabels.genInvocationType: 1/6 ['isabelle-unevaluated']
+  API_InvocationLabels.invocationType: 2/6 ['isabelle-unevaluated']
+  Object_CNode.longRunningDelete: 1/6 ['isabelle-unevaluated']
+  Object_ObjectType.capUntypedSize: 1/6 ['isabelle-unevaluated']
+  Object_ObjectType.hasCancelSendRights: 1/6 ['isabelle-unevaluated']
+  Object_ObjectType.isPhysicalCap: 1/6 ['isabelle-unevaluated']
+  Object_ObjectType.sameObjectAs: 1/6 ['isabelle-unevaluated']
+  Object_ObjectType_RISCV64.isArchMDBParentOf: 1/6 ['isabelle-unevaluated']
+  Object_Structures.maxFreeIndex: 2/6 ['isabelle-unevaluated']
+  Object_Structures.objBitsKO: 1/6 ['isabelle-unevaluated']
+  Object_Structures_RISCV64.parseTimeArg: 6/6 ['isabelle-unevaluated']
+  Object_Untyped.canonicalAddressAssert: 6/6 ['isabelle-unevaluated']
+isagate2: 68/80 functions agree with Isabelle on every case

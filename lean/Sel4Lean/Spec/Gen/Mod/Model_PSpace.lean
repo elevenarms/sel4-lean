@@ -31,6 +31,21 @@ abbrev RISCV64.deleteGhost := @Sel4Lean.Spec.M.Model_PSpace_RISCV64.deleteGhost
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque cNodePartialOverlap : (Word → Option Nat) → (Word → Bool) → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque deletionIsSafe {t_a : Type} : (PPtr t_a) → Nat → KernelState → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque deletionIsSafe_delete_locale {t_a : Type} : (PPtr t_a) → Nat → KernelState → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque ksASIDMapSafe : KernelState → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque pointerInUserData : (PPtr Word) → KernelState → Bool
+
 /-! ## Unresolved (no stub possible)
   flip: no signature found
   foldl': no signature found
@@ -121,26 +136,6 @@ def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat)
 def placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] (ptr : PPtr Unit) (val : t_a) (groupSizeBits : Nat) : Kernel Unit :=
   placeNewObject' ptr (injectKO val) groupSizeBits
 
-/-- Haskell `cNodePartialOverlap` -/
-def cNodePartialOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
-  match x0, x1 with
-  | _, _ => false
-
-/-- Haskell `deletionIsSafe` -/
-def deletionIsSafe (x0 : PPtr Unit) (x1 : Nat) (x2 : KernelState) : Bool :=
-  match x0, x1, x2 with
-  | _, _, _ => true
-
-/-- Haskell `deletionIsSafe_delete_locale` -/
-def deletionIsSafe_delete_locale (x0 : PPtr Unit) (x1 : Nat) (x2 : KernelState) : Bool :=
-  match x0, x1, x2 with
-  | _, _, _ => true
-
-/-- Haskell `ksASIDMapSafe` -/
-def ksASIDMapSafe (x0 : KernelState) : Bool :=
-  match x0 with
-  | _ => true
-
 /-- Haskell `deleteObjects` -/
 def deleteObjects (ptr : PPtr Unit) (bits : Nat) : Kernel Unit :=
   do
@@ -174,11 +169,6 @@ def reserveFrame (ptr : PPtr Unit) (isKernel : Bool) : Kernel Unit :=
         KernelObject.KOUserData
     let _ ← placeNewObject' (PPtr.mk (PPtr.ptr ptr)) val 0
     pure ()
-
-/-- Haskell `pointerInUserData` -/
-def pointerInUserData (x0 : PPtr Word) (x1 : KernelState) : Bool :=
-  match x0, x1 with
-  | _, _ => true
 
 /-- Haskell `loadWordUser` -/
 def loadWordUser (p : PPtr Word) : Kernel Word :=

@@ -28,8 +28,53 @@ abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures.pageBits
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapASIDControl : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapBIFrame : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapDynStart : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapIOPort : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapIOSpace : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapIRQControl : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapITASIDPool : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapITCNode : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapITIPCBuf : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapITPD : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapITTCB : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biCapNull : Word
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque biFrameSizeBits : Nat
+
 -- external: SEL4/Kernel/Init.lhs
 opaque doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque itASID : ASID
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque nopBIFrameData : BIFrameData
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
@@ -50,66 +95,6 @@ opaque doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a
 -/
 
 /-! ## Translated -/
-
-/-- Haskell `biCapNull`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapNull := @Sel4Lean.Spec.KernelInit.biCapNull
-
-
-/-- Haskell `itASID`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev itASID := @Sel4Lean.Spec.KernelInit.itASID
-
-
-/-- Haskell `biCapITTCB`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapITTCB := @Sel4Lean.Spec.KernelInit.biCapITTCB
-
-
-/-- Haskell `biCapITCNode`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapITCNode := @Sel4Lean.Spec.KernelInit.biCapITCNode
-
-
-/-- Haskell `biCapITPD`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapITPD := @Sel4Lean.Spec.KernelInit.biCapITPD
-
-
-/-- Haskell `biCapIRQControl`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapIRQControl := @Sel4Lean.Spec.KernelInit.biCapIRQControl
-
-
-/-- Haskell `biCapASIDControl`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapASIDControl := @Sel4Lean.Spec.KernelInit.biCapASIDControl
-
-
-/-- Haskell `biCapITASIDPool`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapITASIDPool := @Sel4Lean.Spec.KernelInit.biCapITASIDPool
-
-
-/-- Haskell `biCapIOPort`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapIOPort := @Sel4Lean.Spec.KernelInit.biCapIOPort
-
-
-/-- Haskell `biCapIOSpace`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapIOSpace := @Sel4Lean.Spec.KernelInit.biCapIOSpace
-
-
-/-- Haskell `biCapBIFrame`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapBIFrame := @Sel4Lean.Spec.KernelInit.biCapBIFrame
-
-
-/-- Haskell `biCapITIPCBuf`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapITIPCBuf := @Sel4Lean.Spec.KernelInit.biCapITIPCBuf
-
-
-/-- Haskell `biCapDynStart`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biCapDynStart := @Sel4Lean.Spec.KernelInit.biCapDynStart
-
-
-/-- Haskell `biFrameSizeBits`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev biFrameSizeBits := @Sel4Lean.Spec.KernelInit.biFrameSizeBits
-
-
-/-- Haskell `nopBIFrameData`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev nopBIFrameData := @Sel4Lean.Spec.KernelInit.nopBIFrameData
-
 
 /-- Haskell `serializeByte` -/
 def serializeByte (input : Word) : Serializer Unit :=

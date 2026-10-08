@@ -32,12 +32,34 @@ open Lean in
 #eval show CoreM Unit from do
   let env ← getEnv
   let mut out := ""
-  for (n, _) in env.constants.toList do
+  -- kind: opaque (an unspecified constant, or an alias of one) or def
+  let rec target (e : Expr) : Expr := if e.isLambda then target e.bindingBody! else e
+  for (n, ci) in env.constants.toList do
     if (`Sel4Lean.Spec).isPrefixOf n && !n.isInternal && !n.isInternalDetail then
       let s := n.toString
+      let kind := match ci with
+        | .opaqueInfo _ => "opaque"
+        | .defnInfo d =>
+          -- follow aliases (`abbrev x := @y`, chains of them) and projections of an opaque (`impl.val`)
+          let rec opq (e : Expr) (fuel : Nat) : Bool := match fuel with
+            | 0 => false
+            | fuel + 1 =>
+              let e := target e
+              match e.getAppFn with
+              | .const c _ => match env.find? c with
+                | some (.opaqueInfo _) => true
+                | some (.defnInfo d') => (e.getAppNumArgs == 0 || c == ``Subtype.val) && opq d'.value fuel
+                    || (c == ``Subtype.val && e.getAppNumArgs > 0 && opq e.appArg! fuel)
+                | _ => false
+              | .proj _ _ b => opq b fuel
+              | _ => false
+          if opq d.value 8 then "opaque" else "def"
+        | .inductInfo _ => "type"
+        | .ctorInfo _ => "ctor"
+        | _ => "other"
       unless ["rec", "recOn", "casesOn", "noConfusion", "noConfusionType", "below", "brecOn", "ibelow",
               "binductionOn", "inj", "injEq", "sizeOf_spec", "ctorIdx", "eq_1", "eq_def"].contains (n.getString!) do
-        out := out ++ s ++ "\n"
+        out := out ++ s ++ "\t" ++ kind ++ "\n"
   IO.FS.writeFile "LEAN_NAMES_OUT" out
 LEAN
 } | sed "s#LEAN_NAMES_OUT#$A/lean-names.tsv#" > $R/lean/GateNames.lean

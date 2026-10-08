@@ -79,4 +79,21 @@ def fun_with_data(src_text, name, data_src):
 g = fun_with_data("f :: Int -> Int\nf len = len + 1\n", "f", "data R = R { len :: Int }")
 assert "R.len" not in g and "len + 1" in g, g
 print("ok  bound variable shadows a record selector of the same name")
+# positional do-scoping (regression: BootInfo's `byte <- gets value; …; value <- …` used the later local)
+def fun_full(src_text, name, data_src):
+    import full
+    from hs2lean import DataInfo as DI
+    src = (data_src + "\n" + src_text).encode()
+    root = PARSER.parse(src).root_node
+    data = DI()
+    tr = full.FullTranslator(src, data)
+    decls = dict(top_decls(src, root))
+    for dn, dnodes in decls.items():
+        if dnodes[0].type == "data_type":
+            tr.collect_data(dn, dnodes[0])
+    return tr.emit_function(name, decls[name])
+g = fun_full("f :: Int -> State S Int\nf x = do\n    byte <- gets value\n    value <- return (x + byte)\n    return value\n",
+             "f", "data S = S { value :: Int }")
+assert "gets S.value" in g and "pure value" in g, g
+print("ok  do-binder does not shadow an earlier use of the same name (positional scoping)")
 print("all hs2lean tests passed")

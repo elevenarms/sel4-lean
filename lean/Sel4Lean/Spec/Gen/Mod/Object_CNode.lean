@@ -66,6 +66,9 @@ abbrev untypedZeroRange := @Sel4Lean.Spec.M.Object_Structures.untypedZeroRange
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque archMDBAssertions : KernelState → Bool
+
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadCallerSlot : (PPtr TCB) → Kernel (PPtr CTE)
 
@@ -80,6 +83,9 @@ opaque lookupPivotSlot : Capability → CPtr → Nat → KernelF SyscallError (P
 
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupSourceSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque noReplyCapsFor : (PPtr TCB) → KernelState → Bool
 
 /-! ## Unresolved (no stub possible)
   const: no signature found
@@ -388,11 +394,6 @@ partial def cteDelete (slot : PPtr CTE) (exposed : Bool) : KernelP Unit :=
 
 end
 
-/-- Haskell `archMDBAssertions` -/
-def archMDBAssertions (x0 : KernelState) : Bool :=
-  match x0 with
-  | _ => error "defined in Isabelle"
-
 /-- Haskell `setUntypedCapAsFull` -/
 def setUntypedCapAsFull (srcCap : Capability) (newCap : Capability) (srcSlot : PPtr CTE) : Kernel Unit :=
   do
@@ -518,11 +519,6 @@ def insertInitCap (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
     let _ ← assertG (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "insertInitCap: mdb entry must be empty"
     let _ ← updateCap slot cap
     updateMDB slot (const ({ nullMDBNode with mdbRevocable := true, mdbFirstBadged := true }))
-
-/-- Haskell `noReplyCapsFor` -/
-def noReplyCapsFor (x0 : PPtr TCB) (x1 : KernelState) : Bool :=
-  match x0, x1 with
-  | _, _ => true
 
 /-- Haskell `setupReplyMaster` -/
 def setupReplyMaster (thread : PPtr TCB) : Kernel Unit :=

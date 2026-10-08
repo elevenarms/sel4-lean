@@ -1,15 +1,15 @@
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 9/9 functions translated (6 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
+hs2lean module: 9/9 functions translated (0 partial, 6 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
+hs2lean module: 1/1 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
   unresolved listArray: no signature found
   unresolved map: no signature found
   unresolved maxBound: no signature found
   unresolved minBound: no signature found
   unresolved range: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 5/5 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 9 unresolved
+hs2lean module: 5/5 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 9 unresolved
   unresolved div: no signature found
   unresolved error: no signature found
   unresolved finiteBitSize: no signature found
@@ -20,72 +20,72 @@ hs2lean module: 5/5 functions translated (0 partial, 0 machine-opaque, 0 l4v mac
   unresolved testBit: no signature found
   unresolved undefined: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 3 unresolved
+hs2lean module: 16/16 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 3 unresolved
   unresolved const: no signature found
   unresolved gets: no signature found
   unresolved modify: no signature found
 hs2lean imports: 1 modules, 0 names, 14 arch aliases
-hs2lean module: 15/15 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
+hs2lean module: 15/15 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
   unresolved bit: no signature found
   unresolved map: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 13/13 functions translated (0 partial, 10 machine-opaque, 0 l4v machine ops), 10 external stubs, 1 unresolved
+hs2lean module: 13/13 functions translated (0 partial, 0 recursive total, 10 machine-opaque, 0 l4v machine ops), 10 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean imports: 2 modules, 3 names, 2 arch aliases
-hs2lean module: 50/50 functions translated (0 partial, 3 machine-opaque, 20 l4v machine ops), 3 external stubs, 4 unresolved
+hs2lean module: 50/50 functions translated (0 partial, 0 recursive total, 3 machine-opaque, 20 l4v machine ops), 3 external stubs, 4 unresolved
   unresolved error: no signature found
   unresolved liftIO: no signature found
   unresolved putStrLn: no signature found
   unresolved testBit: no signature found
 hs2lean imports: 1 modules, 0 names, 25 arch aliases
-hs2lean module: 29/29 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
+hs2lean module: 29/29 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
   unresolved error: no signature found
   unresolved liftM: no signature found
   unresolved maxBound: no signature found
   unresolved minBound: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 1 modules, 1 names, 0 arch aliases
-hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 3/3 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 2 modules, 5 names, 0 arch aliases
-hs2lean module: 7/7 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 7/7 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 3 modules, 2 names, 5 arch aliases
-hs2lean module: 21/21 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
+hs2lean module: 21/21 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
   unresolved bit: no signature found
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
   unresolved testBit: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
+hs2lean module: 2/2 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
   unresolved fromEnum: no signature found
   unresolved fromIntegral: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 8/8 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
+hs2lean module: 8/8 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean imports: 2 modules, 4 names, 0 arch aliases
-hs2lean module: 13/13 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 3 unresolved
+hs2lean module: 13/13 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 3 unresolved
   unresolved fromIntegral: no signature found
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
 hs2lean imports: 6 modules, 12 names, 0 arch aliases
-hs2lean module: 34/34 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
+hs2lean module: 34/34 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 1 external stubs, 5 unresolved
   unresolved bit: no signature found
   unresolved div: no signature found
   unresolved fromIntegral: no signature found
   unresolved fst: no signature found
   unresolved snd: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
+hs2lean module: 3/3 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
   unresolved error: no signature found
   unresolved head: no signature found
 hs2lean imports: 3 modules, 7 names, 1 arch aliases
-hs2lean module: 26/26 functions translated (1 partial, 0 machine-opaque, 0 l4v machine ops), 1 external stubs, 8 unresolved
+hs2lean module: 26/26 functions translated (0 partial, 1 recursive total, 0 machine-opaque, 0 l4v machine ops), 5 external stubs, 8 unresolved
   unresolved const: no signature found
   unresolved error: no signature found
   unresolved fromIntegral: no signature found
@@ -95,9 +95,9 @@ hs2lean module: 26/26 functions translated (1 partial, 0 machine-opaque, 0 l4v m
   unresolved lift: no signature found
   unresolved modify: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 1/1 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 3 modules, 6 names, 1 arch aliases
-hs2lean module: 18/18 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 11 unresolved
+hs2lean module: 18/18 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 5 external stubs, 11 unresolved
   unresolved flip: no signature found
   unresolved foldl': no signature found
   unresolved foldr: no signature found
@@ -110,27 +110,27 @@ hs2lean module: 18/18 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved shiftL: no signature found
   unresolved show: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 12/12 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
+hs2lean module: 12/12 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
   unresolved const: no signature found
   unresolved either: no signature found
   unresolved flip: no signature found
   unresolved fromIntegral: no signature found
   unresolved lift: no signature found
 hs2lean imports: 2 modules, 4 names, 0 arch aliases
-hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
+hs2lean module: 3/3 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
   unresolved lift: no signature found
 hs2lean imports: 1 modules, 1 names, 0 arch aliases
-hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 1/1 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 3 modules, 5 names, 0 arch aliases
-hs2lean module: 13/13 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 9 external stubs, 0 unresolved
+hs2lean module: 13/13 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 9 external stubs, 0 unresolved
 hs2lean imports: 3 modules, 21 names, 0 arch aliases
-hs2lean module: 8/9 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 9 external stubs, 7 unresolved
+hs2lean module: 8/9 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 9 external stubs, 7 unresolved
   failed sendIPC: guards that fall through to the next equation: alternative at line 52: 'IdleEP | blocking -> do\n                setThre
   unresolved filterM: no signature found
   unresolved flip: no signature found
@@ -140,16 +140,16 @@ hs2lean module: 8/9 functions translated (0 partial, 0 machine-opaque, 0 l4v mac
   unresolved maybe: no signature found
   unresolved not: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
+hs2lean module: 2/2 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 5 unresolved
   unresolved fromEnum: no signature found
   unresolved fromIntegral: no signature found
   unresolved maxBound: no signature found
   unresolved otherwise: no signature found
   unresolved toEnum: no signature found
 hs2lean imports: 6 modules, 6 names, 2 arch aliases
-hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 5 external stubs, 4 unresolved
+hs2lean module: 7/9 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 5 external stubs, 4 unresolved
   failed decodeIRQControlInvocation: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
   failed performIRQControl: pattern: apply at line 49: 'ArchInv.IssueIRQHandler (IRQ irq) destSlot srcSlot trigger'
   unresolved error: no signature found
@@ -157,7 +157,7 @@ hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque, 0 l4v mac
   unresolved fromIntegral: no signature found
   unresolved toEnum: no signature found
 hs2lean imports: 10 modules, 20 names, 7 arch aliases
-hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 11 external stubs, 12 unresolved
+hs2lean module: 14/14 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 11 external stubs, 12 unresolved
   unresolved bit: no signature found
   unresolved const: no signature found
   unresolved fromEnum: no signature found
@@ -171,7 +171,7 @@ hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved show: no signature found
   unresolved toEnum: no signature found
 hs2lean imports: 9 modules, 20 names, 0 arch aliases
-hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 13 unresolved
+hs2lean module: 6/7 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 10 external stubs, 13 unresolved
   failed resetUntypedCap: arithmetic sequence form: arithmetic_sequence at line 190: '[capPtr cap, capPtr cap + (1 `shiftL` resetChunkBits) ..\n  
   unresolved bit: no signature found
   unresolved complement: no signature found
@@ -187,9 +187,9 @@ hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque, 0 l4v mac
   unresolved shiftR: no signature found
   unresolved toEnum: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 1/1 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 6 modules, 8 names, 1 arch aliases
-hs2lean module: 9/9 functions translated (1 partial, 0 machine-opaque, 0 l4v machine ops), 2 external stubs, 7 unresolved
+hs2lean module: 9/9 functions translated (0 partial, 1 recursive total, 0 machine-opaque, 0 l4v machine ops), 2 external stubs, 7 unresolved
   unresolved fromIntegral: no signature found
   unresolved fst: no signature found
   unresolved gets: no signature found
@@ -198,7 +198,33 @@ hs2lean module: 9/9 functions translated (1 partial, 0 machine-opaque, 0 l4v mac
   unresolved modify: no signature found
   unresolved null: no signature found
 hs2lean imports: 11 modules, 36 names, 0 arch aliases
-hs2lean module: 51/53 functions translated (2 partial, 0 machine-opaque, 0 l4v machine ops), 12 external stubs, 22 unresolved
+hs2lean module: 51/53 functions translated (0 partial, 2 recursive total, 0 machine-opaque, 0 l4v machine ops), 13 external stubs, 22 unresolved
+  failed decodeRISCVASIDControlInvocation: guards that fall through to the next equation: alternative at line 447: 'UntypedCap { capIsDevice = False } | capBlockSi
+  failed performPageTableInvocation: arithmetic sequence form: arithmetic_sequence at line 520: '[ptr, ptr + bit pteBits .. ptr + bit ptBits - 1]'
+  unresolved assocs: no signature found
+  unresolved bit: no signature found
+  unresolved complement: no signature found
+  unresolved const: no signature found
+  unresolved error: no signature found
+  unresolved filter: no signature found
+  unresolved flip: no signature found
+  unresolved fromIntegral: no signature found
+  unresolved fst: no signature found
+  unresolved gets: no signature found
+  unresolved head: no signature found
+  unresolved isJust: no signature found
+  unresolved isNothing: no signature found
+  unresolved liftM: no signature found
+  unresolved mapM_: no signature found
+  unresolved modify: no signature found
+  unresolved not: no signature found
+  unresolved null: no signature found
+  unresolved shiftL: no signature found
+  unresolved shiftR: no signature found
+  unresolved snd: no signature found
+  unresolved testBit: no signature found
+hs2lean imports: 11 modules, 36 names, 0 arch aliases
+hs2lean module: 51/53 functions translated (2 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 13 external stubs, 22 unresolved
   failed decodeRISCVASIDControlInvocation: guards that fall through to the next equation: alternative at line 447: 'UntypedCap { capIsDevice = False } | capBlockSi
   failed performPageTableInvocation: arithmetic sequence form: arithmetic_sequence at line 520: '[ptr, ptr + bit pteBits .. ptr + bit ptBits - 1]'
   unresolved assocs: no signature found
@@ -224,13 +250,13 @@ hs2lean module: 51/53 functions translated (2 partial, 0 machine-opaque, 0 l4v m
   unresolved snd: no signature found
   unresolved testBit: no signature found
 hs2lean imports: 3 modules, 16 names, 0 arch aliases
-hs2lean module: 20/21 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 3 unresolved
+hs2lean module: 20/21 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 3 unresolved
   failed createObject: pattern: apply at line 158: 'Arch.Types.APIObjectType _'
   unresolved bit: no signature found
   unresolved error: no signature found
   unresolved modify: no signature found
 hs2lean imports: 9 modules, 26 names, 18 arch aliases
-hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 13 unresolved
+hs2lean module: 16/16 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 13 unresolved
   unresolved bit: no signature found
   unresolved error: no signature found
   unresolved finiteBitSize: no signature found
@@ -245,7 +271,23 @@ hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved shiftR: no signature found
   unresolved undefined: no signature found
 hs2lean imports: 11 modules, 37 names, 0 arch aliases
-hs2lean module: 42/43 functions translated (4 partial, 0 machine-opaque, 0 l4v machine ops), 4 external stubs, 13 unresolved
+hs2lean module: 42/43 functions translated (0 partial, 4 recursive total, 0 machine-opaque, 0 l4v machine ops), 6 external stubs, 13 unresolved
+  failed isMDBParentOf: guards that fall through to the next equation: alternative at line 657: 'EndpointCap { capEPBadge = badge } | badge /= 0
+  unresolved const: no signature found
+  unresolved elem: no signature found
+  unresolved error: no signature found
+  unresolved flip: no signature found
+  unresolved fromIntegral: no signature found
+  unresolved length: no signature found
+  unresolved liftM: no signature found
+  unresolved modify: no signature found
+  unresolved not: no signature found
+  unresolved otherwise: no signature found
+  unresolved shiftL: no signature found
+  unresolved undefined: no signature found
+  unresolved zipWithM_: no signature found
+hs2lean imports: 11 modules, 37 names, 0 arch aliases
+hs2lean module: 42/43 functions translated (4 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 6 external stubs, 13 unresolved
   failed isMDBParentOf: guards that fall through to the next equation: alternative at line 657: 'EndpointCap { capEPBadge = badge } | badge /= 0
   unresolved const: no signature found
   unresolved elem: no signature found
@@ -261,9 +303,9 @@ hs2lean module: 42/43 functions translated (4 partial, 0 machine-opaque, 0 l4v m
   unresolved undefined: no signature found
   unresolved zipWithM_: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 6/6 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 6/6 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 13 modules, 54 names, 6 arch aliases
-hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 23 unresolved
+hs2lean module: 42/43 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 8 external stubs, 23 unresolved
   failed getExtraCPtrs: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
   unresolved complement: no signature found
   unresolved drop: no signature found
@@ -289,22 +331,22 @@ hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved zipWithM: no signature found
   unresolved zipWithM_: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 2 modules, 2 names, 0 arch aliases
-hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 2/2 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 4 modules, 11 names, 0 arch aliases
-hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
+hs2lean module: 2/2 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
   unresolved fromEnum: no signature found
   unresolved fromIntegral: no signature found
   unresolved mapM: no signature found
   unresolved zipWithM_: no signature found
 hs2lean imports: 2 modules, 3 names, 15 arch aliases
-hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 16/16 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 2 modules, 2 names, 0 arch aliases
-hs2lean module: 5/5 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
+hs2lean module: 5/5 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean imports: 15 modules, 59 names, 5 arch aliases
-hs2lean module: 52/53 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 20 unresolved
+hs2lean module: 52/53 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 20 unresolved
   failed transferCapsToSlots: guards that fall through to the next equation: alternative at line 279: '(EndpointCap { capEPPtr = p1 }, Just p2, _) | p
   unresolved bit: no signature found
   unresolved complement: no signature found
@@ -327,27 +369,33 @@ hs2lean module: 52/53 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved testBit: no signature found
   unresolved undefined: no signature found
 hs2lean imports: 4 modules, 8 names, 0 arch aliases
-hs2lean module: 8/8 functions translated (1 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
+hs2lean module: 8/8 functions translated (0 partial, 1 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
+  unresolved finiteBitSize: no signature found
+  unresolved fst: no signature found
+  unresolved liftM: no signature found
+  unresolved shiftR: no signature found
+hs2lean imports: 4 modules, 8 names, 0 arch aliases
+hs2lean module: 8/8 functions translated (1 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 4 unresolved
   unresolved finiteBitSize: no signature found
   unresolved fst: no signature found
   unresolved liftM: no signature found
   unresolved shiftR: no signature found
 hs2lean imports: 5 modules, 12 names, 0 arch aliases
-hs2lean module: 2/3 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
+hs2lean module: 2/3 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 1 unresolved
   failed sendFaultIPC: guards that fall through to the next equation: alternative at line 56: 'EndpointCap { capEPCanSend = True, capEPCanGrant
   unresolved show: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 1/1 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 1 modules, 0 names, 1 arch aliases
-hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 1/1 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 13 modules, 37 names, 0 arch aliases
-hs2lean module: 7/7 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
+hs2lean module: 7/7 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 2 unresolved
   unresolved fromIntegral: no signature found
   unresolved liftM: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 4 modules, 5 names, 0 arch aliases
-hs2lean module: 22/23 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 1 external stubs, 15 unresolved
+hs2lean module: 22/23 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 16 external stubs, 15 unresolved
   failed isAligned: function without a signature: function at line 193: 'isAligned x n = x .&. mask n == 0'
   unresolved bit: no signature found
   unresolved flip: no signature found
@@ -365,7 +413,7 @@ hs2lean module: 22/23 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
 hs2lean imports: 11 modules, 44 names, 0 arch aliases
-hs2lean module: 16/22 functions translated (2 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 36 unresolved
+hs2lean module: 16/22 functions translated (0 partial, 2 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 36 unresolved
   failed allocRegion: record update of unknown field: record at line 100: 'st { initFreeMemory = small++ [region] ++rest }'
   failed createUntypedObject: arithmetic sequence form: arithmetic_sequence at line 289: '[regStartPAddr bootMemReuseReg, (regStartPAddr bootMemReuseR
   failed finaliseBIFrame: record update of unknown field: record at line 222: 's { initBootInfo = (initBootInfo s) {bifNullCaps = [cur .. max - 1]
@@ -409,11 +457,11 @@ hs2lean module: 16/22 functions translated (2 partial, 0 machine-opaque, 0 l4v m
   unresolved take: no signature found
   unresolved undefined: no signature found
 hs2lean imports: 4 modules, 5 names, 0 arch aliases
-hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 3/3 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 2 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 13/13 functions translated (0 partial, 10 machine-opaque, 0 l4v machine ops), 10 external stubs, 1 unresolved
+hs2lean module: 13/13 functions translated (0 partial, 0 recursive total, 10 machine-opaque, 0 l4v machine ops), 10 external stubs, 1 unresolved
   unresolved error: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
+hs2lean module: 0/0 functions translated (0 partial, 0 recursive total, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved

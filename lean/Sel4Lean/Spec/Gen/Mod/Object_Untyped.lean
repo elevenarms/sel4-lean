@@ -47,6 +47,15 @@ abbrev minUntypedSizeBits := @Sel4Lean.Spec.M.Object_Structures_RISCV64.minUntyp
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque archOverlap : KernelState → (Word → Bool) → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque cNodeOverlap : (Word → Option Nat) → (Word → Bool) → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque canonicalAddressAssert : (PPtr Unit) → Bool
+
 -- external: SEL4/Object/CNode.lhs
 opaque createNewObjects : ObjectType → (PPtr CTE) → (List (PPtr CTE)) → (PPtr Unit) → Nat → Bool → Kernel Unit
 
@@ -145,20 +154,6 @@ def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : C
         SyscallError.TruncatedMessage
       else
         SyscallError.IllegalOperation)
-
-/-- Haskell `canonicalAddressAssert` -/
-def canonicalAddressAssert (p : PPtr Unit) : Bool :=
-  true
-
-/-- Haskell `archOverlap` -/
-def archOverlap (x0 : KernelState) (x1 : Word → Bool) : Bool :=
-  match x0, x1 with
-  | _, _ => false
-
-/-- Haskell `cNodeOverlap` -/
-def cNodeOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
-  match x0, x1 with
-  | _, _ => false
 
 /-- Haskell `invokeUntyped` -/
 def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=

@@ -22,17 +22,40 @@ export PATH=~/.elan/bin:$PATH
 ORDERED=$(cd ~/c0/sel4-lean/tools/hs2lean && $PY full.py order $SRC $(for m in $ALL; do echo $SRC/$m; done))
 gen() {  # gen MODULE NAME COMPILED_FILE
   (cd ~/c0/sel4-lean/tools/hs2lean && $PY full.py module $SRC --types $ROOTS --modules $SRC/$1 \
-      --compiled "$3" --gen-dir "$OUT" --namespace "Sel4Lean.Spec.M.$2" > "$OUT/$2.lean.tmp" 2>> "$ART/translate.log") \
+      --compiled "$3" --gen-dir "$OUT" --partial "$ART/partial.txt" \
+      --unspecified ~/c0/sel4-lean/artifacts/w3/isabelle/unspecified-names.txt --namespace "Sel4Lean.Spec.M.$2" \
+      > "$OUT/$2.lean.tmp" 2>> "$ART/translate.log") \
     && mv "$OUT/$2.lean.tmp" "$OUT/$2.lean"
 }
-build() {  # build NAME -> 0 if it compiles
-  (cd ~/c0/sel4-lean/lean && timeout 600 lake build "Sel4Lean.Spec.Gen.Mod.$1" >> "$ART/compile.log" 2>&1)
+build() {  # build NAME -> 0 if it compiles (this build's output also in $ART/last-build.log)
+  (cd ~/c0/sel4-lean/lean && timeout 600 lake build "Sel4Lean.Spec.Gen.Mod.$1" > "$ART/last-build.log" 2>&1)
+  local rc=$?; cat "$ART/last-build.log" >> "$ART/compile.log"; return $rc
+}
+# Recursive functions are emitted as total `def`s; those Lean cannot show terminating are recorded here and
+# regenerated `partial` (the module's own termination failures, from Lean's error message)
+: > "$ART/partial.txt"
+nonterminating() {  # names Lean reported "fail to show termination for" in the last build
+  awk '/fail to show termination for/{f=1; next} f && /^  [A-Za-z_]/{n=$1; sub(/.*\./, "", n); print n; next} {f=0}' \
+    "$ART/last-build.log" | sort -u
 }
 : > "$ART/none.txt"
 for m in $ORDERED; do
   name=$(echo "$m" | sed -e 's#^SEL4/##' -e 's#\.l\?hs$##' -e 's#[/.]#_#g')
   gen "$m" "$name" "$ART/compile-status.txt" || { echo "✖ $name" >> "$ART/compile-status.txt"; continue; }
   if build "$name"; then echo "✔ $name" >> "$ART/compile-status.txt"; echo "imports $name" >> "$ART/import-mode.txt"; continue; fi
+  nt=$(nonterminating)
+  if [ -n "$nt" ]; then
+    echo "$nt" >> "$ART/partial.txt"; sort -u -o "$ART/partial.txt" "$ART/partial.txt"
+    gen "$m" "$name" "$ART/compile-status.txt"
+    if build "$name"; then echo "✔ $name" >> "$ART/compile-status.txt"; echo "imports $name" >> "$ART/import-mode.txt"; continue; fi
+  fi
+  # still failing (e.g. a termination check that times out): every recursive function partial, as before
+  echo "*" > "$ART/partial-all.txt"
+  (cd ~/c0/sel4-lean/tools/hs2lean && $PY full.py module $SRC --types $ROOTS --modules $SRC/$m \
+      --compiled "$ART/compile-status.txt" --gen-dir "$OUT" --partial "$ART/partial-all.txt" \
+      --unspecified ~/c0/sel4-lean/artifacts/w3/isabelle/unspecified-names.txt \
+      --namespace "Sel4Lean.Spec.M.$name" > "$OUT/$name.lean.tmp" 2>> "$ART/translate.log") && mv "$OUT/$name.lean.tmp" "$OUT/$name.lean"
+  if build "$name"; then echo "✔ $name" >> "$ART/compile-status.txt"; echo "imports-partial $name" >> "$ART/import-mode.txt"; continue; fi
   gen "$m" "$name" "$ART/none.txt"
   if build "$name"; then echo "✔ $name" >> "$ART/compile-status.txt"; echo "stubs $name" >> "$ART/import-mode.txt"
   else echo "✖ $name" >> "$ART/compile-status.txt"; fi

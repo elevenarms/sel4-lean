@@ -1,0 +1,478 @@
+1	[4, 3, 0, 3]
+2	[3, 12, 1]
+3	[1]
+4	[3, 5, 31]
+5	[3, 63, 5]
+6	[2, 31]
+7	(Pair 1 [8])
+8	(Pair 8 [])
+9	(Pair 5 [])
+10	(Pair 9 [])
+11	(Pair 8 [])
+12	(Pair 2 [63])
+13	ERR stuck: if 7 \<le> fromEnum maxBound then toEnum 7 | else if True then GenInvocationLabel InvalidInvocation else undefined
+14	ERR stuck: if 18446744073709551615 \<le> fromEnum maxBound | then toEnum 18446744073709551615 | else if True then GenInvocationLabel InvalidInvocation else undefined
+15	ERR stuck: toEnum 0
+16	ERR stuck: if 2 \<le> fromEnum maxBound then toEnum 2 | else if True then GenInvocationLabel InvalidInvocation else undefined
+17	ERR stuck: toEnum 0
+18	ERR stuck: if 8837434004073419807 \<le> fromEnum maxBound | then toEnum 8837434004073419807 | else if True then GenInvocationLabel InvalidInvocation else undefined
+19	ERR stuck: case if 2 \<le> fromEnum maxBound then toEnum 2 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation
+20	ERR stuck: case if Suc 0 \<le> fromEnum maxBound then toEnum (Suc 0) |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation
+21	ERR stuck: case if 12491875293972162987 \<le> fromEnum maxBound |      then toEnum 12491875293972162987 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation
+22	ERR stuck: case if 9223372036854775808 \<le> fromEnum maxBound |      then toEnum 9223372036854775808 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation
+23	ERR stuck: case if 2 \<le> fromEnum maxBound then toEnum 2 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation
+24	ERR stuck: case toEnum 0 of GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation
+25	30
+26	30
+27	12
+28	12
+29	12
+30	12
+31	(APIObjectType TCBObject)
+32	(APIObjectType TCBObject)
+33	(APIObjectType NotificationObject)
+34	(APIObjectType CapTableObject)
+35	(APIObjectType NotificationObject)
+36	(APIObjectType CapTableObject)
+37	(Some CapTableObject)
+38	(Some EndpointObject)
+39	(Some NotificationObject)
+40	(Some Untyped)
+41	(Some CapTableObject)
+42	None
+43	True
+44	True
+45	True
+46	True
+47	True
+48	False
+49	(CapRights False True True True)
+50	(CapRights True True False True)
+51	(CapRights False False False False)
+52	(CapRights False False True False)
+53	(CapRights False False False False)
+54	(CapRights True True False False)
+55	(CapRights False False False False)
+56	(CapRights True False True True)
+57	(CapRights False False False False)
+58	(CapRights False True False False)
+59	(CapRights False False False False)
+60	(CapRights True True True False)
+61	15
+62	15
+63	11
+64	12
+65	6
+66	2
+67	(MI 120 3 7 4503599627370495)
+68	(MI 111 1 4 2089323701352023)
+69	(MI 41 2 1 3850576436751215)
+70	(MI 2 0 0 0)
+71	(MI 120 3 7 4503599627370495)
+72	(MI 2 0 0 0)
+73	1061158583380025217
+74	18446744073709551566
+75	7681
+76	9223372036854779392
+77	4226431011039803008
+78	18446744073709551615
+79	(Pair 18446743798831644672 18446743798831644674)
+80	(Pair 9223371761976868864 18446743798831644672)
+81	(Pair 18446743798831644671 18446743798831644672)
+82	(Pair 18446743798831644673 18446743798831644671)
+83	(Pair 18446743798831644671 18446743798831644673)
+84	(Pair 18446743798831644672 8860385012476389281)
+85	(APIObjectType EndpointObject)
+86	(APIObjectType TCBObject)
+87	(APIObjectType Untyped)
+88	(APIObjectType EndpointObject)
+89	(APIObjectType Untyped)
+90	(APIObjectType TCBObject)
+91	None
+92	None
+93	None
+94	None
+95	None
+96	None
+97	8
+98	4
+99	68
+100	10
+101	13
+102	5
+103	12
+104	12
+105	30
+106	21
+107	4
+108	21
+109	True
+110	True
+111	True
+112	True
+113	True
+114	True
+115	0
+116	0
+117	0
+118	0
+119	0
+120	(Suc 0)
+121	3
+122	0
+123	0
+124	0
+125	0
+126	2
+127	0
+128	64
+129	0
+130	192
+131	0
+132	0
+133	False
+134	False
+135	False
+136	False
+137	False
+138	False
+139	579
+140	120
+141	21
+142	120
+143	57
+144	84
+145	0
+146	0
+147	0
+148	0
+149	511
+150	0
+151	0
+152	4096
+153	7953063811814215960
+154	6966882839995559656
+155	3200
+156	18446743798831648768
+157	False
+158	False
+159	False
+160	False
+161	False
+162	False
+163	VMKernelOnly
+164	VMKernelOnly
+165	VMReadOnly
+166	VMKernelOnly
+167	VMKernelOnly
+168	VMReadOnly
+169	True
+170	True
+171	False
+172	False
+173	True
+174	False
+175	12
+176	7
+177	13
+178	12
+179	15
+180	7
+181	5570928653271953894
+182	2
+183	18446744073709551615
+184	9223372036854775808
+185	7
+186	1
+187	21
+188	30
+189	30
+190	21
+191	30
+192	21
+193	1
+194	1
+195	2
+196	1
+197	3
+198	3
+199	False
+200	True
+201	False
+202	False
+203	False
+204	False
+205	True
+206	True
+207	True
+208	False
+209	False
+210	True
+211	VMKernelOnly
+212	VMKernelOnly
+213	VMKernelOnly
+214	VMKernelOnly
+215	VMReadWrite
+216	VMKernelOnly
+217	VMKernelOnly
+218	VMKernelOnly
+219	VMKernelOnly
+220	VMKernelOnly
+221	VMReadWrite
+222	VMReadOnly
+223	False
+224	False
+225	False
+226	False
+227	False
+228	False
+229	ERR stuck: undefined
+230	True
+231	ERR stuck: undefined
+232	ERR stuck: undefined
+233	ERR stuck: undefined
+234	ERR stuck: undefined
+235	False
+236	False
+237	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   2 :: 32 word
+238	True
+239	False
+240	False
+241	False
+242	False
+243	False
+244	True
+245	False
+246	False
+247	True
+248	True
+249	True
+250	True
+251	False
+252	True
+253	False
+254	True
+255	False
+256	False
+257	False
+258	False
+259	False
+260	False
+261	ERR stuck: undefined \<noteq> 0
+262	False
+263	False
+264	False
+265	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   0xFFFFFFFF :: 32 word
+266	False
+267	False
+268	False
+269	False
+270	False
+271	5803039517496103198
+272	ERR stuck: undefined
+273	ERR stuck: undefined
+274	4096
+275	4096
+276	18446743798831648768
+277	256
+278	ERR stuck: 2 ^ (objBits undefined + 3)
+279	4096
+280	ERR stuck: 2 ^ objBits undefined
+281	0
+282	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   7 :: 32 word
+283	True
+284	True
+285	True
+286	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   2 :: 32 word
+287	True
+288	True
+289	False
+290	False
+291	False
+292	False
+293	False
+294	False
+295	False
+296	False
+297	False
+298	False
+299	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   0xFFFFFFFF :: 32 word
+300	False
+301	(ArchObjectCap (ASIDPoolCap 4096 2))
+302	IRQControlCap
+303	(ThreadCap 18446743798831648768)
+304	NullCap
+305	NullCap
+306	(ReplyCap 18446743798831648768 False True)
+307	ERR stuck: ctor_rec_capability |  (case_sum |    (case_sum |      (case_sum undefined |        (case_sum (\<lambda>x. undefined) |          (\<lambda>((x31, x32), v2, v3) f.
+308	(Zombie 18446743798831648768 ZombieTCB (Suc 0))
+309	(ThreadCap 18446743798831648768)
+310	(ArchObjectCap (PageTableCap 0 (Some (Pair 9223372036854775808 9223372036854775808))))
+311	DomainCap
+312	(Zombie 18446743798831648768 (ZombieCNode (Suc 0)) 0)
+313	False
+314	False
+315	False
+316	False
+317	False
+318	False
+319	True
+320	True
+321	True
+322	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   0xFFFFFFFF :: 32 word
+323	True
+324	True
+325	(ArchObjectCap ASIDControlCap)
+326	(ArchObjectCap (ASIDPoolCap 2022458009075254955 9223372036854775808))
+327	(ArchObjectCap (FrameCap 4096 VMReadOnly RISCVSmallPage False (Some (Pair 0 9223372036854775808))))
+328	(ArchObjectCap (ASIDPoolCap 0 9223372036854775808))
+329	(ArchObjectCap (ASIDPoolCap 14758656996101253483 7516976170253644239))
+330	(ArchObjectCap (FrameCap 4096 VMReadWrite RISCVSmallPage True None))
+331	ERR stuck: ArchObjectCap |  (RISCV64_H.ctor_rec_arch_capability |    (case_sum |      (case_sum (\<lambda>x. undefined) (\<lambda>(x, y). undefined x y)) |      (case_sum |        (\<lambda>((x31, x32), x33, v3, v4) f.
+332	(ArchObjectCap (ASIDPoolCap 18446743798831648768 10292304265859115967))
+333	ERR stuck: ArchObjectCap |  (RISCV64_H.ctor_rec_arch_capability |    (case_sum |      (case_sum (\<lambda>x. undefined) (\<lambda>(x, y). undefined x y)) |      (case_sum |        (\<lambda>((x31, x32), x33, v3, v4) f.
+334	(ArchObjectCap (ASIDPoolCap 0 1))
+335	(ArchObjectCap (ASIDPoolCap 18446743798831648768 0))
+336	(ArchObjectCap ASIDControlCap)
+337	False
+338	False
+339	False
+340	False
+341	False
+342	False
+343	False
+344	False
+345	False
+346	False
+347	False
+348	False
+349	True
+350	True
+351	True
+352	True
+353	True
+354	True
+355	False
+356	False
+357	False
+358	False
+359	False
+360	True
+361	0
+362	ERR stuck: undefined
+363	ERR stuck: undefined
+364	18446743798831648768
+365	0
+366	4096
+367	4096
+368	2097152
+369	4096
+370	4096
+371	4096
+372	4096
+373	12
+374	ERR Type unification failed: Clash of types "_ option" and "RISCV64_H.pte" |  | Type error in application: incompatible operand type |  | Operator:  RISCV64_H.KOPTE :: RISCV64_H.pte \<Rightarrow> arch_kernel_object | Operand:   None :: ??'a option
+375	5
+376	12
+377	5
+378	12
+379	7
+380	2
+381	7
+382	128
+383	255
+384	1
+385	2
+386	9223372036854775808
+387	11988219448054428301
+388	9223372036854775808
+389	2
+390	7
+391	False
+392	False
+393	False
+394	False
+395	False
+396	False
+397	False
+398	False
+399	False
+400	False
+401	False
+402	False
+403	False
+404	False
+405	False
+406	False
+407	False
+408	False
+411	256
+412	32
+413	2
+414	32
+415	4099
+416	4096
+417	11750759284440955678
+418	4127
+419	12
+420	63
+421	16127233133026617447
+422	7343482371608896237
+423	3387423451175770610
+424	274877906944
+425	530549399173855453
+426	14657152066705523000
+427	None
+428	None
+429	None
+430	None
+431	None
+432	None
+433	1
+434	1
+435	1
+436	1
+437	1
+438	1
+439	False
+440	False
+441	True
+442	True
+443	False
+444	False
+445	122
+446	0
+447	0
+448	0
+449	127
+450	90
+451	ERR stuck: [] ! 5
+452	ERR stuck: [] ! 5
+453	ERR stuck: [] ! Suc 0
+454	ERR stuck: [] ! 8
+455	ERR stuck: [] ! 5
+456	ERR stuck: [] ! 3
+457	1
+458	1
+459	3742993907310110422
+460	18446744073709551615
+461	18446744073709551615
+462	7
+463	6226593157583516434
+464	0
+465	1
+466	1
+467	1
+468	18446744073709551615
+469	0
+470	9223372036854775808
+471	8
+472	8
+473	0
+474	9223372036854775808
+475	ERR stuck: canonicalAddressAssert 0xFFFFFFC000001000
+476	ERR stuck: canonicalAddressAssert 0xFFFFFFC000001000
+477	ERR stuck: canonicalAddressAssert 0
+478	ERR stuck: canonicalAddressAssert 0x409421201AEFAD1
+479	ERR stuck: canonicalAddressAssert 0
+480	ERR stuck: canonicalAddressAssert 0

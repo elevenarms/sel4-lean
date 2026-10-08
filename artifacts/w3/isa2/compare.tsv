@@ -1,0 +1,481 @@
+id	module	function	args	isabelle	lean	verdict
+1	API_Failures	msgFromLookupFailure	(_root_.Sel4Lean.Spec.LookupFailure.GuardMismatch 3 0 3)	[4, 3, 0, 3]	[4, 3, 0, 3]	agree
+2	API_Failures	msgFromLookupFailure	(_root_.Sel4Lean.Spec.LookupFailure.DepthMismatch 12 1)	[3, 12, 1]	[3, 12, 1]	agree
+3	API_Failures	msgFromLookupFailure	(_root_.Sel4Lean.Spec.LookupFailure.InvalidRoot)	[1]	[1]	agree
+4	API_Failures	msgFromLookupFailure	(_root_.Sel4Lean.Spec.LookupFailure.DepthMismatch 5 31)	[3, 5, 31]	[3, 5, 31]	agree
+5	API_Failures	msgFromLookupFailure	(_root_.Sel4Lean.Spec.LookupFailure.DepthMismatch 63 5)	[3, 63, 5]	[3, 63, 5]	agree
+6	API_Failures	msgFromLookupFailure	(_root_.Sel4Lean.Spec.LookupFailure.MissingCapability 31)	[2, 31]	[2, 31]	agree
+7	API_Failures	msgFromSyscallError	(_root_.Sel4Lean.Spec.SyscallError.InvalidArgument 8)	(Pair 1 [8])	(Pair 1 [8])	agree
+8	API_Failures	msgFromSyscallError	(_root_.Sel4Lean.Spec.SyscallError.DeleteFirst)	(Pair 8 [])	(Pair 8 [])	agree
+9	API_Failures	msgFromSyscallError	(_root_.Sel4Lean.Spec.SyscallError.AlignmentError)	(Pair 5 [])	(Pair 5 [])	agree
+10	API_Failures	msgFromSyscallError	(_root_.Sel4Lean.Spec.SyscallError.RevokeFirst)	(Pair 9 [])	(Pair 9 [])	agree
+11	API_Failures	msgFromSyscallError	(_root_.Sel4Lean.Spec.SyscallError.DeleteFirst)	(Pair 8 [])	(Pair 8 [])	agree
+12	API_Failures	msgFromSyscallError	(_root_.Sel4Lean.Spec.SyscallError.InvalidCapability 63)	(Pair 2 [63])	(Pair 2 [63])	agree
+13	API_InvocationLabels	invocationType	7	ERR stuck: if 7 \<le> fromEnum maxBound then toEnum 7 | else if True then GenInvocationLabel InvalidInvocation else undefined	(GenInvocationLabel InvalidInvocation)	both-undefined
+14	API_InvocationLabels	invocationType	18446744073709551615	ERR stuck: if 18446744073709551615 \<le> fromEnum maxBound | then toEnum 18446744073709551615 | else if True then GenInvocationLabel InvalidInvocation else undefined	(GenInvocationLabel InvalidInvocation)	both-undefined
+15	API_InvocationLabels	invocationType	0	ERR stuck: toEnum 0	(GenInvocationLabel InvalidInvocation)	isabelle-unevaluated
+16	API_InvocationLabels	invocationType	2	ERR stuck: if 2 \<le> fromEnum maxBound then toEnum 2 | else if True then GenInvocationLabel InvalidInvocation else undefined	(GenInvocationLabel InvalidInvocation)	both-undefined
+17	API_InvocationLabels	invocationType	0	ERR stuck: toEnum 0	(GenInvocationLabel InvalidInvocation)	isabelle-unevaluated
+18	API_InvocationLabels	invocationType	8837434004073419807	ERR stuck: if 8837434004073419807 \<le> fromEnum maxBound | then toEnum 8837434004073419807 | else if True then GenInvocationLabel InvalidInvocation else undefined	(GenInvocationLabel InvalidInvocation)	both-undefined
+19	API_InvocationLabels	genInvocationType	2	ERR stuck: case if 2 \<le> fromEnum maxBound then toEnum 2 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation	InvalidInvocation	both-undefined
+20	API_InvocationLabels	genInvocationType	1	ERR stuck: case if Suc 0 \<le> fromEnum maxBound then toEnum (Suc 0) |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation	InvalidInvocation	both-undefined
+21	API_InvocationLabels	genInvocationType	12491875293972162987	ERR stuck: case if 12491875293972162987 \<le> fromEnum maxBound |      then toEnum 12491875293972162987 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation	InvalidInvocation	both-undefined
+22	API_InvocationLabels	genInvocationType	9223372036854775808	ERR stuck: case if 9223372036854775808 \<le> fromEnum maxBound |      then toEnum 9223372036854775808 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation	InvalidInvocation	both-undefined
+23	API_InvocationLabels	genInvocationType	2	ERR stuck: case if 2 \<le> fromEnum maxBound then toEnum 2 |      else if True then GenInvocationLabel InvalidInvocation |           else undefined of | GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation	InvalidInvocation	both-undefined
+24	API_InvocationLabels	genInvocationType	0	ERR stuck: case toEnum 0 of GenInvocationLabel l \<Rightarrow> l | | ArchInvocationLabel v3 \<Rightarrow> InvalidInvocation	InvalidInvocation	isabelle-unevaluated
+25	API_Types	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject) 1	30	30	agree
+26	API_Types	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject) 2	30	30	agree
+27	API_Types	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.PageTableObject) 3	12	12	agree
+28	API_Types	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject) 8	12	12	agree
+29	API_Types	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.PageTableObject) 31	12	12	agree
+30	API_Types	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.PageTableObject) 3	12	12	agree
+31	API_Types	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.TCBObject)	(APIObjectType TCBObject)	(APIObjectType TCBObject)	agree
+32	API_Types	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.TCBObject)	(APIObjectType TCBObject)	(APIObjectType TCBObject)	agree
+33	API_Types	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.NotificationObject)	(APIObjectType NotificationObject)	(APIObjectType NotificationObject)	agree
+34	API_Types	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.CapTableObject)	(APIObjectType CapTableObject)	(APIObjectType CapTableObject)	agree
+35	API_Types	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.NotificationObject)	(APIObjectType NotificationObject)	(APIObjectType NotificationObject)	agree
+36	API_Types	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.CapTableObject)	(APIObjectType CapTableObject)	(APIObjectType CapTableObject)	agree
+37	API_Types	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.CapTableObject))	(Some CapTableObject)	(Some CapTableObject)	agree
+38	API_Types	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.EndpointObject))	(Some EndpointObject)	(Some EndpointObject)	agree
+39	API_Types	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.NotificationObject))	(Some NotificationObject)	(Some NotificationObject)	agree
+40	API_Types	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.Untyped))	(Some Untyped)	(Some Untyped)	agree
+41	API_Types	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.CapTableObject))	(Some CapTableObject)	(Some CapTableObject)	agree
+42	API_Types	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.PageTableObject)	None	None	agree
+43	API_Types	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	True	True	agree
+44	API_Types	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject)	True	True	agree
+45	API_Types	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject)	True	True	agree
+46	API_Types	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	True	True	agree
+47	API_Types	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject)	True	True	agree
+48	API_Types	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.EndpointObject))	False	False	agree
+49	API_Types	andCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true true true) (_root_.Sel4Lean.Spec.CapRights.CapRights false true true true)	(CapRights False True True True)	(CapRights False True True True)	agree
+50	API_Types	andCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true false true) (_root_.Sel4Lean.Spec.CapRights.CapRights true true true true)	(CapRights True True False True)	(CapRights True True False True)	agree
+51	API_Types	andCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true true false) (_root_.Sel4Lean.Spec.CapRights.CapRights true false false true)	(CapRights False False False False)	(CapRights False False False False)	agree
+52	API_Types	andCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false false true false) (_root_.Sel4Lean.Spec.CapRights.CapRights true false true false)	(CapRights False False True False)	(CapRights False False True False)	agree
+53	API_Types	andCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false false false false) (_root_.Sel4Lean.Spec.CapRights.CapRights true true false false)	(CapRights False False False False)	(CapRights False False False False)	agree
+54	API_Types	andCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true false false) (_root_.Sel4Lean.Spec.CapRights.CapRights true true false false)	(CapRights True True False False)	(CapRights True True False False)	agree
+55	API_Types	rightsFromWord	9223372036854775808	(CapRights False False False False)	(CapRights False False False False)	agree
+56	API_Types	rightsFromWord	2872394506345289373	(CapRights True False True True)	(CapRights True False True True)	agree
+57	API_Types	rightsFromWord	0	(CapRights False False False False)	(CapRights False False False False)	agree
+58	API_Types	rightsFromWord	2	(CapRights False True False False)	(CapRights False True False False)	agree
+59	API_Types	rightsFromWord	9223372036854775808	(CapRights False False False False)	(CapRights False False False False)	agree
+60	API_Types	rightsFromWord	7	(CapRights True True True False)	(CapRights True True True False)	agree
+61	API_Types	wordFromRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true true true)	15	15	agree
+62	API_Types	wordFromRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true true true)	15	15	agree
+63	API_Types	wordFromRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true false true)	11	11	agree
+64	API_Types	wordFromRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false false true true)	12	12	agree
+65	API_Types	wordFromRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true true false)	6	6	agree
+66	API_Types	wordFromRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true false false)	2	2	agree
+67	API_Types	messageInfoFromWord	18446744073709551615	(MI 120 3 7 4503599627370495)	(MI 120 3 7 4503599627370495)	agree
+68	API_Types	messageInfoFromWord	8557869880737888495	(MI 111 1 4 2089323701352023)	(MI 111 1 4 2089323701352023)	agree
+69	API_Types	messageInfoFromWord	15771961084932977449	(MI 41 2 1 3850576436751215)	(MI 41 2 1 3850576436751215)	agree
+70	API_Types	messageInfoFromWord	2	(MI 2 0 0 0)	(MI 2 0 0 0)	agree
+71	API_Types	messageInfoFromWord	18446744073709551615	(MI 120 3 7 4503599627370495)	(MI 120 3 7 4503599627370495)	agree
+72	API_Types	messageInfoFromWord	2	(MI 2 0 0 0)	(MI 2 0 0 0)	agree
+73	API_Types	wordFromMessageInfo	(_root_.Sel4Lean.Spec.MessageInfo.MI 1 6781704140997882399 1 1)	1061158583380025217	1061158583380025217	agree
+74	API_Types	wordFromMessageInfo	(_root_.Sel4Lean.Spec.MessageInfo.MI 3743209414099974862 18446744073709551615 15118712896221991143 7)	18446744073709551566	18446744073709551566	agree
+75	API_Types	wordFromMessageInfo	(_root_.Sel4Lean.Spec.MessageInfo.MI 1 9223372036854775808 7 1)	7681	7681	agree
+76	API_Types	wordFromMessageInfo	(_root_.Sel4Lean.Spec.MessageInfo.MI 9223372036854775808 0 7 9223372036854775808)	9223372036854779392	9223372036854779392	agree
+77	API_Types	wordFromMessageInfo	(_root_.Sel4Lean.Spec.MessageInfo.MI 4226431011039801856 1 2 1)	4226431011039803008	4226431011039803008	agree
+78	API_Types	wordFromMessageInfo	(_root_.Sel4Lean.Spec.MessageInfo.MI 18446744073709551615 2 9223372036854775808 1)	18446744073709551615	18446744073709551615	agree
+79	API_Types	ptrFromPAddrRegion	((_root_.Sel4Lean.Spec.PAddr.PAddr 0), (_root_.Sel4Lean.Spec.PAddr.PAddr 2))	(Pair 18446743798831644672 18446743798831644674)	(Pair 18446743798831644672 18446743798831644674)	agree
+80	API_Types	ptrFromPAddrRegion	((_root_.Sel4Lean.Spec.PAddr.PAddr 9223372036854775808), (_root_.Sel4Lean.Spec.PAddr.PAddr 0))	(Pair 9223371761976868864 18446743798831644672)	(Pair 9223371761976868864 18446743798831644672)	agree
+81	API_Types	ptrFromPAddrRegion	((_root_.Sel4Lean.Spec.PAddr.PAddr 18446744073709551615), (_root_.Sel4Lean.Spec.PAddr.PAddr 0))	(Pair 18446743798831644671 18446743798831644672)	(Pair 18446743798831644671 18446743798831644672)	agree
+82	API_Types	ptrFromPAddrRegion	((_root_.Sel4Lean.Spec.PAddr.PAddr 1), (_root_.Sel4Lean.Spec.PAddr.PAddr 18446744073709551615))	(Pair 18446743798831644673 18446743798831644671)	(Pair 18446743798831644673 18446743798831644671)	agree
+83	API_Types	ptrFromPAddrRegion	((_root_.Sel4Lean.Spec.PAddr.PAddr 18446744073709551615), (_root_.Sel4Lean.Spec.PAddr.PAddr 1))	(Pair 18446743798831644671 18446743798831644673)	(Pair 18446743798831644671 18446743798831644673)	agree
+84	API_Types	ptrFromPAddrRegion	((_root_.Sel4Lean.Spec.PAddr.PAddr 0), (_root_.Sel4Lean.Spec.PAddr.PAddr 8860385287354296225))	(Pair 18446743798831644672 8860385012476389281)	(Pair 18446743798831644672 8860385012476389281)	agree
+85	API_Types_RISCV64	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.EndpointObject)	(APIObjectType EndpointObject)	(APIObjectType EndpointObject)	agree
+86	API_Types_RISCV64	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.TCBObject)	(APIObjectType TCBObject)	(APIObjectType TCBObject)	agree
+87	API_Types_RISCV64	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.Untyped)	(APIObjectType Untyped)	(APIObjectType Untyped)	agree
+88	API_Types_RISCV64	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.EndpointObject)	(APIObjectType EndpointObject)	(APIObjectType EndpointObject)	agree
+89	API_Types_RISCV64	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.Untyped)	(APIObjectType Untyped)	(APIObjectType Untyped)	agree
+90	API_Types_RISCV64	fromAPIType	(_root_.Sel4Lean.Spec.APIObjectType.TCBObject)	(APIObjectType TCBObject)	(APIObjectType TCBObject)	agree
+91	API_Types_RISCV64	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	None	None	agree
+92	API_Types_RISCV64	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject)	None	None	agree
+93	API_Types_RISCV64	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject)	None	None	agree
+94	API_Types_RISCV64	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject)	None	None	agree
+95	API_Types_RISCV64	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	None	None	agree
+96	API_Types_RISCV64	toAPIType	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject)	None	None	agree
+97	API_Types_RISCV64	apiGetObjectSize	(_root_.Sel4Lean.Spec.APIObjectType.CapTableObject) 3	8	8	agree
+98	API_Types_RISCV64	apiGetObjectSize	(_root_.Sel4Lean.Spec.APIObjectType.EndpointObject) 5	4	4	agree
+99	API_Types_RISCV64	apiGetObjectSize	(_root_.Sel4Lean.Spec.APIObjectType.CapTableObject) 63	68	68	agree
+100	API_Types_RISCV64	apiGetObjectSize	(_root_.Sel4Lean.Spec.APIObjectType.TCBObject) 3	10	10	agree
+101	API_Types_RISCV64	apiGetObjectSize	(_root_.Sel4Lean.Spec.APIObjectType.CapTableObject) 8	13	13	agree
+102	API_Types_RISCV64	apiGetObjectSize	(_root_.Sel4Lean.Spec.APIObjectType.NotificationObject) 0	5	5	agree
+103	API_Types_RISCV64	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.PageTableObject) 63	12	12	agree
+104	API_Types_RISCV64	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject) 12	12	12	agree
+105	API_Types_RISCV64	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject) 8	30	30	agree
+106	API_Types_RISCV64	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject) 0	21	21	agree
+107	API_Types_RISCV64	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.APIObjectType (_root_.Sel4Lean.Spec.APIObjectType.EndpointObject)) 0	4	4	agree
+108	API_Types_RISCV64	getObjectSize	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject) 12	21	21	agree
+109	API_Types_RISCV64	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.HugePageObject)	True	True	agree
+110	API_Types_RISCV64	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	True	True	agree
+111	API_Types_RISCV64	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject)	True	True	agree
+112	API_Types_RISCV64	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	True	True	agree
+113	API_Types_RISCV64	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.LargePageObject)	True	True	agree
+114	API_Types_RISCV64	isFrameType	(_root_.Sel4Lean.Spec.ObjectType.SmallPageObject)	True	True	agree
+115	Kernel_Thread	invertL1Index	31	0	0	agree
+116	Kernel_Thread	invertL1Index	31	0	0	agree
+117	Kernel_Thread	invertL1Index	5	0	0	agree
+118	Kernel_Thread	invertL1Index	12	0	0	agree
+119	Kernel_Thread	invertL1Index	8	0	0	agree
+120	Kernel_Thread	invertL1Index	2	(Suc 0)	1	agree
+121	Kernel_Thread	prioToL1Index	255	3	3	agree
+122	Kernel_Thread	prioToL1Index	1	0	0	agree
+123	Kernel_Thread	prioToL1Index	2	0	0	agree
+124	Kernel_Thread	prioToL1Index	7	0	0	agree
+125	Kernel_Thread	prioToL1Index	2	0	0	agree
+126	Kernel_Thread	prioToL1Index	128	2	2	agree
+127	Kernel_Thread	l1IndexToPrio	0	0	0	agree
+128	Kernel_Thread	l1IndexToPrio	1	64	64	agree
+129	Kernel_Thread	l1IndexToPrio	12	0	0	agree
+130	Kernel_Thread	l1IndexToPrio	31	192	192	agree
+131	Kernel_Thread	l1IndexToPrio	0	0	0	agree
+132	Kernel_Thread	l1IndexToPrio	8	0	0	agree
+133	Kernel_VSpace	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨4096⟩)	False	False	agree
+134	Kernel_VSpace	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨18446743798831648768⟩ 8396814629979256605 true true true true)	False	False	agree
+135	Kernel_VSpace	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨4096⟩ false false)	False	False	agree
+136	Kernel_VSpace	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨11357795504435716725⟩ 7 true false)	False	False	agree
+137	Kernel_VSpace	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.DomainCap)	False	False	agree
+138	Kernel_VSpace	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.NullCap)	False	False	agree
+139	Kernel_VSpace_RISCV64	ptBitsLeft	63	579	579	agree
+140	Kernel_VSpace_RISCV64	ptBitsLeft	12	120	120	agree
+141	Kernel_VSpace_RISCV64	ptBitsLeft	1	21	21	agree
+142	Kernel_VSpace_RISCV64	ptBitsLeft	12	120	120	agree
+143	Kernel_VSpace_RISCV64	ptBitsLeft	5	57	57	agree
+144	Kernel_VSpace_RISCV64	ptBitsLeft	8	84	84	agree
+145	Kernel_VSpace_RISCV64	ptIndex	12 (_root_.Sel4Lean.Spec.VPtr.VPtr 9223372036854775808)	0	0	agree
+146	Kernel_VSpace_RISCV64	ptIndex	1 (_root_.Sel4Lean.Spec.VPtr.VPtr 7)	0	0	agree
+147	Kernel_VSpace_RISCV64	ptIndex	8 (_root_.Sel4Lean.Spec.VPtr.VPtr 1)	0	0	agree
+148	Kernel_VSpace_RISCV64	ptIndex	12 (_root_.Sel4Lean.Spec.VPtr.VPtr 0)	0	0	agree
+149	Kernel_VSpace_RISCV64	ptIndex	3 (_root_.Sel4Lean.Spec.VPtr.VPtr 18446744073709551615)	511	511	agree
+150	Kernel_VSpace_RISCV64	ptIndex	8 (_root_.Sel4Lean.Spec.VPtr.VPtr 8755164007601772092)	0	0	agree
+151	Kernel_VSpace_RISCV64	ptSlotIndex	2 ⟨0⟩ (_root_.Sel4Lean.Spec.VPtr.VPtr 7)	0	0	agree
+152	Kernel_VSpace_RISCV64	ptSlotIndex	0 ⟨4096⟩ (_root_.Sel4Lean.Spec.VPtr.VPtr 1)	4096	4096	agree
+153	Kernel_VSpace_RISCV64	ptSlotIndex	2 ⟨7953063811814215960⟩ (_root_.Sel4Lean.Spec.VPtr.VPtr 1)	7953063811814215960	7953063811814215960	agree
+154	Kernel_VSpace_RISCV64	ptSlotIndex	5 ⟨6966882839995559656⟩ (_root_.Sel4Lean.Spec.VPtr.VPtr 1)	6966882839995559656	6966882839995559656	agree
+155	Kernel_VSpace_RISCV64	ptSlotIndex	3 ⟨0⟩ (_root_.Sel4Lean.Spec.VPtr.VPtr 11457940526213730888)	3200	3200	agree
+156	Kernel_VSpace_RISCV64	ptSlotIndex	63 ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VPtr.VPtr 1)	18446743798831648768	18446743798831648768	agree
+157	Kernel_VSpace_RISCV64	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 31) 12)	False	False	agree
+158	Kernel_VSpace_RISCV64	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨4096⟩ 15531181880376575917 false true)	False	False	agree
+159	Kernel_VSpace_RISCV64	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨4096⟩ 8 7 0)	False	False	agree
+160	Kernel_VSpace_RISCV64	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 8)	False	False	agree
+161	Kernel_VSpace_RISCV64	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨0⟩ 7 true true)	False	False	agree
+162	Kernel_VSpace_RISCV64	isValidVTableRoot	(_root_.Sel4Lean.Spec.Capability.UntypedCap true ⟨3719802708160397093⟩ 63 63)	False	False	agree
+163	Kernel_VSpace_RISCV64	maskVMRights	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.CapRights.CapRights false false true false)	VMKernelOnly	VMKernelOnly	agree
+164	Kernel_VSpace_RISCV64	maskVMRights	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.CapRights.CapRights true false true false)	VMKernelOnly	VMKernelOnly	agree
+165	Kernel_VSpace_RISCV64	maskVMRights	(_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.CapRights.CapRights false true true false)	VMReadOnly	VMReadOnly	agree
+166	Kernel_VSpace_RISCV64	maskVMRights	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.CapRights.CapRights false false true true)	VMKernelOnly	VMKernelOnly	agree
+167	Kernel_VSpace_RISCV64	maskVMRights	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.CapRights.CapRights true false true true)	VMKernelOnly	VMKernelOnly	agree
+168	Kernel_VSpace_RISCV64	maskVMRights	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.CapRights.CapRights false true false false)	VMReadOnly	VMReadOnly	agree
+169	Kernel_VSpace_RISCV64	attribsFromWord	17884116492589374499	True	True	agree
+170	Kernel_VSpace_RISCV64	attribsFromWord	18446744073709551615	True	True	agree
+171	Kernel_VSpace_RISCV64	attribsFromWord	9223372036854775808	False	False	agree
+172	Kernel_VSpace_RISCV64	attribsFromWord	9223372036854775808	False	False	agree
+173	Kernel_VSpace_RISCV64	attribsFromWord	18446744073709551615	True	True	agree
+174	Kernel_VSpace_RISCV64	attribsFromWord	9223372036854775808	False	False	agree
+175	Machine_Hardware_RISCV64	vmFaultTypeFSR	(_root_.Sel4Lean.Spec.VMFaultType.RISCVInstructionPageFault)	12	12	agree
+176	Machine_Hardware_RISCV64	vmFaultTypeFSR	(_root_.Sel4Lean.Spec.VMFaultType.RISCVStoreAccessFault)	7	7	agree
+177	Machine_Hardware_RISCV64	vmFaultTypeFSR	(_root_.Sel4Lean.Spec.VMFaultType.RISCVLoadPageFault)	13	13	agree
+178	Machine_Hardware_RISCV64	vmFaultTypeFSR	(_root_.Sel4Lean.Spec.VMFaultType.RISCVInstructionPageFault)	12	12	agree
+179	Machine_Hardware_RISCV64	vmFaultTypeFSR	(_root_.Sel4Lean.Spec.VMFaultType.RISCVStorePageFault)	15	15	agree
+180	Machine_Hardware_RISCV64	vmFaultTypeFSR	(_root_.Sel4Lean.Spec.VMFaultType.RISCVStoreAccessFault)	7	7	agree
+181	Machine_Hardware_RISCV64	fromPAddr	(_root_.Sel4Lean.Spec.PAddr.PAddr 5570928653271953894)	5570928653271953894	5570928653271953894	agree
+182	Machine_Hardware_RISCV64	fromPAddr	(_root_.Sel4Lean.Spec.PAddr.PAddr 2)	2	2	agree
+183	Machine_Hardware_RISCV64	fromPAddr	(_root_.Sel4Lean.Spec.PAddr.PAddr 18446744073709551615)	18446744073709551615	18446744073709551615	agree
+184	Machine_Hardware_RISCV64	fromPAddr	(_root_.Sel4Lean.Spec.PAddr.PAddr 9223372036854775808)	9223372036854775808	9223372036854775808	agree
+185	Machine_Hardware_RISCV64	fromPAddr	(_root_.Sel4Lean.Spec.PAddr.PAddr 7)	7	7	agree
+186	Machine_Hardware_RISCV64	fromPAddr	(_root_.Sel4Lean.Spec.PAddr.PAddr 1)	1	1	agree
+187	Machine_Hardware_RISCV64	pageBitsForSize	(_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage)	21	21	agree
+188	Machine_Hardware_RISCV64	pageBitsForSize	(_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage)	30	30	agree
+189	Machine_Hardware_RISCV64	pageBitsForSize	(_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage)	30	30	agree
+190	Machine_Hardware_RISCV64	pageBitsForSize	(_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage)	21	21	agree
+191	Machine_Hardware_RISCV64	pageBitsForSize	(_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage)	30	30	agree
+192	Machine_Hardware_RISCV64	pageBitsForSize	(_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage)	21	21	agree
+193	Machine_Hardware_RISCV64	vmRightsToBits	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	1	1	agree
+194	Machine_Hardware_RISCV64	vmRightsToBits	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	1	1	agree
+195	Machine_Hardware_RISCV64	vmRightsToBits	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly)	2	2	agree
+196	Machine_Hardware_RISCV64	vmRightsToBits	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	1	1	agree
+197	Machine_Hardware_RISCV64	vmRightsToBits	(_root_.Sel4Lean.Spec.VMRights.VMReadWrite)	3	3	agree
+198	Machine_Hardware_RISCV64	vmRightsToBits	(_root_.Sel4Lean.Spec.VMRights.VMReadWrite)	3	3	agree
+199	Machine_Hardware_RISCV64	allowWrite	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	False	False	agree
+200	Machine_Hardware_RISCV64	allowWrite	(_root_.Sel4Lean.Spec.VMRights.VMReadWrite)	True	True	agree
+201	Machine_Hardware_RISCV64	allowWrite	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	False	False	agree
+202	Machine_Hardware_RISCV64	allowWrite	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	False	False	agree
+203	Machine_Hardware_RISCV64	allowWrite	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly)	False	False	agree
+204	Machine_Hardware_RISCV64	allowWrite	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly)	False	False	agree
+205	Machine_Hardware_RISCV64	allowRead	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly)	True	True	agree
+206	Machine_Hardware_RISCV64	allowRead	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly)	True	True	agree
+207	Machine_Hardware_RISCV64	allowRead	(_root_.Sel4Lean.Spec.VMRights.VMReadWrite)	True	True	agree
+208	Machine_Hardware_RISCV64	allowRead	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	False	False	agree
+209	Machine_Hardware_RISCV64	allowRead	(_root_.Sel4Lean.Spec.VMRights.VMKernelOnly)	False	False	agree
+210	Machine_Hardware_RISCV64	allowRead	(_root_.Sel4Lean.Spec.VMRights.VMReadOnly)	True	True	agree
+211	Machine_Hardware_RISCV64	getVMRights	false false	VMKernelOnly	VMKernelOnly	agree
+212	Machine_Hardware_RISCV64	getVMRights	false false	VMKernelOnly	VMKernelOnly	agree
+213	Machine_Hardware_RISCV64	getVMRights	false false	VMKernelOnly	VMKernelOnly	agree
+214	Machine_Hardware_RISCV64	getVMRights	false false	VMKernelOnly	VMKernelOnly	agree
+215	Machine_Hardware_RISCV64	getVMRights	true true	VMReadWrite	VMReadWrite	agree
+216	Machine_Hardware_RISCV64	getVMRights	false false	VMKernelOnly	VMKernelOnly	agree
+217	Machine_Hardware_RISCV64	vmRightsFromBits	9223372036854775808	VMKernelOnly	VMKernelOnly	agree
+218	Machine_Hardware_RISCV64	vmRightsFromBits	13762821540780960100	VMKernelOnly	VMKernelOnly	agree
+219	Machine_Hardware_RISCV64	vmRightsFromBits	2	VMKernelOnly	VMKernelOnly	agree
+220	Machine_Hardware_RISCV64	vmRightsFromBits	9223372036854775808	VMKernelOnly	VMKernelOnly	agree
+221	Machine_Hardware_RISCV64	vmRightsFromBits	7	VMReadWrite	VMReadWrite	agree
+222	Machine_Hardware_RISCV64	vmRightsFromBits	18259339806008887473	VMReadOnly	VMReadOnly	agree
+223	Object_CNode	capCyclicZombie	(_root_.Sel4Lean.Spec.Capability.IRQControlCap) ⟨9253663193712232411⟩	False	False	agree
+224	Object_CNode	capCyclicZombie	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨0⟩ 8 1 0) ⟨4096⟩	False	False	agree
+225	Object_CNode	capCyclicZombie	(_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨5529717657452303722⟩) ⟨0⟩	False	False	agree
+226	Object_CNode	capCyclicZombie	(_root_.Sel4Lean.Spec.Capability.UntypedCap true ⟨18446743798831648768⟩ 3 5) ⟨18446743798831648768⟩	False	False	agree
+227	Object_CNode	capCyclicZombie	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨0⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 3) 31) ⟨18446743798831648768⟩	False	False	agree
+228	Object_CNode	capCyclicZombie	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨4096⟩ 5 4910089519752444777 1) ⟨2799954844560634387⟩	False	False	agree
+229	Object_CNode	capRemovable	(_root_.Sel4Lean.Spec.Capability.DomainCap) ⟨10009772024557087486⟩	ERR stuck: undefined	False	both-undefined
+230	Object_CNode	capRemovable	(_root_.Sel4Lean.Spec.Capability.NullCap) ⟨18446743798831648768⟩	True	True	agree
+231	Object_CNode	capRemovable	(_root_.Sel4Lean.Spec.Capability.UntypedCap true ⟨13642697554756203947⟩ 31 1) ⟨3549837695822867536⟩	ERR stuck: undefined	False	both-undefined
+232	Object_CNode	capRemovable	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨0⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage) false none)) ⟨8746577854599144557⟩	ERR stuck: undefined	False	both-undefined
+233	Object_CNode	capRemovable	(_root_.Sel4Lean.Spec.Capability.IRQControlCap) ⟨0⟩	ERR stuck: undefined	False	both-undefined
+234	Object_CNode	capRemovable	(_root_.Sel4Lean.Spec.Capability.UntypedCap false ⟨4096⟩ 5 5) ⟨4180529646233636398⟩	ERR stuck: undefined	False	both-undefined
+235	Object_CNode	longRunningDelete	(_root_.Sel4Lean.Spec.Capability.DomainCap)	False	False	agree
+236	Object_CNode	longRunningDelete	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨18446743798831648768⟩ 16866007481423189284 false false false false)	False	False	agree
+237	Object_CNode	longRunningDelete	(_root_.Sel4Lean.Spec.Capability.IRQHandlerCap (_root_.Sel4Lean.Spec.IRQ.IRQ (_root_.Sel4Lean.Spec.RISCV64.IRQ.IRQ 2)))	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   2 :: 32 word	False	isabelle-unevaluated
+238	Object_CNode	longRunningDelete	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨6653419665099924296⟩ 12 2 5)	True	True	agree
+239	Object_CNode	longRunningDelete	(_root_.Sel4Lean.Spec.Capability.IRQControlCap)	False	False	agree
+240	Object_CNode	longRunningDelete	(_root_.Sel4Lean.Spec.Capability.DomainCap)	False	False	agree
+241	Object_Endpoint	isActive	(_root_.Sel4Lean.Spec.Notification.NTFN (_root_.Sel4Lean.Spec.NTFN.IdleNtfn) none)	False	False	agree
+242	Object_Endpoint	isActive	(_root_.Sel4Lean.Spec.Notification.NTFN (_root_.Sel4Lean.Spec.NTFN.IdleNtfn) (some ⟨18100126880938075189⟩))	False	False	agree
+243	Object_Endpoint	isActive	(_root_.Sel4Lean.Spec.Notification.NTFN (_root_.Sel4Lean.Spec.NTFN.WaitingNtfn []) (some ⟨0⟩))	False	False	agree
+244	Object_Endpoint	isActive	(_root_.Sel4Lean.Spec.Notification.NTFN (_root_.Sel4Lean.Spec.NTFN.ActiveNtfn 1) none)	True	True	agree
+245	Object_Endpoint	isActive	(_root_.Sel4Lean.Spec.Notification.NTFN (_root_.Sel4Lean.Spec.NTFN.IdleNtfn) none)	False	False	agree
+246	Object_Endpoint	isActive	(_root_.Sel4Lean.Spec.Notification.NTFN (_root_.Sel4Lean.Spec.NTFN.IdleNtfn) none)	False	False	agree
+247	Object_Interrupt	toBool	7	True	True	agree
+248	Object_Interrupt	toBool	7434553032980896337	True	True	agree
+249	Object_Interrupt	toBool	7	True	True	agree
+250	Object_Interrupt	toBool	7	True	True	agree
+251	Object_Interrupt	toBool	0	False	False	agree
+252	Object_Interrupt	toBool	9223372036854775808	True	True	agree
+253	Object_Notification	receiveBlocked	(_root_.Sel4Lean.Spec.ThreadState.Inactive)	False	False	agree
+254	Object_Notification	receiveBlocked	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnReceive ⟨17702841481314720039⟩ false)	True	True	agree
+255	Object_Notification	receiveBlocked	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+256	Object_Notification	receiveBlocked	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+257	Object_Notification	receiveBlocked	(_root_.Sel4Lean.Spec.ThreadState.Inactive)	False	False	agree
+258	Object_Notification	receiveBlocked	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+259	Object_ObjectType	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨4096⟩ 0 18446744073709551615 31) (_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨0⟩ 18446744073709551615 true false)	False	False	agree
+260	Object_ObjectType	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.NullCap) (_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨12314481742158297701⟩ 31 18446744073709551615 31)	False	False	agree
+261	Object_ObjectType	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨18446743798831648768⟩ 0 false false true false) (_root_.Sel4Lean.Spec.Capability.IRQControlCap)	ERR stuck: undefined \<noteq> 0	False	both-undefined
+262	Object_ObjectType	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨4096⟩ true true) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 1774021578358400095)))	False	False	agree
+263	Object_ObjectType	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.NullCap) (_root_.Sel4Lean.Spec.Capability.DomainCap)	False	False	agree
+264	Object_ObjectType	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨0⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 8) 0) (_root_.Sel4Lean.Spec.Capability.Zombie ⟨4096⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 63)	False	False	agree
+265	Object_ObjectType	hasCancelSendRights	(_root_.Sel4Lean.Spec.Capability.IRQHandlerCap (_root_.Sel4Lean.Spec.IRQ.IRQ (_root_.Sel4Lean.Spec.RISCV64.IRQ.IRQ 4294967295)))	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   0xFFFFFFFF :: 32 word	False	isabelle-unevaluated
+266	Object_ObjectType	hasCancelSendRights	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨15960127133837414590⟩ 0 false true)	False	False	agree
+267	Object_ObjectType	hasCancelSendRights	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 0), (_root_.Sel4Lean.Spec.VPtr.VPtr 1)))))	False	False	agree
+268	Object_ObjectType	hasCancelSendRights	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨0⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 0) 31)	False	False	agree
+269	Object_ObjectType	hasCancelSendRights	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨18446743798831648768⟩ 4292225269526381843 false false false false)	False	False	agree
+270	Object_ObjectType	hasCancelSendRights	(_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨4096⟩)	False	False	agree
+271	Object_ObjectType	capUntypedPtr	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨5803039517496103198⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage) true none))	5803039517496103198	5803039517496103198	agree
+272	Object_ObjectType	capUntypedPtr	(_root_.Sel4Lean.Spec.Capability.NullCap)	ERR stuck: undefined	0	both-undefined
+273	Object_ObjectType	capUntypedPtr	(_root_.Sel4Lean.Spec.Capability.NullCap)	ERR stuck: undefined	0	both-undefined
+274	Object_ObjectType	capUntypedPtr	(_root_.Sel4Lean.Spec.Capability.UntypedCap true ⟨4096⟩ 0 31)	4096	4096	agree
+275	Object_ObjectType	capUntypedPtr	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨4096⟩ 1 false false)	4096	4096	agree
+276	Object_ObjectType	capUntypedPtr	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨18446743798831648768⟩ 9223372036854775808 true true false true)	18446743798831648768	18446743798831648768	agree
+277	Object_ObjectType	capUntypedSize	(_root_.Sel4Lean.Spec.Capability.UntypedCap false ⟨5272515988908798385⟩ 8 1)	256	256	agree
+278	Object_ObjectType	capUntypedSize	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 3) 1)	ERR stuck: 2 ^ (objBits undefined + 3)	256	both-undefined
+279	Object_ObjectType	capUntypedSize	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 1)))	4096	4096	agree
+280	Object_ObjectType	capUntypedSize	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨10758763135545366522⟩ 6226125199538744559 false false false false)	ERR stuck: 2 ^ objBits undefined	16	both-undefined
+281	Object_ObjectType	capUntypedSize	(_root_.Sel4Lean.Spec.Capability.NullCap)	0	0	agree
+282	Object_ObjectType	capUntypedSize	(_root_.Sel4Lean.Spec.Capability.IRQHandlerCap (_root_.Sel4Lean.Spec.IRQ.IRQ (_root_.Sel4Lean.Spec.RISCV64.IRQ.IRQ 7)))	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   7 :: 32 word	1	isabelle-unevaluated
+283	Object_ObjectType	isPhysicalCap	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨674170234479172706⟩ 2 false true true false)	True	True	agree
+284	Object_ObjectType	isPhysicalCap	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨0⟩ 8 0 2)	True	True	agree
+285	Object_ObjectType	isPhysicalCap	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨16456272235773647469⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 3)	True	True	agree
+286	Object_ObjectType	isPhysicalCap	(_root_.Sel4Lean.Spec.Capability.IRQHandlerCap (_root_.Sel4Lean.Spec.IRQ.IRQ (_root_.Sel4Lean.Spec.RISCV64.IRQ.IRQ 2)))	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   2 :: 32 word	False	isabelle-unevaluated
+287	Object_ObjectType	isPhysicalCap	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨4096⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 63)	True	True	agree
+288	Object_ObjectType	isPhysicalCap	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨4096⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 5) 8)	True	True	agree
+289	Object_ObjectType	sameRegionAs	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨0⟩ 8 7 8) (_root_.Sel4Lean.Spec.Capability.IRQControlCap)	False	False	agree
+290	Object_ObjectType	sameRegionAs	(_root_.Sel4Lean.Spec.Capability.UntypedCap false ⟨18446743798831648768⟩ 12 31) (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨4096⟩ false true)	False	False	agree
+291	Object_ObjectType	sameRegionAs	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 0))) (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨0⟩ true false)	False	False	agree
+292	Object_ObjectType	sameRegionAs	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨3368054375605415858⟩ 3 9223372036854775808 1) (_root_.Sel4Lean.Spec.Capability.NullCap)	False	False	agree
+293	Object_ObjectType	sameRegionAs	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨18095684930460554657⟩ 18446744073709551615 false false) (_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨4096⟩ 63 18446744073709551615 31)	False	False	agree
+294	Object_ObjectType	sameRegionAs	(_root_.Sel4Lean.Spec.Capability.DomainCap) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ASID.ASID 1)))	False	False	agree
+295	Object_ObjectType	sameObjectAs	(_root_.Sel4Lean.Spec.Capability.IRQControlCap) (_root_.Sel4Lean.Spec.Capability.UntypedCap false ⟨11206214349964642812⟩ 31 63)	False	False	agree
+296	Object_ObjectType	sameObjectAs	(_root_.Sel4Lean.Spec.Capability.NullCap) (_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨4096⟩ 1331826267399059396 false false)	False	False	agree
+297	Object_ObjectType	sameObjectAs	(_root_.Sel4Lean.Spec.Capability.NullCap) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) false none))	False	False	agree
+298	Object_ObjectType	sameObjectAs	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨4096⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 12) (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨12311407029756315022⟩ false false)	False	False	agree
+299	Object_ObjectType	sameObjectAs	(_root_.Sel4Lean.Spec.Capability.DomainCap) (_root_.Sel4Lean.Spec.Capability.IRQHandlerCap (_root_.Sel4Lean.Spec.IRQ.IRQ (_root_.Sel4Lean.Spec.RISCV64.IRQ.IRQ 4294967295)))	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   0xFFFFFFFF :: 32 word	False	isabelle-unevaluated
+300	Object_ObjectType	sameObjectAs	(_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨2314351069356255645⟩) (_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨0⟩)	False	False	agree
+301	Object_ObjectType	updateCapData	false 2 (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 2)))	(ArchObjectCap (ASIDPoolCap 4096 2))	(ArchObjectCap (ASIDPoolCap 4096 2))	agree
+302	Object_ObjectType	updateCapData	false 18446744073709551615 (_root_.Sel4Lean.Spec.Capability.IRQControlCap)	IRQControlCap	IRQControlCap	agree
+303	Object_ObjectType	updateCapData	true 18446744073709551615 (_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨18446743798831648768⟩)	(ThreadCap 18446743798831648768)	(ThreadCap 18446743798831648768)	agree
+304	Object_ObjectType	updateCapData	false 2 (_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨0⟩ 1 false false)	NullCap	NullCap	agree
+305	Object_ObjectType	updateCapData	true 1 (_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨18446743798831648768⟩ 6615156368457400243 false true)	NullCap	NullCap	agree
+306	Object_ObjectType	updateCapData	true 18446744073709551615 (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨18446743798831648768⟩ false true)	(ReplyCap 18446743798831648768 False True)	(ReplyCap 18446743798831648768 False True)	agree
+307	Object_ObjectType	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true false true) (_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨9260937092048439444⟩ 2 true true)	ERR stuck: ctor_rec_capability |  (case_sum |    (case_sum |      (case_sum undefined |        (case_sum (\<lambda>x. undefined) |          (\<lambda>((x31, x32), v2, v3) f.	(NotificationCap 9260937092048439444 2 False True)	both-undefined
+308	Object_ObjectType	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false false true false) (_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 1)	(Zombie 18446743798831648768 ZombieTCB (Suc 0))	(Zombie 18446743798831648768 ZombieTCB 1)	agree
+309	Object_ObjectType	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true true false) (_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨18446743798831648768⟩)	(ThreadCap 18446743798831648768)	(ThreadCap 18446743798831648768)	agree
+310	Object_ObjectType	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true true false) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨0⟩ (some ((_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808), (_root_.Sel4Lean.Spec.VPtr.VPtr 9223372036854775808)))))	(ArchObjectCap (PageTableCap 0 (Some (Pair 9223372036854775808 9223372036854775808))))	(ArchObjectCap (PageTableCap 0 (Some (Pair 9223372036854775808 9223372036854775808))))	agree
+311	Object_ObjectType	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true false true) (_root_.Sel4Lean.Spec.Capability.DomainCap)	DomainCap	DomainCap	agree
+312	Object_ObjectType	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true false true) (_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 1) 0)	(Zombie 18446743798831648768 (ZombieCNode (Suc 0)) 0)	(Zombie 18446743798831648768 (ZombieCNode 1) 0)	agree
+313	Object_ObjectType_RISCV64	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.ThreadCap ⟨18446743798831648768⟩) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨14603666833089023447⟩ (_root_.Sel4Lean.Spec.ASID.ASID 7)))	False	False	agree
+314	Object_ObjectType_RISCV64	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.DomainCap) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨10104187088853114028⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) true none))	False	False	agree
+315	Object_ObjectType_RISCV64	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.IRQControlCap) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨0⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage) false none))	False	False	agree
+316	Object_ObjectType_RISCV64	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨16770122413532581806⟩ none)) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap))	False	False	agree
+317	Object_ObjectType_RISCV64	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.DomainCap) (_root_.Sel4Lean.Spec.Capability.NullCap)	False	False	agree
+318	Object_ObjectType_RISCV64	isCapRevocable	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 0) (_root_.Sel4Lean.Spec.Capability.IRQControlCap)	False	False	agree
+319	Object_ObjectType_RISCV64	isArchMDBParentOf	(_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨0⟩ true false) (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨14744537165980786331⟩ false true) false	True	True	agree
+320	Object_ObjectType_RISCV64	isArchMDBParentOf	(_root_.Sel4Lean.Spec.Capability.NullCap) (_root_.Sel4Lean.Spec.Capability.NullCap) true	True	True	agree
+321	Object_ObjectType_RISCV64	isArchMDBParentOf	(_root_.Sel4Lean.Spec.Capability.EndpointCap ⟨5614251237087299510⟩ 18446744073709551615 true false false true) (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨18446743798831648768⟩ false false) true	True	True	agree
+322	Object_ObjectType_RISCV64	isArchMDBParentOf	(_root_.Sel4Lean.Spec.Capability.IRQHandlerCap (_root_.Sel4Lean.Spec.IRQ.IRQ (_root_.Sel4Lean.Spec.RISCV64.IRQ.IRQ 4294967295))) (_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)) true	ERR Type unification failed: Clash of types "_ bit0" and "_ bit1" |  | Type error in application: incompatible operand type |  | Operator:  IRQHandlerCap :: 6 word \<Rightarrow> capability | Operand:   0xFFFFFFFF :: 32 word	True	isabelle-unevaluated
+323	Object_ObjectType_RISCV64	isArchMDBParentOf	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨17854380445249498745⟩ 0 7 5) (_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨4096⟩ 1 9223372036854775808 8) true	True	True	agree
+324	Object_ObjectType_RISCV64	isArchMDBParentOf	(_root_.Sel4Lean.Spec.Capability.UntypedCap false ⟨4096⟩ 3 2) (_root_.Sel4Lean.Spec.Capability.ReplyCap ⟨0⟩ false false) false	True	True	agree
+325	Object_ObjectType_RISCV64	updateCapData	false 8677653900933427632 (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	(ArchObjectCap ASIDControlCap)	(ArchObjectCap ASIDControlCap)	agree
+326	Object_ObjectType_RISCV64	updateCapData	false 18446744073709551615 (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨2022458009075254955⟩ (_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808))	(ArchObjectCap (ASIDPoolCap 2022458009075254955 9223372036854775808))	(ArchObjectCap (ASIDPoolCap 2022458009075254955 9223372036854775808))	agree
+327	Object_ObjectType_RISCV64	updateCapData	true 9223372036854775808 (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 0), (_root_.Sel4Lean.Spec.VPtr.VPtr 9223372036854775808))))	(ArchObjectCap (FrameCap 4096 VMReadOnly RISCVSmallPage False (Some (Pair 0 9223372036854775808))))	(ArchObjectCap (FrameCap 4096 VMReadOnly RISCVSmallPage False (Some (Pair 0 9223372036854775808))))	agree
+328	Object_ObjectType_RISCV64	updateCapData	true 9223372036854775808 (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808))	(ArchObjectCap (ASIDPoolCap 0 9223372036854775808))	(ArchObjectCap (ASIDPoolCap 0 9223372036854775808))	agree
+329	Object_ObjectType_RISCV64	updateCapData	true 18446744073709551615 (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨14758656996101253483⟩ (_root_.Sel4Lean.Spec.ASID.ASID 7516976170253644239))	(ArchObjectCap (ASIDPoolCap 14758656996101253483 7516976170253644239))	(ArchObjectCap (ASIDPoolCap 14758656996101253483 7516976170253644239))	agree
+330	Object_ObjectType_RISCV64	updateCapData	true 4364191165752916711 (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) true none)	(ArchObjectCap (FrameCap 4096 VMReadWrite RISCVSmallPage True None))	(ArchObjectCap (FrameCap 4096 VMReadWrite RISCVSmallPage True None))	agree
+331	Object_ObjectType_RISCV64	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true false false true) (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨15995141418096361895⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage) false none)	ERR stuck: ArchObjectCap |  (RISCV64_H.ctor_rec_arch_capability |    (case_sum |      (case_sum (\<lambda>x. undefined) (\<lambda>(x, y). undefined x y)) |      (case_sum |        (\<lambda>((x31, x32), x33, v3, v4) f.	(ArchObjectCap (FrameCap 15995141418096361895 VMKernelOnly RISCVHugePage False None))	both-undefined
+332	Object_ObjectType_RISCV64	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true false false true) (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ASID.ASID 10292304265859115967))	(ArchObjectCap (ASIDPoolCap 18446743798831648768 10292304265859115967))	(ArchObjectCap (ASIDPoolCap 18446743798831648768 10292304265859115967))	agree
+333	Object_ObjectType_RISCV64	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true true true) (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) true none)	ERR stuck: ArchObjectCap |  (RISCV64_H.ctor_rec_arch_capability |    (case_sum |      (case_sum (\<lambda>x. undefined) (\<lambda>(x, y). undefined x y)) |      (case_sum |        (\<lambda>((x31, x32), x33, v3, v4) f.	(ArchObjectCap (FrameCap 4096 VMReadOnly RISCVSmallPage True None))	both-undefined
+334	Object_ObjectType_RISCV64	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false true true false) (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 1))	(ArchObjectCap (ASIDPoolCap 0 1))	(ArchObjectCap (ASIDPoolCap 0 1))	agree
+335	Object_ObjectType_RISCV64	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights false false true false) (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ASID.ASID 0))	(ArchObjectCap (ASIDPoolCap 18446743798831648768 0))	(ArchObjectCap (ASIDPoolCap 18446743798831648768 0))	agree
+336	Object_ObjectType_RISCV64	maskCapRights	(_root_.Sel4Lean.Spec.CapRights.CapRights true true false false) (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	(ArchObjectCap ASIDControlCap)	(ArchObjectCap ASIDControlCap)	agree
+337	Object_ObjectType_RISCV64	isIRQControlCapDescendant	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 18446744073709551615))	False	False	agree
+338	Object_ObjectType_RISCV64	isIRQControlCapDescendant	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨18446743798831648768⟩ none)	False	False	agree
+339	Object_ObjectType_RISCV64	isIRQControlCapDescendant	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨0⟩ (some ((_root_.Sel4Lean.Spec.ASID.ASID 7), (_root_.Sel4Lean.Spec.VPtr.VPtr 2))))	False	False	agree
+340	Object_ObjectType_RISCV64	isIRQControlCapDescendant	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨7345111759890236607⟩ (_root_.Sel4Lean.Spec.ASID.ASID 2))	False	False	agree
+341	Object_ObjectType_RISCV64	isIRQControlCapDescendant	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨18446743798831648768⟩ none)	False	False	agree
+342	Object_ObjectType_RISCV64	isIRQControlCapDescendant	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨1341923828123645398⟩ none)	False	False	agree
+343	Object_ObjectType_RISCV64	sameRegionAs	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨2913447850300151621⟩ none) (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) true (some ((_root_.Sel4Lean.Spec.ASID.ASID 0), (_root_.Sel4Lean.Spec.VPtr.VPtr 18446744073709551615))))	False	False	agree
+344	Object_ObjectType_RISCV64	sameRegionAs	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 1), (_root_.Sel4Lean.Spec.VPtr.VPtr 2)))) (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	False	False	agree
+345	Object_ObjectType_RISCV64	sameRegionAs	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨0⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 1), (_root_.Sel4Lean.Spec.VPtr.VPtr 18446744073709551615)))) (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 2))	False	False	agree
+346	Object_ObjectType_RISCV64	sameRegionAs	(_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap) (_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨15113486313327519409⟩ none)	False	False	agree
+347	Object_ObjectType_RISCV64	sameRegionAs	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨15030486100016450666⟩ (some ((_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808), (_root_.Sel4Lean.Spec.VPtr.VPtr 9223372036854775808)))) (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	False	False	agree
+348	Object_ObjectType_RISCV64	sameRegionAs	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 7), (_root_.Sel4Lean.Spec.VPtr.VPtr 2)))) (_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨0⟩ none)	False	False	agree
+349	Object_ObjectType_RISCV64	isPhysicalCap	(_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨15848316641091461264⟩ none)	True	True	agree
+350	Object_ObjectType_RISCV64	isPhysicalCap	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 7))	True	True	agree
+351	Object_ObjectType_RISCV64	isPhysicalCap	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808))	True	True	agree
+352	Object_ObjectType_RISCV64	isPhysicalCap	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 0))	True	True	agree
+353	Object_ObjectType_RISCV64	isPhysicalCap	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨15520455319821403804⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) false none)	True	True	agree
+354	Object_ObjectType_RISCV64	isPhysicalCap	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) true (some ((_root_.Sel4Lean.Spec.ASID.ASID 0), (_root_.Sel4Lean.Spec.VPtr.VPtr 2))))	True	True	agree
+355	Object_ObjectType_RISCV64	sameObjectAs	(_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap) (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) true none)	False	False	agree
+356	Object_ObjectType_RISCV64	sameObjectAs	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨0⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) false none) (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	False	False	agree
+357	Object_ObjectType_RISCV64	sameObjectAs	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) true none) (_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 2))	False	False	agree
+358	Object_ObjectType_RISCV64	sameObjectAs	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 7)) (_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 18446744073709551615), (_root_.Sel4Lean.Spec.VPtr.VPtr 9223372036854775808))))	False	False	agree
+359	Object_ObjectType_RISCV64	sameObjectAs	(_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap) (_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨18446743798831648768⟩ (some ((_root_.Sel4Lean.Spec.ASID.ASID 2), (_root_.Sel4Lean.Spec.VPtr.VPtr 18446744073709551615))))	False	False	agree
+360	Object_ObjectType_RISCV64	sameObjectAs	(_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap) (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	True	True	agree
+361	Object_ObjectType_RISCV64	capUntypedPtr	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 7))	0	0	agree
+362	Object_ObjectType_RISCV64	capUntypedPtr	(_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	ERR stuck: undefined	0	both-undefined
+363	Object_ObjectType_RISCV64	capUntypedPtr	(_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap)	ERR stuck: undefined	0	both-undefined
+364	Object_ObjectType_RISCV64	capUntypedPtr	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) true (some ((_root_.Sel4Lean.Spec.ASID.ASID 0), (_root_.Sel4Lean.Spec.VPtr.VPtr 2))))	18446743798831648768	18446743798831648768	agree
+365	Object_ObjectType_RISCV64	capUntypedPtr	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨0⟩ (_root_.Sel4Lean.Spec.ASID.ASID 7))	0	0	agree
+366	Object_ObjectType_RISCV64	capUntypedPtr	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMKernelOnly) (_root_.Sel4Lean.Spec.VMPageSize.RISCVHugePage) true none)	4096	4096	agree
+367	Object_ObjectType_RISCV64	capUntypedSize	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808))	4096	4096	agree
+368	Object_ObjectType_RISCV64	capUntypedSize	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨4096⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVLargePage) true none)	2097152	2097152	agree
+369	Object_ObjectType_RISCV64	capUntypedSize	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 2))	4096	4096	agree
+370	Object_ObjectType_RISCV64	capUntypedSize	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) true none)	4096	4096	agree
+371	Object_ObjectType_RISCV64	capUntypedSize	(_root_.Sel4Lean.Spec.ArchCapability.ASIDPoolCap ⟨4096⟩ (_root_.Sel4Lean.Spec.ASID.ASID 15000021067541002110))	4096	4096	agree
+372	Object_ObjectType_RISCV64	capUntypedSize	(_root_.Sel4Lean.Spec.ArchCapability.FrameCap ⟨7765918676081421445⟩ (_root_.Sel4Lean.Spec.VMRights.VMReadWrite) (_root_.Sel4Lean.Spec.VMPageSize.RISCVSmallPage) false (some ((_root_.Sel4Lean.Spec.ASID.ASID 9223372036854775808), (_root_.Sel4Lean.Spec.VPtr.VPtr 18446744073709551615))))	4096	4096	agree
+373	Object_Structures	objBitsKO	(_root_.Sel4Lean.Spec.KernelObject.KOUserData)	12	12	agree
+374	Object_Structures	objBitsKO	(_root_.Sel4Lean.Spec.KernelObject.KOArch (_root_.Sel4Lean.Spec.ArchKernelObject.KOPTE (_root_.Sel4Lean.Spec.PTE.InvalidPTE)))	ERR Type unification failed: Clash of types "_ option" and "RISCV64_H.pte" |  | Type error in application: incompatible operand type |  | Operator:  RISCV64_H.KOPTE :: RISCV64_H.pte \<Rightarrow> arch_kernel_object | Operand:   None :: ??'a option	3	isabelle-unevaluated
+375	Object_Structures	objBitsKO	(_root_.Sel4Lean.Spec.KernelObject.KOCTE (_root_.Sel4Lean.Spec.CTE.CTE (_root_.Sel4Lean.Spec.Capability.UntypedCap false ⟨18446743798831648768⟩ 0 5) (_root_.Sel4Lean.Spec.MDBNode.MDB ⟨18446743798831648768⟩ ⟨0⟩ true true)))	5	5	agree
+376	Object_Structures	objBitsKO	(_root_.Sel4Lean.Spec.KernelObject.KOUserData)	12	12	agree
+377	Object_Structures	objBitsKO	(_root_.Sel4Lean.Spec.KernelObject.KOCTE (_root_.Sel4Lean.Spec.CTE.CTE (_root_.Sel4Lean.Spec.Capability.Zombie ⟨4650277022584014665⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieTCB) 5) (_root_.Sel4Lean.Spec.MDBNode.MDB ⟨0⟩ ⟨18446743798831648768⟩ true true)))	5	5	agree
+378	Object_Structures	objBitsKO	(_root_.Sel4Lean.Spec.KernelObject.KOUserData)	12	12	agree
+379	Object_Structures	dschDomain	(7, 18446744073709551615)	7	7	agree
+380	Object_Structures	dschDomain	(2, 14724384021782125956)	2	2	agree
+381	Object_Structures	dschDomain	(7, 13565043686050396354)	7	7	agree
+382	Object_Structures	dschDomain	(128, 9810138271054610628)	128	128	agree
+383	Object_Structures	dschDomain	(255, 0)	255	255	agree
+384	Object_Structures	dschDomain	(1, 16236456877958048376)	1	1	agree
+385	Object_Structures	dschLength	(1, 2)	2	2	agree
+386	Object_Structures	dschLength	(2, 9223372036854775808)	9223372036854775808	9223372036854775808	agree
+387	Object_Structures	dschLength	(255, 11988219448054428301)	11988219448054428301	11988219448054428301	agree
+388	Object_Structures	dschLength	(255, 9223372036854775808)	9223372036854775808	9223372036854775808	agree
+389	Object_Structures	dschLength	(9, 2)	2	2	agree
+390	Object_Structures	dschLength	(0, 7)	7	7	agree
+391	Object_Structures	isReceive	(_root_.Sel4Lean.Spec.ThreadState.Restart)	False	False	agree
+392	Object_Structures	isReceive	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnReply)	False	False	agree
+393	Object_Structures	isReceive	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+394	Object_Structures	isReceive	(_root_.Sel4Lean.Spec.ThreadState.Running)	False	False	agree
+395	Object_Structures	isReceive	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnSend ⟨18446743798831648768⟩ 11539295017510136707 true false true)	False	False	agree
+396	Object_Structures	isReceive	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnReply)	False	False	agree
+397	Object_Structures	isSend	(_root_.Sel4Lean.Spec.ThreadState.Inactive)	False	False	agree
+398	Object_Structures	isSend	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+399	Object_Structures	isSend	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+400	Object_Structures	isSend	(_root_.Sel4Lean.Spec.ThreadState.Running)	False	False	agree
+401	Object_Structures	isSend	(_root_.Sel4Lean.Spec.ThreadState.Inactive)	False	False	agree
+402	Object_Structures	isSend	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnReply)	False	False	agree
+403	Object_Structures	isReply	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnReceive ⟨4096⟩ false)	False	False	agree
+404	Object_Structures	isReply	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnReceive ⟨433127922476178377⟩ false)	False	False	agree
+405	Object_Structures	isReply	(_root_.Sel4Lean.Spec.ThreadState.IdleThreadState)	False	False	agree
+406	Object_Structures	isReply	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnNotification ⟨8860868559124403862⟩)	False	False	agree
+407	Object_Structures	isReply	(_root_.Sel4Lean.Spec.ThreadState.Restart)	False	False	agree
+408	Object_Structures	isReply	(_root_.Sel4Lean.Spec.ThreadState.BlockedOnNotification ⟨18446743798831648768⟩)	False	False	agree
+409	Object_Structures	maxFreeIndex	63	None	9223372036854775808	isabelle-unevaluated
+410	Object_Structures	maxFreeIndex	63	None	9223372036854775808	isabelle-unevaluated
+411	Object_Structures	maxFreeIndex	8	256	256	agree
+412	Object_Structures	maxFreeIndex	5	32	32	agree
+413	Object_Structures	maxFreeIndex	1	2	2	agree
+414	Object_Structures	maxFreeIndex	5	32	32	agree
+415	Object_Structures	getFreeRef	⟨4096⟩ 3	4099	4099	agree
+416	Object_Structures	getFreeRef	⟨4096⟩ 0	4096	4096	agree
+417	Object_Structures	getFreeRef	⟨11750759284440955675⟩ 3	11750759284440955678	11750759284440955678	agree
+418	Object_Structures	getFreeRef	⟨4096⟩ 31	4127	4127	agree
+419	Object_Structures	getFreeRef	⟨0⟩ 12	12	12	agree
+420	Object_Structures	getFreeRef	⟨0⟩ 63	63	63	agree
+421	Object_Structures	getFreeIndex	⟨5114351736500806037⟩ ⟨2794840795817871868⟩	16127233133026617447	16127233133026617447	agree
+422	Object_Structures	getFreeIndex	⟨11103261702100655379⟩ ⟨0⟩	7343482371608896237	7343482371608896237	agree
+423	Object_Structures	getFreeIndex	⟨0⟩ ⟨3387423451175770610⟩	3387423451175770610	3387423451175770610	agree
+424	Object_Structures	getFreeIndex	⟨18446743798831648768⟩ ⟨4096⟩	274877906944	274877906944	agree
+425	Object_Structures	getFreeIndex	⟨18446743798831648768⟩ ⟨530549124295952605⟩	530549399173855453	530549399173855453	agree
+426	Object_Structures	getFreeIndex	⟨3789592007004028616⟩ ⟨0⟩	14657152066705523000	14657152066705523000	agree
+427	Object_Structures	untypedZeroRange	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.PageTableCap ⟨14050077530989943562⟩ none))	None	None	agree
+428	Object_Structures	untypedZeroRange	(_root_.Sel4Lean.Spec.Capability.Zombie ⟨18446743798831648768⟩ (_root_.Sel4Lean.Spec.ZombieType.ZombieCNode 5) 2)	None	None	agree
+429	Object_Structures	untypedZeroRange	(_root_.Sel4Lean.Spec.Capability.ArchObjectCap (_root_.Sel4Lean.Spec.ArchCapability.ASIDControlCap))	None	None	agree
+430	Object_Structures	untypedZeroRange	(_root_.Sel4Lean.Spec.Capability.NotificationCap ⟨18446743798831648768⟩ 0 false true)	None	None	agree
+431	Object_Structures	untypedZeroRange	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨0⟩ 31 1 1)	None	None	agree
+432	Object_Structures	untypedZeroRange	(_root_.Sel4Lean.Spec.Capability.CNodeCap ⟨0⟩ 12 18446744073709551615 8)	None	None	agree
+433	Object_Structures	tcbFlagToWord	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled)	1	1	agree
+434	Object_Structures	tcbFlagToWord	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled)	1	1	agree
+435	Object_Structures	tcbFlagToWord	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled)	1	1	agree
+436	Object_Structures	tcbFlagToWord	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled)	1	1	agree
+437	Object_Structures	tcbFlagToWord	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled)	1	1	agree
+438	Object_Structures	tcbFlagToWord	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled)	1	1	agree
+439	Object_Structures	isFlagSet	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled) 0	False	False	agree
+440	Object_Structures	isFlagSet	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled) 522394163779903744	False	False	agree
+441	Object_Structures	isFlagSet	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled) 18446744073709551615	True	True	agree
+442	Object_Structures	isFlagSet	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled) 1	True	True	agree
+443	Object_Structures	isFlagSet	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled) 0	False	False	agree
+444	Object_Structures	isFlagSet	(_root_.Sel4Lean.Spec.TcbFlag.FpuDisabled) 9223372036854775808	False	False	agree
+445	Object_Structures_RISCV64	asidHighBitsOf	(_root_.Sel4Lean.Spec.ASID.ASID 17917349023871268036)	122	122	agree
+446	Object_Structures_RISCV64	asidHighBitsOf	(_root_.Sel4Lean.Spec.ASID.ASID 1)	0	0	agree
+447	Object_Structures_RISCV64	asidHighBitsOf	(_root_.Sel4Lean.Spec.ASID.ASID 7)	0	0	agree
+448	Object_Structures_RISCV64	asidHighBitsOf	(_root_.Sel4Lean.Spec.ASID.ASID 1)	0	0	agree
+449	Object_Structures_RISCV64	asidHighBitsOf	(_root_.Sel4Lean.Spec.ASID.ASID 18446744073709551615)	127	127	agree
+450	Object_Structures_RISCV64	asidHighBitsOf	(_root_.Sel4Lean.Spec.ASID.ASID 10288444642535322734)	90	90	agree
+451	Object_Structures_RISCV64	parseTimeArg	5 []	ERR stuck: [] ! 5	0	isabelle-unevaluated
+452	Object_Structures_RISCV64	parseTimeArg	5 []	ERR stuck: [] ! 5	0	isabelle-unevaluated
+453	Object_Structures_RISCV64	parseTimeArg	2 [2]	ERR stuck: [] ! Suc 0	0	isabelle-unevaluated
+454	Object_Structures_RISCV64	parseTimeArg	8 []	ERR stuck: [] ! 8	0	isabelle-unevaluated
+455	Object_Structures_RISCV64	parseTimeArg	5 []	ERR stuck: [] ! 5	0	isabelle-unevaluated
+456	Object_Structures_RISCV64	parseTimeArg	3 []	ERR stuck: [] ! 3	0	isabelle-unevaluated
+457	Object_TCB	sanitiseRegister	false (_root_.Sel4Lean.Spec.Register.Register (_root_.Sel4Lean.Spec.RISCV64.Register.S2)) 1	1	1	agree
+458	Object_TCB	sanitiseRegister	true (_root_.Sel4Lean.Spec.Register.Register (_root_.Sel4Lean.Spec.RISCV64.Register.S9)) 1	1	1	agree
+459	Object_TCB	sanitiseRegister	true (_root_.Sel4Lean.Spec.Register.Register (_root_.Sel4Lean.Spec.RISCV64.Register.S9)) 3742993907310110422	3742993907310110422	3742993907310110422	agree
+460	Object_TCB	sanitiseRegister	true (_root_.Sel4Lean.Spec.Register.Register (_root_.Sel4Lean.Spec.RISCV64.Register.SSTATUS)) 18446744073709551615	18446744073709551615	18446744073709551615	agree
+461	Object_TCB	sanitiseRegister	false (_root_.Sel4Lean.Spec.Register.Register (_root_.Sel4Lean.Spec.RISCV64.Register.T4)) 18446744073709551615	18446744073709551615	18446744073709551615	agree
+462	Object_TCB	sanitiseRegister	true (_root_.Sel4Lean.Spec.Register.Register (_root_.Sel4Lean.Spec.RISCV64.Register.A1)) 7	7	7	agree
+463	Object_TCB_RISCV64	sanitiseRegister	true (_root_.Sel4Lean.Spec.RISCV64.Register.A6) 6226593157583516434	6226593157583516434	6226593157583516434	agree
+464	Object_TCB_RISCV64	sanitiseRegister	true (_root_.Sel4Lean.Spec.RISCV64.Register.S10) 0	0	0	agree
+465	Object_TCB_RISCV64	sanitiseRegister	false (_root_.Sel4Lean.Spec.RISCV64.Register.S2) 1	1	1	agree
+466	Object_TCB_RISCV64	sanitiseRegister	true (_root_.Sel4Lean.Spec.RISCV64.Register.S3) 1	1	1	agree
+467	Object_TCB_RISCV64	sanitiseRegister	true (_root_.Sel4Lean.Spec.RISCV64.Register.S1) 1	1	1	agree
+468	Object_TCB_RISCV64	sanitiseRegister	false (_root_.Sel4Lean.Spec.RISCV64.Register.S0) 18446744073709551615	18446744073709551615	18446744073709551615	agree
+469	Object_Untyped	alignUp	0 12	0	0	agree
+470	Object_Untyped	alignUp	7 63	9223372036854775808	9223372036854775808	agree
+471	Object_Untyped	alignUp	1 3	8	8	agree
+472	Object_Untyped	alignUp	7 3	8	8	agree
+473	Object_Untyped	alignUp	18446744073709551615 3	0	0	agree
+474	Object_Untyped	alignUp	9223372036854775808 63	9223372036854775808	9223372036854775808	agree
+475	Object_Untyped	canonicalAddressAssert	⟨18446743798831648768⟩	ERR stuck: canonicalAddressAssert 0xFFFFFFC000001000	True	isabelle-unevaluated
+476	Object_Untyped	canonicalAddressAssert	⟨18446743798831648768⟩	ERR stuck: canonicalAddressAssert 0xFFFFFFC000001000	True	isabelle-unevaluated
+477	Object_Untyped	canonicalAddressAssert	⟨0⟩	ERR stuck: canonicalAddressAssert 0	True	isabelle-unevaluated
+478	Object_Untyped	canonicalAddressAssert	⟨290836296047196881⟩	ERR stuck: canonicalAddressAssert 0x409421201AEFAD1	True	isabelle-unevaluated
+479	Object_Untyped	canonicalAddressAssert	⟨0⟩	ERR stuck: canonicalAddressAssert 0	True	isabelle-unevaluated
+480	Object_Untyped	canonicalAddressAssert	⟨0⟩	ERR stuck: canonicalAddressAssert 0	True	isabelle-unevaluated

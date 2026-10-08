@@ -94,6 +94,9 @@ abbrev RISCV64.sanitiseRegister := @Sel4Lean.Spec.M.Object_TCB_RISCV64.sanitiseR
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque assertDerived {t_a : Type} [Inhabited t_a] : (PPtr CTE) → Capability → (Kernel t_a) → Kernel t_a
+
 -- external: SEL4/Kernel/VSpace.lhs
 opaque checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit
 
@@ -376,11 +379,6 @@ def asUser {t_a : Type} [Inhabited t_a] (tptr : PPtr TCB) (f : UserMonad t_a) : 
     let (a, uc') ← Sel4Lean.NondetM.selectF (f uc)
     let _ ← threadSet (fun tcb => { tcb with tcbArch := atcbContextSet uc' (TCB.tcbArch tcb) }) tptr
     pure a
-
-/-- Haskell `assertDerived` -/
-def assertDerived {t_a : Type} [Inhabited t_a] (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel t_a) : Kernel t_a :=
-  match x0, x1, x2 with
-  | _, _, f => f
 
 /-- Haskell `checkCapAt` -/
 def checkCapAt (cap : Capability) (ptr : PPtr CTE) (action : Kernel Unit) : Kernel Unit :=

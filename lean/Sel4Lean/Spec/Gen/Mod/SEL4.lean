@@ -5,7 +5,6 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.PSpaceInstances
-import Sel4Lean.Spec.DesignOnly
 import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
 import Sel4Lean.Spec.Gen.Mod.API_Syscall
 import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
@@ -28,15 +27,13 @@ abbrev maybeHandleInterrupt := @Sel4Lean.Spec.M.Object_Interrupt.maybeHandleInte
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque fastpathKernelAssertions : KernelState → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque kernelExitAssertions : KernelState → Bool
+
 /-! ## Translated -/
-
-/-- Haskell `fastpathKernelAssertions`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev fastpathKernelAssertions := @Sel4Lean.Spec.DesignOnly.fastpathKernelAssertions
-
-
-/-- Haskell `kernelExitAssertions`: dropped by l4v's skeleton; its Isabelle definition -/
-abbrev kernelExitAssertions := @Sel4Lean.Spec.DesignOnly.kernelExitAssertions
-
 
 /-- Haskell `callKernel` -/
 def callKernel (ev : Event) : Kernel Unit :=

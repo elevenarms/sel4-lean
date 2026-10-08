@@ -41,6 +41,16 @@ def load_consts(path):
     return out
 
 
+def load_consts_full(path):
+    """(name, theory, type, status) — status from Consts.thy: def | ctr | abbrev | unspecified."""
+    out = []
+    for line in open(path):
+        p = line.rstrip("\n").split("\t")
+        if len(p) >= 4:
+            out.append((p[0], p[1], p[2], p[3]))
+    return out
+
+
 def resolve(lean_module, fn, consts):
     """The ExecSpec constant for Lean function fn of module lean_module, or None."""
     cands = [c for c in consts if base(c[0]) == fn and not HELPER.search(c[0])]
@@ -241,6 +251,33 @@ def cmd_names(consts_path, lean_path, out):
             print(f"  {thy}: {h}/{t}")
     lean_only = sorted(b for b in lean if b not in isa_bases)
     print(f"isagate names: {len(lean_only)} Lean names with no ExecSpec constant")
+    # specification strength: a constant l4v leaves unspecified (`consts` without a definition) must not
+    # have a definition in Lean either - else Lean proves facts about it that Isabelle cannot
+    kinds = {}
+    for line in open(lean_path):
+        parts = line.rstrip("\n").split("\t")
+        if len(parts) >= 2:
+            kinds.setdefault(base(parts[0]), []).append((parts[0], parts[1]))
+    full_consts = load_consts_full(consts_path)
+    # a base name is unspecified only if no ExecSpec constant of that name is defined (Isabelle sometimes
+    # declares a name in a *Decls theory and defines a namesake elsewhere, e.g. noInitFailure)
+    defined_bases = {base(c[0]) for c in full_consts if c[3] in ("def", "ctr", "abbrev")}
+    unspec = [c for c in full_consts if c[3] == "unspecified" and not HELPER.search(c[0])
+              and base(c[0]) not in defined_bases]
+    with open(os.path.join(os.path.dirname(out), "unspecified-names.txt"), "w") as f:
+        f.write("\n".join(sorted({base(c[0]) for c in unspec})) + "\n")
+    over = []
+    for c in unspec:
+        decls = [(n, k) for n, k in kinds.get(base(c[0]), []) if k in ("def", "opaque")]
+        defs = [n for n, k in decls if k == "def"]
+        if defs:
+            over.append((c[0], defs))
+    print(f"isagate strength: {len(unspec)} ExecSpec constants are unspecified; "
+          f"{len(unspec) - len(over)} are unspecified (opaque) in Lean, {len(over)} have a Lean definition")
+    with open(out.replace(".tsv", "-overspecified.tsv"), "w") as f:
+        for c, defs in over:
+            f.write(f"{c}\t{' '.join(defs)}\n")
+            print(f"  over-specified in Lean: {c}: {' '.join(defs)[:120]}")
 
 
 if __name__ == "__main__":

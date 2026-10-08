@@ -265,7 +265,7 @@ def allocFrame : KernelInit PAddr :=
   allocRegion pageBits
 
 /-- Haskell `rangesBy` -/
-partial def rangesBy {t_a : Type} [Inhabited t_a] (x0 : t_a → t_a → Bool) (x1 : List t_a) : List (List t_a) :=
+def rangesBy {t_a : Type} [Inhabited t_a] (x0 : t_a → t_a → Bool) (x1 : List t_a) : List (List t_a) :=
   match x0, x1 with
   | _, [] => []
   | _, [x] => [[x]]
@@ -277,7 +277,7 @@ partial def rangesBy {t_a : Type} [Inhabited t_a] (x0 : t_a → t_a → Bool) (x
         [x] :: r
 
 /-- Haskell `distinct` -/
-partial def distinct {t_a : Type} [Inhabited t_a] [DecidableEq t_a] (x0 : List t_a) : Bool :=
+def distinct {t_a : Type} [Inhabited t_a] [DecidableEq t_a] (x0 : List t_a) : Bool :=
   match x0 with
   | [] => true
   | (x :: xs) => (notElem x xs) && (distinct xs)

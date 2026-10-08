@@ -35,6 +35,9 @@ abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures_RISCV64.pageBits
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque kernelObjectTypeName : KernelObject → String
+
 /-! ## Unresolved (no stub possible)
   bit: no signature found
   div: no signature found
@@ -68,18 +71,6 @@ abbrev isUntypedCap := @Sel4Lean.Spec.isUntypedCap
 /-- Haskell `isNotificationCap`: dropped by l4v's skeleton; its Isabelle definition -/
 abbrev isNotificationCap := @Sel4Lean.Spec.isNotificationCap
 
-
-/-- Haskell `kernelObjectTypeName` -/
-def kernelObjectTypeName (o : KernelObject) : String :=
-  match o with
-  | KernelObject.KOEndpoint _ => "Endpoint"
-  | KernelObject.KONotification _ => "Notification"
-  | KernelObject.KOKernelData => "KernelData"
-  | KernelObject.KOUserData => "UserData"
-  | KernelObject.KOUserDataDevice => "UserDataDevice"
-  | KernelObject.KOTCB _ => "TCB"
-  | KernelObject.KOCTE _ => "CTE"
-  | KernelObject.KOArch _ => "Arch Specific"
 
 /-- Haskell `objBitsKO` -/
 def objBitsKO (x0 : KernelObject) : Nat :=

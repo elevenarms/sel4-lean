@@ -65,6 +65,9 @@ abbrev asidRange := @Sel4Lean.Spec.M.Object_Structures_RISCV64.asidRange
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque checkPTAt : (PPtr PTE) → Kernel Unit
+
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
@@ -179,11 +182,6 @@ def lookupIPCBuffer (isReceiver : Bool) (thread : PPtr TCB) : Kernel (Option (PP
           else
             pure none)
     | _ => pure none
-
-/-- Haskell `checkPTAt` -/
-def checkPTAt (x0 : PPtr PTE) : Kernel Unit :=
-  match x0 with
-  | _ => pure ()
 
 /-- Haskell `findVSpaceForASID` -/
 def findVSpaceForASID (asid : ASID) : KernelF LookupFailure (PPtr PTE) :=

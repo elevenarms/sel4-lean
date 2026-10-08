@@ -36,7 +36,7 @@ imports Object_Interrupt
 imports Object_Untyped
 imports Object_Domain_RISCV64
 imports Object_Domain
-imports Kernel_VSpace_RISCV64
+imports-partial Kernel_VSpace_RISCV64
 imports Object_ObjectType_RISCV64
 imports Object_ObjectType
 imports Object_CNode

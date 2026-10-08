@@ -32,8 +32,20 @@ abbrev RISCV64.newKernelState := @Sel4Lean.Spec.M.Model_StateData_RISCV64.newKer
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque capHasProperty : (PPtr CTE) → (Capability → Bool) → KernelState → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque idleThreadNotQueued : KernelState → Bool
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque ksReadyQueues_asrt : KernelState → Bool
+
 -- external: SEL4/Model/PSpace.lhs
 opaque newPSpace : PSpace
+
+-- unspecified in l4v's Isabelle spec (declared, never defined)
+opaque ready_qs_runnable : KernelState → Bool
 
 /-! ## Unresolved (no stub possible)
   const: no signature found
@@ -52,11 +64,6 @@ opaque newPSpace : PSpace
 def getCurThread : Kernel (PPtr TCB) :=
   gets KernelState.ksCurThread
 
-/-- Haskell `idleThreadNotQueued` -/
-def idleThreadNotQueued (x0 : KernelState) : Bool :=
-  match x0 with
-  | _ => true
-
 /-- Haskell `assert` -/
 def assert {t_m : Type → Type} [Monad t_m] [MonadFailH t_m] (p : Bool) (e : String) : t_m Unit :=
   if p then
@@ -73,11 +80,6 @@ def setCurThread (tptr : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssert idleThreadNotQueued "the idle thread cannot be in the ready queues"
     modify (fun ks => { ks with ksCurThread := tptr })
-
-/-- Haskell `ready_qs_runnable` -/
-def ready_qs_runnable (x0 : KernelState) : Bool :=
-  match x0 with
-  | _ => true
 
 /-- Haskell `getIdleThread` -/
 def getIdleThread : Kernel (PPtr TCB) :=
@@ -155,13 +157,8 @@ def newKernelState (data_start : PAddr) : KernelState × (List PAddr) :=
   let state' := { ksPSpace := newPSpace, gsUserPages := fun _ => none, gsCNodes := fun _ => none, gsUntypedZeroRanges := SetH.empty, ksDomScheduleIdx := 0, ksDomScheduleStart := 0, ksDomSchedule := [(0, 15), (2, 42), (1, 73)], ksCurDomain := 0, ksDomainTime := 15, ksReadyQueues := funPartialArray (const emptyQueue) (((0, 0), (fromIntegral numDomains, maxPriority))), ksReadyQueuesL1Bitmap := funPartialArray (const 0) ((0, fromIntegral numDomains)), ksReadyQueuesL2Bitmap := funPartialArray (const 0) (((0, 0), (fromIntegral numDomains, l2BitmapSize))), ksCurThread := error "No initial thread", ksIdleThread := error "Idle thread has not been created", ksSchedulerAction := error "scheduler action has not been set", ksInterruptState := error "Interrupt controller is uninitialised", ksWorkUnitsCompleted := 0, ksArchState := archState : KernelState }
   (state', frames)
 
-/-- Haskell `capHasProperty` -/
-def capHasProperty (x0 : PPtr CTE) (x1 : Capability → Bool) : KernelState → Bool :=
-  match x0, x1 with
-  | _, _ => const true
-
 /-- Haskell `findM` -/
-partial def findM {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m] (x0 : t_a → t_m Bool) (x1 : List t_a) : t_m (Option t_a) :=
+def findM {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m] (x0 : t_a → t_m Bool) (x1 : List t_a) : t_m (Option t_a) :=
   match x0, x1 with
   | _, [] => pure none
   | f, (x :: xs) => 
@@ -171,11 +168,6 @@ partial def findM {t_m : Type → Type} {t_a : Type} [Inhabited t_a] [Monad t_m]
           pure (some x)
         else
           findM f xs
-
-/-- Haskell `ksReadyQueues_asrt` -/
-def ksReadyQueues_asrt (x0 : KernelState) : Bool :=
-  match x0 with
-  | _ => true
 
 end
 end Sel4Lean.Spec.M.Model_StateData

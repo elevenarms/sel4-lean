@@ -2,5 +2,6 @@ isagate: agree 155, both-undefined 3
 isagate: 60/60 functions agree with Isabelle on every case
 isagate names: 1319/1319 ExecSpec constants have a Lean declaration of the same name
 isagate names: 729 Lean names with no ExecSpec constant
+isagate strength: 51 ExecSpec constants are unspecified; 51 are unspecified (opaque) in Lean, 0 have a Lean definition
 difftest: agree 142, DIFFER 0, int-nat 0, hs-error 8, l4v 8, lean-missing 0, hs-missing 0
 difftest: 60/60 functions agree on every case (int-nat: negative Haskell Int; hs-error: Haskell `error`; l4v: Lean = l4v's Isabelle spec, which differs from the Haskell)
