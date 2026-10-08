@@ -48,6 +48,10 @@ theorem hoare_conj {P P' : σ → Prop} {f : NondetM σ α} {Q Q' : α → σ �
     (h : ⟪P⟫ f ⟪Q⟫) (h' : ⟪P'⟫ f ⟪Q'⟫) : ⟪fun s => P s ∧ P' s⟫ f ⟪fun r s => Q r s ∧ Q' r s⟫ :=
   fun s hs r s' hr => ⟨h s hs.1 r s' hr, h' s hs.2 r s' hr⟩
 
+/-- A fact that does not mention the state survives any program. -/
+theorem valid_const {R : Prop} {f : NondetM σ α} : ⟪fun _ => R⟫ f ⟪fun _ _ => R⟫ :=
+  fun _ hR _ _ _ => hR
+
 /-! ## wp rules: each states the weakest precondition of one primitive -/
 
 theorem ret_wp (a : α) (Q : α → σ → Prop) : ⟪Q a⟫ (ret a) ⟪Q⟫ := by
