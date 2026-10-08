@@ -18,3 +18,4 @@ import Sel4Lean.Refine.NotificationCrunch
 import Sel4Lean.Test.VCG
 import Sel4Lean.Test.Corres
 import Sel4Lean.Test.Axioms
+import Sel4Lean.Spec.Gen.Types

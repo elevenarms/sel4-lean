@@ -76,7 +76,9 @@ test (needs the kernel-state model, W3) and a hand-written proof baseline (optio
 - [ ] `corres` automation: `corres_split` driver, `corres_cases`, `corres_gen_asm`, a `corres` rule set.
 
 ### W2. Translators at full scale
-- [ ] hs2lean over all of `Structures.lhs`, then module by module; track coverage (functions translated / total).
+- [~] hs2lean over all of `Structures.lhs`, then module by module; track coverage (functions translated / total).
+      **Types done:** `tools/hs2lean/full.py types` translates the whole RISCV64 type closure of `Structures.lhs`
+      (41 types, 0 stubs; pointer cycles as `mutual` blocks) into `Spec/Gen/Types.lean`, which compiles. Functions next.
 - [ ] Decide the translated-code shape for automation (explicit binds vs `do` sugar), based on W1.
 - [ ] Isabelle → Lean for the abstract spec: hand-assisted first, then a tool if the volume demands it.
 
