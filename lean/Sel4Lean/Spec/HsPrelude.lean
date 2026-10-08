@@ -75,6 +75,18 @@ abbrev toEnum {α : Type} [IntegralH α] (i : Nat) : α := IntegralH.ofInt i
 abbrev fromIntegral {α β : Type} [IntegralH α] [IntegralH β] (x : α) : β :=
   IntegralH.ofInt (IntegralH.toInt x)
 
+/-- Numerals in any integral type (Haskell numeric literals are polymorphic: `msgMaxLength :: Num a => a`).
+Low priority, so native `OfNat` instances (BitVec, Nat, newtypes) win. -/
+instance (priority := low) {α : Type} {n : Nat} [IntegralH α] : OfNat α n := ⟨IntegralH.ofInt n⟩
+
+instance {n : Nat} : Min (BitVec n) := minOfLe
+instance {n : Nat} : Max (BitVec n) := maxOfLe
+
+/-- Haskell ``x `shiftL` n`` / ``shiftR`` as functions: the expected type reaches `x` (with `<<<`, Lean
+elaborated `1 <<< n` at `Nat` before seeing that a word was wanted). -/
+abbrev shiftLH {α : Type} [HShiftLeft α Nat α] (x : α) (n : Nat) : α := x <<< n
+abbrev shiftRH {α : Type} [HShiftRight α Nat α] (x : α) (n : Nat) : α := x >>> n
+
 /-- Haskell `bit :: Bits a => Int -> a` (used at words and at Int/Nat). -/
 abbrev bit {α : Type} [IntegralH α] (i : Nat) : α := IntegralH.ofInt ((2 : Int) ^ i)
 /-- Haskell `Bits` / `FiniteBits` (only what the spec uses). -/
@@ -240,3 +252,25 @@ noncomputable def findMin [OrdH k] [Inhabited k] [Inhabited v] (m : k → Option
 opaque keys [Inhabited k] (m : k → Option v) : List k
 
 end Sel4Lean.Spec.MapH
+
+/-! ## `Data.Set` as predicates (Isabelle sets) -/
+
+namespace Sel4Lean.Spec.SetH
+variable {α : Type}
+abbrev empty : α → Prop := fun _ => False
+abbrev singleton [DecidableEq α] (x : α) : α → Prop := fun y => y = x
+abbrev insert (x : α) (s : α → Prop) : α → Prop := fun y => y = x ∨ s y
+abbrev delete (x : α) (s : α → Prop) : α → Prop := fun y => y ≠ x ∧ s y
+abbrev union (s t : α → Prop) : α → Prop := fun y => s y ∨ t y
+abbrev difference (s t : α → Prop) : α → Prop := fun y => s y ∧ ¬ t y
+abbrev fromList (xs : List α) : α → Prop := fun y => y ∈ xs
+noncomputable abbrev member (x : α) (s : α → Prop) : Bool := by classical exact decide (s x)
+abbrev filter (p : α → Bool) (s : α → Prop) : α → Prop := fun y => s y ∧ p y = true
+/-- `Data.Set.toList`: TODO(W3) needs finiteness; unspecified over predicates. -/
+opaque toList [Inhabited α] (s : α → Prop) : List α
+end Sel4Lean.Spec.SetH
+
+namespace Sel4Lean.Spec
+/-- Haskell `Data.Ix.range (lo, hi)` for integral index types. -/
+abbrev range {ι : Type} [IntegralH ι] (bounds : ι × ι) : List ι := enumFromToH bounds.1 bounds.2
+end Sel4Lean.Spec

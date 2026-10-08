@@ -13,7 +13,7 @@
 ✔ API_Types_Universal
 ✔ Config
 ✔ Data_BinaryTree
-✖ Data_Helpers
+✔ Data_Helpers
 ✖ Data_WordLib
 ✔ Kernel
 ✖ Kernel_BootInfo
@@ -41,7 +41,7 @@
 ✔ Model_Preemption
 ✖ Model_StateData
 ✔ Model_StateData_RISCV64
-✖ Model_Syscall
+✔ Model_Syscall
 ✔ Object
 ✖ Object_CNode
 ✔ Object_Domain
@@ -53,9 +53,9 @@
 ✖ Object_Interrupt_RISCV64
 ✔ Object_Notification
 ✔ Object_ObjectType
-✖ Object_ObjectType_RISCV64
+✔ Object_ObjectType_RISCV64
 ✔ Object_Structures
-✖ Object_Structures_RISCV64
+✔ Object_Structures_RISCV64
 ✖ Object_TCB
 ✔ Object_TCB_RISCV64
 ✔ Object_Untyped

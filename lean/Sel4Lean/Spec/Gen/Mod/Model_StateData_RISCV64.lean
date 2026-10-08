@@ -20,15 +20,15 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `maxPTLevel` -/
-partial def maxPTLevel : Nat :=
+def maxPTLevel : Nat :=
   2
 
 /-- Haskell `riscvKSGlobalPT` -/
-partial def riscvKSGlobalPT (s : RISCV64.KernelState) : PPtr PTE :=
+def riscvKSGlobalPT (s : RISCV64.KernelState) : PPtr PTE :=
   head (RISCV64.KernelState.riscvKSGlobalPTs s maxPTLevel)
 
 /-- Haskell `newKernelState` -/
-partial def newKernelState (x0 : PAddr) : RISCV64.KernelState × (List PAddr) :=
+def newKernelState (x0 : PAddr) : RISCV64.KernelState × (List PAddr) :=
   match x0 with
   | _ => error "No initial state defined for RISC-V"
 

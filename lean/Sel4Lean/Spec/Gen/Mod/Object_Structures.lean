@@ -59,43 +59,43 @@ opaque wordBits : Nat
 /-! ## Translated -/
 
 /-- Haskell `isNullCap` -/
-partial def isNullCap (x0 : Capability) : Bool :=
+def isNullCap (x0 : Capability) : Bool :=
   match x0 with
   | Capability.NullCap => true
   | _ => false
 
 /-- Haskell `isDomainCap` -/
-partial def isDomainCap (x0 : Capability) : Bool :=
+def isDomainCap (x0 : Capability) : Bool :=
   match x0 with
   | Capability.DomainCap => true
   | _ => false
 
 /-- Haskell `isIRQControlCap` -/
-partial def isIRQControlCap (x0 : Capability) : Bool :=
+def isIRQControlCap (x0 : Capability) : Bool :=
   match x0 with
   | Capability.IRQControlCap => true
   | _ => false
 
 /-- Haskell `isReplyCap` -/
-partial def isReplyCap (x0 : Capability) : Bool :=
+def isReplyCap (x0 : Capability) : Bool :=
   match x0 with
   | (Capability.ReplyCap ..) => true
   | _ => false
 
 /-- Haskell `isUntypedCap` -/
-partial def isUntypedCap (x0 : Capability) : Bool :=
+def isUntypedCap (x0 : Capability) : Bool :=
   match x0 with
   | (Capability.UntypedCap ..) => true
   | _ => false
 
 /-- Haskell `isNotificationCap` -/
-partial def isNotificationCap (x0 : Capability) : Bool :=
+def isNotificationCap (x0 : Capability) : Bool :=
   match x0 with
   | (Capability.NotificationCap ..) => true
   | _ => false
 
 /-- Haskell `kernelObjectTypeName` -/
-partial def kernelObjectTypeName (o : KernelObject) : String :=
+def kernelObjectTypeName (o : KernelObject) : String :=
   match o with
   | KernelObject.KOEndpoint _ => "Endpoint"
   | KernelObject.KONotification _ => "Notification"
@@ -107,7 +107,7 @@ partial def kernelObjectTypeName (o : KernelObject) : String :=
   | KernelObject.KOArch _ => "Arch Specific"
 
 /-- Haskell `objBitsKO` -/
-partial def objBitsKO (x0 : KernelObject) : Nat :=
+def objBitsKO (x0 : KernelObject) : Nat :=
   match x0 with
   | (KernelObject.KOEndpoint _) => epSizeBits
   | (KernelObject.KONotification _) => ntfnSizeBits
@@ -119,93 +119,93 @@ partial def objBitsKO (x0 : KernelObject) : Nat :=
   | (KernelObject.KOArch a) => archObjSize a
 
 /-- Haskell `tcbCTableSlot` -/
-partial def tcbCTableSlot : Word :=
+def tcbCTableSlot : Word :=
   0
 
 /-- Haskell `tcbVTableSlot` -/
-partial def tcbVTableSlot : Word :=
+def tcbVTableSlot : Word :=
   1
 
 /-- Haskell `tcbReplySlot` -/
-partial def tcbReplySlot : Word :=
+def tcbReplySlot : Word :=
   2
 
 /-- Haskell `tcbCallerSlot` -/
-partial def tcbCallerSlot : Word :=
+def tcbCallerSlot : Word :=
   3
 
 /-- Haskell `tcbIPCBufferSlot` -/
-partial def tcbIPCBufferSlot : Word :=
+def tcbIPCBufferSlot : Word :=
   4
 
 /-- Haskell `minPriority` -/
-partial def minPriority : Priority :=
+def minPriority : Priority :=
   0
 
 /-- Haskell `maxPriority` -/
-partial def maxPriority : Priority :=
+def maxPriority : Priority :=
   fromIntegral (numPriorities - 1)
 
 /-- Haskell `maxDomain` -/
-partial def maxDomain : Priority :=
+def maxDomain : Priority :=
   fromIntegral (numDomains - 1)
 
 /-- Haskell `l2BitmapSize` -/
-partial def l2BitmapSize : Nat :=
+def l2BitmapSize : Nat :=
   div ((numPriorities + wordBits) - 1) wordBits
 
 /-- Haskell `nullMDBNode` -/
-partial def nullMDBNode : MDBNode :=
+def nullMDBNode : MDBNode :=
   { mdbNext := nullPointer, mdbPrev := nullPointer, mdbRevocable := false, mdbFirstBadged := false : MDBNode }
 
 /-- Haskell `dschDomain` -/
-partial def dschDomain : DomainScheduleItem → Domain :=
+def dschDomain : DomainScheduleItem → Domain :=
   fst
 
 /-- Haskell `dschLength` -/
-partial def dschLength : DomainScheduleItem → DomainDuration :=
+def dschLength : DomainScheduleItem → DomainDuration :=
   snd
 
 /-- Haskell `domainEndMarker` -/
-partial def domainEndMarker : DomainScheduleItem :=
+def domainEndMarker : DomainScheduleItem :=
   (0, 0)
 
 /-- Haskell `maxDomainDuration` -/
-partial def maxDomainDuration : DomainDuration :=
+def maxDomainDuration : DomainDuration :=
   mask 56
 
 /-- Haskell `isReceive` -/
-partial def isReceive (x0 : ThreadState) : Bool :=
+def isReceive (x0 : ThreadState) : Bool :=
   match x0 with
   | (ThreadState.BlockedOnReceive _ _) => true
   | _ => false
 
 /-- Haskell `isSend` -/
-partial def isSend (x0 : ThreadState) : Bool :=
+def isSend (x0 : ThreadState) : Bool :=
   match x0 with
   | (ThreadState.BlockedOnSend _ _ _ _ _) => true
   | _ => false
 
 /-- Haskell `isReply` -/
-partial def isReply (x0 : ThreadState) : Bool :=
+def isReply (x0 : ThreadState) : Bool :=
   match x0 with
   | ThreadState.BlockedOnReply => true
   | _ => false
 
 /-- Haskell `maxFreeIndex` -/
-partial def maxFreeIndex (sizeBits : Nat) : Nat :=
+def maxFreeIndex (sizeBits : Nat) : Nat :=
   bit sizeBits
 
 /-- Haskell `getFreeRef` -/
-partial def getFreeRef (base : PPtr Unit) (freeIndex : Nat) : PPtr Unit :=
+def getFreeRef (base : PPtr Unit) (freeIndex : Nat) : PPtr Unit :=
   base + (fromIntegral freeIndex)
 
 /-- Haskell `getFreeIndex` -/
-partial def getFreeIndex (base : PPtr Unit) (free : PPtr Unit) : Nat :=
+def getFreeIndex (base : PPtr Unit) (free : PPtr Unit) : Nat :=
   fromIntegral (PPtr.ptr (free - base))
 
 /-- Haskell `untypedZeroRange` -/
-partial def untypedZeroRange (x0 : Capability) : Option (Word × Word) :=
+def untypedZeroRange (x0 : Capability) : Option (Word × Word) :=
   match x0 with
   | (cap@(Capability.UntypedCap ..)) => 
       let empty := (Capability.capFreeIndex cap) == (maxFreeIndex (Capability.capBlockSize cap))
@@ -218,24 +218,24 @@ partial def untypedZeroRange (x0 : Capability) : Option (Word × Word) :=
   | _ => none
 
 /-- Haskell `emptyQueue` -/
-partial def emptyQueue : TcbQueue :=
+def emptyQueue : TcbQueue :=
   { tcbQueueHead := none, tcbQueueEnd := none : TcbQueue }
 
 /-- Haskell `tcbFlagToWord` -/
-partial def tcbFlagToWord (x0 : TcbFlag) : Word :=
+def tcbFlagToWord (x0 : TcbFlag) : Word :=
   match x0 with
   | TcbFlag.FpuDisabled => bit 0
 
 /-- Haskell `noFlag` -/
-partial def noFlag : TcbFlags :=
+def noFlag : TcbFlags :=
   0x0
 
 /-- Haskell `isFlagSet` -/
-partial def isFlagSet (flag : TcbFlag) (flags : TcbFlags) : Bool :=
+def isFlagSet (flag : TcbFlag) (flags : TcbFlags) : Bool :=
   ((tcbFlagToWord flag) &&& flags) != 0
 
 /-- Haskell `tcbFlagMask` -/
-partial def tcbFlagMask : Word :=
+def tcbFlagMask : Word :=
   if config_HAVE_FPU then
     tcbFlagToWord TcbFlag.FpuDisabled
   else

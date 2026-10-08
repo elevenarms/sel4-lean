@@ -18,16 +18,16 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `syscall` -/
-partial def syscall {a : Type} [Inhabited a] {c : Type} [Inhabited c] {b : Type} [Inhabited b] (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
+def syscall {a : Type} [Inhabited a] {c : Type} [Inhabited c] {b : Type} [Inhabited b] (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
   do
     let rFault ← withoutPreemption (ExceptT.run mFault)
     match rFault with
-    | Left f => withoutPreemption (hFault f)
-    | Right a => (do
+    | Except.error f => withoutPreemption (hFault f)
+    | Except.ok a => (do
           let rError ← withoutPreemption (ExceptT.run (mError a))
           match rError with
-          | Left e => withoutPreemption (hError e)
-          | Right b => mFinalise b)
+          | Except.error e => withoutPreemption (hError e)
+          | Except.ok b => mFinalise b)
 
 end
 end Sel4Lean.Spec.M.Model_Syscall

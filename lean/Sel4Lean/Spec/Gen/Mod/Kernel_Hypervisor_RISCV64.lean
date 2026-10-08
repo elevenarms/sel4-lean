@@ -15,7 +15,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `handleHypervisorFault` -/
-partial def handleHypervisorFault (x0 : PPtr TCB) (x1 : HypFaultType) : Kernel Unit :=
+def handleHypervisorFault (x0 : PPtr TCB) (x1 : HypFaultType) : Kernel Unit :=
   match x0, x1 with
   | _, HypFaultType.RISCVNoHypFaults => pure ()
 

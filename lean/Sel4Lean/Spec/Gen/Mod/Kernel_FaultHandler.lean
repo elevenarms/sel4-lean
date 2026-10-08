@@ -58,7 +58,7 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-! ## Translated -/
 
 /-- Haskell `handleDoubleFault` -/
-partial def handleDoubleFault (tptr : PPtr TCB) (ex1 : Fault) (ex2 : Fault) : Kernel Unit :=
+def handleDoubleFault (tptr : PPtr TCB) (ex1 : Fault) (ex2 : Fault) : Kernel Unit :=
   do
     let _ ← setThreadState ThreadState.Inactive tptr
     let faultPC ← asUser tptr getRestartPC
@@ -66,7 +66,7 @@ partial def handleDoubleFault (tptr : PPtr TCB) (ex1 : Fault) (ex2 : Fault) : Ke
     doMachineOp (debugPrint errmsg)
 
 /-- Haskell `handleFault` -/
-partial def handleFault (tptr : PPtr TCB) (ex : Fault) : Kernel Unit :=
+def handleFault (tptr : PPtr TCB) (ex : Fault) : Kernel Unit :=
   do
     catchFailure (sendFaultIPC tptr ex) (handleDoubleFault tptr ex)
 

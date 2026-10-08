@@ -131,7 +131,7 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `handleInvocation` -/
-partial def handleInvocation (isCall : Bool) (isBlocking : Bool) : KernelP Unit :=
+def handleInvocation (isCall : Bool) (isBlocking : Bool) : KernelP Unit :=
   do
     let thread ← withoutPreemption getCurThread
     let info ← withoutPreemption (getMessageInfo thread)
@@ -154,11 +154,11 @@ partial def handleInvocation (isCall : Bool) (isBlocking : Bool) : KernelP Unit 
           | _ => pure ()))
 
 /-- Haskell `handleCall` -/
-partial def handleCall : KernelP Unit :=
+def handleCall : KernelP Unit :=
   handleInvocation true true
 
 /-- Haskell `handleRecv` -/
-partial def handleRecv (isBlocking : Bool) : Kernel Unit :=
+def handleRecv (isBlocking : Bool) : Kernel Unit :=
   do
     let thread ← getCurThread
     let epCPtr ← asUser thread (liftM CPtr.CPtr (getRegister capRegister))
@@ -180,7 +180,7 @@ partial def handleRecv (isBlocking : Bool) : Kernel Unit :=
     pure ()
 
 /-- Haskell `handleReply` -/
-partial def handleReply : Kernel Unit :=
+def handleReply : Kernel Unit :=
   do
     let thread ← getCurThread
     let callerSlot ← getThreadCallerSlot thread
@@ -193,11 +193,11 @@ partial def handleReply : Kernel Unit :=
     | _ => failM "handleReply: invalid caller cap"
 
 /-- Haskell `handleSend` -/
-partial def handleSend : Bool → KernelP Unit :=
+def handleSend : Bool → KernelP Unit :=
   handleInvocation false
 
 /-- Haskell `handleYield` -/
-partial def handleYield : Kernel Unit :=
+def handleYield : Kernel Unit :=
   do
     let thread ← getCurThread
     let _ ← tcbSchedDequeue thread
@@ -205,7 +205,7 @@ partial def handleYield : Kernel Unit :=
     rescheduleRequired
 
 /-- Haskell `handleEvent` -/
-partial def handleEvent (x0 : Event) : KernelP Unit :=
+def handleEvent (x0 : Event) : KernelP Unit :=
   match x0 with
   | (Event.SyscallEvent call) => 
       match call with

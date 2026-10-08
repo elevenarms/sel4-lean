@@ -182,23 +182,23 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
 /-! ## Translated -/
 
 /-- Haskell `doKernelOp` -/
-partial def doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a :=
+def doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a :=
   lift ∘ lift
 
 /-- Haskell `noInitFailure` -/
-partial def noInitFailure {a : Type} [Inhabited a] : (KernelInitState a) → KernelInit a :=
+def noInitFailure {a : Type} [Inhabited a] : (KernelInitState a) → KernelInit a :=
   lift
 
 /-- Haskell `minNum4kUntypedObj` -/
-partial def minNum4kUntypedObj : Nat :=
+def minNum4kUntypedObj : Nat :=
   12
 
 /-- Haskell `maxNumFreememRegions` -/
-partial def maxNumFreememRegions : Nat :=
+def maxNumFreememRegions : Nat :=
   2
 
 /-- Haskell `getAPRegion` -/
-partial def getAPRegion (kernelFrameEnd : PAddr) : KernelInit (List Region) :=
+def getAPRegion (kernelFrameEnd : PAddr) : KernelInit (List Region) :=
   do
     let memRegions ← doKernelOp (doMachineOp getMemoryRegions)
     let subRegions ← pure ((flip map) memRegions (fun x => let (s, e) := x
@@ -209,7 +209,7 @@ partial def getAPRegion (kernelFrameEnd : PAddr) : KernelInit (List Region) :=
     pure (map ptrFromPAddrRegion subRegions)
 
 /-- Haskell `initFreemem` -/
-partial def initFreemem (kernelFrameEnd : PAddr) (uiRegion : Region) : KernelInit Unit :=
+def initFreemem (kernelFrameEnd : PAddr) (uiRegion : Region) : KernelInit Unit :=
   do
     let memRegions ← getAPRegion kernelFrameEnd
     let region := Region.fromRegion uiRegion
@@ -227,10 +227,10 @@ partial def initFreemem (kernelFrameEnd : PAddr) (uiRegion : Region) : KernelIni
     noInitFailure (modify (fun st => { st with initFreeMemory := map Region.Region freeRegions' }))
 
 /-- Haskell `allocRegion` -/
-partial def allocRegion (bits : Nat) : KernelInit PAddr :=
-  let s := 1 <<< bits
+def allocRegion (bits : Nat) : KernelInit PAddr :=
+  let s := shiftLH 1 bits
   let align := fun b =>
-    (((b - 1) >>> bits) + 1) <<< bits
+    shiftLH ((shiftRH (b - 1) bits) + 1) bits
   let isUsable := fun reg =>
     let r := (align ∘ (fst ∘ Region.fromRegion)) reg
     (r ≥ (fst (Region.fromRegion reg))) && (((r + s) - 1) ≤ (snd (Region.fromRegion reg)))
@@ -285,7 +285,7 @@ partial def coverOf (x0 : List Region) : Region :=
       Region.Region ((ln, hn))
 
 /-- Haskell `createIdleThread` -/
-partial def createIdleThread : KernelInit Unit :=
+def createIdleThread : KernelInit Unit :=
   do
     let paddr ← allocRegion (objBits ((makeObject : TCB)))
     let tcbPPtr := ptrFromPAddr paddr
@@ -297,7 +297,7 @@ partial def createIdleThread : KernelInit Unit :=
     configureIdleThread tcbPPtr
 
 /-- Haskell `createInitialThread` -/
-partial def createInitialThread (rootCNCap : Capability) (itPDCap : Capability) (ipcBufferCap : Capability) (entry : VPtr) (ipcBufferVPtr : VPtr) (biFrameVPtr : VPtr) : KernelInit Unit :=
+def createInitialThread (rootCNCap : Capability) (itPDCap : Capability) (ipcBufferCap : Capability) (entry : VPtr) (ipcBufferVPtr : VPtr) (biFrameVPtr : VPtr) : KernelInit Unit :=
   do
     let tcbBits := objBits ((makeObject : TCB))
     let tcb' ← allocRegion tcbBits
@@ -321,11 +321,11 @@ partial def createInitialThread (rootCNCap : Capability) (itPDCap : Capability) 
     pure ()
 
 /-- Haskell `foldME` -/
-partial def foldME :=
+def foldME :=
   foldM
 
 /-- Haskell `provideCap` -/
-partial def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelInit Unit :=
+def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelInit Unit :=
   do
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let maxSlot ← noInitFailure (gets InitData.initSlotPosMax)
@@ -335,7 +335,7 @@ partial def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelIn
     noInitFailure (modify (fun st => { st with initSlotPosCur := currSlot + 1 }))
 
 /-- Haskell `provideUntypedCap` -/
-partial def provideUntypedCap (rootCNodeCap : Capability) (isDevice : Bool) (pptr : PAddr) (sizeBits : BitVec 8) (slotPosBefore : Word) : KernelInit Unit :=
+def provideUntypedCap (rootCNodeCap : Capability) (isDevice : Bool) (pptr : PAddr) (sizeBits : BitVec 8) (slotPosBefore : Word) : KernelInit Unit :=
   do
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let i := currSlot - slotPosBefore
@@ -352,14 +352,14 @@ partial def provideUntypedCap (rootCNodeCap : Capability) (isDevice : Bool) (ppt
     provideCap rootCNodeCap (Capability.UntypedCap isDevice (ptrFromPAddr pptr) size (maxFreeIndex size))
 
 /-- Haskell `finaliseBIFrame` -/
-partial def finaliseBIFrame : KernelInit Unit :=
+def finaliseBIFrame : KernelInit Unit :=
   do
     let cur ← noInitFailure (gets InitData.initSlotPosCur)
     let max ← noInitFailure (gets InitData.initSlotPosMax)
     noInitFailure (modify (fun s => { s with initBootInfo := { (InitData.initBootInfo s) with bifNullCaps := enumFromToH cur (max - 1) } }))
 
 /-- Haskell `makeRootCNode` -/
-partial def makeRootCNode : KernelInit Capability :=
+def makeRootCNode : KernelInit Capability :=
   do
     let slotBits := objBits ((undefined : CTE))
     let levelBits := rootCNodeSize
@@ -371,7 +371,7 @@ partial def makeRootCNode : KernelInit Capability :=
     pure rootCNCap
 
 /-- Haskell `runInit` -/
-partial def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
+def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
   do
     let initData := { initFreeMemory := [], initSlotPosCur := 0, initSlotPosMax := bit (pageBits), initBootInfo := nopBIFrameData, initVPtrOffset := vptr, initBootInfoFrame := 0 : InitData }
     let _ ← (flip runStateT) initData (do
@@ -380,7 +380,7 @@ partial def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
     pure ()
 
 /-- Haskell `initKernel` -/
-partial def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAddr) (kernelFrames : List PAddr) (bootFrames : List PAddr) : Kernel Unit :=
+def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAddr) (kernelFrames : List PAddr) (bootFrames : List PAddr) : Kernel Unit :=
   do
     let uiRegion := coverOf (map (fun x => Region.Region ((ptrFromPAddr x, (ptrFromPAddr x) + (bit (pageBits))))) initFrames)
     let kePPtr := fst (Region.fromRegion uiRegion)
@@ -400,7 +400,7 @@ partial def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAd
       let _ ← initInterruptController rootCNCap biCapIRQControl
       let ipcBufferVPtr := vptrEnd
       let ipcBufferCap ← createIPCBufferFrame rootCNCap ipcBufferVPtr
-      let biFrameVPtr := vptrEnd + (1 <<< pageBits)
+      let biFrameVPtr := vptrEnd + (shiftLH 1 pageBits)
       let _ ← createBIFrame rootCNCap biFrameVPtr 0 1
       let _ ← createFramesOfRegion rootCNCap uiRegion true
       let itPDCap ← createITPDPTs rootCNCap vptrStart biFrameVPtr
@@ -415,12 +415,12 @@ partial def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAd
       syncBIFrame)
 
 /-- Haskell `mapTaskRegions` -/
-partial def mapTaskRegions (taskMappings : List (PAddr × VPtr)) : KernelInit ((VPtr × (PPtr CTE)) × (VPtr × (PPtr Word))) :=
+def mapTaskRegions (taskMappings : List (PAddr × VPtr)) : KernelInit ((VPtr × (PPtr CTE)) × (VPtr × (PPtr Word))) :=
   do
     failM ("mapTaskRegions is not Implemented" ++ («show» taskMappings))
 
 /-- Haskell `allocFrame` -/
-partial def allocFrame : KernelInit PAddr :=
+def allocFrame : KernelInit PAddr :=
   allocRegion pageBits
 
 /-- Haskell `rangesBy` -/

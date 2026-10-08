@@ -31,15 +31,15 @@ opaque setWorkUnits : Word → Kernel Unit
 /-! ## Translated -/
 
 /-- Haskell `withoutPreemption` -/
-partial def withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a :=
+def withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a :=
   lift
 
 /-- Haskell `workUnitsLimit` -/
-partial def workUnitsLimit :=
+def workUnitsLimit :=
   0x64
 
 /-- Haskell `preemptionPoint` -/
-partial def preemptionPoint : KernelP Unit :=
+def preemptionPoint : KernelP Unit :=
   do
     let _ ← lift (modifyWorkUnits (((· + ·)) 1))
     let workUnits ← lift getWorkUnits

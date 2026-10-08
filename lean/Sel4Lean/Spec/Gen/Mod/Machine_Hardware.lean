@@ -75,17 +75,11 @@ opaque minIRQ : IRQ
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque nullPointer {a : Type} [Inhabited a] : PPtr a
 
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque paddrBase : PAddr
-
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pageBits : Nat
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pageColourBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque pptrBase : VPtr
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pptrBaseOffset : Word
@@ -115,7 +109,7 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 /-! ## Translated -/
 
 /-- Haskell `fromPAddr` -/
-partial def fromPAddr :=
+def fromPAddr :=
   RISCV64.fromPAddr
 
 end

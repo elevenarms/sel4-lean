@@ -31,7 +31,7 @@ opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 opaque invocationType : Word → InvocationLabel
 
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
-opaque irqInvalid : IRQ
+opaque irqInvalid : RISCV64.IRQ
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque isIRQActive : IRQ → Kernel Bool
@@ -47,9 +47,6 @@ opaque performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque setIRQState : IRQState → IRQ → Kernel Unit
-
--- external: SEL4/Machine/Hardware/RISCV64.hs
-opaque setIRQTrigger : IRQ → Bool → MachineMonad Unit
 
 -- external: SEL4/Model/Failures.lhs
 opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
@@ -70,36 +67,36 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `checkIRQ` -/
-partial def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
+def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
   whenH ((irqW > (fromIntegral (fromEnum maxIRQ))) || (irqW == (fromIntegral (fromEnum irqInvalid)))) (throw (SyscallError.RangeError 1 (fromIntegral (fromEnum maxIRQ))))
 
 /-- Haskell `plic_complete_claim` -/
-partial def plic_complete_claim (x0 : IRQ) : MachineMonad Unit :=
+def plic_complete_claim (x0 : IRQ) : MachineMonad Unit :=
   match x0 with
   | (RISCV64.IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
 
 /-- Haskell `invokeIRQHandler` -/
-partial def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
+def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
   match x0 with
   | (IRQHandlerInvocation.AckIRQ irq) => doMachineOp (plic_complete_claim irq)
   | _ => pure ()
 
 /-- Haskell `handleSpuriousIRQ` -/
-partial def handleSpuriousIRQ : Kernel Unit :=
+def handleSpuriousIRQ : Kernel Unit :=
   pure ()
 
 /-- Haskell `handleReservedIRQ` -/
-partial def handleReservedIRQ (x0 : IRQ) : Kernel Unit :=
+def handleReservedIRQ (x0 : IRQ) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `maskIrqSignal` -/
-partial def maskIrqSignal (x0 : IRQ) : Kernel Unit :=
+def maskIrqSignal (x0 : IRQ) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `initInterruptController` -/
-partial def initInterruptController : Kernel Unit :=
+def initInterruptController : Kernel Unit :=
   error "Unimplemented. Init code."
 
 end

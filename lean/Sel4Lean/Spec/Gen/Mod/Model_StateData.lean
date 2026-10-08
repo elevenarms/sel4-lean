@@ -24,14 +24,11 @@ opaque dschDomain : DomainScheduleItem → Domain
 -- external: SEL4/Object/Structures.lhs
 opaque dschLength : DomainScheduleItem → DomainDuration
 
--- external: Data/BinaryTree.hs
-opaque empty {a : Type} [Inhabited a] : BinaryTree a
-
 -- external: SEL4/Object/Structures.lhs
 opaque emptyQueue : TcbQueue
 
 -- external: Data/Helpers.hs
-opaque funPartialArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] : (i → a) → (i × i) → (i → a)
+opaque funPartialArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [IntegralH i] : (i → a) → (i × i) → (i → a)
 
 -- external: SEL4/Object/Structures.lhs
 opaque l2BitmapSize : Nat
@@ -59,90 +56,90 @@ opaque numDomains : Nat
 /-! ## Translated -/
 
 /-- Haskell `getCurThread` -/
-partial def getCurThread : Kernel (PPtr TCB) :=
+def getCurThread : Kernel (PPtr TCB) :=
   gets KernelState.ksCurThread
 
 /-- Haskell `idleThreadNotQueued` -/
-partial def idleThreadNotQueued (x0 : KernelState) : Bool :=
+def idleThreadNotQueued (x0 : KernelState) : Bool :=
   match x0 with
   | _ => true
 
 /-- Haskell `assert` -/
-partial def assert {m : Type → Type} [Monad m] [MonadFailH m] (p : Bool) (e : String) : m Unit :=
+def assert {m : Type → Type} [Monad m] [MonadFailH m] (p : Bool) (e : String) : m Unit :=
   if p then
     pure ()
   else
     failM ("Assertion failed: " ++ e)
 
 /-- Haskell `stateAssert` -/
-partial def stateAssert (f : KernelState → Bool) (e : String) : Kernel Unit :=
+def stateAssert (f : KernelState → Bool) (e : String) : Kernel Unit :=
   get >>= (fun s => assert (f s) e)
 
 /-- Haskell `setCurThread` -/
-partial def setCurThread (tptr : PPtr TCB) : Kernel Unit :=
+def setCurThread (tptr : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssert idleThreadNotQueued "the idle thread cannot be in the ready queues"
     modify (fun ks => { ks with ksCurThread := tptr })
 
 /-- Haskell `ready_qs_runnable` -/
-partial def ready_qs_runnable (x0 : KernelState) : Bool :=
+def ready_qs_runnable (x0 : KernelState) : Bool :=
   match x0 with
   | _ => true
 
 /-- Haskell `getIdleThread` -/
-partial def getIdleThread : Kernel (PPtr TCB) :=
+def getIdleThread : Kernel (PPtr TCB) :=
   gets KernelState.ksIdleThread
 
 /-- Haskell `setIdleThread` -/
-partial def setIdleThread (tptr : PPtr TCB) : Kernel Unit :=
+def setIdleThread (tptr : PPtr TCB) : Kernel Unit :=
   modify (fun ks => { ks with ksIdleThread := tptr })
 
 /-- Haskell `getQueue` -/
-partial def getQueue (qdom : Domain) (prio : Priority) : Kernel ReadyQueue :=
+def getQueue (qdom : Domain) (prio : Priority) : Kernel ReadyQueue :=
   gets (fun ks => (KernelState.ksReadyQueues ks) ((qdom, prio)))
 
 /-- Haskell `setQueue` -/
-partial def setQueue (qdom : Domain) (prio : Priority) (q : ReadyQueue) : Kernel Unit :=
+def setQueue (qdom : Domain) (prio : Priority) (q : ReadyQueue) : Kernel Unit :=
   modify (fun ks => { ks with ksReadyQueues := arrayUpdH (KernelState.ksReadyQueues ks) ([((qdom, prio), q)]) })
 
 /-- Haskell `getSchedulerAction` -/
-partial def getSchedulerAction : Kernel SchedulerAction :=
+def getSchedulerAction : Kernel SchedulerAction :=
   gets KernelState.ksSchedulerAction
 
 /-- Haskell `setSchedulerAction` -/
-partial def setSchedulerAction (a : SchedulerAction) : Kernel Unit :=
+def setSchedulerAction (a : SchedulerAction) : Kernel Unit :=
   modify (fun ks => { ks with ksSchedulerAction := a })
 
 /-- Haskell `getInterruptState` -/
-partial def getInterruptState : Kernel InterruptState :=
+def getInterruptState : Kernel InterruptState :=
   gets KernelState.ksInterruptState
 
 /-- Haskell `setInterruptState` -/
-partial def setInterruptState (a : InterruptState) : Kernel Unit :=
+def setInterruptState (a : InterruptState) : Kernel Unit :=
   modify (fun ks => { ks with ksInterruptState := a })
 
 /-- Haskell `getWorkUnits` -/
-partial def getWorkUnits : Kernel Word :=
+def getWorkUnits : Kernel Word :=
   gets KernelState.ksWorkUnitsCompleted
 
 /-- Haskell `setWorkUnits` -/
-partial def setWorkUnits (a : Word) : Kernel Unit :=
+def setWorkUnits (a : Word) : Kernel Unit :=
   modify (fun ks => { ks with ksWorkUnitsCompleted := a })
 
 /-- Haskell `modifyWorkUnits` -/
-partial def modifyWorkUnits (f : Word → Word) : Kernel Unit :=
+def modifyWorkUnits (f : Word → Word) : Kernel Unit :=
   modify (fun ks => { ks with ksWorkUnitsCompleted := f (KernelState.ksWorkUnitsCompleted ks) })
 
 /-- Haskell `modifyArchState` -/
-partial def modifyArchState (f : RISCV64.KernelState → RISCV64.KernelState) : Kernel Unit :=
+def modifyArchState (f : RISCV64.KernelState → RISCV64.KernelState) : Kernel Unit :=
   modify (fun s => { s with ksArchState := f (KernelState.ksArchState s) })
 
 /-- Haskell `curDomain` -/
-partial def curDomain : Kernel Domain :=
+def curDomain : Kernel Domain :=
   gets KernelState.ksCurDomain
 
 /-- Haskell `nextDomain` -/
-partial def nextDomain : Kernel Unit :=
+def nextDomain : Kernel Unit :=
   modify (fun ks => let indexInc := (KernelState.ksDomScheduleIdx ks) + 1
     let ksDomScheduleIdx' := if (indexInc ≥ (length (KernelState.ksDomSchedule ks))) || ((listIndexH (KernelState.ksDomSchedule ks) indexInc) == domainEndMarker) then
         KernelState.ksDomScheduleStart ks
@@ -152,21 +149,21 @@ partial def nextDomain : Kernel Unit :=
     { ks with ksWorkUnitsCompleted := 0, ksDomScheduleIdx := ksDomScheduleIdx', ksCurDomain := dschDomain next, ksDomainTime := dschLength next })
 
 /-- Haskell `getDomainTime` -/
-partial def getDomainTime : Kernel Ticks :=
+def getDomainTime : Kernel Ticks :=
   gets KernelState.ksDomainTime
 
 /-- Haskell `decDomainTime` -/
-partial def decDomainTime : Kernel Unit :=
+def decDomainTime : Kernel Unit :=
   modify (fun ks => { ks with ksDomainTime := (KernelState.ksDomainTime ks) - 1 })
 
 /-- Haskell `newKernelState` -/
-partial def newKernelState (data_start : PAddr) : KernelState × (List PAddr) :=
+def newKernelState (data_start : PAddr) : KernelState × (List PAddr) :=
   let (archState, frames) := (RISCV64.newKernelState) data_start
-  let state' := { ksPSpace := newPSpace, gsUserPages := fun _ => none, gsCNodes := fun _ => none, gsUntypedZeroRanges := empty, ksDomScheduleIdx := 0, ksDomScheduleStart := 0, ksDomSchedule := [(0, 15), (2, 42), (1, 73)], ksCurDomain := 0, ksDomainTime := 15, ksReadyQueues := funPartialArray (const emptyQueue) (((0, 0), (fromIntegral numDomains, maxPriority))), ksReadyQueuesL1Bitmap := funPartialArray (const 0) ((0, fromIntegral numDomains)), ksReadyQueuesL2Bitmap := funPartialArray (const 0) (((0, 0), (fromIntegral numDomains, l2BitmapSize))), ksCurThread := error "No initial thread", ksIdleThread := error "Idle thread has not been created", ksSchedulerAction := error "scheduler action has not been set", ksInterruptState := error "Interrupt controller is uninitialised", ksWorkUnitsCompleted := 0, ksArchState := archState : KernelState }
+  let state' := { ksPSpace := newPSpace, gsUserPages := fun _ => none, gsCNodes := fun _ => none, gsUntypedZeroRanges := SetH.empty, ksDomScheduleIdx := 0, ksDomScheduleStart := 0, ksDomSchedule := [(0, 15), (2, 42), (1, 73)], ksCurDomain := 0, ksDomainTime := 15, ksReadyQueues := funPartialArray (const emptyQueue) (((0, 0), (fromIntegral numDomains, maxPriority))), ksReadyQueuesL1Bitmap := funPartialArray (const 0) ((0, fromIntegral numDomains)), ksReadyQueuesL2Bitmap := funPartialArray (const 0) (((0, 0), (fromIntegral numDomains, l2BitmapSize))), ksCurThread := error "No initial thread", ksIdleThread := error "Idle thread has not been created", ksSchedulerAction := error "scheduler action has not been set", ksInterruptState := error "Interrupt controller is uninitialised", ksWorkUnitsCompleted := 0, ksArchState := archState : KernelState }
   (state', frames)
 
 /-- Haskell `capHasProperty` -/
-partial def capHasProperty (x0 : PPtr CTE) (x1 : Capability → Bool) : KernelState → Bool :=
+def capHasProperty (x0 : PPtr CTE) (x1 : Capability → Bool) : KernelState → Bool :=
   match x0, x1 with
   | _, _ => const true
 
@@ -183,7 +180,7 @@ partial def findM {m : Type → Type} {a : Type} [Inhabited a] [Monad m] (x0 : a
           findM f xs
 
 /-- Haskell `ksReadyQueues_asrt` -/
-partial def ksReadyQueues_asrt (x0 : KernelState) : Bool :=
+def ksReadyQueues_asrt (x0 : KernelState) : Bool :=
   match x0 with
   | _ => true
 

@@ -33,57 +33,57 @@ opaque pteBits : Nat
 /-! ## Translated -/
 
 /-- Haskell `minUntypedSizeBits` -/
-partial def minUntypedSizeBits : Nat :=
+def minUntypedSizeBits : Nat :=
   4
 
 /-- Haskell `maxUntypedSizeBits` -/
-partial def maxUntypedSizeBits : Nat :=
+def maxUntypedSizeBits : Nat :=
   38
 
 /-- Haskell `archObjSize` -/
-partial def archObjSize (x0 : ArchKernelObject) : Nat :=
+def archObjSize (x0 : ArchKernelObject) : Nat :=
   match x0 with
   | (ArchKernelObject.KOASIDPool _) => pageBits
   | (ArchKernelObject.KOPTE _) => pteBits
 
 /-- Haskell `newArchTCB` -/
-partial def newArchTCB :=
+def newArchTCB :=
   { atcbContext := newContext : ArchTCB }
 
 /-- Haskell `atcbContextSet` -/
-partial def atcbContextSet (uc : UserContext) (atcb : ArchTCB) : ArchTCB :=
+def atcbContextSet (uc : UserContext) (atcb : ArchTCB) : ArchTCB :=
   { atcb with atcbContext := uc }
 
 /-- Haskell `atcbContextGet` -/
-partial def atcbContextGet : ArchTCB → UserContext :=
+def atcbContextGet : ArchTCB → UserContext :=
   ArchTCB.atcbContext
 
 /-- Haskell `asidHighBits` -/
-partial def asidHighBits : Nat :=
+def asidHighBits : Nat :=
   7
 
 /-- Haskell `asidLowBits` -/
-partial def asidLowBits : Nat :=
+def asidLowBits : Nat :=
   9
 
 /-- Haskell `asidBits` -/
-partial def asidBits : Nat :=
+def asidBits : Nat :=
   asidHighBits + asidLowBits
 
 /-- Haskell `asidRange` -/
-partial def asidRange : ASID × ASID :=
-  (0, (1 <<< asidBits) - 1)
+def asidRange : ASID × ASID :=
+  (0, (shiftLH 1 asidBits) - 1)
 
 /-- Haskell `asidHighBitsOf` -/
-partial def asidHighBitsOf (asid : ASID) : ASID :=
-  (asid >>> asidLowBits) &&& (mask asidHighBits)
+def asidHighBitsOf (asid : ASID) : ASID :=
+  (shiftRH asid asidLowBits) &&& (mask asidHighBits)
 
 /-- Haskell `parseTimeArg` -/
-partial def parseTimeArg (i : Nat) (args : List Word) : Ticks :=
+def parseTimeArg (i : Nat) (args : List Word) : Ticks :=
   fromIntegral (listIndexH args i)
 
 /-- Haskell `timeArgLen` -/
-partial def timeArgLen : Nat :=
+def timeArgLen : Nat :=
   1
 
 end

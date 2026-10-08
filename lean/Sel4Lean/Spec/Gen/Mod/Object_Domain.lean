@@ -30,9 +30,6 @@ opaque numDomains : Nat
 -- external: SEL4/Object/Structures/RISCV64.hs
 opaque parseTimeArg : Nat → (List Word) → Ticks
 
--- external: SEL4/Object/Domain/RISCV64.hs
-opaque prepareSetDomain : (PPtr TCB) → Domain → Kernel Unit
-
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit
 
@@ -61,7 +58,7 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-! ## Translated -/
 
 /-- Haskell `domainSet` -/
-partial def domainSet (thread : PPtr TCB) (domain : Domain) : Kernel Unit :=
+def domainSet (thread : PPtr TCB) (domain : Domain) : Kernel Unit :=
   do
     let _ ← (RISCV64.prepareSetDomain) thread domain
     setDomain thread domain
@@ -77,11 +74,11 @@ partial def listUpdate {a : Type} [Inhabited a] (x0 : List a) (x1 : Nat) (x2 : a
         x :: (listUpdate xs (i - 1) v)
 
 /-- Haskell `domainScheduleConfigure` -/
-partial def domainScheduleConfigure (index : Nat) (domain : Domain) (duration : DomainDuration) : Kernel Unit :=
+def domainScheduleConfigure (index : Nat) (domain : Domain) (duration : DomainDuration) : Kernel Unit :=
   modify (fun s => { s with ksDomSchedule := listUpdate (KernelState.ksDomSchedule s) index ((domain, duration)) })
 
 /-- Haskell `domainSetStart` -/
-partial def domainSetStart (start : Nat) : Kernel Unit :=
+def domainSetStart (start : Nat) : Kernel Unit :=
   do
     let _ ← modify (fun s => { s with ksDomScheduleStart := start })
     let _ ← modify (fun s => { s with ksDomainTime := 0 })
@@ -91,14 +88,14 @@ partial def domainSetStart (start : Nat) : Kernel Unit :=
     rescheduleRequired
 
 /-- Haskell `invokeDomain` -/
-partial def invokeDomain (x0 : DomainInvocation) : Kernel Unit :=
+def invokeDomain (x0 : DomainInvocation) : Kernel Unit :=
   match x0 with
   | (DomainInvocation.InvokeDomainSet thread domain) => domainSet thread domain
   | (DomainInvocation.InvokeDomainScheduleConfigure index domain duration) => domainScheduleConfigure index domain duration
   | (DomainInvocation.InvokeDomainScheduleSetStart start) => domainSetStart start
 
 /-- Haskell `decodeDomainSet` -/
-partial def decodeDomainSet (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
+def decodeDomainSet (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
   do
     let domain ← match args with
       | (x :: _) => (do
@@ -111,7 +108,7 @@ partial def decodeDomainSet (args : List Word) (extraCaps : List (Capability × 
     | _ => throw (SyscallError.InvalidArgument 1)
 
 /-- Haskell `decodeDomainConfigure` -/
-partial def decodeDomainConfigure (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
+def decodeDomainConfigure (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
   do
     let _ ← whenH ((length args) < (2 + timeArgLen)) (throw SyscallError.TruncatedMessage)
     let index ← pure (fromIntegral (listIndexH args 0))
@@ -127,7 +124,7 @@ partial def decodeDomainConfigure (args : List Word) (extraCaps : List (Capabili
     pure (DomainInvocation.InvokeDomainScheduleConfigure index (fromIntegral domain) duration)
 
 /-- Haskell `decodeDomainSetStart` -/
-partial def decodeDomainSetStart (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
+def decodeDomainSetStart (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
   do
     let _ ← whenH ((length args) == 0) (throw SyscallError.TruncatedMessage)
     let index ← pure (fromIntegral (listIndexH args 0))
@@ -137,7 +134,7 @@ partial def decodeDomainSetStart (args : List Word) (extraCaps : List (Capabilit
     pure (DomainInvocation.InvokeDomainScheduleSetStart index)
 
 /-- Haskell `decodeDomainInvocation` -/
-partial def decodeDomainInvocation (label : Word) (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
+def decodeDomainInvocation (label : Word) (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
   do
     match genInvocationType label with
     | GenInvocationLabels.DomainSetSet => decodeDomainSet args extraCaps

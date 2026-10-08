@@ -81,9 +81,6 @@ opaque kernelELFPAddrBase : PAddr
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque loadWord : (PPtr Word) → MachineMonad Word
 
--- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
-opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
-
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
@@ -101,9 +98,6 @@ opaque pageBitsForSize : VMPageSize → Nat
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pageColourBits : Nat
-
--- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
-opaque physBase : PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque plic_complete_claim : IRQ → MachineMonad Unit
@@ -150,9 +144,6 @@ opaque sfence : MachineMonad Unit
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
 
--- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
-opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
-
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
@@ -175,23 +166,23 @@ opaque vmRightsToBits : VMRights → Word
 /-! ## Translated -/
 
 /-- Haskell `toPAddr` -/
-partial def toPAddr :=
+def toPAddr :=
   PAddr.PAddr
 
 /-- Haskell `pptrBaseOffset` -/
-partial def pptrBaseOffset :=
+def pptrBaseOffset :=
   (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
 
 /-- Haskell `kernelELFBaseOffset` -/
-partial def kernelELFBaseOffset :=
+def kernelELFBaseOffset :=
   (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
 
 /-- Haskell `getRestartPC` -/
-partial def getRestartPC :=
+def getRestartPC :=
   getRegister (Register.Register (RISCV64.Register.FaultIP))
 
 /-- Haskell `setNextPC` -/
-partial def setNextPC :=
+def setNextPC :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
 
 end

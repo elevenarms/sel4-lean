@@ -54,9 +54,6 @@ opaque cteDeleteOne : (PPtr CTE) → Kernel Unit
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
--- external: SEL4/Object/TCB/RISCV64.hs
-opaque decodeTransfer : (BitVec 8) → KernelF SyscallError CopyRegisterSets
-
 -- external: SEL4/Object/ObjectType.lhs
 opaque deriveCap : (PPtr CTE) → Capability → KernelF SyscallError Capability
 
@@ -134,15 +131,6 @@ opaque msgRegisters : List Register
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque nullPointer {a : Type} [Inhabited a] : PPtr a
-
--- external: SEL4/Object/TCB/RISCV64.hs
-opaque performTransfer : CopyRegisterSets → (PPtr TCB) → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Object/TCB/RISCV64.hs
-opaque postModifyRegisters : (PPtr TCB) → (PPtr TCB) → UserMonad Unit
-
--- external: SEL4/Object/TCB/RISCV64.hs
-opaque postSetFlags : (PPtr TCB) → TcbFlags → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
 opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] [IntegralH a] [IntegralH b] : a → b → b → KernelF SyscallError Unit
@@ -257,7 +245,7 @@ opaque wordSize : Nat
 /-! ## Translated -/
 
 /-- Haskell `decodeBindNotification` -/
-partial def decodeBindNotification (cap : Capability) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeBindNotification (cap : Capability) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   do
     let _ ← whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
     let tcb := Capability.capTCBPtr cap
@@ -277,7 +265,7 @@ partial def decodeBindNotification (cap : Capability) (extraCaps : List (Capabil
     pure (TCBInvocation.NotificationControl tcb (some ntfnPtr))
 
 /-- Haskell `decodeCopyRegisters` -/
-partial def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Capability) : KernelF SyscallError TCBInvocation :=
+def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2 with
   | (flags :: _), cap, extraCaps => 
       do
@@ -285,7 +273,7 @@ partial def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Ca
         let resumeTarget := testBit flags 1
         let transferFrame := testBit flags 2
         let transferInteger := testBit flags 3
-        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
+        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (shiftRH flags 8))
         let _ ← whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
         let srcTCB ← match head extraCaps with
           | Capability.ThreadCap ptr => pure ptr
@@ -294,19 +282,19 @@ partial def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Ca
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeReadRegisters` -/
-partial def decodeReadRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
+def decodeReadRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1 with
   | (flags :: n :: _), cap => 
       do
         let _ ← rangeCheck n 1 ((length frameRegisters) + (length gpRegisters))
-        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
+        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (shiftRH flags 8))
         let self ← withoutFailure getCurThread
         let _ ← whenH ((Capability.capTCBPtr cap) == self) (throw SyscallError.IllegalOperation)
         pure (TCBInvocation.ReadRegisters (Capability.capTCBPtr cap) (testBit flags 0) n transferArch)
   | _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetFlags` -/
-partial def decodeSetFlags (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
+def decodeSetFlags (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1 with
   | (flagsClear :: flagsSet :: _), cap => 
       do
@@ -314,7 +302,7 @@ partial def decodeSetFlags (x0 : List Word) (x1 : Capability) : KernelF SyscallE
   | _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetIPCBuffer` -/
-partial def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2, x3 with
   | (bufferPtr :: _), cap, slot, (bufferCap, bufferSlot) :: _ => 
       do
@@ -330,17 +318,17 @@ partial def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE
   | _, _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `threadGet` -/
-partial def threadGet {a : Type} [Inhabited a] (f : TCB → a) (tptr : PPtr TCB) : Kernel a :=
+def threadGet {a : Type} [Inhabited a] (f : TCB → a) (tptr : PPtr TCB) : Kernel a :=
   liftM f (getObject tptr)
 
 /-- Haskell `checkPrio` -/
-partial def checkPrio (prio : Word) (auth : PPtr TCB) : KernelF SyscallError Unit :=
+def checkPrio (prio : Word) (auth : PPtr TCB) : KernelF SyscallError Unit :=
   do
     let mcp ← withoutFailure (threadGet TCB.tcbMCP auth)
     whenH (prio > (fromIntegral mcp)) (throw (SyscallError.RangeError (fromIntegral minPriority) (fromIntegral mcp)))
 
 /-- Haskell `decodeSetMCPriority` -/
-partial def decodeSetMCPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeSetMCPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2 with
   | (newMCP :: _), cap, (authCap, _) :: _ => 
       do
@@ -352,7 +340,7 @@ partial def decodeSetMCPriority (x0 : List Word) (x1 : Capability) (x2 : List (C
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetPriority` -/
-partial def decodeSetPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeSetPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2 with
   | (newPrio :: _), cap, (authCap, _) :: _ => 
       do
@@ -364,7 +352,7 @@ partial def decodeSetPriority (x0 : List Word) (x1 : Capability) (x2 : List (Cap
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetSchedParams` -/
-partial def decodeSetSchedParams (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeSetSchedParams (x0 : List Word) (x1 : Capability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2 with
   | (newMCP :: newPrio :: _), cap, (authCap, _) :: _ => 
       do
@@ -377,16 +365,16 @@ partial def decodeSetSchedParams (x0 : List Word) (x1 : Capability) (x2 : List (
   | _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `getThreadCSpaceRoot` -/
-partial def getThreadCSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
+def getThreadCSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   do
     locateSlotTCB thread tcbCTableSlot
 
 /-- Haskell `getThreadVSpaceRoot` -/
-partial def getThreadVSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
+def getThreadVSpaceRoot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   locateSlotTCB thread tcbVTableSlot
 
 /-- Haskell `decodeSetSpace` -/
-partial def decodeSetSpace (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeSetSpace (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2, x3 with
   | (faultEP :: cRootData :: vRootData :: _), cap, slot, (cRootArg :: vRootArg :: _) => 
       do
@@ -414,7 +402,7 @@ partial def decodeSetSpace (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x
   | _, _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeSetTLSBase` -/
-partial def decodeSetTLSBase (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
+def decodeSetTLSBase (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1 with
   | (tls_base :: _), cap => 
       do
@@ -422,7 +410,7 @@ partial def decodeSetTLSBase (x0 : List Word) (x1 : Capability) : KernelF Syscal
   | _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeTCBConfigure` -/
-partial def decodeTCBConfigure (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeTCBConfigure (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match x0, x1, x2, x3 with
   | (faultEP :: cRootData :: vRootData :: buffer :: _), cap, slot, (cRoot :: vRoot :: bufferFrame :: _) => 
       do
@@ -432,7 +420,7 @@ partial def decodeTCBConfigure (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE
   | _, _, _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeUnbindNotification` -/
-partial def decodeUnbindNotification (cap : Capability) : KernelF SyscallError TCBInvocation :=
+def decodeUnbindNotification (cap : Capability) : KernelF SyscallError TCBInvocation :=
   do
     let tcb := Capability.capTCBPtr cap
     let ntfn ← withoutFailure (getBoundNotification tcb)
@@ -442,19 +430,19 @@ partial def decodeUnbindNotification (cap : Capability) : KernelF SyscallError T
     pure (TCBInvocation.NotificationControl tcb none)
 
 /-- Haskell `decodeWriteRegisters` -/
-partial def decodeWriteRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
+def decodeWriteRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallError TCBInvocation :=
   match x0, x1 with
   | (flags :: n :: values), cap => 
       do
         let _ ← whenH ((genericLength values) < n) (throw SyscallError.TruncatedMessage)
-        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
+        let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (shiftRH flags 8))
         let self ← withoutFailure getCurThread
         let _ ← whenH ((Capability.capTCBPtr cap) == self) (throw SyscallError.IllegalOperation)
         pure (TCBInvocation.WriteRegisters (Capability.capTCBPtr cap) (testBit flags 0) (genericTake n values) transferArch)
   | _, _ => throw SyscallError.TruncatedMessage
 
 /-- Haskell `decodeTCBInvocation` -/
-partial def decodeTCBInvocation (label : Word) (args : List Word) (cap : Capability) (slot : PPtr CTE) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
+def decodeTCBInvocation (label : Word) (args : List Word) (cap : Capability) (slot : PPtr CTE) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   match genInvocationType label with
   | GenInvocationLabels.TCBReadRegisters => decodeReadRegisters args cap
   | GenInvocationLabels.TCBWriteRegisters => decodeWriteRegisters args cap
@@ -474,13 +462,13 @@ partial def decodeTCBInvocation (label : Word) (args : List Word) (cap : Capabil
   | _ => throw SyscallError.IllegalOperation
 
 /-- Haskell `threadSet` -/
-partial def threadSet (f : TCB → TCB) (tptr : PPtr TCB) : Kernel Unit :=
+def threadSet (f : TCB → TCB) (tptr : PPtr TCB) : Kernel Unit :=
   do
     let tcb ← getObject tptr
     setObject tptr (f tcb)
 
 /-- Haskell `asUser` -/
-partial def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
+def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel a :=
   do
     let uc ← threadGet (atcbContextGet ∘ TCB.tcbArch) tptr
     let (a, uc') := runState f uc
@@ -488,26 +476,26 @@ partial def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) 
     pure a
 
 /-- Haskell `assertDerived` -/
-partial def assertDerived {a : Type} [Inhabited a] (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel a) : Kernel a :=
+def assertDerived {a : Type} [Inhabited a] (x0 : PPtr CTE) (x1 : Capability) (x2 : Kernel a) : Kernel a :=
   match x0, x1, x2 with
   | _, _, f => f
 
 /-- Haskell `checkCapAt` -/
-partial def checkCapAt (cap : Capability) (ptr : PPtr CTE) (action : Kernel Unit) : Kernel Unit :=
+def checkCapAt (cap : Capability) (ptr : PPtr CTE) (action : Kernel Unit) : Kernel Unit :=
   do
     let cap' ← liftM CTE.cteCap (getCTE ptr)
     whenH (sameObjectAs cap cap') action
 
 /-- Haskell `getSanitiseRegisterInfo` -/
-partial def getSanitiseRegisterInfo (t : PPtr TCB) : Kernel Bool :=
+def getSanitiseRegisterInfo (t : PPtr TCB) : Kernel Bool :=
   (RISCV64.getSanitiseRegisterInfo) t
 
 /-- Haskell `getThreadBufferSlot` -/
-partial def getThreadBufferSlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
+def getThreadBufferSlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   locateSlotTCB thread tcbIPCBufferSlot
 
 /-- Haskell `invokeSetFlags` -/
-partial def invokeSetFlags (tcb : PPtr TCB) (flagsClear : Word) (flagsSet : Word) : Kernel Word :=
+def invokeSetFlags (tcb : PPtr TCB) (flagsClear : Word) (flagsSet : Word) : Kernel Word :=
   do
     let flags ← threadGet TCB.tcbFlags tcb
     let newFlags := (flags &&& (complement flagsClear)) ||| (flagsSet &&& tcbFlagMask)
@@ -516,12 +504,12 @@ partial def invokeSetFlags (tcb : PPtr TCB) (flagsClear : Word) (flagsSet : Word
     pure newFlags
 
 /-- Haskell `sanitiseRegister` -/
-partial def sanitiseRegister (x0 : Bool) (x1 : Register) (x2 : Word) : Word :=
+def sanitiseRegister (x0 : Bool) (x1 : Register) (x2 : Word) : Word :=
   match x0, x1, x2 with
-  | t, (Register.Register r), (Word w) => Word ((RISCV64.sanitiseRegister) t r w)
+  | t, (Register.Register r), w => id ((RISCV64.sanitiseRegister) t r w)
 
 /-- Haskell `invokeTCB` -/
-partial def invokeTCB (x0 : TCBInvocation) : KernelP (List Word) :=
+def invokeTCB (x0 : TCBInvocation) : KernelP (List Word) :=
   match x0 with
   | (TCBInvocation.Suspend thread) => 
       withoutPreemption (do
@@ -614,19 +602,19 @@ partial def invokeTCB (x0 : TCBInvocation) : KernelP (List Word) :=
         pure [newFlags])
 
 /-- Haskell `setMessageInfo` -/
-partial def setMessageInfo (thread : PPtr TCB) (info : MessageInfo) : Kernel Unit :=
+def setMessageInfo (thread : PPtr TCB) (info : MessageInfo) : Kernel Unit :=
   do
     let x := wordFromMessageInfo info
     asUser thread (setRegister msgInfoRegister x)
 
 /-- Haskell `getMessageInfo` -/
-partial def getMessageInfo (thread : PPtr TCB) : Kernel MessageInfo :=
+def getMessageInfo (thread : PPtr TCB) : Kernel MessageInfo :=
   do
     let x ← asUser thread (getRegister msgInfoRegister)
     pure (messageInfoFromWord x)
 
 /-- Haskell `setMRs` -/
-partial def setMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (messageData : List Word) : Kernel Word :=
+def setMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (messageData : List Word) : Kernel Word :=
   do
     let intSize := fromIntegral wordSize
     let hardwareMRs := msgRegisters
@@ -640,7 +628,7 @@ partial def setMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (messageDat
     pure (fromIntegral msgLength)
 
 /-- Haskell `getMRs` -/
-partial def getMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (info : MessageInfo) : Kernel (List Word) :=
+def getMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (info : MessageInfo) : Kernel (List Word) :=
   do
     let intSize := fromIntegral wordSize
     let hardwareMRs := msgRegisters
@@ -654,7 +642,7 @@ partial def getMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (info : Mes
     pure (take (fromIntegral (MessageInfo.msgLength info)) values)
 
 /-- Haskell `copyMRs` -/
-partial def copyMRs (sender : PPtr TCB) (sendBuf : Option (PPtr Word)) (receiver : PPtr TCB) (recvBuf : Option (PPtr Word)) (n : Word) : Kernel Word :=
+def copyMRs (sender : PPtr TCB) (sendBuf : Option (PPtr Word)) (receiver : PPtr TCB) (recvBuf : Option (PPtr Word)) (n : Word) : Kernel Word :=
   do
     let intSize := fromIntegral wordSize
     let hardwareMRs := take (fromIntegral n) msgRegisters
@@ -669,18 +657,18 @@ partial def copyMRs (sender : PPtr TCB) (sendBuf : Option (PPtr Word)) (receiver
     pure (min n (fromIntegral ((length hardwareMRs) + (length bufferMRs))))
 
 /-- Haskell `lookupExtraCaps` -/
-partial def lookupExtraCaps (thread : PPtr TCB) (buffer : Option (PPtr Word)) (info : MessageInfo) : KernelF Fault (List (Capability × (PPtr CTE))) :=
+def lookupExtraCaps (thread : PPtr TCB) (buffer : Option (PPtr Word)) (info : MessageInfo) : KernelF Fault (List (Capability × (PPtr CTE))) :=
   do
     let cptrs ← withoutFailure (getExtraCPtrs buffer info)
     mapM (fun cptr => capFaultOnFailure cptr false (lookupCapAndSlot thread cptr)) cptrs
 
 /-- Haskell `bufferCPtrOffset` -/
-partial def bufferCPtrOffset : PPtr Word :=
+def bufferCPtrOffset : PPtr Word :=
   let intSize := fromIntegral wordSize
   PPtr.mk ((msgMaxLength + 2) * intSize)
 
 /-- Haskell `getExtraCPtr` -/
-partial def getExtraCPtr (buffer : PPtr Word) (n : Nat) : Kernel CPtr :=
+def getExtraCPtr (buffer : PPtr Word) (n : Nat) : Kernel CPtr :=
   do
     let intSize := fromIntegral wordSize
     let ptr := (buffer + bufferCPtrOffset) + (PPtr.mk ((fromIntegral n) * intSize))
@@ -688,22 +676,22 @@ partial def getExtraCPtr (buffer : PPtr Word) (n : Nat) : Kernel CPtr :=
     pure (CPtr.CPtr cptr)
 
 /-- Haskell `setExtraBadge` -/
-partial def setExtraBadge (buffer : PPtr Word) (badge : Word) (n : Nat) : Kernel Unit :=
+def setExtraBadge (buffer : PPtr Word) (badge : Word) (n : Nat) : Kernel Unit :=
   do
     let intSize := fromIntegral wordSize
     let badgePtr := (buffer + bufferCPtrOffset) + (PPtr.mk ((fromIntegral n) * intSize))
     storeWordUser badgePtr badge
 
 /-- Haskell `getThreadCallerSlot` -/
-partial def getThreadCallerSlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
+def getThreadCallerSlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   locateSlotTCB thread tcbCallerSlot
 
 /-- Haskell `getThreadReplySlot` -/
-partial def getThreadReplySlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
+def getThreadReplySlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
   locateSlotTCB thread tcbReplySlot
 
 /-- Haskell `setupCallerCap` -/
-partial def setupCallerCap (sender : PPtr TCB) (receiver : PPtr TCB) (canGrant : Bool) : Kernel Unit :=
+def setupCallerCap (sender : PPtr TCB) (receiver : PPtr TCB) (canGrant : Bool) : Kernel Unit :=
   do
     let _ ← setThreadState ThreadState.BlockedOnReply sender
     let replySlot ← getThreadReplySlot sender
@@ -717,7 +705,7 @@ partial def setupCallerCap (sender : PPtr TCB) (receiver : PPtr TCB) (canGrant :
     cteInsert (Capability.ReplyCap sender false canGrant) replySlot callerSlot
 
 /-- Haskell `deleteCallerCap` -/
-partial def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
+def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
   do
     let callerSlot ← getThreadCallerSlot receiver
     let callerCap ← getSlotCap callerSlot
@@ -725,11 +713,11 @@ partial def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
     cteDeleteOne callerSlot
 
 /-- Haskell `archThreadGet` -/
-partial def archThreadGet {a : Type} [Inhabited a] (f : ArchTCB → a) (tptr : PPtr TCB) : Kernel a :=
+def archThreadGet {a : Type} [Inhabited a] (f : ArchTCB → a) (tptr : PPtr TCB) : Kernel a :=
   liftM (f ∘ TCB.tcbArch) (getObject tptr)
 
 /-- Haskell `archThreadSet` -/
-partial def archThreadSet (f : ArchTCB → ArchTCB) (tptr : PPtr TCB) : Kernel Unit :=
+def archThreadSet (f : ArchTCB → ArchTCB) (tptr : PPtr TCB) : Kernel Unit :=
   do
     let tcb ← getObject tptr
     setObject tptr ({ tcb with tcbArch := f (TCB.tcbArch tcb) })

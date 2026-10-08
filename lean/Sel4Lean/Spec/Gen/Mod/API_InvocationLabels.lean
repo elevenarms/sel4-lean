@@ -23,7 +23,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `invocationType` -/
-partial def invocationType (x : Word) : InvocationLabel :=
+def invocationType (x : Word) : InvocationLabel :=
   let x' := fromIntegral x
   if (x' ≤ (fromEnum ((maxBound : InvocationLabel)))) then
     toEnum x'
@@ -31,7 +31,7 @@ partial def invocationType (x : Word) : InvocationLabel :=
     InvocationLabel.GenInvocationLabel GenInvocationLabels.InvalidInvocation
 
 /-- Haskell `genInvocationType` -/
-partial def genInvocationType (x : Word) : GenInvocationLabels :=
+def genInvocationType (x : Word) : GenInvocationLabels :=
   match invocationType x with
   | InvocationLabel.GenInvocationLabel l => l
   | InvocationLabel.ArchInvocationLabel _ => GenInvocationLabels.InvalidInvocation

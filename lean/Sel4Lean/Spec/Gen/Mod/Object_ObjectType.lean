@@ -72,12 +72,6 @@ opaque cancelAllIPC : (PPtr Endpoint) → Kernel Unit
 -- external: SEL4/Object/Notification.lhs
 opaque cancelAllSignals : (PPtr Notification) → Kernel Unit
 
--- external: SEL4/Object/ObjectType/RISCV64.hs
-opaque cteGuardBits : Nat
-
--- external: SEL4/Object/ObjectType/RISCV64.hs
-opaque cteRightsBits : Nat
-
 -- external: SEL4/Model/StateData.lhs
 opaque curDomain : Kernel Domain
 
@@ -135,9 +129,6 @@ opaque invokeUntyped : UntypedInvocation → KernelP Unit
 -- external: SEL4/Object/Structures.lhs
 opaque isIRQControlCap : Capability → Bool
 
--- external: SEL4/Object/ObjectType/RISCV64.hs
-opaque isIRQControlCapDescendant : ArchCapability → Bool
-
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
@@ -146,9 +137,6 @@ opaque performIRQControl : IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Model/PSpace.lhs
 opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
-
--- external: SEL4/Object/ObjectType/RISCV64.hs
-opaque prepareThreadDelete : (PPtr TCB) → Kernel Unit
 
 -- external: SEL4/Object/Endpoint.lhs
 opaque sendIPC : Bool → Bool → Word → Bool → Bool → (PPtr TCB) → (PPtr Endpoint) → Kernel Unit
@@ -196,7 +184,7 @@ opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 /-! ## Translated -/
 
 /-- Haskell `deriveCap` -/
-partial def deriveCap (x0 : PPtr CTE) (x1 : Capability) : KernelF SyscallError Capability :=
+def deriveCap (x0 : PPtr CTE) (x1 : Capability) : KernelF SyscallError Capability :=
   match x0, x1 with
   | _, (Capability.Zombie ..) => pure Capability.NullCap
   | _, Capability.IRQControlCap => pure Capability.NullCap
@@ -209,7 +197,7 @@ partial def deriveCap (x0 : PPtr CTE) (x1 : Capability) : KernelF SyscallError C
   | _, cap => pure cap
 
 /-- Haskell `isCapRevocable` -/
-partial def isCapRevocable (newCap : Capability) (srcCap : Capability) : Bool :=
+def isCapRevocable (newCap : Capability) (srcCap : Capability) : Bool :=
   match newCap with
   | Capability.ArchObjectCap .. => (RISCV64.isCapRevocable) newCap srcCap
   | Capability.EndpointCap .. => (Capability.capEPBadge newCap) != (Capability.capEPBadge srcCap)
@@ -219,7 +207,7 @@ partial def isCapRevocable (newCap : Capability) (srcCap : Capability) : Bool :=
   | _ => false
 
 /-- Haskell `finaliseCap` -/
-partial def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability × Capability) :=
+def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability × Capability) :=
   match x0, x1, x2 with
   | (Capability.EndpointCap ptr _ _ _ _ _), final, _ => 
       do
@@ -253,20 +241,20 @@ partial def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capa
   | _, _, _ => pure ((Capability.NullCap, Capability.NullCap))
 
 /-- Haskell `postCapDeletion` -/
-partial def postCapDeletion (info : Capability) : Kernel Unit :=
+def postCapDeletion (info : Capability) : Kernel Unit :=
   match info with
   | Capability.IRQHandlerCap irq => deletedIRQHandler irq
   | Capability.ArchObjectCap c => (RISCV64.postCapDeletion) c
   | _ => pure ()
 
 /-- Haskell `hasCancelSendRights` -/
-partial def hasCancelSendRights (x0 : Capability) : Bool :=
+def hasCancelSendRights (x0 : Capability) : Bool :=
   match x0 with
   | (Capability.EndpointCap _ _ true true true true) => true
   | _ => false
 
 /-- Haskell `capUntypedPtr` -/
-partial def capUntypedPtr (x0 : Capability) : PPtr Unit :=
+def capUntypedPtr (x0 : Capability) : PPtr Unit :=
   match x0 with
   | Capability.NullCap => error "No valid pointer"
   | (Capability.UntypedCap _ p _ _) => p
@@ -282,24 +270,24 @@ partial def capUntypedPtr (x0 : Capability) : PPtr Unit :=
   | (Capability.ArchObjectCap a) => (RISCV64.capUntypedPtr) a
 
 /-- Haskell `capUntypedSize` -/
-partial def capUntypedSize (x0 : Capability) : Word :=
+def capUntypedSize (x0 : Capability) : Word :=
   match x0 with
   | Capability.NullCap => 0
-  | (Capability.UntypedCap _ _ b _) => 1 <<< b
-  | (Capability.CNodeCap _ c _ _) => 1 <<< ((objBits ((undefined : CTE))) + c)
-  | (Capability.EndpointCap ..) => 1 <<< (objBits ((undefined : Endpoint)))
-  | (Capability.NotificationCap ..) => 1 <<< (objBits ((undefined : Notification)))
-  | (Capability.ThreadCap ..) => 1 <<< (objBits ((undefined : TCB)))
+  | (Capability.UntypedCap _ _ b _) => shiftLH 1 b
+  | (Capability.CNodeCap _ c _ _) => shiftLH 1 ((objBits ((undefined : CTE))) + c)
+  | (Capability.EndpointCap ..) => shiftLH 1 (objBits ((undefined : Endpoint)))
+  | (Capability.NotificationCap ..) => shiftLH 1 (objBits ((undefined : Notification)))
+  | (Capability.ThreadCap ..) => shiftLH 1 (objBits ((undefined : TCB)))
   | (Capability.DomainCap ..) => 1
   | (Capability.ArchObjectCap a) => (RISCV64.capUntypedSize) a
-  | (Capability.Zombie _ ZombieType.ZombieTCB _) => 1 <<< (objBits ((undefined : TCB)))
-  | (Capability.Zombie _ (ZombieType.ZombieCNode sz) _) => 1 <<< ((objBits ((undefined : CTE))) + sz)
-  | (Capability.ReplyCap ..) => 1 <<< (objBits ((undefined : TCB)))
+  | (Capability.Zombie _ ZombieType.ZombieTCB _) => shiftLH 1 (objBits ((undefined : TCB)))
+  | (Capability.Zombie _ (ZombieType.ZombieCNode sz) _) => shiftLH 1 ((objBits ((undefined : CTE))) + sz)
+  | (Capability.ReplyCap ..) => shiftLH 1 (objBits ((undefined : TCB)))
   | (Capability.IRQControlCap ..) => 1
   | (Capability.IRQHandlerCap ..) => 1
 
 /-- Haskell `isPhysicalCap` -/
-partial def isPhysicalCap (x0 : Capability) : Bool :=
+def isPhysicalCap (x0 : Capability) : Bool :=
   match x0 with
   | Capability.NullCap => false
   | Capability.IRQControlCap => false
@@ -310,7 +298,7 @@ partial def isPhysicalCap (x0 : Capability) : Bool :=
   | _ => true
 
 /-- Haskell `sameRegionAs` -/
-partial def sameRegionAs (x0 : Capability) (x1 : Capability) : Bool :=
+def sameRegionAs (x0 : Capability) (x1 : Capability) : Bool :=
   match x0, x1 with
   | a@(Capability.UntypedCap ..), b => 
       let baseA := Capability.capPtr a
@@ -332,7 +320,7 @@ partial def sameRegionAs (x0 : Capability) (x1 : Capability) : Bool :=
   | _, _ => false
 
 /-- Haskell `sameObjectAs` -/
-partial def sameObjectAs (x0 : Capability) (x1 : Capability) : Bool :=
+def sameObjectAs (x0 : Capability) (x1 : Capability) : Bool :=
   match x0, x1 with
   | (Capability.UntypedCap ..), _ => false
   | Capability.IRQControlCap, _ => false
@@ -340,11 +328,11 @@ partial def sameObjectAs (x0 : Capability) (x1 : Capability) : Bool :=
   | a, b => sameRegionAs a b
 
 /-- Haskell `badgeBits` -/
-partial def badgeBits : Nat :=
+def badgeBits : Nat :=
   wordSizeCase 28 64
 
 /-- Haskell `updateCapData` -/
-partial def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability :=
+def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability :=
   match x0, x1, x2 with
   | preserve, new, cap@(Capability.EndpointCap ..) => 
       if ((not preserve) && ((Capability.capEPBadge cap) == 0)) then
@@ -358,8 +346,8 @@ partial def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability
         Capability.NullCap
   | _, w, cap@(Capability.CNodeCap ..) => 
       let guardSizeBits := wordSizeCase 5 6
-      let guardSize := fromIntegral ((w >>> (RISCV64.cteRightsBits)) &&& (mask guardSizeBits))
-      let guard := ((w >>> ((RISCV64.cteRightsBits) + guardSizeBits)) &&& (mask (RISCV64.cteGuardBits))) &&& (mask guardSize)
+      let guardSize := fromIntegral ((shiftRH w (RISCV64.cteRightsBits)) &&& (mask guardSizeBits))
+      let guard := ((shiftRH w ((RISCV64.cteRightsBits) + guardSizeBits)) &&& (mask (RISCV64.cteGuardBits))) &&& (mask guardSize)
       if ((guardSize + (Capability.capCNodeBits cap)) > (finiteBitSize w)) then
         Capability.NullCap
       else
@@ -368,7 +356,7 @@ partial def updateCapData (x0 : Bool) (x1 : Word) (x2 : Capability) : Capability
   | _, _, cap => cap
 
 /-- Haskell `maskCapRights` -/
-partial def maskCapRights (x0 : CapRights) (x1 : Capability) : Capability :=
+def maskCapRights (x0 : CapRights) (x1 : Capability) : Capability :=
   match x0, x1 with
   | _, Capability.NullCap => Capability.NullCap
   | _, Capability.DomainCap => Capability.DomainCap
@@ -384,7 +372,7 @@ partial def maskCapRights (x0 : CapRights) (x1 : Capability) : Capability :=
   | _, c@(Capability.Zombie ..) => c
 
 /-- Haskell `createObject` -/
-partial def createObject (t : ObjectType) (regionBase : PPtr Unit) (userSize : Nat) (isDevice : Bool) : Kernel Capability :=
+def createObject (t : ObjectType) (regionBase : PPtr Unit) (userSize : Nat) (isDevice : Bool) : Kernel Capability :=
   let funupd := fun f x v y => if y == x then
         v
       else
@@ -410,7 +398,7 @@ partial def createObject (t : ObjectType) (regionBase : PPtr Unit) (userSize : N
         pure (Capability.ArchObjectCap archCap))
 
 /-- Haskell `decodeInvocation` -/
-partial def decodeInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : Capability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError Invocation :=
+def decodeInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : Capability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError Invocation :=
   match x0, x1, x2, x3, x4, x5 with
   | _, _, _, _, cap@(Capability.EndpointCap _ _ true _ _ _), _ => pure (Invocation.InvokeEndpoint (Capability.capEPPtr cap) (Capability.capEPBadge cap) (Capability.capEPCanGrant cap) (Capability.capEPCanGrantReply cap))
   | _, _, _, _, cap@(Capability.NotificationCap _ _ true _), _ => 
@@ -429,7 +417,7 @@ partial def decodeInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr
   | _, _, _, _, _, _ => throw (SyscallError.InvalidCapability 0)
 
 /-- Haskell `performInvocation` -/
-partial def performInvocation (x0 : Bool) (x1 : Bool) (x2 : Invocation) : KernelP (List Word) :=
+def performInvocation (x0 : Bool) (x1 : Bool) (x2 : Invocation) : KernelP (List Word) :=
   match x0, x1, x2 with
   | _, _, (Invocation.InvokeUntyped invok) => 
       do

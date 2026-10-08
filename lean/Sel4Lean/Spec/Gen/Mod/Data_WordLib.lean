@@ -27,26 +27,26 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `wordBits` -/
-partial def wordBits : Nat :=
+def wordBits : Nat :=
   finiteBitSize ((undefined : Word))
 
 /-- Haskell `wordSize` -/
-partial def wordSize : Nat :=
+def wordSize : Nat :=
   div wordBits 8
 
 /-- Haskell `wordSizeCase` -/
-partial def wordSizeCase {a : Type} [Inhabited a] (a : a) (b : a) : a :=
+def wordSizeCase {a : Type} [Inhabited a] (a : a) (b : a) : a :=
   match wordBits with
   | 32 => a
   | 64 => b
   | _ => error "Unknown word size"
 
 /-- Haskell `wordRadix` -/
-partial def wordRadix : Nat :=
+def wordRadix : Nat :=
   wordSizeCase 5 6
 
 /-- Haskell `countTrailingZeros` -/
-partial def countTrailingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
+def countTrailingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (map (testBit w)))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 end

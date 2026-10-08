@@ -115,11 +115,11 @@ opaque wordBits : Nat
 /-! ## Translated -/
 
 /-- Haskell `alignUp` -/
-partial def alignUp (baseValue : Word) (alignment : Nat) : Word :=
-  ((baseValue + (1 <<< alignment)) - 1) &&& (complement (mask alignment))
+def alignUp (baseValue : Word) (alignment : Nat) : Word :=
+  ((baseValue + (shiftLH 1 alignment)) - 1) &&& (complement (mask alignment))
 
 /-- Haskell `decodeUntypedInvocation` -/
-partial def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : Capability) (x4 : List Capability) : KernelF SyscallError UntypedInvocation :=
+def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : Capability) (x4 : List Capability) : KernelF SyscallError UntypedInvocation :=
   match x0, x1, x2, x3, x4 with
   | label, (newTypeW :: userObjSizeW :: nodeIndexW :: nodeDepthW :: nodeOffset :: nodeWindow :: _), slot, cap, (rootCap :: _) => 
       do
@@ -143,7 +143,7 @@ partial def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE)
         let _ ← match nodeCap with
                 | Capability.CNodeCap .. => pure ()
                 | _ => throw (SyscallError.FailedLookup false (LookupFailure.MissingCapability nodeDepth))
-        let nodeSize := 1 <<< (Capability.capCNodeBits nodeCap)
+        let nodeSize := shiftLH 1 (Capability.capCNodeBits nodeCap)
         let _ ← rangeCheck nodeOffset 0 (nodeSize - 1)
         let _ ← rangeCheck nodeWindow 1 retypeFanOutLimit
         let _ ← rangeCheck nodeWindow 1 (nodeSize - nodeOffset)
@@ -158,7 +158,7 @@ partial def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE)
             Capability.capFreeIndex cap
         let freeRef := getFreeRef (Capability.capPtr cap) freeIndex
         let untypedFreeBytes := (bit (Capability.capBlockSize cap)) - freeIndex
-        let maxCount := untypedFreeBytes >>> objectSize
+        let maxCount := shiftRH untypedFreeBytes objectSize
         let _ ← whenH ((fromIntegral maxCount) < nodeWindow) (throw (SyscallError.NotEnoughMemory (fromIntegral untypedFreeBytes)))
         let notFrame := not (isFrameType newType)
         let isDevice := Capability.capIsDevice cap
@@ -172,27 +172,27 @@ partial def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE)
         SyscallError.IllegalOperation)
 
 /-- Haskell `canonicalAddressAssert` -/
-partial def canonicalAddressAssert (p : PPtr Unit) : Bool :=
+def canonicalAddressAssert (p : PPtr Unit) : Bool :=
   true
 
 /-- Haskell `archOverlap` -/
-partial def archOverlap (x0 : KernelState) (x1 : Word → Bool) : Bool :=
+def archOverlap (x0 : KernelState) (x1 : Word → Bool) : Bool :=
   match x0, x1 with
   | _, _ => false
 
 /-- Haskell `cNodeOverlap` -/
-partial def cNodeOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
+def cNodeOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
   match x0, x1 with
   | _, _ => false
 
 /-- Haskell `invokeUntyped` -/
-partial def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=
+def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=
   match x0 with
   | (UntypedInvocation.Retype srcSlot reset base retypeBase newType userSize destSlots isDev) => 
       do
         let _ ← whenH reset (resetUntypedCap srcSlot)
         withoutPreemption (do
-          let totalObjectSize := (length destSlots) <<< (getObjectSize newType userSize)
+          let totalObjectSize := shiftLH (length destSlots) (getObjectSize newType userSize)
           let inRange := fun x => ((PPtr.ptr retypeBase) ≤ x) && (x ≤ (((PPtr.ptr retypeBase) + (fromIntegral totalObjectSize)) - 1))
           let _ ← stateAssertH (fun s => not (cNodeOverlap (KernelState.gsCNodes s) inRange)) "CNodes present in region to be retyped."
           let _ ← stateAssertH (fun s => not (archOverlap s inRange)) "Arch specific non-overlap requirements."

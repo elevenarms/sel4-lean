@@ -57,9 +57,6 @@ opaque RISCV64.writeITASIDPool : Capability → Capability → Kernel Unit
 -- arch: SEL4/Kernel/VSpace/RISCV64.hs
 opaque RISCV64.writeITPDPTs : Capability → Capability → KernelInit Unit
 
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque activateGlobalVSpace : Kernel Unit
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque configureTimer : MachineMonad IRQ
 
@@ -69,76 +66,73 @@ opaque initIRQController : MachineMonad Unit
 -- external: SEL4/Machine/Hardware.lhs
 opaque initL2Cache : MachineMonad Unit
 
--- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque mapKernelWindow : Kernel Unit
-
 /-! ## Translated -/
 
 /-- Haskell `initKernelVM` -/
-partial def initKernelVM : Kernel Unit :=
+def initKernelVM : Kernel Unit :=
   RISCV64.mapKernelWindow
 
 /-- Haskell `initPlatform` -/
-partial def initPlatform : Kernel Unit :=
+def initPlatform : Kernel Unit :=
   do
     let _ ← doMachineOp initIRQController
     let _ ← doMachineOp configureTimer
     doMachineOp initL2Cache
 
 /-- Haskell `initCPU` -/
-partial def initCPU : Kernel Unit :=
+def initCPU : Kernel Unit :=
   RISCV64.activateGlobalVSpace
 
 /-- Haskell `createIPCBufferFrame` -/
-partial def createIPCBufferFrame : Capability → VPtr → KernelInit Capability :=
+def createIPCBufferFrame : Capability → VPtr → KernelInit Capability :=
   RISCV64.createIPCBufferFrame
 
 /-- Haskell `createBIFrame` -/
-partial def createBIFrame : Capability → VPtr → (BitVec 32) → (BitVec 32) → KernelInit Capability :=
+def createBIFrame : Capability → VPtr → (BitVec 32) → (BitVec 32) → KernelInit Capability :=
   RISCV64.createBIFrame
 
 /-- Haskell `createFramesOfRegion` -/
-partial def createFramesOfRegion : Capability → Region → Bool → KernelInit Unit :=
+def createFramesOfRegion : Capability → Region → Bool → KernelInit Unit :=
   RISCV64.createFramesOfRegion
 
 /-- Haskell `createITPDPTs` -/
-partial def createITPDPTs : Capability → VPtr → VPtr → KernelInit Capability :=
+def createITPDPTs : Capability → VPtr → VPtr → KernelInit Capability :=
   RISCV64.createITPDPTs
 
 /-- Haskell `writeITPDPTs` -/
-partial def writeITPDPTs : Capability → Capability → KernelInit Unit :=
+def writeITPDPTs : Capability → Capability → KernelInit Unit :=
   RISCV64.writeITPDPTs
 
 /-- Haskell `createITASIDPool` -/
-partial def createITASIDPool : Capability → KernelInit Capability :=
+def createITASIDPool : Capability → KernelInit Capability :=
   RISCV64.createITASIDPool
 
 /-- Haskell `writeITASIDPool` -/
-partial def writeITASIDPool : Capability → Capability → Kernel Unit :=
+def writeITASIDPool : Capability → Capability → Kernel Unit :=
   RISCV64.writeITASIDPool
 
 /-- Haskell `createDeviceFrames` -/
-partial def createDeviceFrames : Capability → KernelInit Unit :=
+def createDeviceFrames : Capability → KernelInit Unit :=
   RISCV64.createDeviceFrames
 
 /-- Haskell `handleVMFault` -/
-partial def handleVMFault : (PPtr TCB) → VMFaultType → KernelF Fault Unit :=
+def handleVMFault : (PPtr TCB) → VMFaultType → KernelF Fault Unit :=
   RISCV64.handleVMFault
 
 /-- Haskell `isValidVTableRoot` -/
-partial def isValidVTableRoot : Capability → Bool :=
+def isValidVTableRoot : Capability → Bool :=
   RISCV64.isValidVTableRoot
 
 /-- Haskell `checkValidIPCBuffer` -/
-partial def checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit :=
+def checkValidIPCBuffer : VPtr → Capability → KernelF SyscallError Unit :=
   RISCV64.checkValidIPCBuffer
 
 /-- Haskell `lookupIPCBuffer` -/
-partial def lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word)) :=
+def lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word)) :=
   RISCV64.lookupIPCBuffer
 
 /-- Haskell `vptrFromPPtr` -/
-partial def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
+def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
   RISCV64.vptrFromPPtr
 
 end

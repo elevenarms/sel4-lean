@@ -9,8 +9,9 @@ Status: **in progress** (2026-10-08).
 | Data types translated (closure of all modules) | **91+**, 1 opaque (`CallbackData` has no constructors in Haskell either) | `Spec/Gen/Types.lean`, compiles |
 | Functions translated to Lean text | **679 / 695 (97.7%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
 | Machine-interface functions | **99**, opaque **by design**: the Haskell bodies are the simulator's (IO/FFI); l4v's Isabelle also treats machine operations as opaque (`MachineOps.thy`) | `full.py` `MACHINE_INTERFACE` |
-| Modules whose generated Lean compiles | **38 / 61** | `artifacts/w2/compile-status.txt` |
-| Translated bodies in compiling modules | **209 / 596 non-machine functions (35.1%)** | the honest number |
+| Modules whose generated Lean compiles | **48 / 61** | `artifacts/w2/compile-status.txt` |
+| Translated bodies in compiling modules | **300 / 596 non-machine functions (50.3%)**; 8 of them `partial` | the honest number |
+| `partial def` (self-recursive) | 16 in all generated modules; each checked to be genuinely recursive | TODO(W4): termination proofs |
 
 Translation coverage is not compile coverage. A module compiles only when every function in it does, so
 the large modules (`Kernel/Init`, `Kernel/VSpace/RISCV64`, `Model/PSpace`, `Object/CNode`, `Object/TCB`,
@@ -62,6 +63,14 @@ side-by-side tests (W3) matter.
 opaque for now, and machine operations are opaque stubs from their signatures. `doMachineOp` is a
 placeholder: l4v lifts machine operations through `ksMachineState`, a field the Haskell `KernelState`
 lacks (TODO(W3): model the machine state).
+
+## Second near-miss: `partial` everywhere
+
+The recursion check (which marks functions `partial`, hiding their bodies from proofs) first counted a
+function's own name in its defining equation, then the `f` inside a dispatch `f = Arch.f`. For a while 76
+functions were `partial`, 58 of them not recursive at all. It compiled either way, so only an explicit audit
+caught it. The check now looks only at unqualified names in right-hand sides and `where` clauses; all 16
+remaining `partial` defs are self-recursive.
 
 ## Hand-written layer
 

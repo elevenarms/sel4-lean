@@ -25,27 +25,27 @@ opaque setVMRoot : (PPtr TCB) → Kernel Unit
 /-! ## Translated -/
 
 /-- Haskell `switchToThread` -/
-partial def switchToThread (tcb : PPtr TCB) : Kernel Unit :=
+def switchToThread (tcb : PPtr TCB) : Kernel Unit :=
   setVMRoot tcb
 
 /-- Haskell `configureIdleThread` -/
-partial def configureIdleThread (x0 : PPtr TCB) : KernelInit Unit :=
+def configureIdleThread (x0 : PPtr TCB) : KernelInit Unit :=
   match x0 with
   | _ => error "Unimplemented init code"
 
 /-- Haskell `switchToIdleThread` -/
-partial def switchToIdleThread : Kernel Unit :=
+def switchToIdleThread : Kernel Unit :=
   do
     let t ← getIdleThread
     setVMRoot t
 
 /-- Haskell `activateIdleThread` -/
-partial def activateIdleThread (x0 : PPtr TCB) : Kernel Unit :=
+def activateIdleThread (x0 : PPtr TCB) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `prepareNextDomain` -/
-partial def prepareNextDomain : Kernel Unit :=
+def prepareNextDomain : Kernel Unit :=
   pure ()
 
 end

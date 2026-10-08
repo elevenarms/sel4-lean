@@ -48,9 +48,6 @@ opaque getThreadCallerSlot : (PPtr TCB) → Kernel (PPtr CTE)
 -- external: SEL4/Object/ObjectType.lhs
 opaque hasCancelSendRights : Capability → Bool
 
--- external: Data/BinaryTree.hs
-opaque insert {a : Type} [Inhabited a] : (List Bool) → a → (BinaryTree a) → BinaryTree a
-
 -- external: SEL4/Object/ObjectType/RISCV64.hs
 opaque isArchMDBParentOf : Capability → Capability → Bool → Bool
 
@@ -160,17 +157,17 @@ opaque wordSize : Nat
 /-! ## Translated -/
 
 /-- Haskell `getCTE` -/
-partial def getCTE : (PPtr CTE) → Kernel CTE :=
+def getCTE : (PPtr CTE) → Kernel CTE :=
   getObject
 
 /-- Haskell `ensureEmptySlot` -/
-partial def ensureEmptySlot (slot : PPtr CTE) : KernelF SyscallError Unit :=
+def ensureEmptySlot (slot : PPtr CTE) : KernelF SyscallError Unit :=
   do
     let cte ← withoutFailure (getCTE slot)
     unlessH (isNullCap (CTE.cteCap cte)) (throw SyscallError.DeleteFirst)
 
 /-- Haskell `decodeCNodeInvocation` -/
-partial def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability) (x3 : List Capability) : KernelF SyscallError CNodeInvocation :=
+def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability) (x3 : List Capability) : KernelF SyscallError CNodeInvocation :=
   match x0, x1, x2, x3 with
   | label, (index :: bits :: args), cap@(Capability.CNodeCap ..), extraCaps => 
       do
@@ -234,24 +231,24 @@ partial def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability)
   | _, _, _, _ => failM "decodeCNodeInvocation: invalid cap"
 
 /-- Haskell `getSlotCap` -/
-partial def getSlotCap (ptr : PPtr CTE) : Kernel Capability :=
+def getSlotCap (ptr : PPtr CTE) : Kernel Capability :=
   do
     let cte ← getCTE ptr
     pure (CTE.cteCap cte)
 
 /-- Haskell `updateTrackedFreeIndex` -/
-partial def updateTrackedFreeIndex (slot : PPtr CTE) (idx : Nat) : Kernel Unit :=
+def updateTrackedFreeIndex (slot : PPtr CTE) (idx : Nat) : Kernel Unit :=
   do
     let cap ← getSlotCap slot
     let _ ← modify (fun ks => { ks with gsUntypedZeroRanges := match untypedZeroRange cap with
                   | none => KernelState.gsUntypedZeroRanges ks
-                  | some r => (deleteH) r (KernelState.gsUntypedZeroRanges ks) })
+                  | some r => (SetH.delete) r (KernelState.gsUntypedZeroRanges ks) })
     modify (fun ks => { ks with gsUntypedZeroRanges := match untypedZeroRange (Capability.set_capFreeIndex cap idx) with
           | none => KernelState.gsUntypedZeroRanges ks
-          | some r => (insert) r (KernelState.gsUntypedZeroRanges ks) })
+          | some r => (SetH.insert) r (KernelState.gsUntypedZeroRanges ks) })
 
 /-- Haskell `clearUntypedFreeIndex` -/
-partial def clearUntypedFreeIndex (slot : PPtr CTE) : Kernel Unit :=
+def clearUntypedFreeIndex (slot : PPtr CTE) : Kernel Unit :=
   do
     let cap ← getSlotCap slot
     match cap with
@@ -259,17 +256,17 @@ partial def clearUntypedFreeIndex (slot : PPtr CTE) : Kernel Unit :=
     | _ => pure ()
 
 /-- Haskell `setCTE` -/
-partial def setCTE : (PPtr CTE) → CTE → Kernel Unit :=
+def setCTE : (PPtr CTE) → CTE → Kernel Unit :=
   setObject
 
 /-- Haskell `updateCap` -/
-partial def updateCap (slot : PPtr CTE) (newCap : Capability) : Kernel Unit :=
+def updateCap (slot : PPtr CTE) (newCap : Capability) : Kernel Unit :=
   do
     let cte ← getCTE slot
     setCTE slot ({ cte with cteCap := newCap })
 
 /-- Haskell `updateMDB` -/
-partial def updateMDB (x0 : PPtr CTE) (x1 : MDBNode → MDBNode) : Kernel Unit :=
+def updateMDB (x0 : PPtr CTE) (x1 : MDBNode → MDBNode) : Kernel Unit :=
   match x0, x1 with
   | 0, _ => pure ()
   | slot, f => 
@@ -281,7 +278,7 @@ partial def updateMDB (x0 : PPtr CTE) (x1 : MDBNode → MDBNode) : Kernel Unit :
         setCTE slot cte'
 
 /-- Haskell `emptySlot` -/
-partial def emptySlot (slot : PPtr CTE) (info : Capability) : Kernel Unit :=
+def emptySlot (slot : PPtr CTE) (info : Capability) : Kernel Unit :=
   do
     let _ ← clearUntypedFreeIndex slot
     let newCTE ← getCTE slot
@@ -298,23 +295,23 @@ partial def emptySlot (slot : PPtr CTE) (info : Capability) : Kernel Unit :=
           postCapDeletion info)
 
 /-- Haskell `capCyclicZombie` -/
-partial def capCyclicZombie (x0 : Capability) (x1 : PPtr CTE) : Bool :=
+def capCyclicZombie (x0 : Capability) (x1 : PPtr CTE) : Bool :=
   match x0, x1 with
   | Capability.NullCap, _ => false
   | (Capability.Zombie slot' _ _), slot => slot == slot'
   | _, _ => false
 
 /-- Haskell `capRemovable` -/
-partial def capRemovable (x0 : Capability) (x1 : PPtr CTE) : Bool :=
+def capRemovable (x0 : Capability) (x1 : PPtr CTE) : Bool :=
   match x0, x1 with
   | Capability.NullCap, _ => true
   | (Capability.Zombie slot' _ n), slot => (n == 0) || ((n == 1) && (slot == slot'))
   | _, _ => error "finaliseCap should only return Zombie or NullCap"
 
 /-- Haskell `isFinalCapability` -/
-partial def isFinalCapability (x0 : CTE) : Kernel Bool :=
+def isFinalCapability (x0 : CTE) : Kernel Bool :=
   match x0 with
-  | cte@({ cteMDBNode := mdb }) => 
+  | cte@({ cteMDBNode := mdb, .. }) => 
       do
         let prevIsSameObject ← if (MDBNode.mdbPrev mdb) == nullPointer then
             pure false
@@ -333,7 +330,7 @@ partial def isFinalCapability (x0 : CTE) : Kernel Bool :=
               pure (not (sameObjectAs (CTE.cteCap cte) (CTE.cteCap next)))
 
 /-- Haskell `cteSwap` -/
-partial def cteSwap (cap1 : Capability) (slot1 : PPtr CTE) (cap2 : Capability) (slot2 : PPtr CTE) : Kernel Unit :=
+def cteSwap (cap1 : Capability) (slot1 : PPtr CTE) (cap2 : Capability) (slot2 : PPtr CTE) : Kernel Unit :=
   do
     let cte1 ← getCTE slot1
     let _ ← updateCap slot1 cap2
@@ -349,20 +346,20 @@ partial def cteSwap (cap1 : Capability) (slot1 : PPtr CTE) (cap2 : Capability) (
     updateMDB (MDBNode.mdbNext mdb2) (fun m => { m with mdbPrev := slot1 })
 
 /-- Haskell `capSwapForDelete` -/
-partial def capSwapForDelete (slot1 : PPtr CTE) (slot2 : PPtr CTE) : Kernel Unit :=
+def capSwapForDelete (slot1 : PPtr CTE) (slot2 : PPtr CTE) : Kernel Unit :=
   whenH (slot1 != slot2) (do
     let cap1 ← liftM CTE.cteCap (getCTE slot1)
     let cap2 ← liftM CTE.cteCap (getCTE slot2)
     cteSwap cap1 slot1 cap2 slot2)
 
 /-- Haskell `locateSlotBasic` -/
-partial def locateSlotBasic (cnode : PPtr CTE) (offset : Word) : Kernel (PPtr CTE) :=
+def locateSlotBasic (cnode : PPtr CTE) (offset : Word) : Kernel (PPtr CTE) :=
   do
-    let slotSize := 1 <<< (objBits ((undefined : CTE)))
+    let slotSize := shiftLH 1 (objBits ((undefined : CTE)))
     pure (PPtr.mk (PPtr.ptr (cnode + (PPtr.mk (slotSize * offset)))))
 
 /-- Haskell `locateSlotCNode` -/
-partial def locateSlotCNode (cnode : PPtr CTE) (bits : Nat) (offset : Word) : Kernel (PPtr CTE) :=
+def locateSlotCNode (cnode : PPtr CTE) (bits : Nat) (offset : Word) : Kernel (PPtr CTE) :=
   do
     let _ ← flip stateAssertH "locateSlotCNode: must be in CNode" (fun s => match KernelState.gsCNodes s (PPtr.ptr cnode) with
               | none => false
@@ -370,11 +367,11 @@ partial def locateSlotCNode (cnode : PPtr CTE) (bits : Nat) (offset : Word) : Ke
     locateSlotBasic cnode offset
 
 /-- Haskell `locateSlotTCB` -/
-partial def locateSlotTCB (tcb : PPtr TCB) (offset : Word) : Kernel (PPtr CTE) :=
+def locateSlotTCB (tcb : PPtr TCB) (offset : Word) : Kernel (PPtr CTE) :=
   locateSlotBasic (PPtr.mk (PPtr.ptr tcb)) offset
 
 /-- Haskell `locateSlotCap` -/
-partial def locateSlotCap (x0 : Capability) (x1 : Word) : Kernel (PPtr CTE) :=
+def locateSlotCap (x0 : Capability) (x1 : Word) : Kernel (PPtr CTE) :=
   match x0, x1 with
   | cap@(Capability.CNodeCap ..), offset => locateSlotCNode (Capability.capCNodePtr cap) (Capability.capCNodeBits cap) offset
   | cap@(Capability.ThreadCap ..), offset => locateSlotTCB (Capability.capTCBPtr cap) offset
@@ -385,7 +382,7 @@ partial def locateSlotCap (x0 : Capability) (x1 : Word) : Kernel (PPtr CTE) :=
   | _, _ => failM "locateSlotCap: not a cap with slots"
 
 /-- Haskell `reduceZombie` -/
-partial def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
+def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
   match x0, x1, x2 with
   | (Capability.Zombie _ _ 0), _, _ => failM "reduceZombie expected unremovable Zombie"
   | (Capability.Zombie ptr _ _), slot, false => 
@@ -439,18 +436,18 @@ partial def finaliseSlot (slot : PPtr CTE) (exposed : Bool) : KernelP (Bool × C
               finaliseSlot slot exposed
 
 /-- Haskell `cteDelete` -/
-partial def cteDelete (slot : PPtr CTE) (exposed : Bool) : KernelP Unit :=
+def cteDelete (slot : PPtr CTE) (exposed : Bool) : KernelP Unit :=
   do
     let (success, info) ← finaliseSlot slot exposed
     whenH (exposed || success) (withoutPreemption (emptySlot slot info))
 
 /-- Haskell `archMDBAssertions` -/
-partial def archMDBAssertions (x0 : KernelState) : Bool :=
+def archMDBAssertions (x0 : KernelState) : Bool :=
   match x0 with
   | _ => error "defined in Isabelle"
 
 /-- Haskell `setUntypedCapAsFull` -/
-partial def setUntypedCapAsFull (srcCap : Capability) (newCap : Capability) (srcSlot : PPtr CTE) : Kernel Unit :=
+def setUntypedCapAsFull (srcCap : Capability) (newCap : Capability) (srcSlot : PPtr CTE) : Kernel Unit :=
   do
     if (isUntypedCap srcCap) && ((isUntypedCap newCap) && (((Capability.capPtr srcCap) == (Capability.capPtr newCap)) && ((Capability.capBlockSize srcCap) == (Capability.capBlockSize newCap)))) then
       updateCap srcSlot (Capability.set_capFreeIndex srcCap (maxFreeIndex (Capability.capBlockSize srcCap)))
@@ -458,7 +455,7 @@ partial def setUntypedCapAsFull (srcCap : Capability) (newCap : Capability) (src
       pure ()
 
 /-- Haskell `cteInsert` -/
-partial def cteInsert (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : Kernel Unit :=
+def cteInsert (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : Kernel Unit :=
   do
     let _ ← stateAssertH archMDBAssertions "architecture dependent MDB assertions must hold"
     let srcCTE ← getCTE srcSlot
@@ -476,7 +473,7 @@ partial def cteInsert (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPt
     updateMDB (MDBNode.mdbNext newMDB) (fun m => { m with mdbPrev := destSlot })
 
 /-- Haskell `cteMove` -/
-partial def cteMove (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : Kernel Unit :=
+def cteMove (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : Kernel Unit :=
   do
     let oldCTE ← getCTE destSlot
     let _ ← assertG (isNullCap (CTE.cteCap oldCTE)) "cteMove to non-empty destination"
@@ -503,7 +500,7 @@ partial def cteRevoke (slot : PPtr CTE) : KernelP Unit :=
         cteRevoke slot))
 
 /-- Haskell `invokeCNode` -/
-partial def invokeCNode (x0 : CNodeInvocation) : KernelP Unit :=
+def invokeCNode (x0 : CNodeInvocation) : KernelP Unit :=
   match x0 with
   | (CNodeInvocation.Revoke destSlot) => cteRevoke destSlot
   | (CNodeInvocation.Delete destSlot) => cteDelete destSlot true
@@ -529,7 +526,7 @@ partial def invokeCNode (x0 : CNodeInvocation) : KernelP Unit :=
         | _ => failM "caller capability must be null or reply")
 
 /-- Haskell `cteDeleteOne` -/
-partial def cteDeleteOne (slot : PPtr CTE) : Kernel Unit :=
+def cteDeleteOne (slot : PPtr CTE) : Kernel Unit :=
   do
     let cte ← getCTE slot
     unlessH (isNullCap (CTE.cteCap cte)) (do
@@ -539,7 +536,7 @@ partial def cteDeleteOne (slot : PPtr CTE) : Kernel Unit :=
       emptySlot slot Capability.NullCap)
 
 /-- Haskell `updateNewFreeIndex` -/
-partial def updateNewFreeIndex (slot : PPtr CTE) : Kernel Unit :=
+def updateNewFreeIndex (slot : PPtr CTE) : Kernel Unit :=
   do
     let cap ← getSlotCap slot
     match cap with
@@ -547,7 +544,7 @@ partial def updateNewFreeIndex (slot : PPtr CTE) : Kernel Unit :=
     | _ => pure ()
 
 /-- Haskell `insertNewCap` -/
-partial def insertNewCap (parent : PPtr CTE) (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
+def insertNewCap (parent : PPtr CTE) (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
   do
     let next ← liftM (MDBNode.mdbNext ∘ CTE.cteMDBNode) (getCTE parent)
     let oldCTE ← getCTE slot
@@ -558,15 +555,15 @@ partial def insertNewCap (parent : PPtr CTE) (slot : PPtr CTE) (cap : Capability
     updateNewFreeIndex slot
 
 /-- Haskell `createNewObjects` -/
-partial def createNewObjects (newType : ObjectType) (srcSlot : PPtr CTE) (destSlots : List (PPtr CTE)) (regionBase : PPtr Unit) (userSizeBits : Nat) (isDevice : Bool) : Kernel Unit :=
+def createNewObjects (newType : ObjectType) (srcSlot : PPtr CTE) (destSlots : List (PPtr CTE)) (regionBase : PPtr Unit) (userSizeBits : Nat) (isDevice : Bool) : Kernel Unit :=
   do
     let objectSizeBits := getObjectSize newType userSizeBits
     zipWithM_ (fun num slot => do
-        let cap ← createObject newType ((PPtr.mk (num <<< objectSizeBits)) + regionBase) userSizeBits isDevice
+        let cap ← createObject newType ((PPtr.mk (shiftLH num objectSizeBits)) + regionBase) userSizeBits isDevice
         insertNewCap srcSlot slot cap) (enumFromToH 0 (fromIntegral ((length destSlots) - 1))) destSlots
 
 /-- Haskell `insertInitCap` -/
-partial def insertInitCap (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
+def insertInitCap (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
   do
     let oldCTE ← getCTE slot
     let _ ← assertG (isNullCap (CTE.cteCap oldCTE)) "insertInitCap: slot must be empty"
@@ -576,12 +573,12 @@ partial def insertInitCap (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
     updateMDB slot (const ({ nullMDBNode with mdbRevocable := true, mdbFirstBadged := true }))
 
 /-- Haskell `noReplyCapsFor` -/
-partial def noReplyCapsFor (x0 : PPtr TCB) (x1 : KernelState) : Bool :=
+def noReplyCapsFor (x0 : PPtr TCB) (x1 : KernelState) : Bool :=
   match x0, x1 with
   | _, _ => true
 
 /-- Haskell `setupReplyMaster` -/
-partial def setupReplyMaster (thread : PPtr TCB) : Kernel Unit :=
+def setupReplyMaster (thread : PPtr TCB) : Kernel Unit :=
   do
     let slot ← locateSlotTCB thread tcbReplySlot
     let oldCTE ← getCTE slot
@@ -592,14 +589,14 @@ partial def setupReplyMaster (thread : PPtr TCB) : Kernel Unit :=
       setCTE slot (CTE.CTE cap mdb))
 
 /-- Haskell `updateFreeIndex` -/
-partial def updateFreeIndex (slot : PPtr CTE) (idx : Nat) : Kernel Unit :=
+def updateFreeIndex (slot : PPtr CTE) (idx : Nat) : Kernel Unit :=
   do
     let _ ← updateTrackedFreeIndex slot idx
     let cap ← getSlotCap slot
     updateCap slot (Capability.set_capFreeIndex cap idx)
 
 /-- Haskell `ensureNoChildren` -/
-partial def ensureNoChildren (slot : PPtr CTE) : KernelF SyscallError Unit :=
+def ensureNoChildren (slot : PPtr CTE) : KernelF SyscallError Unit :=
   do
     let cte ← withoutFailure (getCTE slot)
     whenH ((MDBNode.mdbNext (CTE.cteMDBNode cte)) != nullPointer) (do
@@ -607,7 +604,7 @@ partial def ensureNoChildren (slot : PPtr CTE) : KernelF SyscallError Unit :=
       whenH (isMDBParentOf cte next) (throw SyscallError.RevokeFirst))
 
 /-- Haskell `longRunningDelete` -/
-partial def longRunningDelete (x0 : Capability) : Bool :=
+def longRunningDelete (x0 : Capability) : Bool :=
   match x0 with
   | (Capability.ThreadCap ..) => true
   | (Capability.CNodeCap ..) => true
@@ -615,7 +612,7 @@ partial def longRunningDelete (x0 : Capability) : Bool :=
   | _ => false
 
 /-- Haskell `slotCapLongRunningDelete` -/
-partial def slotCapLongRunningDelete (slot : PPtr CTE) : Kernel Bool :=
+def slotCapLongRunningDelete (slot : PPtr CTE) : Kernel Bool :=
   do
     let cte ← getCTE slot
     match CTE.cteCap cte with
@@ -625,7 +622,7 @@ partial def slotCapLongRunningDelete (slot : PPtr CTE) : Kernel Bool :=
           pure (final && (longRunningDelete (CTE.cteCap cte))))
 
 /-- Haskell `capTransferFromWords` -/
-partial def capTransferFromWords (ptr : PPtr Word) : Kernel CapTransfer :=
+def capTransferFromWords (ptr : PPtr Word) : Kernel CapTransfer :=
   do
     let intSize := fromIntegral wordSize
     let w0 ← loadWordUser ptr
@@ -634,14 +631,14 @@ partial def capTransferFromWords (ptr : PPtr Word) : Kernel CapTransfer :=
     pure ({ ctReceiveRoot := CPtr.CPtr w0, ctReceiveIndex := CPtr.CPtr w1, ctReceiveDepth := fromIntegral w2 : CapTransfer })
 
 /-- Haskell `loadCapTransfer` -/
-partial def loadCapTransfer (buffer : PPtr Word) : Kernel CapTransfer :=
+def loadCapTransfer (buffer : PPtr Word) : Kernel CapTransfer :=
   do
     let intSize := fromIntegral wordSize
     let offset := (msgMaxLength + msgMaxExtraCaps) + 2
     capTransferFromWords (buffer + (PPtr.mk (offset * intSize)))
 
 /-- Haskell `getReceiveSlots` -/
-partial def getReceiveSlots (x0 : PPtr TCB) (x1 : Option (PPtr Word)) : Kernel (List (PPtr CTE)) :=
+def getReceiveSlots (x0 : PPtr TCB) (x1 : Option (PPtr Word)) : Kernel (List (PPtr CTE)) :=
   match x0, x1 with
   | thread, (some buffer) => 
       do

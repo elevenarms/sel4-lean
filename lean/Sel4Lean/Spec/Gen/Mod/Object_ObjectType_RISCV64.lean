@@ -19,7 +19,7 @@ opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF
 opaque createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel ArchCapability
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque decodeRISCVMMUInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
+opaque decodeRISCVMMUInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque deleteASID : ASID → (PPtr PTE) → Kernel Unit
@@ -40,7 +40,7 @@ opaque maskVMRights : VMRights → CapRights → VMRights
 opaque pageBitsForSize : VMPageSize → Nat
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque performRISCVMMUInvocation : Invocation → KernelP (List Word)
+opaque performRISCVMMUInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word)
 
 -- external: SEL4/Model/PSpace.lhs
 opaque placeNewObject {a : Type} [Inhabited a] [PSpaceStorable a] : (PPtr Unit) → a → Nat → Kernel Unit
@@ -55,7 +55,7 @@ opaque ptTranslationBits : Nat
 opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
-opaque unmapPage : VMPageSize → ASID → VPtr → (PPtr Word) → Kernel Unit
+opaque unmapPage : VMPageSize → ASID → VPtr → (PPtr RISCV64.Word) → Kernel Unit
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque unmapPageTable : ASID → VPtr → (PPtr PTE) → Kernel Unit
@@ -72,7 +72,7 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-! ## Translated -/
 
 /-- Haskell `deriveCap` -/
-partial def deriveCap (x0 : PPtr CTE) (x1 : ArchCapability) : KernelF SyscallError Capability :=
+def deriveCap (x0 : PPtr CTE) (x1 : ArchCapability) : KernelF SyscallError Capability :=
   match x0, x1 with
   | _, (c@(ArchCapability.PageTableCap _ (some _))) => pure (Capability.ArchObjectCap c)
   | _, (ArchCapability.PageTableCap _ none) => throw SyscallError.IllegalOperation
@@ -81,39 +81,39 @@ partial def deriveCap (x0 : PPtr CTE) (x1 : ArchCapability) : KernelF SyscallErr
   | _, (c@(ArchCapability.ASIDPoolCap ..)) => pure (Capability.ArchObjectCap c)
 
 /-- Haskell `isCapRevocable` -/
-partial def isCapRevocable (newCap : Capability) (srcCap : Capability) : Bool :=
+def isCapRevocable (newCap : Capability) (srcCap : Capability) : Bool :=
   false
 
 /-- Haskell `isArchMDBParentOf` -/
-partial def isArchMDBParentOf (x0 : Capability) (x1 : Capability) (x2 : Bool) : Bool :=
+def isArchMDBParentOf (x0 : Capability) (x1 : Capability) (x2 : Bool) : Bool :=
   match x0, x1, x2 with
   | _, _, _ => true
 
 /-- Haskell `updateCapData` -/
-partial def updateCapData (x0 : Bool) (x1 : Word) (x2 : ArchCapability) : Capability :=
+def updateCapData (x0 : Bool) (x1 : Word) (x2 : ArchCapability) : Capability :=
   match x0, x1, x2 with
   | _, _, c => Capability.ArchObjectCap c
 
 /-- Haskell `cteRightsBits` -/
-partial def cteRightsBits : Nat :=
+def cteRightsBits : Nat :=
   0
 
 /-- Haskell `cteGuardBits` -/
-partial def cteGuardBits : Nat :=
+def cteGuardBits : Nat :=
   58
 
 /-- Haskell `maskCapRights` -/
-partial def maskCapRights (x0 : CapRights) (x1 : ArchCapability) : Capability :=
+def maskCapRights (x0 : CapRights) (x1 : ArchCapability) : Capability :=
   match x0, x1 with
   | r, c@(ArchCapability.FrameCap ..) => Capability.ArchObjectCap (ArchCapability.set_capFVMRights c (maskVMRights (ArchCapability.capFVMRights c) r))
   | _, c => Capability.ArchObjectCap c
 
 /-- Haskell `postCapDeletion` -/
-partial def postCapDeletion (c : ArchCapability) : Kernel Unit :=
+def postCapDeletion (c : ArchCapability) : Kernel Unit :=
   pure ()
 
 /-- Haskell `finaliseCap` -/
-partial def finaliseCap (x0 : ArchCapability) (x1 : Bool) : Kernel (Capability × Capability) :=
+def finaliseCap (x0 : ArchCapability) (x1 : Bool) : Kernel (Capability × Capability) :=
   match x0, x1 with
   | (ArchCapability.ASIDPoolCap ptr b), true => 
       do
@@ -135,12 +135,12 @@ partial def finaliseCap (x0 : ArchCapability) (x1 : Bool) : Kernel (Capability �
   | _, _ => pure ((Capability.NullCap, Capability.NullCap))
 
 /-- Haskell `isIRQControlCapDescendant` -/
-partial def isIRQControlCapDescendant (x0 : ArchCapability) : Bool :=
+def isIRQControlCapDescendant (x0 : ArchCapability) : Bool :=
   match x0 with
   | _ => false
 
 /-- Haskell `sameRegionAs` -/
-partial def sameRegionAs (x0 : ArchCapability) (x1 : ArchCapability) : Bool :=
+def sameRegionAs (x0 : ArchCapability) (x1 : ArchCapability) : Bool :=
   match x0, x1 with
   | (a@(ArchCapability.FrameCap ..)), (b@(ArchCapability.FrameCap ..)) => 
       let botA := ArchCapability.capFBasePtr a
@@ -154,34 +154,34 @@ partial def sameRegionAs (x0 : ArchCapability) (x1 : ArchCapability) : Bool :=
   | _, _ => false
 
 /-- Haskell `isPhysicalCap` -/
-partial def isPhysicalCap (x0 : ArchCapability) : Bool :=
+def isPhysicalCap (x0 : ArchCapability) : Bool :=
   match x0 with
   | ArchCapability.ASIDControlCap => false
   | _ => true
 
 /-- Haskell `sameObjectAs` -/
-partial def sameObjectAs (x0 : ArchCapability) (x1 : ArchCapability) : Bool :=
+def sameObjectAs (x0 : ArchCapability) (x1 : ArchCapability) : Bool :=
   match x0, x1 with
   | (a@(ArchCapability.FrameCap ptrA _ _ _ _)), (b@(ArchCapability.FrameCap ..)) => (ptrA == (ArchCapability.capFBasePtr b)) && (((ArchCapability.capFSize a) == (ArchCapability.capFSize b)) && ((ptrA ≤ (ptrA + (mask (pageBitsForSize (ArchCapability.capFSize a))))) && ((ArchCapability.capFIsDevice a) == (ArchCapability.capFIsDevice b))))
   | a, b => sameRegionAs a b
 
 /-- Haskell `placeNewDataObject` -/
-partial def placeNewDataObject (regionBase : PPtr Unit) (sz : Nat) (isDevice : Bool) : Kernel Unit :=
+def placeNewDataObject (regionBase : PPtr Unit) (sz : Nat) (isDevice : Bool) : Kernel Unit :=
   if isDevice then
     placeNewObject regionBase UserDataDevice.UserDataDevice sz
   else
     placeNewObject regionBase UserData.UserData sz
 
 /-- Haskell `decodeInvocation` -/
-partial def decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation :=
+def decodeInvocation : Word → (List Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation :=
   decodeRISCVMMUInvocation
 
 /-- Haskell `performInvocation` -/
-partial def performInvocation : RISCV64.Invocation → KernelP (List Word) :=
+def performInvocation : RISCV64.Invocation → KernelP (List Word) :=
   performRISCVMMUInvocation
 
 /-- Haskell `capUntypedPtr` -/
-partial def capUntypedPtr (x0 : ArchCapability) : PPtr Unit :=
+def capUntypedPtr (x0 : ArchCapability) : PPtr Unit :=
   match x0 with
   | (ArchCapability.FrameCap (PPtr.mk p) _ _ _ _) => PPtr.mk p
   | (ArchCapability.PageTableCap (PPtr.mk p) _) => PPtr.mk p
@@ -189,11 +189,11 @@ partial def capUntypedPtr (x0 : ArchCapability) : PPtr Unit :=
   | (ArchCapability.ASIDPoolCap (PPtr.mk p) _) => PPtr.mk p
 
 /-- Haskell `asidPoolBits` -/
-partial def asidPoolBits : Nat :=
+def asidPoolBits : Nat :=
   12
 
 /-- Haskell `capUntypedSize` -/
-partial def capUntypedSize (x0 : ArchCapability) : Word :=
+def capUntypedSize (x0 : ArchCapability) : Word :=
   match x0 with
   | (ArchCapability.FrameCap _ _ sz _ _) => bit (pageBitsForSize sz)
   | (ArchCapability.PageTableCap ..) => bit ptBits
@@ -201,7 +201,7 @@ partial def capUntypedSize (x0 : ArchCapability) : Word :=
   | (ArchCapability.ASIDPoolCap ..) => bit asidPoolBits
 
 /-- Haskell `prepareThreadDelete` -/
-partial def prepareThreadDelete (x0 : PPtr TCB) : Kernel Unit :=
+def prepareThreadDelete (x0 : PPtr TCB) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 

@@ -19,7 +19,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `empty` -/
-partial def empty {a : Type} [Inhabited a] : BinaryTree a :=
+def empty {a : Type} [Inhabited a] : BinaryTree a :=
   BinaryTree.Empty
 
 /-- Haskell `isEmpty` -/
@@ -39,7 +39,7 @@ partial def findWithDefault {a : Type} [Inhabited a] (x0 : a) (x1 : List Bool) (
   | d, a, _ => (a, d)
 
 /-- Haskell `lookup` -/
-partial def lookup {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [MonadFailH m] (x0 : List Bool) (x1 : BinaryTree a) : m ((List Bool) × a) :=
+def lookup {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [MonadFailH m] (x0 : List Bool) (x1 : BinaryTree a) : m ((List Bool) × a) :=
   match x0, x1 with
   | a, (BinaryTree.Leaf v) => pure ((a, v))
   | (true :: a), (BinaryTree.Node t _) => (lookup) a t
@@ -79,7 +79,7 @@ partial def adjustM {m : Type → Type} {a : Type} [Inhabited a] [Monad m] [Mona
   | _, _, _ => failM "BinaryTree.adjustM: object not found"
 
 /-- Haskell `flatten` -/
-partial def flatten {a : Type} [Inhabited a] (x0 : BinaryTree a) : BinaryTree a :=
+def flatten {a : Type} [Inhabited a] (x0 : BinaryTree a) : BinaryTree a :=
   match x0 with
   | (BinaryTree.Node BinaryTree.Empty BinaryTree.Empty) => BinaryTree.Empty
   | t => t

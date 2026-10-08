@@ -20,7 +20,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `msgFromLookupFailure` -/
-partial def msgFromLookupFailure (x0 : LookupFailure) : List Word :=
+def msgFromLookupFailure (x0 : LookupFailure) : List Word :=
   match x0 with
   | LookupFailure.InvalidRoot => [1]
   | (LookupFailure.MissingCapability bl) => [2, fromIntegral bl]
@@ -28,7 +28,7 @@ partial def msgFromLookupFailure (x0 : LookupFailure) : List Word :=
   | (LookupFailure.GuardMismatch bl g gs) => [4, fromIntegral bl, g, fromIntegral gs]
 
 /-- Haskell `msgFromSyscallError` -/
-partial def msgFromSyscallError (x0 : SyscallError) : Word × (List Word) :=
+def msgFromSyscallError (x0 : SyscallError) : Word × (List Word) :=
   match x0 with
   | (SyscallError.InvalidArgument n) => (1, [fromIntegral n])
   | (SyscallError.InvalidCapability n) => (2, [fromIntegral n])

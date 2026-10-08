@@ -83,10 +83,12 @@ DEFAULT_FIXITY = ("l", 9)   # Haskell's default for backtick functions without a
 OPERATOR = {
     "$": None, "||": "||", "&&": "&&", "==": "==", "/=": "!=", "<": "<", "<=": "≤", ">": ">", ">=": "≥",
     ":": "::", "++": "++", ".|.": "|||", ".&.": "&&&", "+": "+", "-": "-", "*": "*",
-    "shiftL": "<<<", "shiftR": ">>>", ".": "∘", ">>=": ">>=", ">>": ">>=", "^": "^",
+    ".": "∘", ">>=": ">>=", ">>": ">>=", "^": "^",
 }
 # operators rendered as function application: Haskell op -> Lean function (None: plain application)
-OPERATOR_APP = {"!": None, "$!": None, "!!": "listIndexH", "//": "arrayUpdH", "=<<": "flip bind", "<*>": "seqH"}
+OPERATOR_APP = {"!": None, "$!": None, "!!": "listIndexH", "//": "arrayUpdH", "=<<": "flip bind", "<*>": "seqH",
+                # shifts as functions, so the expected result type reaches the shifted operand
+                "shiftL": "shiftLH", "shiftR": "shiftRH"}
 # Haskell names -> Lean names (Prelude.lean)
 NAME = {
     "return": "pure", "fail": "failH", "assert": "assertH", "stateAssert": "stateAssertH",
@@ -94,6 +96,7 @@ NAME = {
     "fromPPtr": "PPtr.ptr", "PPtr": "PPtr.mk",
     # mtl classes -> Lean's monad classes
     "throwError": "throw", "catchError": "tryCatch", "runExceptT": "ExceptT.run", "ask": "read",
+    "Left": "Except.error", "Right": "Except.ok",
     "Just": "some", "Nothing": "none", "True": "true", "False": "false",
 }
 TYPE = {"Maybe": "Option", "Bool": "Bool", "Word": "Word", "Int": "Int", "Integer": "Int"}
@@ -270,6 +273,8 @@ class Translator:
         return self.ident(name)
 
     def ctor(self, name):
+        if name == "Word":
+            return "id"   # the spec's `newtype Word = Word Arch.Word` is BitVec 64 itself here
         if name in NAME:
             return NAME[name]
         if name in self.data.ctor_type:
@@ -302,6 +307,8 @@ class Translator:
                 m = m.child_by_field_name("function")
             if m.type != "constructor":
                 self.fail(n, "pattern")
+            if self.text(m) == "Word" and len(parts) == 1:
+                return self.pat(parts[0])   # the spec's `newtype Word` is BitVec 64 itself here
             return " ".join([self.ctor(self.text(m))] + [self.pat_atom(p) for p in reversed(parts)])
         if t == "as":
             v = n.child_by_field_name("bind") or kids(n)[0]
@@ -339,7 +346,7 @@ class Translator:
                 sub = fp.child_by_field_name("pattern") or (parts[-1] if len(parts) > 1 else None)
                 given[fname] = self.pat_atom(sub) if sub is not None else self.ident(fname)  # punning
             if self.data.types[tname]["single"]:
-                return "{ " + ", ".join(f"{f} := {v}" for f, v in given.items()) + " }"
+                return "{ " + ", ".join(f"{f} := {v}" for f, v in given.items()) + ", .. }"
             return " ".join([self.ctor(cname)] + [given.get(f, "_") for f, _ in cfields])
         if t == "literal":
             return self.text(n)

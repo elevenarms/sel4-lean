@@ -13,7 +13,7 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: Data/Helpers.hs
-opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [BoundedH i] : (i → a) → (i → a)
+opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [IntegralH i] [BoundedH i] : (i → a) → (i → a)
 
 /-! ## Unresolved (no stub possible)
   const: no signature found
@@ -26,59 +26,59 @@ opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [BoundedH i] :
 /-! ## Translated -/
 
 /-- Haskell `capRegister` -/
-partial def capRegister : RISCV64.Register :=
+def capRegister : RISCV64.Register :=
   RISCV64.Register.A0
 
 /-- Haskell `msgInfoRegister` -/
-partial def msgInfoRegister : RISCV64.Register :=
+def msgInfoRegister : RISCV64.Register :=
   RISCV64.Register.A1
 
 /-- Haskell `msgRegisters` -/
-partial def msgRegisters : List RISCV64.Register :=
+def msgRegisters : List RISCV64.Register :=
   enumFromToH RISCV64.Register.A2 RISCV64.Register.A5
 
 /-- Haskell `badgeRegister` -/
-partial def badgeRegister : RISCV64.Register :=
+def badgeRegister : RISCV64.Register :=
   RISCV64.Register.A0
 
 /-- Haskell `frameRegisters` -/
-partial def frameRegisters : List RISCV64.Register :=
+def frameRegisters : List RISCV64.Register :=
   RISCV64.Register.FaultIP :: (RISCV64.Register.LR :: (RISCV64.Register.SP :: (RISCV64.Register.GP :: (enumFromToH RISCV64.Register.S0 RISCV64.Register.S11))))
 
 /-- Haskell `gpRegisters` -/
-partial def gpRegisters : List RISCV64.Register :=
+def gpRegisters : List RISCV64.Register :=
   (enumFromToH RISCV64.Register.A0 RISCV64.Register.A7) ++ ((enumFromToH RISCV64.Register.T0 RISCV64.Register.T6) ++ [RISCV64.Register.TP])
 
 /-- Haskell `exceptionMessage` -/
-partial def exceptionMessage : List RISCV64.Register :=
+def exceptionMessage : List RISCV64.Register :=
   [RISCV64.Register.FaultIP, RISCV64.Register.SP]
 
 /-- Haskell `syscallMessage` -/
-partial def syscallMessage : List RISCV64.Register :=
+def syscallMessage : List RISCV64.Register :=
   RISCV64.Register.FaultIP :: (RISCV64.Register.SP :: (RISCV64.Register.LR :: (enumFromToH RISCV64.Register.A0 RISCV64.Register.A6)))
 
 /-- Haskell `tlsBaseRegister` -/
-partial def tlsBaseRegister : RISCV64.Register :=
+def tlsBaseRegister : RISCV64.Register :=
   RISCV64.Register.TP
 
 /-- Haskell `sstatusSPIE` -/
-partial def sstatusSPIE : RISCV64.Word :=
+def sstatusSPIE : RISCV64.Word :=
   0x20
 
 /-- Haskell `initContext` -/
-partial def initContext : List (RISCV64.Register × RISCV64.Word) :=
+def initContext : List (RISCV64.Register × RISCV64.Word) :=
   [(RISCV64.Register.SSTATUS, sstatusSPIE)]
 
 /-- Haskell `faultRegister` -/
-partial def faultRegister : RISCV64.Register :=
+def faultRegister : RISCV64.Register :=
   RISCV64.Register.FaultIP
 
 /-- Haskell `nextInstructionRegister` -/
-partial def nextInstructionRegister : RISCV64.Register :=
+def nextInstructionRegister : RISCV64.Register :=
   RISCV64.Register.NextIP
 
 /-- Haskell `newContext` -/
-partial def newContext : UserContext :=
+def newContext : UserContext :=
   UserContext.UC (arrayUpdH (funArray (const 0)) initContext)
 
 end
