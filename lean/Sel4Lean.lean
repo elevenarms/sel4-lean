@@ -25,4 +25,7 @@ import Sel4Lean.Spec.PSpaceInstances
 import Sel4Lean.Spec.Gen.KernelConfig
 import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.MachineOps
+import Sel4Lean.Spec.KernelInit
+import Sel4Lean.Spec.Intermediate
+import Sel4Lean.Spec.DesignOnly
 import Sel4Lean.Test.Machine

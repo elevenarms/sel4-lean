@@ -80,6 +80,7 @@ Sel4Lean.Spec.M.Machine_Hardware.minIRQ
 Sel4Lean.Spec.M.Object_CNode.getSlotCap
 Sel4Lean.Spec.M.Object_ObjectType.maskCapRights
 Sel4Lean.Spec.M.Object_CNode.maxFreeIndex
+Sel4Lean.Spec.DesignOnly.HaskellInitData.mk
 Sel4Lean.Spec.M.Object_TCB.decodeSetTLSBase
 Sel4Lean.Spec.RISCV64.Register.A5.elim
 Sel4Lean.Spec.MDBNode.mdbNext
@@ -102,6 +103,7 @@ Sel4Lean.Spec.instInhabitedASID.default
 Sel4Lean.Spec.M.API_Syscall.getThreadState
 Sel4Lean.Spec.BIFrameData.bifUntypedObjCaps
 Sel4Lean.Spec.GenInvocationLabels.UntypedRetype
+Sel4Lean.Spec.Intermediate.createNewTableCaps
 Sel4Lean.Spec.PageInvocation.PageGetAddr.elim
 Sel4Lean.Spec.ForMH.mk
 Sel4Lean.Spec.instOrOpVPtr
@@ -128,6 +130,7 @@ Sel4Lean.Spec.M.Kernel_Thread.getHighestPrio
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.hwASIDFlush
 Sel4Lean.Spec.RISCV64.ArchKernelObjectType.ctorElimType
 Sel4Lean.Spec.M.Kernel_BootInfo.biFrameSizeBits
+Sel4Lean.Spec.DesignOnly.nothingOnFailure
 Sel4Lean.Spec.M.Kernel_Thread.lookupExtraCaps
 Sel4Lean.Spec.PageInvocation.set_pageMapEntries
 Sel4Lean.Spec.M.API_Types_RISCV64.fromAPIType
@@ -372,6 +375,7 @@ Sel4Lean.Spec.InterruptState.InterruptState
 Sel4Lean.Spec.InvocationLabel.ctorElimType
 Sel4Lean.Spec.instIntegralHVMPageSize
 Sel4Lean.Spec.M.Object_TCB.setPriority
+Sel4Lean.Spec.M.SEL4.maybeHandleInterrupt
 Sel4Lean.Spec.RISCV64.instInhabitedInvocation
 Sel4Lean.Spec.KernelState.gsCNodes
 Sel4Lean.Spec.M.Model_PSpace.maybeToMonad
@@ -385,6 +389,7 @@ Sel4Lean.Spec.M.Object_Domain.throw
 Sel4Lean.Spec.M.Object_Interrupt.timerTick
 Sel4Lean.Spec.instDecidableEqASIDPoolInvocation
 Sel4Lean.Spec.SyscallError.TruncatedMessage
+Sel4Lean.Spec.DesignOnly.fastpathKernelAssertions
 Sel4Lean.Spec.CNodeInvocation.Insert
 Sel4Lean.Spec.instDecidableLeASID
 Sel4Lean.Spec.KernelObjectType.UserDataT.elim
@@ -536,6 +541,7 @@ Sel4Lean.Spec.instOrOpPAddr
 Sel4Lean.Spec.Capability.DomainCap.elim
 Sel4Lean.Spec.PTE.set_pteExecute
 Sel4Lean.Spec.PreStorable.mk
+Sel4Lean.Spec.DesignOnly.irq_len
 Sel4Lean.Spec.M.Kernel_BootInfo.maxBIDeviceRegions
 Sel4Lean.Spec.RISCV64.Register.A1
 Sel4Lean.Spec.instLEASID
@@ -580,6 +586,7 @@ Sel4Lean.Spec.M.Machine_Hardware.getDeviceRegions
 Sel4Lean.Spec.M.Object_CNode.ensureNoChildren
 Sel4Lean.Spec.M.Object_CNode.genInvocationType
 Sel4Lean.Spec.M.Model_Preemption.workUnitsLimit
+Sel4Lean.Spec.DesignOnly.slotsPointed
 Sel4Lean.Spec.KernelObject.KOKernelData
 Sel4Lean.Spec.instInhabitedCopyRegisterSets
 Sel4Lean.Spec.M.API_Faults.exceptionMessage
@@ -671,6 +678,7 @@ Sel4Lean.Spec.instDecidableEqZombieType
 Sel4Lean.Spec.TCBInvocation.set_readRegsThread
 Sel4Lean.Spec.M.Object_CNode.updateMDB
 Sel4Lean.Spec.M.Machine_RegisterSet.exceptionMessage
+Sel4Lean.Spec.MachineOps.modify_registers
 Sel4Lean.Spec.KernelObject.KOUserDataDevice
 Sel4Lean.Spec.M.Object_ObjectType.decodeDomainInvocation
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.addrFromPPtr
@@ -694,6 +702,7 @@ Sel4Lean.Spec.M.Object_TCB.decodeCopyRegisters
 Sel4Lean.Spec.instDecidableEqSyscallError
 Sel4Lean.Spec.LookupFailure.set_guardMismatchBitsLeft
 Sel4Lean.Spec.M.Object_TCB.getThreadReplySlot
+Sel4Lean.Spec.Intermediate.createNewCaps
 Sel4Lean.Spec.M.Object_Notification.bindNotification
 Sel4Lean.Spec.M.API_Syscall.handleVMFault
 Sel4Lean.Spec.M.Kernel_VSpace.RISCV64.createITASIDPool
@@ -897,6 +906,7 @@ Sel4Lean.Spec.M.Object_ObjectType_RISCV64.sameObjectAs
 Sel4Lean.Spec.M.Object_ObjectType.deletedIRQHandler
 Sel4Lean.Spec.M.Object_TCB.tcbIPCBufferSlot
 Sel4Lean.Spec.isInsert
+Sel4Lean.Spec.Intermediate.createObjects
 Sel4Lean.Spec.BIDeviceRegion.bidrFrameSizeBits
 Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.syscallMessage
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.withoutFailure
@@ -936,6 +946,7 @@ Sel4Lean.Spec.M.Object_Interrupt.isNotificationCap
 Sel4Lean.Spec.M.Kernel_Thread.getReceiveSlots
 Sel4Lean.Spec.RISCV64.instInhabitedArchKernelObjectType
 Sel4Lean.Spec.M.Kernel_VSpace.RISCV64.writeITPDPTs
+Sel4Lean.Spec.DesignOnly.kernelExitAssertions
 Sel4Lean.Spec.M.Kernel_VSpace.RISCV64.vptrFromPPtr
 Sel4Lean.Spec.InvocationLabel.GenInvocationLabel.elim
 Sel4Lean.Spec.M.Object_TCB.decodeTCBInvocation
@@ -947,6 +958,7 @@ Sel4Lean.Spec.last
 Sel4Lean.Spec.IRQControlInvocation.set_issueHandlerSlot
 Sel4Lean.Spec.KernelConfig.CONFIG_USER_STACK_TRACE_LENGTH
 Sel4Lean.Spec.ASIDPoolInvocation.assignASID
+Sel4Lean.Spec.M.SEL4.fastpathKernelAssertions
 Sel4Lean.Spec.M.Kernel_BootInfo.rootCNodeSize
 Sel4Lean.Spec.GenInvocationLabels.CNodeDelete.elim
 Sel4Lean.Spec.M.Object_Domain.decodeDomainSet
@@ -960,6 +972,7 @@ Sel4Lean.Spec.M.Object_Untyped.genInvocationType
 Sel4Lean.Spec.RISCV64.Register.LR
 Sel4Lean.Spec.instDecidableEqMessageInfo
 Sel4Lean.Spec.VMRights.VMKernelOnly
+Sel4Lean.Spec.DesignOnly.cteDeleteOne'
 Sel4Lean.Spec.M.Config.timeSlice
 Sel4Lean.Spec.MapH.null
 Sel4Lean.Spec.M.Object_TCB.tcbReplySlot
@@ -1094,6 +1107,7 @@ Sel4Lean.Spec.M.API_Faults.asUser
 Sel4Lean.Spec.GenInvocationLabels.IRQIssueIRQHandler.elim
 Sel4Lean.Spec.Platform.kdevBase
 Sel4Lean.Spec.M.Object_ObjectType_RISCV64.isIRQControlCapDescendant
+Sel4Lean.Spec.UserContext.user_regs
 Sel4Lean.Spec.ArchCapability.capFMappedAddress
 Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.configureTimer
 Sel4Lean.Spec.GenInvocationLabels.TCBSetSchedParams.elim
@@ -1103,6 +1117,7 @@ Sel4Lean.Spec.M.API_Syscall.deleteCallerCap
 Sel4Lean.Spec.TCBInvocation.writeRegsThread
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.createITASIDPool
 Sel4Lean.Spec.GenInvocationLabels.ofNat_ctorIdx
+Sel4Lean.Spec.Intermediate.createNewFrameCaps
 Sel4Lean.Spec.RISCV64.Register.T6
 Sel4Lean.Spec.ZombieType.ctorElim
 Sel4Lean.Spec.M.Object_Structures.mask
@@ -1139,6 +1154,7 @@ Sel4Lean.Spec.M.Kernel_Init.createIPCBufferFrame
 Sel4Lean.Spec.TCBInvocation.Suspend
 Sel4Lean.Spec.MDBNode.brecOn_6.eq
 Sel4Lean.Spec.M.Kernel_Thread.getThreadState
+Sel4Lean.Spec.M.SEL4.withoutPreemption
 Sel4Lean.Spec.ObjectType.LargePageObject.elim
 Sel4Lean.Spec.M.Object_Domain.listUpdate
 Sel4Lean.Spec.CNodeInvocation.moveCap2
@@ -1291,6 +1307,7 @@ Sel4Lean.Spec.MDBNode.brecOn_1.go
 Sel4Lean.Spec.M.Object_CNode.capCyclicZombie
 Sel4Lean.Spec.GenInvocationLabels.IRQClearIRQHandler
 Sel4Lean.Spec.instHShiftRightCPtrNat
+Sel4Lean.Spec.MachineOps.setRegister
 Sel4Lean.Spec.M.Object_Endpoint.possibleSwitchTo
 Sel4Lean.Spec.MachineOps.MachineRestMonad
 Sel4Lean.Spec.M.Machine_RegisterSet.RISCV64.msgRegisters
@@ -1351,6 +1368,7 @@ Sel4Lean.Spec.instDecidableEqTCB
 Sel4Lean.Spec.M.Data_WordLib.wordSize
 Sel4Lean.Spec.Invocation.InvokeUntyped
 Sel4Lean.Spec.Invocation.InvokeTCB.elim
+Sel4Lean.Spec.DesignOnly.HaskellInitData.initBootInfo
 Sel4Lean.Spec.M.Data_BinaryTree.adjustM
 Sel4Lean.Spec.instInhabitedPTE
 Sel4Lean.Spec.M.Object_CNode.finaliseSlot
@@ -1359,6 +1377,7 @@ Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.exceptionMessage
 Sel4Lean.Spec.RISCV64.Register.A4.elim
 Sel4Lean.Spec.M.Object_CNode.setupReplyMaster
 Sel4Lean.Spec.PageTableInvocation.PageTableUnmap.elim
+Sel4Lean.Spec.DesignOnly.HaskellInitData.initVPtrOffset
 Sel4Lean.Spec.RISCVVSpaceRegionUse.RISCVVSpaceKernelELFWindow.elim
 Sel4Lean.Spec.M.Object_TCB.decodeSetFlags
 Sel4Lean.Spec.APIObjectType.ofNat_ctorIdx
@@ -1461,6 +1480,7 @@ Sel4Lean.Spec.M.Object_Structures.dschDomain
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.invocationType
 Sel4Lean.Spec.M.Object_Notification.setThreadState
 Sel4Lean.Spec.RISCV64.Invocation.InvokePageTable.elim
+Sel4Lean.Spec.UserContext.UserContext
 Sel4Lean.Spec.zipWithM_
 Sel4Lean.Spec.M.Kernel_Thread.RISCV64.switchToIdleThread
 Sel4Lean.Spec.GenInvocationLabels.CNodeMint.elim
@@ -1652,6 +1672,7 @@ Sel4Lean.Spec.instBoundedHVMPageSize
 Sel4Lean.Spec.RISCV64.Register.S0
 Sel4Lean.Spec.MachineState.machine_state_rest
 Sel4Lean.Spec.M.Object_Interrupt.ptrFromPAddr
+Sel4Lean.Spec.M.SEL4.callKernel
 Sel4Lean.Spec.M.API_Faults.sanitiseRegister
 Sel4Lean.Spec.KernelObjectType.KernelDataT.elim
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.decodeRISCVPageTableInvocationMap
@@ -1660,6 +1681,7 @@ Sel4Lean.Spec.M.Kernel_Init.writeITASIDPool
 Sel4Lean.Spec.CNodeInvocation.set_moveCap2
 Sel4Lean.Spec.M.Kernel_BootInfo.biCapDynStart
 Sel4Lean.Spec.M.API_Faults.syscallMessage
+Sel4Lean.Spec.MachineOps.setNextPC
 Sel4Lean.Spec.MDBNode.brecOn_6
 Sel4Lean.Spec.MessageInfo.MI
 Sel4Lean.Spec.APIObjectType
@@ -1677,6 +1699,7 @@ Sel4Lean.Spec.M.Kernel_Thread.activateThread
 Sel4Lean.Spec.LookupFailure.set_guardMismatchGuardFound
 Sel4Lean.Spec.M.Kernel_Thread_RISCV64.switchToThread
 Sel4Lean.Spec.instDecidableLtASID
+Sel4Lean.Spec.M.SEL4.activateThread
 Sel4Lean.Spec.DomainInvocation.set_domDomain
 Sel4Lean.Spec.M.Object_Endpoint.cancelSignal
 Sel4Lean.Spec.instDecidableEqThreadState
@@ -1857,6 +1880,8 @@ Sel4Lean.Spec.MapH.delete
 Sel4Lean.Spec.mod
 Sel4Lean.Spec.PTE.InvalidPTE
 Sel4Lean.Spec.instHShiftLeftVPtrNat
+Sel4Lean.Spec.DesignOnly.fromPPtr
+Sel4Lean.Spec.DesignOnly.HaskellInitData.initFreeMemory
 Sel4Lean.Spec.undefinedH
 Sel4Lean.Spec.ArchCapability.set_capPTMappedAddress
 Sel4Lean.Spec.APIObjectType.ofIdx
@@ -1944,6 +1969,7 @@ Sel4Lean.Spec.instDecidableEqVPtr.decEq
 Sel4Lean.Spec.M.Kernel_Thread.tcbSchedDequeue
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.copyGlobalMappings
 Sel4Lean.Spec.KernelInit.noInitFailure
+Sel4Lean.Spec.Intermediate.createObjects'
 Sel4Lean.Spec.M.Machine_Hardware_RISCV64.mask
 Sel4Lean.Spec.M.Object_ObjectType.RISCV64.prepareThreadDelete
 Sel4Lean.Spec.GenInvocationLabels.TCBConfigure.elim
@@ -1988,6 +2014,7 @@ Sel4Lean.Spec.M.Object_Interrupt_RISCV64.RISCV64.setIRQTrigger
 Sel4Lean.Spec.M.Kernel_Thread_RISCV64.configureIdleThread
 Sel4Lean.Spec.M.API_Types_Universal.epSizeBits
 Sel4Lean.Spec.M.Object_ObjectType_RISCV64.ptTranslationBits
+Sel4Lean.Spec.M.SEL4.schedule
 Sel4Lean.Spec.TCBInvocation.readRegsThread
 Sel4Lean.Spec.M.Object_Interrupt.getActiveIRQ
 Sel4Lean.Spec.M.Object_Interrupt_RISCV64.invocationType
@@ -2001,6 +2028,7 @@ Sel4Lean.Spec.M.Kernel_BootInfo.serialBIDeviceRegion
 Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive.ackInterrupt
 Sel4Lean.Spec.M.Object_TCB.invokeTCB
 Sel4Lean.Spec.M.Object_CNode.postCapDeletion
+Sel4Lean.Spec.M.SEL4.kernelExitAssertions
 Sel4Lean.Spec.BIFrameData.bifUIFrameCaps
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.deleteASID
 Sel4Lean.Spec.instInhabitedRISCVVSpaceRegionUse
@@ -2086,6 +2114,7 @@ Sel4Lean.Spec.RISCV64.Invocation.InvokePageTable
 Sel4Lean.Spec.M.Object_ObjectType.RISCV64.createObject
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.ptSlotIndex
 Sel4Lean.Spec.M.Kernel_Thread.switchToThread
+Sel4Lean.Spec.DesignOnly.HaskellInitData.initSlotPosCur
 Sel4Lean.Spec.MachineOps.resetTimer_impl
 Sel4Lean.Spec.RISCV64.Register.T2.elim
 Sel4Lean.Spec.TCB.tcbReply
@@ -2206,6 +2235,7 @@ Sel4Lean.Spec.VMAttributes.VMAttributes
 Sel4Lean.Spec.UserDataDevice.ofIdx
 Sel4Lean.Spec.M.Data_BinaryTree.delete
 Sel4Lean.Spec.GenInvocationLabels.CNodeCancelBadgedSends
+Sel4Lean.Spec.MachineOps.getRegister
 Sel4Lean.Spec.CNodeInvocation.Rotate
 Sel4Lean.Spec.KernelObjectType.TCBT
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.performPageTableInvocation
@@ -2245,6 +2275,7 @@ Sel4Lean.Spec.Capability.ctorElim
 Sel4Lean.Spec.TCBInvocation.set_tcThread
 Sel4Lean.Spec.M.API_Syscall.getMessageInfo
 Sel4Lean.Spec.CopyRegisterSets.RISCVNoExtraRegisters
+Sel4Lean.Spec.Intermediate.Arch_createNewCaps
 Sel4Lean.Spec.TCB
 Sel4Lean.Spec.isPageTableUnmap
 Sel4Lean.Spec.Syscall.ctorElimType
@@ -2350,8 +2381,10 @@ Sel4Lean.Spec.UserContext
 Sel4Lean.Spec.ThreadState.waitingOnNotification
 Sel4Lean.Spec.MachineOps.configureTimer_impl
 Sel4Lean.Spec.KernelConfig.config_PLAT_BCM2837
+Sel4Lean.Spec.DesignOnly.sethelper
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.riscvKSGlobalPT
 Sel4Lean.Spec.M.API_Syscall.handleCall
+Sel4Lean.Spec.Intermediate.insertNewCaps
 Sel4Lean.Spec.MachineOps.initMemory
 Sel4Lean.Spec.KernelState.ksCurThread
 Sel4Lean.Spec.TCBInvocation.suspendThread
@@ -2506,6 +2539,7 @@ Sel4Lean.Spec.M.Machine_RegisterSet.msgInfoRegister
 Sel4Lean.Spec.TCBInvocation.ctorElim
 Sel4Lean.Spec.M.API_Syscall.setThreadState
 Sel4Lean.Spec.Platform.pptrBase
+Sel4Lean.Spec.DesignOnly.State_H.PPtr
 Sel4Lean.Spec.SlotRegion
 Sel4Lean.Spec.ArchFault
 Sel4Lean.Spec.M.Object_CNode.untypedZeroRange
@@ -2629,6 +2663,7 @@ Sel4Lean.Spec.loadObject_default
 Sel4Lean.Spec.M.Object_Structures.config_HAVE_FPU
 Sel4Lean.Spec.M.Model_StateData.findM
 Sel4Lean.Spec.Syscall.SysReplyRecv
+Sel4Lean.Spec.DesignOnly.ptrBits
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.getPPtrFromHWPTE
 Sel4Lean.Spec.M.Machine_RegisterSet.nextInstructionRegister
 Sel4Lean.Spec.ArchCapability.set_capPTBasePtr
@@ -2694,6 +2729,7 @@ Sel4Lean.Spec.RISCV64.Register.TP
 Sel4Lean.Spec.M.Data_BinaryTree.isEmpty
 Sel4Lean.Spec.instInhabitedNTFN.default_1
 Sel4Lean.Spec.MDBNode.brecOn_5.eq
+Sel4Lean.Spec.DesignOnly.HaskellInitData.initSlotPosMax
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.checkPTAt
 Sel4Lean.Spec.PreStorable.project_inject
 Sel4Lean.Spec.M.Machine_Hardware.RISCV64.resetTimer
@@ -2715,6 +2751,7 @@ Sel4Lean.Spec.instDecidableEqGenInvocationLabels
 Sel4Lean.Spec.instMulOfIntegralH
 Sel4Lean.Spec.M.Object_TCB.getExtraCPtr
 Sel4Lean.Spec.M.Kernel_VSpace.createDeviceFrames
+Sel4Lean.Spec.Intermediate.wordsBelow
 Sel4Lean.Spec.CNodeInvocation.moveCap
 Sel4Lean.Spec.PageInvocation.pageMapCap
 Sel4Lean.Spec.TCBInvocation.readRegsSuspend
@@ -2776,6 +2813,7 @@ Sel4Lean.Spec.MachineOps.wordStepList
 Sel4Lean.Spec.RISCV64.Register.S8
 Sel4Lean.Spec.M.Kernel_BootInfo.nopBIFrameData
 Sel4Lean.Spec.loadObject_cte
+Sel4Lean.Spec.MachineOps.getRestartPC
 Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.pageBits
 Sel4Lean.Spec.instDecidableEqCPtr
 Sel4Lean.Spec.RISCV64.Register.A2.elim
@@ -2813,6 +2851,7 @@ Sel4Lean.Spec.SyscallError.TruncatedMessage.elim
 Sel4Lean.Spec.MachineOps.storeWord
 Sel4Lean.Spec.M.Object_CNode.locateSlotCNode
 Sel4Lean.Spec.M.Kernel_VSpace.initKernelVM
+Sel4Lean.Spec.DesignOnly.HaskellInitData
 Sel4Lean.Spec.InitData
 Sel4Lean.Spec.isDepthMismatch
 Sel4Lean.Spec.M.Model_Preemption.preemptionPoint
@@ -2889,6 +2928,7 @@ Sel4Lean.Spec.KernelInit.biFrameSizeBits
 Sel4Lean.Spec.M.Kernel_Thread.setExtraBadge
 Sel4Lean.Spec.PageInvocation.PageUnmap.elim
 Sel4Lean.Spec.M.Machine_RegisterSet.mask
+Sel4Lean.Spec.M.SEL4.handleEvent
 Sel4Lean.Spec.InitData.initKernelState
 Sel4Lean.Spec.M.Object_Interrupt.maxIRQ
 Sel4Lean.Spec.M.Kernel_VSpace.RISCV64.writeITASIDPool
@@ -2897,6 +2937,7 @@ Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.gpRegisters
 Sel4Lean.Spec.RISCV64.instInhabitedIRQControlInvocation.default
 Sel4Lean.Spec.M.Object_Untyped.constOnFailure
 Sel4Lean.Spec.M.Object_Untyped.retypeFanOutLimit
+Sel4Lean.Spec.DesignOnly.finaliseSlot'
 Sel4Lean.Spec.UserDataDevice.toIdx
 Sel4Lean.Spec.M.Model_StateData.getSchedulerAction
 Sel4Lean.Spec.M.Object_TCB.mapMaybe
@@ -2951,6 +2992,7 @@ Sel4Lean.Spec.M.API_Syscall.getCurThread
 Sel4Lean.Spec.RISCV64.Register.A5
 Sel4Lean.Spec.M.Object_TCB.updateCapData
 Sel4Lean.Spec.PageInvocation.ctorElimType
+Sel4Lean.Spec.DesignOnly.HaskellInitData.initBootInfoFrame
 Sel4Lean.Spec.M.Object_Interrupt_RISCV64.invokeIRQHandler
 Sel4Lean.Spec.M.Machine_Hardware.config_HAVE_FPU
 Sel4Lean.Spec.GenInvocationLabels.TCBReadRegisters

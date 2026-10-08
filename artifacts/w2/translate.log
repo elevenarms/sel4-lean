@@ -408,6 +408,8 @@ hs2lean module: 16/22 functions translated (2 partial, 0 machine-opaque, 0 l4v m
   unresolved tail: no signature found
   unresolved take: no signature found
   unresolved undefined: no signature found
+hs2lean imports: 4 modules, 5 names, 0 arch aliases
+hs2lean module: 3/3 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 0 modules, 0 names, 0 arch aliases

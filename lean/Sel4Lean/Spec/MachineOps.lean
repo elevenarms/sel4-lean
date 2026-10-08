@@ -166,4 +166,23 @@ def sfence : MachineMonad Unit := machine_op_lift sfence_impl
 def read_stval : MachineMonad Word := NondetM.gets stval_val
 def setVSpaceRoot (pt : PAddr) (asid : Word) : MachineMonad Unit := machine_op_lift (setVSpaceRoot_impl pt asid)
 
+/-! ## User monad and registers (MachineOps.thy) -/
+
+/-- Isabelle `getRegister r ≡ gets (λs. user_regs s r)`. -/
+def getRegister (r : RISCV64.Register) : UserMonad Word := NondetM.gets fun s => s.user_regs r
+
+/-- Isabelle `modify_registers f uc ≡ UserContext (f (user_regs uc))`. -/
+def modify_registers (f : (RISCV64.Register → Word) → RISCV64.Register → Word) (uc : UserContext) : UserContext :=
+  ⟨f uc.user_regs⟩
+
+/-- Isabelle `setRegister r v ≡ modify (λs. UserContext ((user_regs s) (r := v)))`. -/
+def setRegister (r : RISCV64.Register) (v : Word) : UserMonad Unit :=
+  NondetM.modify fun s => ⟨fun r' => if r' = r then v else s.user_regs r'⟩
+
+/-- Isabelle `getRestartPC ≡ getRegister FaultIP`. -/
+def getRestartPC : UserMonad Word := getRegister .FaultIP
+
+/-- Isabelle `setNextPC ≡ setRegister NextIP`. -/
+def setNextPC : Word → UserMonad Unit := setRegister .NextIP
+
 end Sel4Lean.Spec.MachineOps

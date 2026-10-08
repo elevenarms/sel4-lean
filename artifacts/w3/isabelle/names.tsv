@@ -257,7 +257,7 @@ Structures_H.kernel_object.KOUserDataDevice	ExecSpec.Structures_H	Sel4Lean.Spec.
 Structures_H.interrupt_state.InterruptState	ExecSpec.Structures_H	Sel4Lean.Spec.InterruptState.InterruptState
 NotificationDecls_H.unbindMaybeNotification	ExecSpec.NotificationDecls_H	Sel4Lean.Spec.M.Object_Notification.unbindMaybeNotification
 MachineTypes.RISCV64.init_underlying_memory	ExecSpec.MachineTypes	Sel4Lean.Spec.init_underlying_memory
-MachineOps.RISCV64.user_context.UserContext	ExecSpec.MachineOps	Sel4Lean.Spec.UserContext
+MachineOps.RISCV64.user_context.UserContext	ExecSpec.MachineOps	Sel4Lean.Spec.UserContext.UserContext
 MachineOps.RISCV64.plic_complete_claim_impl	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.plic_complete_claim_impl
 Kernel_Config.config_ARM_HYPERVISOR_SUPPORT	ExecSpec.Kernel_Config	Sel4Lean.Spec.KernelConfig.config_ARM_HYPERVISOR_SUPPORT
 KernelStateData_H.kernel_state.ksIdleThread	ExecSpec.KernelStateData_H	Sel4Lean.Spec.KernelState.ksIdleThread
@@ -299,7 +299,7 @@ KernelStateData_H.kernel_state.ksArchState	ExecSpec.KernelStateData_H	Sel4Lean.S
 KernelStateData_H.kernel_state.gsUserPages	ExecSpec.KernelStateData_H	Sel4Lean.Spec.KernelState.gsUserPages
 KernelInitMonad_H.init_data.initSlotPosMax	ExecSpec.KernelInitMonad_H	Sel4Lean.Spec.InitData.initSlotPosMax
 KernelInitMonad_H.init_data.initSlotPosCur	ExecSpec.KernelInitMonad_H	Sel4Lean.Spec.InitData.initSlotPosCur
-KernelInitMonad_H.init_data.initFreeMemory	ExecSpec.KernelInitMonad_H	Sel4Lean.Spec.InitData.initFreeMemory
+KernelInitMonad_H.init_data.initFreeMemory	ExecSpec.KernelInitMonad_H	Sel4Lean.Spec.DesignOnly.HaskellInitData.initFreeMemory
 Invocations_H.tcbinvocation.tcNewIPCBuffer	ExecSpec.Invocations_H	Sel4Lean.Spec.TCBInvocation.tcNewIPCBuffer
 Invocations_H.tcbinvocation.readRegsThread	ExecSpec.Invocations_H	Sel4Lean.Spec.TCBInvocation.readRegsThread
 Invocations_H.tcbinvocation.readRegsLength	ExecSpec.Invocations_H	Sel4Lean.Spec.TCBInvocation.readRegsLength
@@ -315,8 +315,8 @@ ArchThreadDecls_H.RISCV64_H.switchToThread	ExecSpec.ArchThreadDecls_H	Sel4Lean.S
 ArchRetypeDecls_H.RISCV64_H.isPageTableMap	ExecSpec.ArchRetypeDecls_H	Sel4Lean.Spec.isPageTableMap
 ArchRetypeDecls_H.RISCV64_H.isCapRevocable	ExecSpec.ArchRetypeDecls_H	Sel4Lean.Spec.M.Object_ObjectType.RISCV64.isCapRevocable
 ArchRetypeDecls_H.RISCV64_H.capUntypedSize	ExecSpec.ArchRetypeDecls_H	Sel4Lean.Spec.M.Object_ObjectType.RISCV64.capUntypedSize
-ArchIntermediate_H.Arch.createNewTableCaps	ExecSpec.ArchIntermediate_H	
-ArchIntermediate_H.Arch.createNewFrameCaps	ExecSpec.ArchIntermediate_H	
+ArchIntermediate_H.Arch.createNewTableCaps	ExecSpec.ArchIntermediate_H	Sel4Lean.Spec.Intermediate.createNewTableCaps
+ArchIntermediate_H.Arch.createNewFrameCaps	ExecSpec.ArchIntermediate_H	Sel4Lean.Spec.Intermediate.createNewFrameCaps
 Types_H.bidevice_region.bidrFrameSizeBits	ExecSpec.Types_H	Sel4Lean.Spec.BIDeviceRegion.bidrFrameSizeBits
 Structures_H.thread_state.IdleThreadState	ExecSpec.Structures_H	Sel4Lean.Spec.ThreadState.IdleThreadState
 Structures_H.kernel_object.KONotification	ExecSpec.Structures_H	Sel4Lean.Spec.KernelObject.KONotification
@@ -325,7 +325,7 @@ Structures_H.capability.capCNodeGuardSize	ExecSpec.Structures_H	Sel4Lean.Spec.Ca
 State_H.RISCV64_H.nextInstructionRegister	ExecSpec.State_H	Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64.nextInstructionRegister
 PSpaceStorable_H.kernel_object_type.ArchT	ExecSpec.PSpaceStorable_H	Sel4Lean.Spec.KernelObjectType.ArchT
 PSpaceFuns_H.deletionIsSafe_delete_locale	ExecSpec.PSpaceFuns_H	Sel4Lean.Spec.M.Model_PSpace.deletionIsSafe_delete_locale
-MachineOps.RISCV64.user_context.user_regs	ExecSpec.MachineOps	
+MachineOps.RISCV64.user_context.user_regs	ExecSpec.MachineOps	Sel4Lean.Spec.UserContext.user_regs
 Kernel_Config.CONFIG_ROOT_CNODE_SIZE_BITS	ExecSpec.Kernel_Config	Sel4Lean.Spec.KernelConfig.CONFIG_ROOT_CNODE_SIZE_BITS
 Kernel_Config.CONFIG_MAX_NUM_TRACE_POINTS	ExecSpec.Kernel_Config	Sel4Lean.Spec.KernelConfig.CONFIG_MAX_NUM_TRACE_POINTS
 Invocations_H.tcbinvocation.writeRegsArch	ExecSpec.Invocations_H	Sel4Lean.Spec.TCBInvocation.writeRegsArch
@@ -433,7 +433,6 @@ Structures_H.zombie_type.zombieCTEBits	ExecSpec.Structures_H	Sel4Lean.Spec.Zombi
 Structures_H.notification.ntfnBoundTCB	ExecSpec.Structures_H	Sel4Lean.Spec.Notification.ntfnBoundTCB
 Structures_H.capability.capReplyMaster	ExecSpec.Structures_H	Sel4Lean.Spec.Capability.capReplyMaster
 Structures_H.capability.capNtfnCanSend	ExecSpec.Structures_H	Sel4Lean.Spec.Capability.capNtfnCanSend
-PSpaceStorable_H.pspace_storable_class	ExecSpec.PSpaceStorable_H	
 NotificationDecls_H.unbindNotification	ExecSpec.NotificationDecls_H	Sel4Lean.Spec.M.Object_Notification.unbindNotification
 MachineTypes.RISCV64.ptTranslationBits	ExecSpec.MachineTypes	Sel4Lean.Spec.M.Machine_Hardware_RISCV64.ptTranslationBits
 MachineOps.RISCV64.plic_complete_claim	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.plic_complete_claim
@@ -485,7 +484,7 @@ Invocations_H.cnode_invocation.Rotate	ExecSpec.Invocations_H	Sel4Lean.Spec.CNode
 Invocations_H.cnode_invocation.Revoke	ExecSpec.Invocations_H	Sel4Lean.Spec.CNodeInvocation.Revoke
 Invocations_H.cnode_invocation.Insert	ExecSpec.Invocations_H	Sel4Lean.Spec.CNodeInvocation.Insert
 Invocations_H.cnode_invocation.Delete	ExecSpec.Invocations_H	Sel4Lean.Spec.CNodeInvocation.Delete
-InterruptDecls_H.maybeHandleInterrupt	ExecSpec.InterruptDecls_H	Sel4Lean.Spec.M.Object_Interrupt.maybeHandleInterrupt
+InterruptDecls_H.maybeHandleInterrupt	ExecSpec.InterruptDecls_H	Sel4Lean.Spec.M.SEL4.maybeHandleInterrupt
 Hardware_H.RISCV64_H.vmRightsFromBits	ExecSpec.Hardware_H	Sel4Lean.Spec.M.Machine_Hardware_RISCV64.vmRightsFromBits
 Hardware_H.RISCV64_H.pte.PageTablePTE	ExecSpec.Hardware_H	Sel4Lean.Spec.PTE.PageTablePTE
 Fault_H.syscall_error.NotEnoughMemory	ExecSpec.Fault_H	Sel4Lean.Spec.SyscallError.NotEnoughMemory
@@ -552,7 +551,6 @@ Structures_H.capability.capIsDevice	ExecSpec.Structures_H	Sel4Lean.Spec.Capabili
 Structures_H.capability.capCNodePtr	ExecSpec.Structures_H	Sel4Lean.Spec.Capability.capCNodePtr
 Structures_H.capability.EndpointCap	ExecSpec.Structures_H	Sel4Lean.Spec.Capability.EndpointCap
 Platform.RISCV64.kernelELFPAddrBase	ExecSpec.Platform	Sel4Lean.Spec.Platform.kernelELFPAddrBase
-PSpaceStorable_H.pre_storable_class	ExecSpec.PSpaceStorable_H	
 NotificationDecls_H.setNotification	ExecSpec.NotificationDecls_H	Sel4Lean.Spec.M.Object_Notification.setNotification
 NotificationDecls_H.getNotification	ExecSpec.NotificationDecls_H	Sel4Lean.Spec.M.Object_TCB.getNotification
 MachineTypes.RISCV64.vmFaultTypeFSR	ExecSpec.MachineTypes	Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.vmFaultTypeFSR
@@ -560,7 +558,7 @@ MachineTypes.RISCV64.syscallMessage	ExecSpec.MachineTypes	Sel4Lean.Spec.M.Machin
 MachineTypes.RISCV64.init_irq_masks	ExecSpec.MachineTypes	Sel4Lean.Spec.init_irq_masks
 MachineTypes.RISCV64.frameRegisters	ExecSpec.MachineTypes	Sel4Lean.Spec.M.Machine_RegisterSet.RISCV64.frameRegisters
 MachineOps.RISCV64.setInterruptMode	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.setInterruptMode
-MachineOps.RISCV64.modify_registers	ExecSpec.MachineOps	
+MachineOps.RISCV64.modify_registers	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.modify_registers
 MachineOps.RISCV64.initL2Cache_impl	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.initL2Cache_impl
 MachineOps.RISCV64.hwASIDFlush_impl	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.hwASIDFlush_impl
 MachineOps.RISCV64.getMemoryRegions	ExecSpec.MachineOps	Sel4Lean.Spec.MachineOps.getMemoryRegions
@@ -657,7 +655,7 @@ KernelInitMonad_H.biCapITASIDPool	ExecSpec.KernelInitMonad_H	Sel4Lean.Spec.Kerne
 KernelInitMonad_H.biCapIRQControl	ExecSpec.KernelInitMonad_H	Sel4Lean.Spec.M.Kernel_BootInfo.biCapIRQControl
 Invocations_H.isCancelBadgedSends	ExecSpec.Invocations_H	Sel4Lean.Spec.isCancelBadgedSends
 InterruptDecls_H.invokeIRQHandler	ExecSpec.InterruptDecls_H	Sel4Lean.Spec.M.Object_ObjectType.invokeIRQHandler
-Intermediate_H.Arch_createNewCaps	ExecSpec.Intermediate_H	
+Intermediate_H.Arch_createNewCaps	ExecSpec.Intermediate_H	Sel4Lean.Spec.Intermediate.Arch_createNewCaps
 Hardware_H.RISCV64_H.isInvalidPTE	ExecSpec.Hardware_H	Sel4Lean.Spec.isInvalidPTE
 Hardware_H.RISCV64_H.VMAttributes	ExecSpec.Hardware_H	Sel4Lean.Spec.VMAttributes
 Fault_H.syscall_error.RevokeFirst	ExecSpec.Fault_H	Sel4Lean.Spec.SyscallError.RevokeFirst
@@ -671,10 +669,10 @@ ArchTypes_H.RISCV64_H.isFrameType	ExecSpec.ArchTypes_H	Sel4Lean.Spec.M.API_Types
 ArchTypes_H.RISCV64_H.fromAPIType	ExecSpec.ArchTypes_H	Sel4Lean.Spec.M.API_Types_RISCV64.fromAPIType
 ArchTCB_H.RISCV64_H.archThreadSet	ExecSpec.ArchTCB_H	Sel4Lean.Spec.M.Object_TCB.archThreadSet
 ArchTCB_H.RISCV64_H.archThreadGet	ExecSpec.ArchTCB_H	Sel4Lean.Spec.M.Object_TCB.archThreadGet
-Types_H.init_data.initVPtrOffset	ExecSpec.Types_H	
+Types_H.init_data.initVPtrOffset	ExecSpec.Types_H	Sel4Lean.Spec.DesignOnly.HaskellInitData.initVPtrOffset
 Types_H.init_data.initSlotPosMax	ExecSpec.Types_H	Sel4Lean.Spec.InitData.initSlotPosMax
 Types_H.init_data.initSlotPosCur	ExecSpec.Types_H	Sel4Lean.Spec.InitData.initSlotPosCur
-Types_H.init_data.initFreeMemory	ExecSpec.Types_H	Sel4Lean.Spec.InitData.initFreeMemory
+Types_H.init_data.initFreeMemory	ExecSpec.Types_H	Sel4Lean.Spec.DesignOnly.HaskellInitData.initFreeMemory
 Types_H.cap_rights.capAllowWrite	ExecSpec.Types_H	Sel4Lean.Spec.CapRights.capAllowWrite
 Types_H.cap_rights.capAllowGrant	ExecSpec.Types_H	Sel4Lean.Spec.CapRights.capAllowGrant
 Types_H.biframe_data.bifUIPTCaps	ExecSpec.Types_H	Sel4Lean.Spec.BIFrameData.bifUIPTCaps
@@ -853,7 +851,7 @@ CSpaceDecls_H.lookupSourceSlot	ExecSpec.CSpaceDecls_H	Sel4Lean.Spec.M.Object_CNo
 CSpaceDecls_H.lookupCapAndSlot	ExecSpec.CSpaceDecls_H	Sel4Lean.Spec.M.Object_TCB.lookupCapAndSlot
 CNode_H.updateTrackedFreeIndex	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.updateTrackedFreeIndex
 ArchTypes_H.RISCV64_H.pageType	ExecSpec.ArchTypes_H	Sel4Lean.Spec.M.API_Types.pageType
-API_H.fastpathKernelAssertions	ExecSpec.API_H	
+API_H.fastpathKernelAssertions	ExecSpec.API_H	Sel4Lean.Spec.DesignOnly.fastpathKernelAssertions
 Types_H.message_info.msgLabel	ExecSpec.Types_H	Sel4Lean.Spec.MessageInfo.msgLabel
 ThreadDecls_H.updateRestartPC	ExecSpec.ThreadDecls_H	Sel4Lean.Spec.M.Kernel_Thread.updateRestartPC
 ThreadDecls_H.tcbSchedEnqueue	ExecSpec.ThreadDecls_H	Sel4Lean.Spec.M.Object_Endpoint.tcbSchedEnqueue
@@ -896,12 +894,12 @@ Invocations_H.isThreadControl	ExecSpec.Invocations_H	Sel4Lean.Spec.isThreadContr
 Invocations_H.isSetIRQHandler	ExecSpec.Invocations_H	Sel4Lean.Spec.isSetIRQHandler
 Invocations_H.isReadRegisters	ExecSpec.Invocations_H	Sel4Lean.Spec.isReadRegisters
 Invocations_H.isCopyRegisters	ExecSpec.Invocations_H	Sel4Lean.Spec.isCopyRegisters
-Intermediate_H.createObjects'	ExecSpec.Intermediate_H	
+Intermediate_H.createObjects'	ExecSpec.Intermediate_H	Sel4Lean.Spec.Intermediate.createObjects'
 Fault_H.init_failure.IFailure	ExecSpec.Fault_H	Sel4Lean.Spec.InitFailure.IFailure
 Fault_H.fault.capFaultFailure	ExecSpec.Fault_H	Sel4Lean.Spec.Fault.capFaultFailure
 Fault_H.fault.capFaultAddress	ExecSpec.Fault_H	Sel4Lean.Spec.Fault.capFaultAddress
 FaultMonad_H.nullCapOnFailure	ExecSpec.FaultMonad_H	Sel4Lean.Spec.M.Model_Failures.nullCapOnFailure
-FaultMonad_H.nothingOnFailure	ExecSpec.FaultMonad_H	
+FaultMonad_H.nothingOnFailure	ExecSpec.FaultMonad_H	Sel4Lean.Spec.DesignOnly.nothingOnFailure
 Event_H.event.HypervisorEvent	ExecSpec.Event_H	Sel4Lean.Spec.Event.HypervisorEvent
 Domain_H.decodeDomainSetStart	ExecSpec.Domain_H	Sel4Lean.Spec.M.Object_Domain.decodeDomainSetStart
 CSpaceDecls_H.lookupPivotSlot	ExecSpec.CSpaceDecls_H	Sel4Lean.Spec.M.Kernel_CSpace.lookupPivotSlot
@@ -952,9 +950,9 @@ Invocations_H.invocationType	ExecSpec.Invocations_H	Sel4Lean.Spec.M.API_Invocati
 InterruptDecls_H.setIRQState	ExecSpec.InterruptDecls_H	Sel4Lean.Spec.M.Object_Interrupt.setIRQState
 InterruptDecls_H.isIRQActive	ExecSpec.InterruptDecls_H	Sel4Lean.Spec.M.Object_Interrupt_RISCV64.isIRQActive
 InterruptDecls_H.getIRQState	ExecSpec.InterruptDecls_H	Sel4Lean.Spec.M.Object_Interrupt.getIRQState
-Intermediate_H.insertNewCaps	ExecSpec.Intermediate_H	
-Intermediate_H.createObjects	ExecSpec.Intermediate_H	
-Intermediate_H.createNewCaps	ExecSpec.Intermediate_H	
+Intermediate_H.insertNewCaps	ExecSpec.Intermediate_H	Sel4Lean.Spec.Intermediate.insertNewCaps
+Intermediate_H.createObjects	ExecSpec.Intermediate_H	Sel4Lean.Spec.Intermediate.createObjects
+Intermediate_H.createNewCaps	ExecSpec.Intermediate_H	Sel4Lean.Spec.Intermediate.createNewCaps
 Hardware_H.RISCV64_H.pteBits	ExecSpec.Hardware_H	Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.pteBits
 Fault_H.msgFromLookupFailure	ExecSpec.Fault_H	Sel4Lean.Spec.M.API_Faults.msgFromLookupFailure
 FaultMonad_H.preemptionPoint	ExecSpec.FaultMonad_H	Sel4Lean.Spec.M.Object_CNode.preemptionPoint
@@ -1035,7 +1033,7 @@ Structures_H.isEndpointCap	ExecSpec.Structures_H	Sel4Lean.Spec.isEndpointCap
 State_H.countTrailingZeros	ExecSpec.State_H	Sel4Lean.Spec.M.Data_WordLib.countTrailingZeros
 State_H.RISCV64_H.wordBits	ExecSpec.State_H	Sel4Lean.Spec.M.Object_Structures.wordBits
 State_H.RISCV64_H.fromVPtr	ExecSpec.State_H	Sel4Lean.Spec.VPtr.fromVPtr
-State_H.RISCV64_H.fromPPtr	ExecSpec.State_H	
+State_H.RISCV64_H.fromPPtr	ExecSpec.State_H	Sel4Lean.Spec.DesignOnly.fromPPtr
 State_H.RISCV64_H.Register	ExecSpec.State_H	Sel4Lean.Spec.Register.Register
 RetypeDecls_H.sameRegionAs	ExecSpec.RetypeDecls_H	Sel4Lean.Spec.M.Object_ObjectType.RISCV64.sameRegionAs
 RetypeDecls_H.sameObjectAs	ExecSpec.RetypeDecls_H	Sel4Lean.Spec.M.Object_ObjectType_RISCV64.sameObjectAs
@@ -1060,7 +1058,7 @@ Event_H.event.VMFaultEvent	ExecSpec.Event_H	Sel4Lean.Spec.Event.VMFaultEvent
 Event_H.event.SyscallEvent	ExecSpec.Event_H	Sel4Lean.Spec.Event.SyscallEvent
 EndpointDecls_H.receiveIPC	ExecSpec.EndpointDecls_H	Sel4Lean.Spec.M.API_Syscall.receiveIPC
 CNode_H.updateNewFreeIndex	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.updateNewFreeIndex
-API_H.kernelExitAssertions	ExecSpec.API_H	
+API_H.kernelExitAssertions	ExecSpec.API_H	Sel4Lean.Spec.DesignOnly.kernelExitAssertions
 Untyped_H.resetUntypedCap	ExecSpec.Untyped_H	Sel4Lean.Spec.M.Object_Untyped.resetUntypedCap
 ThreadDecls_H.setPriority	ExecSpec.ThreadDecls_H	Sel4Lean.Spec.M.Object_TCB.setPriority
 ThreadDecls_H.addToBitmap	ExecSpec.ThreadDecls_H	Sel4Lean.Spec.M.Kernel_Thread.addToBitmap
@@ -1115,7 +1113,7 @@ Structures_H.isThreadCap	ExecSpec.Structures_H	Sel4Lean.Spec.isThreadCap
 Structures_H.isDomainCap	ExecSpec.Structures_H	Sel4Lean.Spec.M.Object_Structures.isDomainCap
 Platform.RISCV64.toPAddr	ExecSpec.Platform	Sel4Lean.Spec.M.Machine_Hardware_RISCV64.toPAddr
 Platform.RISCV64.pptrTop	ExecSpec.Platform	Sel4Lean.Spec.M.Machine_Hardware_RISCV64.pptrTop
-Platform.RISCV64.irq_len	ExecSpec.Platform	
+Platform.RISCV64.irq_len	ExecSpec.Platform	Sel4Lean.Spec.DesignOnly.irq_len
 PSpaceFuns_H.deleteRange	ExecSpec.PSpaceFuns_H	Sel4Lean.Spec.deleteRange
 Kernel_Config.numDomains	ExecSpec.Kernel_Config	Sel4Lean.Spec.M.Object_Structures.numDomains
 Kernel_Config.config_VTX	ExecSpec.Kernel_Config	Sel4Lean.Spec.KernelConfig.config_VTX
@@ -1201,8 +1199,8 @@ Structures_H.isNullCap	ExecSpec.Structures_H	Sel4Lean.Spec.M.Object_TCB.isNullCa
 Structures_H.isFlagSet	ExecSpec.Structures_H	Sel4Lean.Spec.M.Object_Structures.isFlagSet
 State_H.RISCV64_H.Word	ExecSpec.State_H	Sel4Lean.Spec.RISCV64.Word
 State_H.RISCV64_H.VPtr	ExecSpec.State_H	Sel4Lean.Spec.VPtr
-State_H.RISCV64_H.PPtr	ExecSpec.State_H	
-PSpaceStruct_H.ptrBits	ExecSpec.PSpaceStruct_H	
+State_H.RISCV64_H.PPtr	ExecSpec.State_H	Sel4Lean.Spec.DesignOnly.State_H.PPtr
+PSpaceStruct_H.ptrBits	ExecSpec.PSpaceStruct_H	Sel4Lean.Spec.DesignOnly.ptrBits
 PSpaceFuns_H.setObject	ExecSpec.PSpaceFuns_H	Sel4Lean.Spec.M.Object_Notification.setObject
 PSpaceFuns_H.newPSpace	ExecSpec.PSpaceFuns_H	Sel4Lean.Spec.M.Model_StateData.newPSpace
 PSpaceFuns_H.getObject	ExecSpec.PSpaceFuns_H	Sel4Lean.Spec.M.Object_CNode.getObject
@@ -1219,8 +1217,8 @@ Invocations_H.isDelete	ExecSpec.Invocations_H	Sel4Lean.Spec.isDelete
 Invocations_H.isAckIRQ	ExecSpec.Invocations_H	Sel4Lean.Spec.isAckIRQ
 Fault_H.isFailedLookup	ExecSpec.Fault_H	Sel4Lean.Spec.isFailedLookup
 Fault_H.fault.CapFault	ExecSpec.Fault_H	Sel4Lean.Spec.Fault.CapFault
-Delete_H.finaliseSlot'	ExecSpec.Delete_H	
-Delete_H.cteDeleteOne'	ExecSpec.Delete_H	
+Delete_H.finaliseSlot'	ExecSpec.Delete_H	Sel4Lean.Spec.DesignOnly.finaliseSlot'
+Delete_H.cteDeleteOne'	ExecSpec.Delete_H	Sel4Lean.Spec.DesignOnly.cteDeleteOne'
 Config_H.rootCNodeSize	ExecSpec.Config_H	Sel4Lean.Spec.M.Kernel_Init.rootCNodeSize
 Config_H.numPriorities	ExecSpec.Config_H	Sel4Lean.Spec.KernelConfig.numPriorities
 CNode_H.noReplyCapsFor	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.noReplyCapsFor
@@ -1234,7 +1232,7 @@ ThreadDecls_H.restart	ExecSpec.ThreadDecls_H	Sel4Lean.Spec.M.Kernel_Thread.resta
 TCBDecls_H.checkCapAt	ExecSpec.TCBDecls_H	Sel4Lean.Spec.M.Object_TCB.checkCapAt
 Syscall_H.handleYield	ExecSpec.Syscall_H	Sel4Lean.Spec.M.API_Syscall.handleYield
 Syscall_H.handleReply	ExecSpec.Syscall_H	Sel4Lean.Spec.M.API_Syscall.handleReply
-Syscall_H.handleEvent	ExecSpec.Syscall_H	Sel4Lean.Spec.M.API_Syscall.handleEvent
+Syscall_H.handleEvent	ExecSpec.Syscall_H	Sel4Lean.Spec.M.SEL4.handleEvent
 Structures_H.isZombie	ExecSpec.Structures_H	Sel4Lean.Spec.isZombie
 Structures_H.isSendEP	ExecSpec.Structures_H	Sel4Lean.Spec.isSendEP
 Structures_H.isRecvEP	ExecSpec.Structures_H	Sel4Lean.Spec.isRecvEP
@@ -1249,7 +1247,7 @@ Fault_H.isRevokeFirst	ExecSpec.Fault_H	Sel4Lean.Spec.isRevokeFirst
 Fault_H.isInvalidRoot	ExecSpec.Fault_H	Sel4Lean.Spec.isInvalidRoot
 Fault_H.isDeleteFirst	ExecSpec.Fault_H	Sel4Lean.Spec.isDeleteFirst
 Domain_H.invokeDomain	ExecSpec.Domain_H	Sel4Lean.Spec.M.Object_Domain.invokeDomain
-Delete_H.slotsPointed	ExecSpec.Delete_H	
+Delete_H.slotsPointed	ExecSpec.Delete_H	Sel4Lean.Spec.DesignOnly.slotsPointed
 Config_H.minFreeSlots	ExecSpec.Config_H	Sel4Lean.Spec.M.Config.minFreeSlots
 CNode_H.locateSlotTCB	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.locateSlotTCB
 CNode_H.locateSlotCap	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_Untyped.locateSlotCap
@@ -1292,7 +1290,7 @@ KI_Decls_H.coverOf	ExecSpec.KI_Decls_H	Sel4Lean.Spec.KernelInit.coverOf
 Fault_H.isCapFault	ExecSpec.Fault_H	Sel4Lean.Spec.isCapFault
 FaultMonad_H.throw	ExecSpec.FaultMonad_H	Sel4Lean.Spec.M.Object_Interrupt_RISCV64.throw
 Domain_H.domainSet	ExecSpec.Domain_H	Sel4Lean.Spec.M.Object_Domain.domainSet
-Delete_H.sethelper	ExecSpec.Delete_H	
+Delete_H.sethelper	ExecSpec.Delete_H	Sel4Lean.Spec.DesignOnly.sethelper
 CNode_H.getSlotCap	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.getSlotCap
 Untyped_H.alignUp	ExecSpec.Untyped_H	Sel4Lean.Spec.M.Object_Untyped.alignUp
 Types_H.allRights	ExecSpec.Types_H	Sel4Lean.Spec.M.API_Types.allRights
@@ -1312,7 +1310,7 @@ Types_H.noRights	ExecSpec.Types_H	Sel4Lean.Spec.M.API_Types.noRights
 Types_H.fromCPtr	ExecSpec.Types_H	Sel4Lean.Spec.CPtr.fromCPtr
 Thread_H.initTCB	ExecSpec.Thread_H	Sel4Lean.Spec.M.Kernel_Init.initTCB
 State_H.wordSize	ExecSpec.State_H	Sel4Lean.Spec.M.Data_WordLib.wordSize
-API_H.callKernel	ExecSpec.API_H	
+API_H.callKernel	ExecSpec.API_H	Sel4Lean.Spec.M.SEL4.callKernel
 CNode_H.cteSwap	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.cteSwap
 CNode_H.cteMove	ExecSpec.CNode_H	Sel4Lean.Spec.M.Object_CNode.cteMove
 Types_H.Region	ExecSpec.Types_H	Sel4Lean.Spec.Region

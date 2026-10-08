@@ -56,6 +56,7 @@ imports API_Syscall
 imports API
 imports Kernel_BootInfo
 imports Kernel_Init
+imports SEL4
 imports Kernel
 imports Machine_Hardware_RISCV64_Spike
 imports Machine_Target

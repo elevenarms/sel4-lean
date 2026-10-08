@@ -96,6 +96,13 @@ L4V_OVERRIDES.update({(_HW, n): f"Sel4Lean.Spec.Platform.{n}"                   
                                 "kernelELFBaseOffset", "addrFromKPPtr")})
 L4V_OVERRIDES.update({(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", n): f"Sel4Lean.Spec.Platform.{n}"
                       for n in ("irqInvalid", "pageColourBits")})
+# MachineOps.thy's user monad: register access on l4v's user_context
+L4V_OVERRIDES.update({(f"SEL4/Machine/RegisterSet/{ARCH}.hs", n): f"Sel4Lean.Spec.MachineOps.{n}"
+                      for n in ("getRegister", "setRegister")})
+L4V_OVERRIDES.update({(_HW, n): f"Sel4Lean.Spec.MachineOps.{n}" for n in ("getRestartPC", "setNextPC")})
+# API_H: the kernel assertions are declared without their Haskell bodies (unspecified)
+L4V_OVERRIDES.update({("SEL4.lhs", n): f"Sel4Lean.Spec.DesignOnly.{n}"
+                      for n in ("kernelExitAssertions", "fastpathKernelAssertions")})
 # KernelInitMonad_H / KernelInit_H: l4v's init monad plumbing and unspecified bootinfo constants
 L4V_OVERRIDES.update({("SEL4/Kernel/Init.lhs", n): f"Sel4Lean.Spec.KernelInit.{n}"
                       for n in ("doKernelOp", "runInit", "noInitFailure", "coverOf")})
@@ -108,7 +115,9 @@ L4V_OVERRIDES.update({("SEL4/Kernel/BootInfo.lhs", n): f"Sel4Lean.Spec.KernelIni
 # the Lean file defining each override namespace
 OVERRIDE_FILES = {"Sel4Lean.Spec.KernelConfig": "Sel4Lean.Spec.Gen.KernelConfig",
                   "Sel4Lean.Spec.Platform": "Sel4Lean.Spec.Platform",
-                  "Sel4Lean.Spec.KernelInit": "Sel4Lean.Spec.KernelInit"}
+                  "Sel4Lean.Spec.KernelInit": "Sel4Lean.Spec.KernelInit",
+                  "Sel4Lean.Spec.MachineOps": "Sel4Lean.Spec.MachineOps",
+                  "Sel4Lean.Spec.DesignOnly": "Sel4Lean.Spec.DesignOnly"}
 # Structures_H: the Haskell's hand-written `isNullCap` etc. are replaced by l4v's generated discriminators
 L4V_OVERRIDES.update({("SEL4/Object/Structures.lhs", n): f"Sel4Lean.Spec.{n}"
                       for n in ("isNullCap", "isDomainCap", "isIRQControlCap", "isReplyCap", "isUntypedCap",
@@ -231,6 +240,8 @@ def module_paths(root):
     """Haskell module name -> file, for every RISCV64-relevant module."""
     if root not in _MODULE_PATHS:
         m = {}
+        if os.path.exists(os.path.join(root, "SEL4.lhs")):   # the top-level module (callKernel), in l4v's API_H
+            m["SEL4"] = os.path.join(root, "SEL4.lhs")
         for top in ("SEL4", "Data"):
             for d, _, fs in os.walk(os.path.join(root, top)):
                 for f in fs:
@@ -331,7 +342,7 @@ def dependency_order(root, files):
 def lean_module(hs_module):
     """SEL4.Object.TCB.RISCV64 -> Object_TCB_RISCV64 (the generated Lean module/namespace suffix)."""
     parts = hs_module.split(".")
-    if parts[0] == "SEL4":
+    if parts[0] == "SEL4" and len(parts) > 1:
         parts = parts[1:]
     return "_".join(parts)
 
@@ -770,6 +781,18 @@ def cmd_types(root, files, emit=True):
                 text = tr.emit_newtype(name, node)
             else:
                 text = tr.emit_synonym(name, node)
+            if name == "UserContext":
+                # l4v's `datatype user_context = UserContext (user_regs : user_regs)` (machine/RISCV64/
+                # MachineOps.thy) replaces the Haskell `UC { fromUC }` (RegisterSet.lhs: NOT UserContext);
+                # aliases keep the Haskell-only RegisterSet/RISCV64.hs code compiling
+                text = ("/-- Isabelle `datatype user_context = UserContext (user_regs : register ⇒ machine_word)` -/\n"
+                        "structure UserContext where\n"
+                        "  UserContext ::\n"
+                        f"  user_regs : {ARCH}.Register → Word\n"
+                        "  deriving Inhabited\n"
+                        "/-- the Haskell's constructor and selector names -/\n"
+                        "abbrev UserContext.UC := @UserContext.UserContext\n"
+                        "abbrev UserContext.fromUC := @UserContext.user_regs")
             if name == "KernelState":
                 # l4v (design/skel/KernelStateData_H.thy) pushes the machine state into the kernel state;
                 # the default keeps the Haskell model's `KState { … }` constructions (which lack it) valid

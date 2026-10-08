@@ -1,17 +1,6 @@
 isagate: agree 155, both-undefined 3
 isagate: 60/60 functions agree with Isabelle on every case
-isagate names: 1297/1321 ExecSpec constants have a Lean declaration of the same name
-  ExecSpec.Intermediate_H: 0/5
-  ExecSpec.Delete_H: 0/4
-  ExecSpec.API_H: 0/3
-  ExecSpec.PSpaceStorable_H: 17/19
-  ExecSpec.MachineOps: 42/44
-  ExecSpec.ArchIntermediate_H: 0/2
-  ExecSpec.State_H: 21/23
-  ExecSpec.Types_H: 62/63
-  ExecSpec.Platform: 19/20
-  ExecSpec.FaultMonad_H: 15/16
-  ExecSpec.PSpaceStruct_H: 2/3
-isagate names: 727 Lean names with no ExecSpec constant
+isagate names: 1319/1319 ExecSpec constants have a Lean declaration of the same name
+isagate names: 729 Lean names with no ExecSpec constant
 difftest: agree 142, DIFFER 0, int-nat 0, hs-error 8, l4v 8, lean-missing 0, hs-missing 0
 difftest: 60/60 functions agree on every case (int-nat: negative Haskell Int; hs-error: Haskell `error`; l4v: Lean = l4v's Isabelle spec, which differs from the Haskell)

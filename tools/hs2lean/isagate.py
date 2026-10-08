@@ -25,7 +25,7 @@ HELPER = re.compile(r"(_update$|_ext$|\.make$|\.extend$|\.truncate$|\.fields$|_T
                     r"enum_|equal_|less_eq_|less_|default_|zero_|one_|plus_|minus_|times_|divide_|modulo_|"
                     r"uminus_|bot_|top_|un_|is_[A-Z]|discI|sel_|dummy_)|_trans$|_inst\.|_class\.|\.typedef|"
                     # function package (termination) and record extension slots
-                    r"_graph$|_sumC$|_rel$|_dom$|\.more$|\.class\.|_axioms$)")
+                    r"_graph$|_sumC$|_rel$|_dom$|\.more$|\.class\.|_axioms$|_class$)")
 
 
 def base(name):

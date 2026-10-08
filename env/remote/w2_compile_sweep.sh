@@ -11,7 +11,7 @@ SRC=/scratch/c0/verification/l4v/spec/haskell/src
 OUT=~/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod
 ART=~/c0/sel4-lean/artifacts/w2
 mkdir -p "$OUT" "$ART"; rm -f "$OUT"/*.lean
-ALL=$(cd $SRC && find SEL4 Data \( -name "*.hs" -o -name "*.lhs" \) | grep -v -E "/(ARM|ARM_HYP|X64|AARCH64)(/|\.)" | sort)
+ALL=$( (cd $SRC && find SEL4 Data \( -name "*.hs" -o -name "*.lhs" \) | grep -v -E "/(ARM|ARM_HYP|X64|AARCH64)(/|\.)"; echo SEL4.lhs) | sort)
 ROOTS=""; for m in $ALL; do ROOTS="$ROOTS $SRC/$m"; done
 : > "$ART/translate.log"
 export PATH=~/.elan/bin:$PATH

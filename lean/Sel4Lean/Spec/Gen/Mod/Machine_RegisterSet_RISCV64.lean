@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.MachineOps
 
 set_option match.ignoreUnusedAlts true
 
@@ -78,13 +79,13 @@ def nextInstructionRegister : RISCV64.Register :=
 def newContext : UserContext :=
   UserContext.UC (arrayUpdH (funArray (const 0)) initContext)
 
-/-- Haskell `getRegister` -/
-def getRegister (r : RISCV64.Register) : UserMonad RISCV64.Word :=
-  gets (((fun x => x r)) ∘ UserContext.fromUC)
+/-- Haskell `getRegister`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev getRegister := @Sel4Lean.Spec.MachineOps.getRegister
 
-/-- Haskell `setRegister` -/
-def setRegister (r : RISCV64.Register) (v : RISCV64.Word) : UserMonad Unit :=
-  modify (UserContext.UC ∘ (((fun x => arrayUpdH x ([(r, v)]))) ∘ UserContext.fromUC))
+
+/-- Haskell `setRegister`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev setRegister := @Sel4Lean.Spec.MachineOps.setRegister
+
 
 end
 end Sel4Lean.Spec.M.Machine_RegisterSet_RISCV64

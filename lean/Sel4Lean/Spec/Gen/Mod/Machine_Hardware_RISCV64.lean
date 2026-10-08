@@ -5,6 +5,7 @@
 
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.MachineOps
+import Sel4Lean.Spec.MachineOps
 import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive
@@ -144,13 +145,13 @@ abbrev resetTimer := @Sel4Lean.Spec.MachineOps.resetTimer
 abbrev setIRQTrigger := @Sel4Lean.Spec.MachineOps.setIRQTrigger
 
 
-/-- Haskell `getRestartPC` -/
-def getRestartPC : UserMonad Word :=
-  getRegister (Register.Register (RISCV64.Register.FaultIP))
+/-- Haskell `getRestartPC`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev getRestartPC := @Sel4Lean.Spec.MachineOps.getRestartPC
 
-/-- Haskell `setNextPC` -/
-def setNextPC : Word → UserMonad Unit :=
-  setRegister (Register.Register (RISCV64.Register.NextIP))
+
+/-- Haskell `setNextPC`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev setNextPC := @Sel4Lean.Spec.MachineOps.setNextPC
+
 
 /-- Haskell `clearMemory`: l4v's MachineOps.thy (Spec/MachineOps.lean) -/
 abbrev clearMemory := @Sel4Lean.Spec.MachineOps.clearMemory

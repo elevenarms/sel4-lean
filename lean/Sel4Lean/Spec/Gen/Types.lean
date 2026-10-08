@@ -321,143 +321,6 @@ def isPageTableCap : _root_.Sel4Lean.Spec.ArchCapability → Bool
   | _ => false
 noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
 
--- from SEL4/Object/Structures.lhs
-/-- Haskell `data ZombieType` -/
-inductive ZombieType where
-  | ZombieTCB
-  | ZombieCNode (zombieCTEBits : Nat)
-  deriving Inhabited, DecidableEq
-
-/-- Haskell selector `zombieCTEBits`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
-def ZombieType.zombieCTEBits : ZombieType → Nat
-  | .ZombieCNode v => v
-  | _ => undefinedH
-/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
-def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
-  match x with
-  | .ZombieCNode _ => .ZombieCNode v
-  | x => x
-
-/-- l4v-generated discriminator `isZombieTCB` -/
-def isZombieTCB : _root_.Sel4Lean.Spec.ZombieType → Bool
-  | .ZombieTCB .. => true
-  | _ => false
-
-/-- l4v-generated discriminator `isZombieCNode` -/
-def isZombieCNode : _root_.Sel4Lean.Spec.ZombieType → Bool
-  | .ZombieCNode .. => true
-  | _ => false
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `data RISCV64.Register` -/
-inductive RISCV64.Register where
-  | LR
-  | SP
-  | GP
-  | S0
-  | S1
-  | S2
-  | S3
-  | S4
-  | S5
-  | S6
-  | S7
-  | S8
-  | S9
-  | S10
-  | S11
-  | A0
-  | A1
-  | A2
-  | A3
-  | A4
-  | A5
-  | A6
-  | A7
-  | T0
-  | T1
-  | T2
-  | T3
-  | T4
-  | T5
-  | T6
-  | TP
-  | SCAUSE
-  | SSTATUS
-  | FaultIP
-  | NextIP
-  deriving Inhabited, DecidableEq
-
-def RISCV64.Register.toIdx : _root_.Sel4Lean.Spec.RISCV64.Register → Int | .LR => 0 | .SP => 1 | .GP => 2 | .S0 => 3 | .S1 => 4 | .S2 => 5 | .S3 => 6 | .S4 => 7 | .S5 => 8 | .S6 => 9 | .S7 => 10 | .S8 => 11 | .S9 => 12 | .S10 => 13 | .S11 => 14 | .A0 => 15 | .A1 => 16 | .A2 => 17 | .A3 => 18 | .A4 => 19 | .A5 => 20 | .A6 => 21 | .A7 => 22 | .T0 => 23 | .T1 => 24 | .T2 => 25 | .T3 => 26 | .T4 => 27 | .T5 => 28 | .T6 => 29 | .TP => 30 | .SCAUSE => 31 | .SSTATUS => 32 | .FaultIP => 33 | .NextIP => 34
-def RISCV64.Register.ofIdx : Nat → _root_.Sel4Lean.Spec.RISCV64.Register | 0 => .LR | 1 => .SP | 2 => .GP | 3 => .S0 | 4 => .S1 | 5 => .S2 | 6 => .S3 | 7 => .S4 | 8 => .S5 | 9 => .S6 | 10 => .S7 | 11 => .S8 | 12 => .S9 | 13 => .S10 | 14 => .S11 | 15 => .A0 | 16 => .A1 | 17 => .A2 | 18 => .A3 | 19 => .A4 | 20 => .A5 | 21 => .A6 | 22 => .A7 | 23 => .T0 | 24 => .T1 | 25 => .T2 | 26 => .T3 | 27 => .T4 | 28 => .T5 | 29 => .T6 | 30 => .TP | 31 => .SCAUSE | 32 => .SSTATUS | 33 => .FaultIP | 34 => .NextIP | _ => default
-instance : IntegralH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨RISCV64.Register.toIdx, fun i => RISCV64.Register.ofIdx i.toNat⟩
-instance : BoundedH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨.LR, .NextIP⟩
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `type RISCV64.Word` -/
-abbrev RISCV64.Word := BitVec 64
-
--- from SEL4/Machine/RegisterSet/RISCV64.hs
-/-- Haskell `data UserContext = UC { … }` -/
-structure UserContext where
-  UC ::
-  fromUC : (RISCV64.Register → RISCV64.Word)
-  deriving Inhabited
-
-noncomputable instance : DecidableEq UserContext := Classical.typeDecidableEq UserContext
-
--- from SEL4/Object/Structures/RISCV64.hs
-/-- Haskell `data ArchTCB = ArchThread { … }` -/
-structure ArchTCB where
-  ArchThread ::
-  atcbContext : UserContext
-  deriving Inhabited
-
-noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
-
--- from SEL4/API/Types.lhs
-/-- Haskell `type Domain` -/
-abbrev Domain := BitVec 8
-
--- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
-
--- from SEL4/Object/Structures.lhs
-/-- Haskell `type TcbFlags` -/
-abbrev TcbFlags := Word
-
--- from SEL4/API/Failures/RISCV64.hs
-/-- Haskell `data ArchFault = VMFault { … }` -/
-structure ArchFault where
-  VMFault ::
-  vmFaultAddress : VPtr
-  vmFaultArchData : List Word
-  deriving Inhabited, DecidableEq
-
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  CPtr ::
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
-instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
-instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
-instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
-instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
-instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
-instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
-instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
-instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
-instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
-instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
-instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
-instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
-instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
-instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
-
-
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
 inductive LookupFailure where
@@ -546,6 +409,37 @@ def isInvalidRoot : _root_.Sel4Lean.Spec.LookupFailure → Bool
 def isGuardMismatch : _root_.Sel4Lean.Spec.LookupFailure → Bool
   | .GuardMismatch .. => true
   | _ => false
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  CPtr ::
+  fromCPtr : Word
+  deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
+instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
+instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
+instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
+instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
+instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
+instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
+instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
+instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
+instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
+instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
+instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
+
+
+-- from SEL4/API/Failures/RISCV64.hs
+/-- Haskell `data ArchFault = VMFault { … }` -/
+structure ArchFault where
+  VMFault ::
+  vmFaultAddress : VPtr
+  vmFaultArchData : List Word
+  deriving Inhabited, DecidableEq
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -644,6 +538,114 @@ def isUnknownSyscallException : _root_.Sel4Lean.Spec.Fault → Bool
 /-- l4v-generated discriminator `isArchFault` -/
 def isArchFault : _root_.Sel4Lean.Spec.Fault → Bool
   | .ArchFault .. => true
+  | _ => false
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Domain` -/
+abbrev Domain := BitVec 8
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Haskell `data RISCV64.Register` -/
+inductive RISCV64.Register where
+  | LR
+  | SP
+  | GP
+  | S0
+  | S1
+  | S2
+  | S3
+  | S4
+  | S5
+  | S6
+  | S7
+  | S8
+  | S9
+  | S10
+  | S11
+  | A0
+  | A1
+  | A2
+  | A3
+  | A4
+  | A5
+  | A6
+  | A7
+  | T0
+  | T1
+  | T2
+  | T3
+  | T4
+  | T5
+  | T6
+  | TP
+  | SCAUSE
+  | SSTATUS
+  | FaultIP
+  | NextIP
+  deriving Inhabited, DecidableEq
+
+def RISCV64.Register.toIdx : _root_.Sel4Lean.Spec.RISCV64.Register → Int | .LR => 0 | .SP => 1 | .GP => 2 | .S0 => 3 | .S1 => 4 | .S2 => 5 | .S3 => 6 | .S4 => 7 | .S5 => 8 | .S6 => 9 | .S7 => 10 | .S8 => 11 | .S9 => 12 | .S10 => 13 | .S11 => 14 | .A0 => 15 | .A1 => 16 | .A2 => 17 | .A3 => 18 | .A4 => 19 | .A5 => 20 | .A6 => 21 | .A7 => 22 | .T0 => 23 | .T1 => 24 | .T2 => 25 | .T3 => 26 | .T4 => 27 | .T5 => 28 | .T6 => 29 | .TP => 30 | .SCAUSE => 31 | .SSTATUS => 32 | .FaultIP => 33 | .NextIP => 34
+def RISCV64.Register.ofIdx : Nat → _root_.Sel4Lean.Spec.RISCV64.Register | 0 => .LR | 1 => .SP | 2 => .GP | 3 => .S0 | 4 => .S1 | 5 => .S2 | 6 => .S3 | 7 => .S4 | 8 => .S5 | 9 => .S6 | 10 => .S7 | 11 => .S8 | 12 => .S9 | 13 => .S10 | 14 => .S11 | 15 => .A0 | 16 => .A1 | 17 => .A2 | 18 => .A3 | 19 => .A4 | 20 => .A5 | 21 => .A6 | 22 => .A7 | 23 => .T0 | 24 => .T1 | 25 => .T2 | 26 => .T3 | 27 => .T4 | 28 => .T5 | 29 => .T6 | 30 => .TP | 31 => .SCAUSE | 32 => .SSTATUS | 33 => .FaultIP | 34 => .NextIP | _ => default
+instance : IntegralH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨RISCV64.Register.toIdx, fun i => RISCV64.Register.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨.LR, .NextIP⟩
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Haskell `type RISCV64.Word` -/
+abbrev RISCV64.Word := BitVec 64
+
+-- from SEL4/Machine/RegisterSet/RISCV64.hs
+/-- Isabelle `datatype user_context = UserContext (user_regs : register ⇒ machine_word)` -/
+structure UserContext where
+  UserContext ::
+  user_regs : RISCV64.Register → Word
+  deriving Inhabited
+/-- the Haskell's constructor and selector names -/
+abbrev UserContext.UC := @UserContext.UserContext
+abbrev UserContext.fromUC := @UserContext.user_regs
+noncomputable instance : DecidableEq UserContext := Classical.typeDecidableEq UserContext
+
+-- from SEL4/Object/Structures/RISCV64.hs
+/-- Haskell `data ArchTCB = ArchThread { … }` -/
+structure ArchTCB where
+  ArchThread ::
+  atcbContext : UserContext
+  deriving Inhabited
+
+noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `type TcbFlags` -/
+abbrev TcbFlags := Word
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
+
+-- from SEL4/Object/Structures.lhs
+/-- Haskell `data ZombieType` -/
+inductive ZombieType where
+  | ZombieTCB
+  | ZombieCNode (zombieCTEBits : Nat)
+  deriving Inhabited, DecidableEq
+
+/-- Haskell selector `zombieCTEBits`; on other constructors unspecified (`undefinedH`), as l4v's primrec selectors are in Isabelle. -/
+def ZombieType.zombieCTEBits : ZombieType → Nat
+  | .ZombieCNode v => v
+  | _ => undefinedH
+/-- Haskell record update `x { zombieCTEBits = v }` (no-op on other constructors). -/
+def ZombieType.set_zombieCTEBits (x : ZombieType) (v : Nat) : ZombieType :=
+  match x with
+  | .ZombieCNode _ => .ZombieCNode v
+  | x => x
+
+/-- l4v-generated discriminator `isZombieTCB` -/
+def isZombieTCB : _root_.Sel4Lean.Spec.ZombieType → Bool
+  | .ZombieTCB .. => true
+  | _ => false
+
+/-- l4v-generated discriminator `isZombieCNode` -/
+def isZombieCNode : _root_.Sel4Lean.Spec.ZombieType → Bool
+  | .ZombieCNode .. => true
   | _ => false
 
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
