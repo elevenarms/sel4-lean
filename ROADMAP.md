@@ -64,11 +64,29 @@ Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc
 
 ## Walk: full abstract ↔ executable refinement (RISCV64)
 
-- [ ] Automate both translators so they cover the whole executable and abstract specs.
-- [ ] Lean versions of l4v's automation: `wpsimp`, `crunch`, the `corres_*` family, the simp sets. **This is the critical path.**
-- [ ] Port the abstract invariants (AInvs) and the executable-spec invariants.
-- [ ] Port the abstract ↔ executable refinement proof (Refine).
-- [ ] Pipeline that re-runs as upstream l4v changes (or a decision to freeze a snapshot).
+Crawl closed 2026-10-08 with the decision **re-prove** (see Open decisions). Carried over from crawl: the C3 side-by-side
+test (needs the kernel-state model, W3) and a hand-written proof baseline (optional).
+
+### W1. Automation layer (critical path)
+- [ ] `[wp_rule]` attribute + `wp` tactic driven by it (l4v `[wp]` sets); extra rules as `wp [h₁, h₂]`.
+- [ ] Join-point handling in `wp` (Lean `do` compiles `let x ← match …` into `have __do_jp …; match …`).
+- [ ] `wpsimp` on top; re-prove `cancelSignal_simple` as a one-liner like l4v's.
+- [ ] `crunch`: generate "f preserves P" lemmas for every function in a module (l4v: 629 uses in Refine alone).
+- [ ] `corres` automation: `corres_split` driver, `corres_cases`, `corres_gen_asm`, a `corres` rule set.
+
+### W2. Translators at full scale
+- [ ] hs2lean over all of `Structures.lhs`, then module by module; track coverage (functions translated / total).
+- [ ] Decide the translated-code shape for automation (explicit binds vs `do` sugar), based on W1.
+- [ ] Isabelle → Lean for the abstract spec: hand-assisted first, then a tool if the volume demands it.
+
+### W3. Kernel state model
+- [ ] Translate `KernelState`, `PSpace`, `getObject`/`setObject` instead of stubbing them.
+- [ ] Side-by-side test: Lean executable spec vs the Haskell model on the same inputs (from C3).
+
+### W4. Proofs
+- [ ] Port the invariant definitions (`invs`, `invs'`), then AInvs and Refine, replacing assumptions in
+      `CancelSignalAssumptions`-style structures with proofs, module by module.
+- [ ] Re-run pipeline as upstream l4v changes (or a decision to freeze a snapshot).
 
 **Exit:** a Lean theorem that the RISCV64 executable spec refines the abstract spec, with all invariants proved.
 
@@ -89,7 +107,7 @@ Slice chosen in C0: **notifications** (`Notification.lhs` ↔ `IpcCancel_A`/`Ipc
 
 | Decision | Decide by | Notes |
 |---|---|---|
-| Translate vs. re-prove proofs | End of crawl | **Proposed: re-prove** (AI-assisted, following l4v structure); Dedukti as side channel. Awaiting sign-off. |
+| Translate vs. re-prove proofs | ~~End of crawl~~ **decided 2026-10-08: re-prove** | AI-assisted, following l4v proof structure; Dedukti kept as a side channel (`notes/c5-dedukti-spike.md`) |
 | Track upstream vs. pinned snapshot | End of crawl | Affects how the translators are built |
 | Mathlib dependency | ~~C1~~ decided: not during crawl | Revisit in C2 if the monad library wants `Set` theory |
 | C semantics approach | Start of run | (a) vs (b) above |
