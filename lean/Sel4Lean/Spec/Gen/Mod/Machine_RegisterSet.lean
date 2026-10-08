@@ -28,7 +28,7 @@ opaque RISCV64.faultRegister : RISCV64.Register
 opaque RISCV64.frameRegisters : List RISCV64.Register
 
 -- arch: SEL4/Machine/RegisterSet.lhs
-opaque RISCV64.getRegister : RISCV64.Register → UserMonad RISCV64.Word
+opaque RISCV64.getRegister : Register → UserMonad Word
 
 -- arch: SEL4/Machine/RegisterSet/RISCV64.hs
 opaque RISCV64.gpRegisters : List RISCV64.Register
@@ -46,7 +46,7 @@ opaque RISCV64.newContext : UserContext
 opaque RISCV64.nextInstructionRegister : RISCV64.Register
 
 -- arch: SEL4/Machine/RegisterSet.lhs
-opaque RISCV64.setRegister : RISCV64.Register → RISCV64.Word → UserMonad Unit
+opaque RISCV64.setRegister : Register → Word → UserMonad Unit
 
 -- arch: SEL4/Machine/RegisterSet/RISCV64.hs
 opaque RISCV64.syscallMessage : List RISCV64.Register
@@ -62,51 +62,51 @@ opaque RISCV64.tlsBaseRegister : RISCV64.Register
 /-! ## Translated -/
 
 /-- Haskell `msgInfoRegister` -/
-def msgInfoRegister : Register :=
+partial def msgInfoRegister : Register :=
   Register.Register (RISCV64.msgInfoRegister)
 
 /-- Haskell `msgRegisters` -/
-def msgRegisters : List Register :=
+partial def msgRegisters : List Register :=
   map Register.Register (RISCV64.msgRegisters)
 
 /-- Haskell `capRegister` -/
-def capRegister : Register :=
+partial def capRegister : Register :=
   Register.Register (RISCV64.capRegister)
 
 /-- Haskell `badgeRegister` -/
-def badgeRegister : Register :=
+partial def badgeRegister : Register :=
   Register.Register (RISCV64.badgeRegister)
 
 /-- Haskell `frameRegisters` -/
-def frameRegisters : List Register :=
+partial def frameRegisters : List Register :=
   map Register.Register (RISCV64.frameRegisters)
 
 /-- Haskell `gpRegisters` -/
-def gpRegisters : List Register :=
+partial def gpRegisters : List Register :=
   map Register.Register (RISCV64.gpRegisters)
 
 /-- Haskell `exceptionMessage` -/
-def exceptionMessage : List Register :=
+partial def exceptionMessage : List Register :=
   map Register.Register (RISCV64.exceptionMessage)
 
 /-- Haskell `syscallMessage` -/
-def syscallMessage : List Register :=
+partial def syscallMessage : List Register :=
   map Register.Register (RISCV64.syscallMessage)
 
 /-- Haskell `tlsBaseRegister` -/
-def tlsBaseRegister : Register :=
+partial def tlsBaseRegister : Register :=
   Register.Register (RISCV64.tlsBaseRegister)
 
 /-- Haskell `faultRegister` -/
-def faultRegister : Register :=
+partial def faultRegister : Register :=
   Register.Register (RISCV64.faultRegister)
 
 /-- Haskell `nextInstructionRegister` -/
-def nextInstructionRegister : Register :=
+partial def nextInstructionRegister : Register :=
   Register.Register (RISCV64.nextInstructionRegister)
 
 /-- Haskell `getRegister` -/
-def getRegister (x0 : Register) : UserMonad Word :=
+partial def getRegister (x0 : Register) : UserMonad Word :=
   match x0 with
   | (Register.Register r) => 
       do
@@ -114,16 +114,16 @@ def getRegister (x0 : Register) : UserMonad Word :=
         pure (Word w)
 
 /-- Haskell `setRegister` -/
-def setRegister (x0 : Register) (x1 : Word) : UserMonad Unit :=
+partial def setRegister (x0 : Register) (x1 : Word) : UserMonad Unit :=
   match x0, x1 with
   | (Register.Register r), (Word v) => (RISCV64.setRegister) r v
 
 /-- Haskell `newContext` -/
-def newContext : UserContext :=
+partial def newContext : UserContext :=
   RISCV64.newContext
 
 /-- Haskell `mask` -/
-def mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] (bits : Nat) : w :=
+partial def mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] (bits : Nat) : w :=
   (bit bits) - 1
 
 end

@@ -55,7 +55,7 @@ opaque syscallMessage : List Register
 /-! ## Translated -/
 
 /-- Haskell `makeFaultMessage` -/
-def makeFaultMessage (x0 : Fault) (x1 : PPtr TCB) : Kernel (Word × (List Word)) :=
+partial def makeFaultMessage (x0 : Fault) (x1 : PPtr TCB) : Kernel (Word × (List Word)) :=
   match x0, x1 with
   | (Fault.CapFault cptr rp lf), thread => 
       do
@@ -72,7 +72,7 @@ def makeFaultMessage (x0 : Fault) (x1 : PPtr TCB) : Kernel (Word × (List Word))
   | (Fault.ArchFault af), thread => makeArchFaultMessage af thread
 
 /-- Haskell `handleFaultReply` -/
-def handleFaultReply (x0 : Fault) (x1 : PPtr TCB) (x2 : Word) (x3 : List Word) : Kernel Bool :=
+partial def handleFaultReply (x0 : Fault) (x1 : PPtr TCB) (x2 : Word) (x3 : List Word) : Kernel Bool :=
   match x0, x1, x2, x3 with
   | (Fault.CapFault ..), _, _, _ => pure true
   | (Fault.UnknownSyscallException _), thread, label, msg => 

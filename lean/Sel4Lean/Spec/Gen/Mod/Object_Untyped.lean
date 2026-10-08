@@ -115,11 +115,11 @@ opaque wordBits : Nat
 /-! ## Translated -/
 
 /-- Haskell `alignUp` -/
-def alignUp (baseValue : Word) (alignment : Nat) : Word :=
+partial def alignUp (baseValue : Word) (alignment : Nat) : Word :=
   ((baseValue + (1 <<< alignment)) - 1) &&& (complement (mask alignment))
 
 /-- Haskell `decodeUntypedInvocation` -/
-def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : Capability) (x4 : List Capability) : KernelF SyscallError UntypedInvocation :=
+partial def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : Capability) (x4 : List Capability) : KernelF SyscallError UntypedInvocation :=
   match x0, x1, x2, x3, x4 with
   | label, (newTypeW :: userObjSizeW :: nodeIndexW :: nodeDepthW :: nodeOffset :: nodeWindow :: _), slot, cap, (rootCap :: _) => 
       do
@@ -172,21 +172,21 @@ def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : C
         SyscallError.IllegalOperation)
 
 /-- Haskell `canonicalAddressAssert` -/
-def canonicalAddressAssert (p : PPtr Unit) : Bool :=
+partial def canonicalAddressAssert (p : PPtr Unit) : Bool :=
   true
 
 /-- Haskell `archOverlap` -/
-def archOverlap (x0 : KernelState) (x1 : Word → Bool) : Bool :=
+partial def archOverlap (x0 : KernelState) (x1 : Word → Bool) : Bool :=
   match x0, x1 with
   | _, _ => false
 
 /-- Haskell `cNodeOverlap` -/
-def cNodeOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
+partial def cNodeOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :=
   match x0, x1 with
   | _, _ => false
 
 /-- Haskell `invokeUntyped` -/
-def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=
+partial def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=
   match x0 with
   | (UntypedInvocation.Retype srcSlot reset base retypeBase newType userSize destSlots isDev) => 
       do

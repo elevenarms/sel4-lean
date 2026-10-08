@@ -19,35 +19,35 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `minFreeSlots` -/
-def minFreeSlots : Nat :=
+partial def minFreeSlots : Nat :=
   128
 
 /-- Haskell `minSmallBlocks` -/
-def minSmallBlocks : Nat :=
+partial def minSmallBlocks : Nat :=
   16
 
 /-- Haskell `rootCNodeSize` -/
-def rootCNodeSize : Nat :=
+partial def rootCNodeSize : Nat :=
   12
 
 /-- Haskell `timeSlice` -/
-def timeSlice : Nat :=
+partial def timeSlice : Nat :=
   error "see Kernel_Config.thy"
 
 /-- Haskell `numDomains` -/
-def numDomains : Nat :=
+partial def numDomains : Nat :=
   error "see Kernel_Config.thy for definition"
 
 /-- Haskell `numPriorities` -/
-def numPriorities : Nat :=
+partial def numPriorities : Nat :=
   256
 
 /-- Haskell `retypeFanOutLimit` -/
-def retypeFanOutLimit : Word :=
+partial def retypeFanOutLimit : Word :=
   error "see Kernel_Config.thy"
 
 /-- Haskell `resetChunkBits` -/
-def resetChunkBits : Nat :=
+partial def resetChunkBits : Nat :=
   error "see Kernel_Config.thy"
 
 end

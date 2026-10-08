@@ -15,32 +15,32 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `decodeTransfer` -/
-def decodeTransfer (x0 : BitVec 8) : KernelF SyscallError CopyRegisterSets :=
+partial def decodeTransfer (x0 : BitVec 8) : KernelF SyscallError CopyRegisterSets :=
   match x0 with
   | _ => pure CopyRegisterSets.RISCVNoExtraRegisters
 
 /-- Haskell `performTransfer` -/
-def performTransfer (x0 : CopyRegisterSets) (x1 : PPtr TCB) (x2 : PPtr TCB) : Kernel Unit :=
+partial def performTransfer (x0 : CopyRegisterSets) (x1 : PPtr TCB) (x2 : PPtr TCB) : Kernel Unit :=
   match x0, x1, x2 with
   | _, _, _ => pure ()
 
 /-- Haskell `sanitiseRegister` -/
-def sanitiseRegister (x0 : Bool) (x1 : Register) (x2 : Word) : Word :=
+partial def sanitiseRegister (x0 : Bool) (x1 : RISCV64.Register) (x2 : RISCV64.Word) : RISCV64.Word :=
   match x0, x1, x2 with
   | _, _, v => v
 
 /-- Haskell `getSanitiseRegisterInfo` -/
-def getSanitiseRegisterInfo (x0 : PPtr TCB) : Kernel Bool :=
+partial def getSanitiseRegisterInfo (x0 : PPtr TCB) : Kernel Bool :=
   match x0 with
   | _ => pure false
 
 /-- Haskell `postModifyRegisters` -/
-def postModifyRegisters (x0 : PPtr TCB) (x1 : PPtr TCB) : UserMonad Unit :=
+partial def postModifyRegisters (x0 : PPtr TCB) (x1 : PPtr TCB) : UserMonad Unit :=
   match x0, x1 with
   | _, _ => pure ()
 
 /-- Haskell `postSetFlags` -/
-def postSetFlags (t : PPtr TCB) (flags : TcbFlags) : Kernel Unit :=
+partial def postSetFlags (t : PPtr TCB) (flags : TcbFlags) : Kernel Unit :=
   pure ()
 
 end

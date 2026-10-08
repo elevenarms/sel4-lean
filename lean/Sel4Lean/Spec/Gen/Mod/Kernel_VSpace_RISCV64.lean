@@ -37,7 +37,7 @@ opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
 -- local, not translated: guards that fall through to the next equation: alternative at line 447: 'Untyped
-opaque decodeRISCVASIDControlInvocation : Word → (List Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
+opaque decodeRISCVASIDControlInvocation : RISCV64.Word → (List RISCV64.Word) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
 
 -- external: SEL4/Model/PSpace.lhs
 opaque deleteObjects {a : Type} [Inhabited a] : (PPtr a) → Nat → Kernel Unit
@@ -190,24 +190,24 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `ipcBufferSizeBits` -/
-def ipcBufferSizeBits : Nat :=
+partial def ipcBufferSizeBits : Nat :=
   10
 
 /-- Haskell `ptBitsLeft` -/
-def ptBitsLeft (level : Nat) : Nat :=
+partial def ptBitsLeft (level : Nat) : Nat :=
   (ptTranslationBits * level) + pageBits
 
 /-- Haskell `ptIndex` -/
-def ptIndex (level : Nat) (vPtr : VPtr) : Word :=
+partial def ptIndex (level : Nat) (vPtr : VPtr) : RISCV64.Word :=
   ((VPtr.fromVPtr vPtr) >>> (ptBitsLeft level)) &&& (mask ptTranslationBits)
 
 /-- Haskell `storePTE` -/
-def storePTE (slot : PPtr PTE) (pte : PTE) : Kernel Unit :=
+partial def storePTE (slot : PPtr PTE) (pte : PTE) : Kernel Unit :=
   do
     setObject slot pte
 
 /-- Haskell `copyGlobalMappings` -/
-def copyGlobalMappings (newPT : PPtr PTE) : Kernel Unit :=
+partial def copyGlobalMappings (newPT : PPtr PTE) : Kernel Unit :=
   do
     let globalPT ← gets (riscvKSGlobalPT ∘ KernelState.ksArchState)
     let base := ptIndex maxPTLevel pptrBase
@@ -218,7 +218,7 @@ def copyGlobalMappings (newPT : PPtr PTE) : Kernel Unit :=
         storePTE (newPT + offset) pte)
 
 /-- Haskell `lookupIPCBuffer` -/
-def lookupIPCBuffer (isReceiver : Bool) (thread : PPtr TCB) : Kernel (Option (PPtr Word)) :=
+partial def lookupIPCBuffer (isReceiver : Bool) (thread : PPtr TCB) : Kernel (Option (PPtr RISCV64.Word)) :=
   do
     let bufferPtr ← threadGet TCB.tcbIPCBuffer thread
     let bufferFrameSlot ← getThreadBufferSlot thread
@@ -236,12 +236,12 @@ def lookupIPCBuffer (isReceiver : Bool) (thread : PPtr TCB) : Kernel (Option (PP
     | _ => pure none
 
 /-- Haskell `checkPTAt` -/
-def checkPTAt (x0 : PPtr PTE) : Kernel Unit :=
+partial def checkPTAt (x0 : PPtr PTE) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `findVSpaceForASID` -/
-def findVSpaceForASID (asid : ASID) : KernelF LookupFailure (PPtr PTE) :=
+partial def findVSpaceForASID (asid : ASID) : KernelF LookupFailure (PPtr PTE) :=
   do
     let _ ← assertG (asid > 0) "ASID 0 is used for objects that are not mapped"
     let _ ← assertG (asid ≤ (snd asidRange)) "ASID out of range"
@@ -259,29 +259,29 @@ def findVSpaceForASID (asid : ASID) : KernelF LookupFailure (PPtr PTE) :=
     | none => throw LookupFailure.InvalidRoot
 
 /-- Haskell `maybeVSpaceForASID` -/
-def maybeVSpaceForASID (asid : ASID) : Kernel (Option (PPtr PTE)) :=
+partial def maybeVSpaceForASID (asid : ASID) : Kernel (Option (PPtr PTE)) :=
   catchFailure (liftM some (findVSpaceForASID asid)) (const (pure none))
 
 /-- Haskell `isPageTablePTE` -/
-def isPageTablePTE (x0 : PTE) : Bool :=
+partial def isPageTablePTE (x0 : PTE) : Bool :=
   match x0 with
   | (PTE.PageTablePTE ..) => true
   | _ => false
 
 /-- Haskell `getPPtrFromHWPTE` -/
-def getPPtrFromHWPTE (pte : PTE) : PPtr PTE :=
+partial def getPPtrFromHWPTE (pte : PTE) : PPtr PTE :=
   ptrFromPAddr ((PTE.ptePPN pte) <<< ptBits)
 
 /-- Haskell `ptSlotIndex` -/
-def ptSlotIndex (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) : PPtr PTE :=
+partial def ptSlotIndex (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) : PPtr PTE :=
   ptPtr + (PPtr.mk ((ptIndex level vPtr) <<< pteBits))
 
 /-- Haskell `pteAtIndex` -/
-def pteAtIndex (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) : Kernel PTE :=
+partial def pteAtIndex (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) : Kernel PTE :=
   getObject (ptSlotIndex level ptPtr vPtr)
 
 /-- Haskell `lookupPTSlotFromLevel` -/
-def lookupPTSlotFromLevel (x0 : Nat) (x1 : PPtr PTE) (x2 : VPtr) : Kernel (Nat × (PPtr PTE)) :=
+partial def lookupPTSlotFromLevel (x0 : Nat) (x1 : PPtr PTE) (x2 : VPtr) : Kernel (Nat × (PPtr PTE)) :=
   match x0, x1, x2 with
   | 0, ptPtr, vPtr => pure ((ptBitsLeft 0, ptSlotIndex 0 ptPtr vPtr))
   | level, ptPtr, vPtr => 
@@ -295,11 +295,11 @@ def lookupPTSlotFromLevel (x0 : Nat) (x1 : PPtr PTE) (x2 : VPtr) : Kernel (Nat �
           pure ((ptBitsLeft level, ptSlotIndex level ptPtr vPtr))
 
 /-- Haskell `lookupPTSlot` -/
-def lookupPTSlot : (PPtr PTE) → VPtr → Kernel (Nat × (PPtr PTE)) :=
+partial def lookupPTSlot : (PPtr PTE) → VPtr → Kernel (Nat × (PPtr PTE)) :=
   lookupPTSlotFromLevel maxPTLevel
 
 /-- Haskell `handleVMFault` -/
-def handleVMFault (thread : PPtr TCB) (f : VMFaultType) : KernelF Fault Unit :=
+partial def handleVMFault (thread : PPtr TCB) (f : VMFaultType) : KernelF Fault Unit :=
   let loadf := fun a =>
     Fault.ArchFault (ArchFault.VMFault a ([0, vmFaultTypeFSR VMFaultType.RISCVLoadAccessFault]))
   let storef := fun a =>
@@ -318,13 +318,13 @@ def handleVMFault (thread : PPtr TCB) (f : VMFaultType) : KernelF Fault Unit :=
     | VMFaultType.RISCVInstructionAccessFault => throw (instrf addr)
 
 /-- Haskell `isValidVTableRoot` -/
-def isValidVTableRoot (x0 : Capability) : Bool :=
+partial def isValidVTableRoot (x0 : Capability) : Bool :=
   match x0 with
   | (Capability.ArchObjectCap (ArchCapability.PageTableCap _ (some _))) => true
   | _ => false
 
 /-- Haskell `setVMRoot` -/
-def setVMRoot (tcb : PPtr TCB) : Kernel Unit :=
+partial def setVMRoot (tcb : PPtr TCB) : Kernel Unit :=
   do
     let threadRootSlot ← getThreadVSpaceRoot tcb
     let threadRoot ← getSlotCap threadRootSlot
@@ -339,7 +339,7 @@ def setVMRoot (tcb : PPtr TCB) : Kernel Unit :=
         doMachineOp (setVSpaceRoot (addrFromKPPtr globalPT) 0))
 
 /-- Haskell `deleteASIDPool` -/
-def deleteASIDPool (base : ASID) (ptr : PPtr ASIDPool) : Kernel Unit :=
+partial def deleteASIDPool (base : ASID) (ptr : PPtr ASIDPool) : Kernel Unit :=
   do
     let _ ← assertG ((base &&& (mask asidLowBits)) == 0) "ASID pool's base must be aligned"
     let asidTable ← gets (RISCV64.KernelState.riscvKSASIDTable ∘ KernelState.ksArchState)
@@ -351,7 +351,7 @@ def deleteASIDPool (base : ASID) (ptr : PPtr ASIDPool) : Kernel Unit :=
       setVMRoot tcb)
 
 /-- Haskell `deleteASID` -/
-def deleteASID (asid : ASID) (pt : PPtr PTE) : Kernel Unit :=
+partial def deleteASID (asid : ASID) (pt : PPtr PTE) : Kernel Unit :=
   do
     let asidTable ← gets (RISCV64.KernelState.riscvKSASIDTable ∘ KernelState.ksArchState)
     match asidTable (asidHighBitsOf asid) with
@@ -366,7 +366,7 @@ def deleteASID (asid : ASID) (pt : PPtr PTE) : Kernel Unit :=
             setVMRoot tcb))
 
 /-- Haskell `lookupPTFromLevel` -/
-def lookupPTFromLevel (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) (targetPtPtr : PPtr PTE) : KernelF LookupFailure (PPtr PTE) :=
+partial def lookupPTFromLevel (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) (targetPtPtr : PPtr PTE) : KernelF LookupFailure (PPtr PTE) :=
   do
     let _ ← assertG (ptPtr != targetPtPtr) "never called at top-level"
     let _ ← unlessH (0 < level) (throw LookupFailure.InvalidRoot)
@@ -382,7 +382,7 @@ def lookupPTFromLevel (level : Nat) (ptPtr : PPtr PTE) (vPtr : VPtr) (targetPtPt
         lookupPTFromLevel (level - 1) ptr vPtr targetPtPtr
 
 /-- Haskell `unmapPageTable` -/
-def unmapPageTable (asid : ASID) (vaddr : VPtr) (pt : PPtr PTE) : Kernel Unit :=
+partial def unmapPageTable (asid : ASID) (vaddr : VPtr) (pt : PPtr PTE) : Kernel Unit :=
   ignoreFailure (do
     let topLevelPT ← findVSpaceForASID asid
     let ptSlot ← lookupPTFromLevel maxPTLevel topLevelPT vaddr pt
@@ -390,13 +390,13 @@ def unmapPageTable (asid : ASID) (vaddr : VPtr) (pt : PPtr PTE) : Kernel Unit :=
     withoutFailure (doMachineOp sfence))
 
 /-- Haskell `checkMappingPPtr` -/
-def checkMappingPPtr (pptr : PPtr Word) (pte : PTE) : KernelF LookupFailure Unit :=
+partial def checkMappingPPtr (pptr : PPtr RISCV64.Word) (pte : PTE) : KernelF LookupFailure Unit :=
   match pte with
   | PTE.PagePTE ppn _ _ _ _ => unlessH ((ptrFromPAddr (ppn <<< ptBits)) == pptr) (throw LookupFailure.InvalidRoot)
   | _ => throw LookupFailure.InvalidRoot
 
 /-- Haskell `unmapPage` -/
-def unmapPage (size : VMPageSize) (asid : ASID) (vptr : VPtr) (pptr : PPtr Word) : Kernel Unit :=
+partial def unmapPage (size : VMPageSize) (asid : ASID) (vptr : VPtr) (pptr : PPtr RISCV64.Word) : Kernel Unit :=
   ignoreFailure (do
     let vspace ← findVSpaceForASID asid
     let (bitsLeft, slot) ← withoutFailure (lookupPTSlot vspace vptr)
@@ -407,7 +407,7 @@ def unmapPage (size : VMPageSize) (asid : ASID) (vptr : VPtr) (pptr : PPtr Word)
     withoutFailure (doMachineOp sfence))
 
 /-- Haskell `checkValidIPCBuffer` -/
-def checkValidIPCBuffer (x0 : VPtr) (x1 : Capability) : KernelF SyscallError Unit :=
+partial def checkValidIPCBuffer (x0 : VPtr) (x1 : Capability) : KernelF SyscallError Unit :=
   match x0, x1 with
   | vptr, (Capability.ArchObjectCap (ArchCapability.FrameCap _ _ _ false _)) => 
       do
@@ -416,7 +416,7 @@ def checkValidIPCBuffer (x0 : VPtr) (x1 : Capability) : KernelF SyscallError Uni
   | _, _ => throw SyscallError.IllegalOperation
 
 /-- Haskell `maskVMRights` -/
-def maskVMRights (r : VMRights) (m : CapRights) : VMRights :=
+partial def maskVMRights (r : VMRights) (m : CapRights) : VMRights :=
   match (r, CapRights.capAllowRead m, CapRights.capAllowWrite m) with
   | (VMRights.VMReadOnly, true, _) => VMRights.VMReadOnly
   | (VMRights.VMReadWrite, true, false) => VMRights.VMReadOnly
@@ -424,28 +424,28 @@ def maskVMRights (r : VMRights) (m : CapRights) : VMRights :=
   | _ => VMRights.VMKernelOnly
 
 /-- Haskell `attribsFromWord` -/
-def attribsFromWord (w : Word) : VMAttributes :=
+partial def attribsFromWord (w : RISCV64.Word) : VMAttributes :=
   { riscvExecuteNever := testBit w 0 : VMAttributes }
 
 /-- Haskell `makeUserPTE` -/
-def makeUserPTE (baseAddr : PAddr) (executable : Bool) (rights : VMRights) : PTE :=
+partial def makeUserPTE (baseAddr : PAddr) (executable : Bool) (rights : VMRights) : PTE :=
   if (rights == VMRights.VMKernelOnly) && (not executable) then
     PTE.InvalidPTE
   else
     PTE.PagePTE (baseAddr >>> pageBits) false true executable rights
 
 /-- Haskell `checkVPAlignment` -/
-def checkVPAlignment (sz : VMPageSize) (w : VPtr) : KernelF SyscallError Unit :=
+partial def checkVPAlignment (sz : VMPageSize) (w : VPtr) : KernelF SyscallError Unit :=
   unlessH ((w &&& (mask (pageBitsForSize sz))) == 0) (throw SyscallError.AlignmentError)
 
 /-- Haskell `checkSlot` -/
-def checkSlot (slot : PPtr PTE) (test : PTE → Bool) : KernelF SyscallError Unit :=
+partial def checkSlot (slot : PPtr PTE) (test : PTE → Bool) : KernelF SyscallError Unit :=
   do
     let pte ← withoutFailure (getObject slot)
     unlessH (test pte) (throw SyscallError.DeleteFirst)
 
 /-- Haskell `decodeRISCVFrameInvocationMap` -/
-def decodeRISCVFrameInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (rightsMask : Word) (attr : Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
+partial def decodeRISCVFrameInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (rightsMask : RISCV64.Word) (attr : RISCV64.Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
   do
     let (vspace, asid) ← match vspaceCap with
       | Capability.ArchObjectCap (ArchCapability.PageTableCap vspace (some (asid, _))) => pure ((vspace, asid))
@@ -470,7 +470,7 @@ def decodeRISCVFrameInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr 
     pure (RISCV64.Invocation.InvokePage (PageInvocation.PageMap (Capability.ArchObjectCap (ArchCapability.set_capFMappedAddress cap (some ((asid, vptr))))) cte ((makeUserPTE framePAddr exec vmRights, slot))))
 
 /-- Haskell `decodeRISCVFrameInvocation` -/
-def decodeRISCVFrameInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+partial def decodeRISCVFrameInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2, x3, x4 with
   | label, args, cte, (cap@(ArchCapability.FrameCap ..)), extraCaps => 
       match (invocationType label, args, extraCaps) with
@@ -483,9 +483,9 @@ def decodeRISCVFrameInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 
   | _, _, _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVPageTableInvocationMap` -/
-def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (attr : Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
+partial def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (vptr : VPtr) (attr : RISCV64.Word) (vspaceCap : Capability) : KernelF SyscallError RISCV64.Invocation :=
   do
-    let _ ← whenH (isJust (capPTMappedAddress cap)) (throw (SyscallError.InvalidCapability 0))
+    let _ ← whenH (isJust (ArchCapability.capPTMappedAddress cap)) (throw (SyscallError.InvalidCapability 0))
     let (vspace, asid) ← match vspaceCap with
       | Capability.ArchObjectCap (ArchCapability.PageTableCap vspace (some (asid, _))) => pure ((vspace, asid))
       | _ => throw (SyscallError.InvalidCapability 1)
@@ -495,12 +495,12 @@ def decodeRISCVPageTableInvocationMap (cte : PPtr CTE) (cap : ArchCapability) (v
     let (bitsLeft, slot) ← withoutFailure (lookupPTSlot vspace vptr)
     let oldPTE ← withoutFailure (getObject slot)
     let _ ← whenH ((bitsLeft == pageBits) || (oldPTE != PTE.InvalidPTE)) (throw SyscallError.DeleteFirst)
-    let pte := PTE.PageTablePTE ((addrFromPPtr (capPTBasePtr cap)) >>> pageBits) false
+    let pte := PTE.PageTablePTE ((addrFromPPtr (ArchCapability.capPTBasePtr cap)) >>> pageBits) false
     let vptr := vptr &&& (complement (mask bitsLeft))
     pure (RISCV64.Invocation.InvokePageTable (PageTableInvocation.PageTableMap (Capability.ArchObjectCap (ArchCapability.set_capPTMappedAddress cap (some ((asid, vptr))))) cte pte slot))
 
 /-- Haskell `decodeRISCVPageTableInvocation` -/
-def decodeRISCVPageTableInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+partial def decodeRISCVPageTableInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : PPtr CTE) (x3 : ArchCapability) (x4 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2, x3, x4 with
   | label, args, cte, cap@(ArchCapability.PageTableCap ..), extraCaps => 
       match (invocationType label, args, extraCaps) with
@@ -521,7 +521,7 @@ def decodeRISCVPageTableInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) 
   | _, _, _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVASIDPoolInvocation` -/
-def decodeRISCVASIDPoolInvocation (x0 : Word) (x1 : ArchCapability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+partial def decodeRISCVASIDPoolInvocation (x0 : RISCV64.Word) (x1 : ArchCapability) (x2 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2 with
   | label, cap@(ArchCapability.ASIDPoolCap ..), extraCaps => 
       match (invocationType label, extraCaps) with
@@ -544,7 +544,7 @@ def decodeRISCVASIDPoolInvocation (x0 : Word) (x1 : ArchCapability) (x2 : List (
   | _, _, _ => failM "Unreachable"
 
 /-- Haskell `decodeRISCVMMUInvocation` -/
-def decodeRISCVMMUInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : ArchCapability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
+partial def decodeRISCVMMUInvocation (x0 : RISCV64.Word) (x1 : List RISCV64.Word) (x2 : CPtr) (x3 : PPtr CTE) (x4 : ArchCapability) (x5 : List (Capability × (PPtr CTE))) : KernelF SyscallError RISCV64.Invocation :=
   match x0, x1, x2, x3, x4, x5 with
   | label, args, _, cte, cap@(ArchCapability.FrameCap ..), extraCaps => decodeRISCVFrameInvocation label args cte cap extraCaps
   | label, args, _, cte, cap@(ArchCapability.PageTableCap ..), extraCaps => decodeRISCVPageTableInvocation label args cte cap extraCaps
@@ -552,7 +552,7 @@ def decodeRISCVMMUInvocation (x0 : Word) (x1 : List Word) (x2 : CPtr) (x3 : PPtr
   | label, _, _, _, cap@(ArchCapability.ASIDPoolCap ..), extraCaps => decodeRISCVASIDPoolInvocation label cap extraCaps
 
 /-- Haskell `performPageInvocation` -/
-def performPageInvocation (x0 : PageInvocation) : Kernel (List Word) :=
+partial def performPageInvocation (x0 : PageInvocation) : Kernel (List RISCV64.Word) :=
   match x0 with
   | (PageInvocation.PageMap cap ctSlot (pte, slot)) => 
       do
@@ -571,7 +571,7 @@ def performPageInvocation (x0 : PageInvocation) : Kernel (List Word) :=
   | (PageInvocation.PageGetAddr ptr) => pure ([PAddr.fromPAddr (addrFromPPtr ptr)])
 
 /-- Haskell `performASIDControlInvocation` -/
-def performASIDControlInvocation (x0 : ASIDControlInvocation) : Kernel Unit :=
+partial def performASIDControlInvocation (x0 : ASIDControlInvocation) : Kernel Unit :=
   match x0 with
   | (ASIDControlInvocation.MakePool frame slot parent base) => 
       do
@@ -587,7 +587,7 @@ def performASIDControlInvocation (x0 : ASIDControlInvocation) : Kernel Unit :=
         modify (fun s => { s with ksArchState := { (KernelState.ksArchState s) with riscvKSASIDTable := asidTable' } })
 
 /-- Haskell `performASIDPoolInvocation` -/
-def performASIDPoolInvocation (x0 : ASIDPoolInvocation) : Kernel Unit :=
+partial def performASIDPoolInvocation (x0 : ASIDPoolInvocation) : Kernel Unit :=
   match x0 with
   | (ASIDPoolInvocation.Assign asid poolPtr ctSlot) => 
       do
@@ -600,7 +600,7 @@ def performASIDPoolInvocation (x0 : ASIDPoolInvocation) : Kernel Unit :=
         setObject poolPtr (ASIDPool.ASIDPool pool')
 
 /-- Haskell `performRISCVMMUInvocation` -/
-def performRISCVMMUInvocation (i : RISCV64.Invocation) : KernelP (List Word) :=
+partial def performRISCVMMUInvocation (i : RISCV64.Invocation) : KernelP (List RISCV64.Word) :=
   withoutPreemption (do
     match i with
     | RISCV64.Invocation.InvokePageTable oper => (do
@@ -615,47 +615,47 @@ def performRISCVMMUInvocation (i : RISCV64.Invocation) : KernelP (List Word) :=
           pure []))
 
 /-- Haskell `mapKernelWindow` -/
-def mapKernelWindow : Kernel Unit :=
+partial def mapKernelWindow : Kernel Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `activateGlobalVSpace` -/
-def activateGlobalVSpace : Kernel Unit :=
+partial def activateGlobalVSpace : Kernel Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `createIPCBufferFrame` -/
-def createIPCBufferFrame : Capability → VPtr → KernelInit Capability :=
+partial def createIPCBufferFrame : Capability → VPtr → KernelInit Capability :=
   error "boot code unimplemented"
 
 /-- Haskell `createBIFrame` -/
-def createBIFrame : Capability → VPtr → (BitVec 32) → (BitVec 32) → KernelInit Capability :=
+partial def createBIFrame : Capability → VPtr → (BitVec 32) → (BitVec 32) → KernelInit Capability :=
   error "boot code unimplemented"
 
 /-- Haskell `createFramesOfRegion` -/
-def createFramesOfRegion : Capability → Region → Bool → KernelInit Unit :=
+partial def createFramesOfRegion : Capability → Region → Bool → KernelInit Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `createITPDPTs` -/
-def createITPDPTs : Capability → VPtr → VPtr → KernelInit Capability :=
+partial def createITPDPTs : Capability → VPtr → VPtr → KernelInit Capability :=
   error "boot code unimplemented"
 
 /-- Haskell `writeITPDPTs` -/
-def writeITPDPTs : Capability → Capability → KernelInit Unit :=
+partial def writeITPDPTs : Capability → Capability → KernelInit Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `createITASIDPool` -/
-def createITASIDPool : Capability → KernelInit Capability :=
+partial def createITASIDPool : Capability → KernelInit Capability :=
   error "boot code unimplemented"
 
 /-- Haskell `writeITASIDPool` -/
-def writeITASIDPool : Capability → Capability → Kernel Unit :=
+partial def writeITASIDPool : Capability → Capability → Kernel Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `createDeviceFrames` -/
-def createDeviceFrames : Capability → KernelInit Unit :=
+partial def createDeviceFrames : Capability → KernelInit Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
+partial def vptrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → KernelInit VPtr :=
   error "boot code unimplemented"
 
 end

@@ -239,11 +239,11 @@ opaque wordRadix : Nat
 /-! ## Translated -/
 
 /-- Haskell `getThreadState` -/
-def getThreadState : (PPtr TCB) → Kernel ThreadState :=
+partial def getThreadState : (PPtr TCB) → Kernel ThreadState :=
   threadGet TCB.tcbState
 
 /-- Haskell `isRunnable` -/
-def isRunnable (thread : PPtr TCB) : Kernel Bool :=
+partial def isRunnable (thread : PPtr TCB) : Kernel Bool :=
   do
     let state ← getThreadState thread
     pure (match state with
@@ -252,7 +252,7 @@ def isRunnable (thread : PPtr TCB) : Kernel Bool :=
     | _ => false)
 
 /-- Haskell `setThreadState` -/
-def setThreadState (st : ThreadState) (tptr : PPtr TCB) : Kernel Unit :=
+partial def setThreadState (st : ThreadState) (tptr : PPtr TCB) : Kernel Unit :=
   do
     let _ ← threadSet (fun t => { t with tcbState := st }) tptr
     let runnable ← isRunnable tptr
@@ -261,41 +261,41 @@ def setThreadState (st : ThreadState) (tptr : PPtr TCB) : Kernel Unit :=
     whenH ((not runnable) && ((curThread == tptr) && (action == SchedulerAction.ResumeCurrentThread))) (setSchedulerAction SchedulerAction.ChooseNewThread)
 
 /-- Haskell `configureIdleThread` -/
-def configureIdleThread (tcb : PPtr TCB) : KernelInit Unit :=
+partial def configureIdleThread (tcb : PPtr TCB) : KernelInit Unit :=
   do
     let _ ← (RISCV64.configureIdleThread) tcb
     doKernelOp (setThreadState ThreadState.IdleThreadState tcb)
 
 /-- Haskell `getReadyQueuesL2Bitmap` -/
-def getReadyQueuesL2Bitmap (tdom : Domain) (i : Nat) : Kernel Word :=
+partial def getReadyQueuesL2Bitmap (tdom : Domain) (i : Nat) : Kernel Word :=
   gets (fun ks => (KernelState.ksReadyQueuesL2Bitmap ks) ((tdom, i)))
 
 /-- Haskell `invertL1Index` -/
-def invertL1Index (i : Nat) : Nat :=
+partial def invertL1Index (i : Nat) : Nat :=
   (l2BitmapSize - 1) - i
 
 /-- Haskell `getReadyQueuesL1Bitmap` -/
-def getReadyQueuesL1Bitmap (tdom : Domain) : Kernel Word :=
+partial def getReadyQueuesL1Bitmap (tdom : Domain) : Kernel Word :=
   gets (fun ks => (KernelState.ksReadyQueuesL1Bitmap ks) tdom)
 
 /-- Haskell `modifyReadyQueuesL1Bitmap` -/
-def modifyReadyQueuesL1Bitmap (tdom : Domain) (f : Word → Word) : Kernel Unit :=
+partial def modifyReadyQueuesL1Bitmap (tdom : Domain) (f : Word → Word) : Kernel Unit :=
   do
     let l1 ← getReadyQueuesL1Bitmap tdom
     modify (fun ks => { ks with ksReadyQueuesL1Bitmap := arrayUpdH (KernelState.ksReadyQueuesL1Bitmap ks) ([(tdom, f l1)]) })
 
 /-- Haskell `modifyReadyQueuesL2Bitmap` -/
-def modifyReadyQueuesL2Bitmap (tdom : Domain) (i : Nat) (f : Word → Word) : Kernel Unit :=
+partial def modifyReadyQueuesL2Bitmap (tdom : Domain) (i : Nat) (f : Word → Word) : Kernel Unit :=
   do
     let l2 ← getReadyQueuesL2Bitmap tdom i
     modify (fun ks => { ks with ksReadyQueuesL2Bitmap := arrayUpdH (KernelState.ksReadyQueuesL2Bitmap ks) ([((tdom, i), f l2)]) })
 
 /-- Haskell `prioToL1Index` -/
-def prioToL1Index (prio : Priority) : Nat :=
+partial def prioToL1Index (prio : Priority) : Nat :=
   fromIntegral (prio >>> wordRadix)
 
 /-- Haskell `removeFromBitmap` -/
-def removeFromBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
+partial def removeFromBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
   do
     let l1index := prioToL1Index prio
     let l1indexInverted := invertL1Index l1index
@@ -305,11 +305,11 @@ def removeFromBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
     whenH (l2 == 0) (modifyReadyQueuesL1Bitmap tdom (fun w => w &&& (complement (bit l1index))))
 
 /-- Haskell `tcbQueueEmpty` -/
-def tcbQueueEmpty (queue : TcbQueue) : Bool :=
+partial def tcbQueueEmpty (queue : TcbQueue) : Bool :=
   (TcbQueue.tcbQueueHead queue) == none
 
 /-- Haskell `tcbQueueRemove` -/
-def tcbQueueRemove (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
+partial def tcbQueueRemove (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
   do
     let tcb ← getObject tcbPtr
     let beforePtrOpt ← pure (TCB.tcbSchedPrev tcb)
@@ -341,7 +341,7 @@ def tcbQueueRemove (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
             pure queue
 
 /-- Haskell `tcbSchedDequeue` -/
-def tcbSchedDequeue (thread : PPtr TCB) : Kernel Unit :=
+partial def tcbSchedDequeue (thread : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let queued ← threadGet TCB.tcbQueued thread
@@ -355,7 +355,7 @@ def tcbSchedDequeue (thread : PPtr TCB) : Kernel Unit :=
       whenH (tcbQueueEmpty queue') (removeFromBitmap tdom prio))
 
 /-- Haskell `switchToThread` -/
-def switchToThread (thread : PPtr TCB) : Kernel Unit :=
+partial def switchToThread (thread : PPtr TCB) : Kernel Unit :=
   do
     let runnable ← isRunnable thread
     let _ ← assertG runnable "thread must be runnable"
@@ -366,7 +366,7 @@ def switchToThread (thread : PPtr TCB) : Kernel Unit :=
     setCurThread thread
 
 /-- Haskell `activateInitialThread` -/
-def activateInitialThread (threadPtr : PPtr TCB) (entry : VPtr) (infoPtr : VPtr) : Kernel Unit :=
+partial def activateInitialThread (threadPtr : PPtr TCB) (entry : VPtr) (infoPtr : VPtr) : Kernel Unit :=
   do
     let _ ← asUser threadPtr (setRegister capRegister (VPtr.fromVPtr infoPtr))
     let _ ← asUser threadPtr (setNextPC (VPtr.fromVPtr entry))
@@ -378,7 +378,7 @@ def activateInitialThread (threadPtr : PPtr TCB) (entry : VPtr) (infoPtr : VPtr)
     switchToThread threadPtr
 
 /-- Haskell `activateThread` -/
-def activateThread : Kernel Unit :=
+partial def activateThread : Kernel Unit :=
   do
     let thread ← getCurThread
     let state ← getThreadState thread
@@ -393,7 +393,7 @@ def activateThread : Kernel Unit :=
     | _ => failM ("Current thread is blocked, state: " ++ («show» state))
 
 /-- Haskell `isStopped` -/
-def isStopped (thread : PPtr TCB) : Kernel Bool :=
+partial def isStopped (thread : PPtr TCB) : Kernel Bool :=
   do
     let state ← getThreadState thread
     pure (match state with
@@ -405,11 +405,11 @@ def isStopped (thread : PPtr TCB) : Kernel Bool :=
     | _ => false)
 
 /-- Haskell `updateRestartPC` -/
-def updateRestartPC (tcb : PPtr TCB) : Kernel Unit :=
+partial def updateRestartPC (tcb : PPtr TCB) : Kernel Unit :=
   asUser tcb ((getRegister nextInstructionRegister) >>= (setRegister faultRegister))
 
 /-- Haskell `suspend` -/
-def suspend (target : PPtr TCB) : Kernel Unit :=
+partial def suspend (target : PPtr TCB) : Kernel Unit :=
   do
     let _ ← cancelIPC target
     let state ← getThreadState target
@@ -421,7 +421,7 @@ def suspend (target : PPtr TCB) : Kernel Unit :=
     setThreadState ThreadState.Inactive target
 
 /-- Haskell `addToBitmap` -/
-def addToBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
+partial def addToBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
   do
     let l1index := prioToL1Index prio
     let l1indexInverted := invertL1Index l1index
@@ -430,7 +430,7 @@ def addToBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
     modifyReadyQueuesL2Bitmap tdom l1indexInverted (fun w => w ||| (bit l2bit))
 
 /-- Haskell `tcbQueuePrepend` -/
-def tcbQueuePrepend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
+partial def tcbQueuePrepend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
   do
     let q ← if tcbQueueEmpty queue then
         pure ({ queue with tcbQueueEnd := some tcbPtr })
@@ -442,7 +442,7 @@ def tcbQueuePrepend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
     pure ({ q with tcbQueueHead := some tcbPtr })
 
 /-- Haskell `tcbSchedEnqueue` -/
-def tcbSchedEnqueue (thread : PPtr TCB) : Kernel Unit :=
+partial def tcbSchedEnqueue (thread : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let runnable ← isRunnable thread
@@ -458,7 +458,7 @@ def tcbSchedEnqueue (thread : PPtr TCB) : Kernel Unit :=
       threadSet (fun t => { t with tcbQueued := true }) thread)
 
 /-- Haskell `rescheduleRequired` -/
-def rescheduleRequired : Kernel Unit :=
+partial def rescheduleRequired : Kernel Unit :=
   do
     let action ← getSchedulerAction
     let _ ← match action with
@@ -468,7 +468,7 @@ def rescheduleRequired : Kernel Unit :=
     setSchedulerAction SchedulerAction.ChooseNewThread
 
 /-- Haskell `possibleSwitchTo` -/
-def possibleSwitchTo (target : PPtr TCB) : Kernel Unit :=
+partial def possibleSwitchTo (target : PPtr TCB) : Kernel Unit :=
   do
     let curDom ← curDomain
     let targetDom ← threadGet TCB.tcbDomain target
@@ -484,7 +484,7 @@ def possibleSwitchTo (target : PPtr TCB) : Kernel Unit :=
         setSchedulerAction (SchedulerAction.SwitchToThread target)
 
 /-- Haskell `restart` -/
-def restart (target : PPtr TCB) : Kernel Unit :=
+partial def restart (target : PPtr TCB) : Kernel Unit :=
   do
     let blocked ← isStopped target
     whenH blocked (do
@@ -495,7 +495,7 @@ def restart (target : PPtr TCB) : Kernel Unit :=
       possibleSwitchTo target)
 
 /-- Haskell `doFaultTransfer` -/
-def doFaultTransfer (badge : Word) (sender : PPtr TCB) (receiver : PPtr TCB) (receiverIPCBuffer : Option (PPtr Word)) : Kernel Unit :=
+partial def doFaultTransfer (badge : Word) (sender : PPtr TCB) (receiver : PPtr TCB) (receiverIPCBuffer : Option (PPtr Word)) : Kernel Unit :=
   do
     let fault ← threadGet TCB.tcbFault sender
     let f ← match fault with
@@ -508,7 +508,7 @@ def doFaultTransfer (badge : Word) (sender : PPtr TCB) (receiver : PPtr TCB) (re
     asUser receiver (setRegister badgeRegister badge)
 
 /-- Haskell `transferCaps` -/
-def transferCaps (info : MessageInfo) (caps : List (Capability × (PPtr CTE))) (endpoint : Option (PPtr Endpoint)) (receiver : PPtr TCB) (receiveBuffer : Option (PPtr Word)) : Kernel MessageInfo :=
+partial def transferCaps (info : MessageInfo) (caps : List (Capability × (PPtr CTE))) (endpoint : Option (PPtr Endpoint)) (receiver : PPtr TCB) (receiveBuffer : Option (PPtr Word)) : Kernel MessageInfo :=
   do
     let destSlots ← getReceiveSlots receiver receiveBuffer
     let info' := { info with msgExtraCaps := 0, msgCapsUnwrapped := 0 }
@@ -518,7 +518,7 @@ def transferCaps (info : MessageInfo) (caps : List (Capability × (PPtr CTE))) (
           transferCapsToSlots endpoint rcvBuffer 0 caps destSlots info')
 
 /-- Haskell `doNormalTransfer` -/
-def doNormalTransfer (sender : PPtr TCB) (sendBuffer : Option (PPtr Word)) (endpoint : Option (PPtr Endpoint)) (badge : Word) (canGrant : Bool) (receiver : PPtr TCB) (receiveBuffer : Option (PPtr Word)) : Kernel Unit :=
+partial def doNormalTransfer (sender : PPtr TCB) (sendBuffer : Option (PPtr Word)) (endpoint : Option (PPtr Endpoint)) (badge : Word) (canGrant : Bool) (receiver : PPtr TCB) (receiveBuffer : Option (PPtr Word)) : Kernel Unit :=
   do
     let tag ← getMessageInfo sender
     let caps ← if canGrant then
@@ -532,7 +532,7 @@ def doNormalTransfer (sender : PPtr TCB) (sendBuffer : Option (PPtr Word)) (endp
     asUser receiver (setRegister badgeRegister badge)
 
 /-- Haskell `doIPCTransfer` -/
-def doIPCTransfer (sender : PPtr TCB) (endpoint : Option (PPtr Endpoint)) (badge : Word) (grant : Bool) (receiver : PPtr TCB) : Kernel Unit :=
+partial def doIPCTransfer (sender : PPtr TCB) (endpoint : Option (PPtr Endpoint)) (badge : Word) (grant : Bool) (receiver : PPtr TCB) : Kernel Unit :=
   do
     let receiveBuffer ← lookupIPCBuffer true receiver
     let fault ← threadGet TCB.tcbFault sender
@@ -544,7 +544,7 @@ def doIPCTransfer (sender : PPtr TCB) (endpoint : Option (PPtr Endpoint)) (badge
           doFaultTransfer badge sender receiver receiveBuffer)
 
 /-- Haskell `doReplyTransfer` -/
-def doReplyTransfer (sender : PPtr TCB) (receiver : PPtr TCB) (slot : PPtr CTE) (grant : Bool) : Kernel Unit :=
+partial def doReplyTransfer (sender : PPtr TCB) (receiver : PPtr TCB) (slot : PPtr CTE) (grant : Bool) : Kernel Unit :=
   do
     let state ← getThreadState receiver
     let _ ← assertG (isReply state) "Reply transfer to a thread that isn't listening"
@@ -574,19 +574,19 @@ def doReplyTransfer (sender : PPtr TCB) (receiver : PPtr TCB) (slot : PPtr CTE) 
             setThreadState ThreadState.Inactive receiver)
 
 /-- Haskell `l1IndexToPrio` -/
-def l1IndexToPrio (i : Nat) : Priority :=
+partial def l1IndexToPrio (i : Nat) : Priority :=
   (fromIntegral i) <<< wordRadix
 
 /-- Haskell `countLeadingZeros` -/
-def countLeadingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
+partial def countLeadingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (reverse ∘ (map (testBit w))))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 /-- Haskell `wordLog2` -/
-def wordLog2 {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
+partial def wordLog2 {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
   ((finiteBitSize w) - 1) - (countLeadingZeros w)
 
 /-- Haskell `getHighestPrio` -/
-def getHighestPrio (d : Domain) : Kernel Priority :=
+partial def getHighestPrio (d : Domain) : Kernel Priority :=
   do
     let l1 ← getReadyQueuesL1Bitmap d
     let l1index := wordLog2 l1
@@ -596,7 +596,7 @@ def getHighestPrio (d : Domain) : Kernel Priority :=
     pure ((l1IndexToPrio l1index) ||| (fromIntegral l2index))
 
 /-- Haskell `switchToIdleThread` -/
-def switchToIdleThread : Kernel Unit :=
+partial def switchToIdleThread : Kernel Unit :=
   do
     let _ ← stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
     let thread ← getIdleThread
@@ -604,7 +604,7 @@ def switchToIdleThread : Kernel Unit :=
     setCurThread thread
 
 /-- Haskell `chooseThread` -/
-def chooseThread : Kernel Unit :=
+partial def chooseThread : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let _ ← stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
@@ -625,7 +625,7 @@ def chooseThread : Kernel Unit :=
       switchToIdleThread
 
 /-- Haskell `scheduleChooseNewThread` -/
-def scheduleChooseNewThread : Kernel Unit :=
+partial def scheduleChooseNewThread : Kernel Unit :=
   do
     let domainTime ← getDomainTime
     let _ ← whenH (domainTime == 0) (do
@@ -635,14 +635,14 @@ def scheduleChooseNewThread : Kernel Unit :=
     setSchedulerAction SchedulerAction.ResumeCurrentThread
 
 /-- Haskell `scheduleSwitchThreadFastfail` -/
-def scheduleSwitchThreadFastfail (curThread : PPtr TCB) (idleThread : PPtr TCB) (curPrio : Priority) (targetPrio : Priority) : Kernel Bool :=
+partial def scheduleSwitchThreadFastfail (curThread : PPtr TCB) (idleThread : PPtr TCB) (curPrio : Priority) (targetPrio : Priority) : Kernel Bool :=
   if curThread != idleThread then
     pure (targetPrio < curPrio)
   else
     pure true
 
 /-- Haskell `isHighestPrio` -/
-def isHighestPrio (d : Domain) (p : Priority) : Kernel Bool :=
+partial def isHighestPrio (d : Domain) (p : Priority) : Kernel Bool :=
   do
     let l1 ← getReadyQueuesL1Bitmap d
     if l1 == 0 then
@@ -653,7 +653,7 @@ def isHighestPrio (d : Domain) (p : Priority) : Kernel Bool :=
         pure (p ≥ hprio)
 
 /-- Haskell `tcbQueueAppend` -/
-def tcbQueueAppend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
+partial def tcbQueueAppend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
   do
     let q ← if tcbQueueEmpty queue then
         pure ({ queue with tcbQueueHead := some tcbPtr })
@@ -665,7 +665,7 @@ def tcbQueueAppend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
     pure ({ q with tcbQueueEnd := some tcbPtr })
 
 /-- Haskell `tcbSchedAppend` -/
-def tcbSchedAppend (thread : PPtr TCB) : Kernel Unit :=
+partial def tcbSchedAppend (thread : PPtr TCB) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let runnable ← isRunnable thread
@@ -681,7 +681,7 @@ def tcbSchedAppend (thread : PPtr TCB) : Kernel Unit :=
       threadSet (fun t => { t with tcbQueued := true }) thread)
 
 /-- Haskell `schedule` -/
-def schedule : Kernel Unit :=
+partial def schedule : Kernel Unit :=
   do
     let curThread ← getCurThread
     let action ← getSchedulerAction
@@ -717,7 +717,7 @@ def schedule : Kernel Unit :=
           scheduleChooseNewThread)
 
 /-- Haskell `setDomain` -/
-def setDomain (tptr : PPtr TCB) (newdom : Domain) : Kernel Unit :=
+partial def setDomain (tptr : PPtr TCB) (newdom : Domain) : Kernel Unit :=
   do
     let curThread ← getCurThread
     let _ ← tcbSchedDequeue tptr
@@ -727,17 +727,17 @@ def setDomain (tptr : PPtr TCB) (newdom : Domain) : Kernel Unit :=
     whenH (tptr == curThread) rescheduleRequired
 
 /-- Haskell `setFlags` -/
-def setFlags (tptr : PPtr TCB) (flags : TcbFlags) : Kernel Unit :=
+partial def setFlags (tptr : PPtr TCB) (flags : TcbFlags) : Kernel Unit :=
   do
     threadSet (fun t => { t with tcbFlags := flags }) tptr
 
 /-- Haskell `setMCPriority` -/
-def setMCPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
+partial def setMCPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
   do
     threadSet (fun t => { t with tcbMCP := prio }) tptr
 
 /-- Haskell `setPriority` -/
-def setPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
+partial def setPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
   do
     let _ ← tcbSchedDequeue tptr
     let _ ← threadSet (fun t => { t with tcbPriority := prio }) tptr
@@ -750,15 +750,15 @@ def setPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
         possibleSwitchTo tptr)
 
 /-- Haskell `getBoundNotification` -/
-def getBoundNotification : (PPtr TCB) → Kernel (Option (PPtr Notification)) :=
+partial def getBoundNotification : (PPtr TCB) → Kernel (Option (PPtr Notification)) :=
   threadGet TCB.tcbBoundNotification
 
 /-- Haskell `setBoundNotification` -/
-def setBoundNotification (ntfnPtr : Option (PPtr Notification)) (tptr : PPtr TCB) : Kernel Unit :=
+partial def setBoundNotification (ntfnPtr : Option (PPtr Notification)) (tptr : PPtr TCB) : Kernel Unit :=
   threadSet (fun t => { t with tcbBoundNotification := ntfnPtr }) tptr
 
 /-- Haskell `tcbQueueInsert` -/
-def tcbQueueInsert (tcbPtr : PPtr TCB) (afterPtr : PPtr TCB) : Kernel Unit :=
+partial def tcbQueueInsert (tcbPtr : PPtr TCB) (afterPtr : PPtr TCB) : Kernel Unit :=
   do
     let tcb ← getObject afterPtr
     let beforePtrOpt ← pure (TCB.tcbSchedPrev tcb)
@@ -771,7 +771,7 @@ def tcbQueueInsert (tcbPtr : PPtr TCB) (afterPtr : PPtr TCB) : Kernel Unit :=
     threadSet (fun t => { t with tcbSchedNext := some tcbPtr }) beforePtr
 
 /-- Haskell `timerTick` -/
-def timerTick : Kernel Unit :=
+partial def timerTick : Kernel Unit :=
   do
     let thread ← getCurThread
     let state ← getThreadState thread
@@ -793,7 +793,7 @@ def timerTick : Kernel Unit :=
       whenH (domainTime == 0) rescheduleRequired)
 
 /-- Haskell `initTCB` -/
-def initTCB :=
+partial def initTCB :=
   { ((makeObject : TCB)) with tcbPriority := maxBound }
 
 end

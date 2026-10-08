@@ -21,7 +21,7 @@ opaque getRestartPC : UserMonad Word
 /-! ## Translated -/
 
 /-- Haskell `makeArchFaultMessage` -/
-def makeArchFaultMessage (x0 : ArchFault) (x1 : PPtr TCB) : Kernel (Word × (List Word)) :=
+partial def makeArchFaultMessage (x0 : ArchFault) (x1 : PPtr TCB) : Kernel (Word × (List Word)) :=
   match x0, x1 with
   | (ArchFault.VMFault vptr archData), thread => 
       do
@@ -29,7 +29,7 @@ def makeArchFaultMessage (x0 : ArchFault) (x1 : PPtr TCB) : Kernel (Word × (Lis
         pure ((5, pc :: ((VPtr.fromVPtr vptr) :: archData)))
 
 /-- Haskell `handleArchFaultReply` -/
-def handleArchFaultReply (x0 : ArchFault) (x1 : PPtr TCB) (x2 : Word) (x3 : List Word) : Kernel Bool :=
+partial def handleArchFaultReply (x0 : ArchFault) (x1 : PPtr TCB) (x2 : Word) (x3 : List Word) : Kernel Bool :=
   match x0, x1, x2, x3 with
   | (ArchFault.VMFault ..), _, _, _ => pure true
 

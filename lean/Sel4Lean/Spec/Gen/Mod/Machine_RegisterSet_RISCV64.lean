@@ -26,59 +26,59 @@ opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [BoundedH i] :
 /-! ## Translated -/
 
 /-- Haskell `capRegister` -/
-def capRegister : RISCV64.Register :=
+partial def capRegister : RISCV64.Register :=
   RISCV64.Register.A0
 
 /-- Haskell `msgInfoRegister` -/
-def msgInfoRegister : RISCV64.Register :=
+partial def msgInfoRegister : RISCV64.Register :=
   RISCV64.Register.A1
 
 /-- Haskell `msgRegisters` -/
-def msgRegisters : List RISCV64.Register :=
+partial def msgRegisters : List RISCV64.Register :=
   enumFromToH RISCV64.Register.A2 RISCV64.Register.A5
 
 /-- Haskell `badgeRegister` -/
-def badgeRegister : RISCV64.Register :=
+partial def badgeRegister : RISCV64.Register :=
   RISCV64.Register.A0
 
 /-- Haskell `frameRegisters` -/
-def frameRegisters : List RISCV64.Register :=
+partial def frameRegisters : List RISCV64.Register :=
   RISCV64.Register.FaultIP :: (RISCV64.Register.LR :: (RISCV64.Register.SP :: (RISCV64.Register.GP :: (enumFromToH RISCV64.Register.S0 RISCV64.Register.S11))))
 
 /-- Haskell `gpRegisters` -/
-def gpRegisters : List RISCV64.Register :=
+partial def gpRegisters : List RISCV64.Register :=
   (enumFromToH RISCV64.Register.A0 RISCV64.Register.A7) ++ ((enumFromToH RISCV64.Register.T0 RISCV64.Register.T6) ++ [RISCV64.Register.TP])
 
 /-- Haskell `exceptionMessage` -/
-def exceptionMessage : List RISCV64.Register :=
+partial def exceptionMessage : List RISCV64.Register :=
   [RISCV64.Register.FaultIP, RISCV64.Register.SP]
 
 /-- Haskell `syscallMessage` -/
-def syscallMessage : List RISCV64.Register :=
+partial def syscallMessage : List RISCV64.Register :=
   RISCV64.Register.FaultIP :: (RISCV64.Register.SP :: (RISCV64.Register.LR :: (enumFromToH RISCV64.Register.A0 RISCV64.Register.A6)))
 
 /-- Haskell `tlsBaseRegister` -/
-def tlsBaseRegister : RISCV64.Register :=
+partial def tlsBaseRegister : RISCV64.Register :=
   RISCV64.Register.TP
 
 /-- Haskell `sstatusSPIE` -/
-def sstatusSPIE : RISCV64.Word :=
+partial def sstatusSPIE : RISCV64.Word :=
   0x20
 
 /-- Haskell `initContext` -/
-def initContext : List (RISCV64.Register × RISCV64.Word) :=
+partial def initContext : List (RISCV64.Register × RISCV64.Word) :=
   [(RISCV64.Register.SSTATUS, sstatusSPIE)]
 
 /-- Haskell `faultRegister` -/
-def faultRegister : RISCV64.Register :=
+partial def faultRegister : RISCV64.Register :=
   RISCV64.Register.FaultIP
 
 /-- Haskell `nextInstructionRegister` -/
-def nextInstructionRegister : RISCV64.Register :=
+partial def nextInstructionRegister : RISCV64.Register :=
   RISCV64.Register.NextIP
 
 /-- Haskell `newContext` -/
-def newContext : UserContext :=
+partial def newContext : UserContext :=
   UserContext.UC (arrayUpdH (funArray (const 0)) initContext)
 
 end

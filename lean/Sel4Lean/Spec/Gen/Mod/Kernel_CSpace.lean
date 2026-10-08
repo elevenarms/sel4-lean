@@ -46,7 +46,7 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-! ## Translated -/
 
 /-- Haskell `resolveAddressBits` -/
-def resolveAddressBits (x0 : Capability) (x1 : CPtr) (x2 : Nat) : KernelF LookupFailure ((PPtr CTE) × Nat) :=
+partial def resolveAddressBits (x0 : Capability) (x1 : CPtr) (x2 : Nat) : KernelF LookupFailure ((PPtr CTE) × Nat) :=
   match x0, x1, x2 with
   | nodeCap@(Capability.CNodeCap ..), capptr, bits => 
       do
@@ -72,7 +72,7 @@ def resolveAddressBits (x0 : Capability) (x1 : CPtr) (x2 : Nat) : KernelF Lookup
   | _, _, _ => throw LookupFailure.InvalidRoot
 
 /-- Haskell `lookupSlotForThread` -/
-def lookupSlotForThread (thread : PPtr TCB) (capptr : CPtr) : KernelF LookupFailure (PPtr CTE) :=
+partial def lookupSlotForThread (thread : PPtr TCB) (capptr : CPtr) : KernelF LookupFailure (PPtr CTE) :=
   do
     let threadRootSlot ← withoutFailure (getThreadCSpaceRoot thread)
     let threadRoot ← withoutFailure (getSlotCap threadRootSlot)
@@ -81,18 +81,18 @@ def lookupSlotForThread (thread : PPtr TCB) (capptr : CPtr) : KernelF LookupFail
     pure s
 
 /-- Haskell `lookupCapAndSlot` -/
-def lookupCapAndSlot (thread : PPtr TCB) (cPtr : CPtr) : KernelF LookupFailure (Capability × (PPtr CTE)) :=
+partial def lookupCapAndSlot (thread : PPtr TCB) (cPtr : CPtr) : KernelF LookupFailure (Capability × (PPtr CTE)) :=
   do
     let slot ← lookupSlotForThread thread cPtr
     let cap ← withoutFailure (getSlotCap slot)
     pure ((cap, slot))
 
 /-- Haskell `lookupCap` -/
-def lookupCap (thread : PPtr TCB) (cPtr : CPtr) : KernelF LookupFailure Capability :=
+partial def lookupCap (thread : PPtr TCB) (cPtr : CPtr) : KernelF LookupFailure Capability :=
   liftM fst (lookupCapAndSlot thread cPtr)
 
 /-- Haskell `lookupSlotForCNodeOp` -/
-def lookupSlotForCNodeOp (x0 : Bool) (x1 : Capability) (x2 : CPtr) (x3 : Nat) : KernelF SyscallError (PPtr CTE) :=
+partial def lookupSlotForCNodeOp (x0 : Bool) (x1 : Capability) (x2 : CPtr) (x3 : Nat) : KernelF SyscallError (PPtr CTE) :=
   match x0, x1, x2, x3 with
   | isSource, root@(Capability.CNodeCap ..), capptr, depth => 
       do
@@ -105,15 +105,15 @@ def lookupSlotForCNodeOp (x0 : Bool) (x1 : Capability) (x2 : CPtr) (x3 : Nat) : 
   | isSource, _, _, _ => throw (SyscallError.FailedLookup isSource LookupFailure.InvalidRoot)
 
 /-- Haskell `lookupSourceSlot` -/
-def lookupSourceSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE) :=
+partial def lookupSourceSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE) :=
   lookupSlotForCNodeOp true
 
 /-- Haskell `lookupTargetSlot` -/
-def lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE) :=
+partial def lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE) :=
   lookupSlotForCNodeOp false
 
 /-- Haskell `lookupPivotSlot` -/
-def lookupPivotSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE) :=
+partial def lookupPivotSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE) :=
   lookupSlotForCNodeOp true
 
 end

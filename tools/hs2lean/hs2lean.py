@@ -334,8 +334,9 @@ class Translator:
             cfields = next(fs for cn, fs, _ in self.data.types[tname]["ctors"] if cn == cname)
             given = {}
             for fp in fps:
-                fname = self.text(fp.child_by_field_name("field")).split(".")[-1]
-                sub = fp.child_by_field_name("pattern")
+                parts = kids(fp)
+                fname = self.text(fp.child_by_field_name("field") or parts[0]).split(".")[-1]
+                sub = fp.child_by_field_name("pattern") or (parts[-1] if len(parts) > 1 else None)
                 given[fname] = self.pat_atom(sub) if sub is not None else self.ident(fname)  # punning
             if self.data.types[tname]["single"]:
                 return "{ " + ", ".join(f"{f} := {v}" for f, v in given.items()) + " }"

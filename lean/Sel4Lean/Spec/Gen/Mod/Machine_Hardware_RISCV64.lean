@@ -13,7 +13,7 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque ackInterrupt : RISCV64.IRQ → MachineMonad Unit
+opaque ackInterrupt : IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
@@ -34,7 +34,7 @@ opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
 opaque clearMemoryVM : (PPtr Word) → Nat → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque configureTimer : MachineMonad RISCV64.IRQ
+opaque configureTimer : MachineMonad IRQ
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque debugPrint : String → MachineMonad Unit
@@ -46,7 +46,7 @@ opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
 opaque fromPAddr : PAddr → Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
+opaque getActiveIRQ : Bool → MachineMonad (Option IRQ)
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getDeviceRegions : MachineMonad (List (PAddr × PAddr))
@@ -88,7 +88,7 @@ opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
 opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
+opaque maskInterrupt : Bool → IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque paddrBase : PAddr
@@ -106,7 +106,7 @@ opaque pageColourBits : Nat
 opaque physBase : PAddr
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque plic_complete_claim : RISCV64.IRQ → MachineMonad Unit
+opaque plic_complete_claim : IRQ → MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pptrBase : VPtr
@@ -136,7 +136,7 @@ opaque read_stval : MachineMonad Word
 opaque resetTimer : MachineMonad Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
+opaque setIRQTrigger : IRQ → Bool → MachineMonad Unit
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque setRegister : Register → Word → UserMonad Unit
@@ -175,23 +175,23 @@ opaque vmRightsToBits : VMRights → Word
 /-! ## Translated -/
 
 /-- Haskell `toPAddr` -/
-def toPAddr :=
+partial def toPAddr :=
   PAddr.PAddr
 
 /-- Haskell `pptrBaseOffset` -/
-def pptrBaseOffset :=
+partial def pptrBaseOffset :=
   (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
 
 /-- Haskell `kernelELFBaseOffset` -/
-def kernelELFBaseOffset :=
+partial def kernelELFBaseOffset :=
   (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
 
 /-- Haskell `getRestartPC` -/
-def getRestartPC :=
+partial def getRestartPC :=
   getRegister (Register.Register (RISCV64.Register.FaultIP))
 
 /-- Haskell `setNextPC` -/
-def setNextPC :=
+partial def setNextPC :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
 
 end

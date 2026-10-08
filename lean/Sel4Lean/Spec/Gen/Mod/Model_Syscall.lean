@@ -18,7 +18,7 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `syscall` -/
-def syscall {a : Type} [Inhabited a] {c : Type} [Inhabited c] {b : Type} [Inhabited b] (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
+partial def syscall {a : Type} [Inhabited a] {c : Type} [Inhabited c] {b : Type} [Inhabited b] (mFault : KernelF Fault a) (hFault : Fault → Kernel c) (mError : a → KernelF SyscallError b) (hError : SyscallError → Kernel c) (mFinalise : b → KernelP c) : KernelP c :=
   do
     let rFault ← withoutPreemption (ExceptT.run mFault)
     match rFault with

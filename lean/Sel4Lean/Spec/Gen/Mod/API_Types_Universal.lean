@@ -18,15 +18,15 @@ opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 /-! ## Translated -/
 
 /-- Haskell `epSizeBits` -/
-def epSizeBits : Nat :=
+partial def epSizeBits : Nat :=
   4
 
 /-- Haskell `ntfnSizeBits` -/
-def ntfnSizeBits : Nat :=
+partial def ntfnSizeBits : Nat :=
   wordSizeCase 4 5
 
 /-- Haskell `cteSizeBits` -/
-def cteSizeBits : Nat :=
+partial def cteSizeBits : Nat :=
   wordSizeCase 4 5
 
 end

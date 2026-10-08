@@ -43,44 +43,44 @@ opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 /-! ## Translated -/
 
 /-- Haskell `getObjectSize` -/
-def getObjectSize : ObjectType → Nat → Nat :=
+partial def getObjectSize : ObjectType → Nat → Nat :=
   RISCV64.getObjectSize
 
 /-- Haskell `fromAPIType` -/
-def fromAPIType : APIObjectType → ObjectType :=
+partial def fromAPIType : APIObjectType → ObjectType :=
   RISCV64.fromAPIType
 
 /-- Haskell `toAPIType` -/
-def toAPIType : ObjectType → Option APIObjectType :=
+partial def toAPIType : ObjectType → Option APIObjectType :=
   RISCV64.toAPIType
 
 /-- Haskell `isFrameType` -/
-def isFrameType : ObjectType → Bool :=
+partial def isFrameType : ObjectType → Bool :=
   RISCV64.isFrameType
 
 /-- Haskell `pageType` -/
-def pageType : ObjectType :=
+partial def pageType : ObjectType :=
   RISCV64.pageType
 
 /-- Haskell `allRights` -/
-def allRights : CapRights :=
+partial def allRights : CapRights :=
   CapRights.CapRights true true true true
 
 /-- Haskell `noRights` -/
-def noRights : CapRights :=
+partial def noRights : CapRights :=
   CapRights.CapRights false false false false
 
 /-- Haskell `andCapRights` -/
-def andCapRights (x0 : CapRights) (x1 : CapRights) : CapRights :=
+partial def andCapRights (x0 : CapRights) (x1 : CapRights) : CapRights :=
   match x0, x1 with
   | (CapRights.CapRights a1 a2 a3 a4), (CapRights.CapRights b1 b2 b3 b4) => CapRights.CapRights (a1 && b1) (a2 && b2) (a3 && b3) (a4 && b4)
 
 /-- Haskell `rightsFromWord` -/
-def rightsFromWord (p : Word) : CapRights :=
+partial def rightsFromWord (p : Word) : CapRights :=
   CapRights.CapRights (testBit p 0) (testBit p 1) (testBit p 2) (testBit p 3)
 
 /-- Haskell `wordFromRights` -/
-def wordFromRights (x0 : CapRights) : Word :=
+partial def wordFromRights (x0 : CapRights) : Word :=
   match x0 with
   | (CapRights.CapRights r1 r2 r3 r4) => 
       let bitIf := fun b n =>
@@ -91,31 +91,31 @@ def wordFromRights (x0 : CapRights) : Word :=
       (((bitIf r1 0) ||| (bitIf r2 1)) ||| (bitIf r3 2)) ||| (bitIf r4 3)
 
 /-- Haskell `priorityBits` -/
-def priorityBits : Nat :=
+partial def priorityBits : Nat :=
   8
 
 /-- Haskell `msgExtraCapBits` -/
-def msgExtraCapBits : Nat :=
+partial def msgExtraCapBits : Nat :=
   2
 
 /-- Haskell `msgLabelBits` -/
-def msgLabelBits : Nat :=
+partial def msgLabelBits : Nat :=
   wordSizeCase 20 52
 
 /-- Haskell `msgLengthBits` -/
-def msgLengthBits : Nat :=
+partial def msgLengthBits : Nat :=
   7
 
 /-- Haskell `msgMaxExtraCaps` -/
-def msgMaxExtraCaps {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
+partial def msgMaxExtraCaps {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
   (bit msgExtraCapBits) - 1
 
 /-- Haskell `msgMaxLength` -/
-def msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
+partial def msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
   120
 
 /-- Haskell `messageInfoFromWord` -/
-def messageInfoFromWord (w : Word) : MessageInfo :=
+partial def messageInfoFromWord (w : Word) : MessageInfo :=
   let otherBits := (msgLengthBits + msgExtraCapBits) + msgMaxExtraCaps
   let msgLen := w &&& ((bit msgLengthBits) - 1)
   { msgLength := if msgLen > msgMaxLength then
@@ -124,7 +124,7 @@ def messageInfoFromWord (w : Word) : MessageInfo :=
       msgLen, msgExtraCaps := (w >>> msgLengthBits) &&& ((bit msgExtraCapBits) - 1), msgCapsUnwrapped := (w >>> (msgLengthBits + msgExtraCapBits)) &&& ((bit msgMaxExtraCaps) - 1), msgLabel := (w >>> otherBits) &&& ((bit msgLabelBits) - 1) : MessageInfo }
 
 /-- Haskell `wordFromMessageInfo` -/
-def wordFromMessageInfo (mi : MessageInfo) : Word :=
+partial def wordFromMessageInfo (mi : MessageInfo) : Word :=
   let len := MessageInfo.msgLength mi
   let extra := (MessageInfo.msgExtraCaps mi) <<< msgLengthBits
   let un := (MessageInfo.msgCapsUnwrapped mi) <<< (msgLengthBits + msgExtraCapBits)
@@ -133,15 +133,15 @@ def wordFromMessageInfo (mi : MessageInfo) : Word :=
   ((label ||| extra) ||| un) ||| len
 
 /-- Haskell `msgAlignBits` -/
-def msgAlignBits : Nat :=
+partial def msgAlignBits : Nat :=
   wordSizeCase 9 10
 
 /-- Haskell `capTransferDataSize` -/
-def capTransferDataSize : Word :=
+partial def capTransferDataSize : Word :=
   3
 
 /-- Haskell `ptrFromPAddrRegion` -/
-def ptrFromPAddrRegion (x0 : PAddr × PAddr) : Region :=
+partial def ptrFromPAddrRegion (x0 : PAddr × PAddr) : Region :=
   match x0 with
   | (start, «end») => Region.Region ((ptrFromPAddr start, ptrFromPAddr «end»))
 

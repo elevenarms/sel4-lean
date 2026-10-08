@@ -16,7 +16,7 @@ noncomputable section
 opaque RISCV64.plic_complete_claim : IRQ → MachineMonad Unit
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
+opaque RISCV64.setIRQTrigger : IRQ → Bool → MachineMonad Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
@@ -70,36 +70,36 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `checkIRQ` -/
-def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
+partial def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
   whenH ((irqW > (fromIntegral (fromEnum maxIRQ))) || (irqW == (fromIntegral (fromEnum irqInvalid)))) (throw (SyscallError.RangeError 1 (fromIntegral (fromEnum maxIRQ))))
 
 /-- Haskell `plic_complete_claim` -/
-def plic_complete_claim (x0 : IRQ) : MachineMonad Unit :=
+partial def plic_complete_claim (x0 : IRQ) : MachineMonad Unit :=
   match x0 with
   | (RISCV64.IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
 
 /-- Haskell `invokeIRQHandler` -/
-def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
+partial def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
   match x0 with
   | (IRQHandlerInvocation.AckIRQ irq) => doMachineOp (plic_complete_claim irq)
   | _ => pure ()
 
 /-- Haskell `handleSpuriousIRQ` -/
-def handleSpuriousIRQ : Kernel Unit :=
+partial def handleSpuriousIRQ : Kernel Unit :=
   pure ()
 
 /-- Haskell `handleReservedIRQ` -/
-def handleReservedIRQ (x0 : IRQ) : Kernel Unit :=
+partial def handleReservedIRQ (x0 : IRQ) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `maskIrqSignal` -/
-def maskIrqSignal (x0 : IRQ) : Kernel Unit :=
+partial def maskIrqSignal (x0 : IRQ) : Kernel Unit :=
   match x0 with
   | _ => pure ()
 
 /-- Haskell `initInterruptController` -/
-def initInterruptController : Kernel Unit :=
+partial def initInterruptController : Kernel Unit :=
   error "Unimplemented. Init code."
 
 end

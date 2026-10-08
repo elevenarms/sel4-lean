@@ -18,7 +18,7 @@ opaque RISCV64.handleHypervisorFault : (PPtr TCB) → HypFaultType → Kernel Un
 /-! ## Translated -/
 
 /-- Haskell `handleHypervisorFault` -/
-def handleHypervisorFault : (PPtr TCB) → HypFaultType → Kernel Unit :=
+partial def handleHypervisorFault : (PPtr TCB) → HypFaultType → Kernel Unit :=
   RISCV64.handleHypervisorFault
 
 end

@@ -23,15 +23,15 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `funPartialArray` -/
-def funPartialArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] (f : i → a) (b : i × i) : (i → a) :=
+partial def funPartialArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] (f : i → a) (b : i × i) : (i → a) :=
   listArray b ((map f) (range b))
 
 /-- Haskell `funArray` -/
-def funArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] [BoundedH i] (f : i → a) : (i → a) :=
+partial def funArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] [BoundedH i] (f : i → a) : (i → a) :=
   funPartialArray f ((minBound, maxBound))
 
 /-- Haskell `mapMaybe` -/
-def mapMaybe {a : Type} [Inhabited a] {b : Type} [Inhabited b] (f : a → b) (opt : Option a) : Option b :=
+partial def mapMaybe {a : Type} [Inhabited a] {b : Type} [Inhabited b] (f : a → b) (opt : Option a) : Option b :=
   match opt with
   | none => none
   | (some x) => some (f x)

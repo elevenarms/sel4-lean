@@ -13,13 +13,13 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque ackInterrupt : (PtrH CallbackData) → RISCV64.IRQ → IO Unit
+opaque ackInterrupt : (PtrH CallbackData) → IRQ → IO Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque configureTimer : (PtrH CallbackData) → IO RISCV64.IRQ
+opaque configureTimer : (PtrH CallbackData) → IO IRQ
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque getActiveIRQ : (PtrH CallbackData) → IO (Option RISCV64.IRQ)
+opaque getActiveIRQ : (PtrH CallbackData) → IO (Option IRQ)
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque getDeviceRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
@@ -31,13 +31,13 @@ opaque getKernelDevices : (PtrH CallbackData) → IO (List (PAddr × (PPtr Word)
 opaque getMemoryRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque irqInvalid : RISCV64.IRQ
+opaque irqInvalid : IRQ
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
 
 -- machine interface: opaque by design (as l4v MachineOps)
-opaque maskInterrupt : (PtrH CallbackData) → Bool → RISCV64.IRQ → IO Unit
+opaque maskInterrupt : (PtrH CallbackData) → Bool → IRQ → IO Unit
 
 -- machine interface: opaque by design (as l4v MachineOps)
 opaque pageColourBits : Nat

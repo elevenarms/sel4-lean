@@ -156,15 +156,15 @@ opaque withoutPreemption {a : Type} [Inhabited a] : (Kernel a) → KernelP a
 /-! ## Translated -/
 
 /-- Haskell `getIRQState` -/
-def getIRQState (irq : IRQ) : Kernel IRQState :=
+partial def getIRQState (irq : IRQ) : Kernel IRQState :=
   liftM (((fun x => ! x irq)) ∘ InterruptState.intStateIRQTable) getInterruptState
 
 /-- Haskell `isIRQActive` -/
-def isIRQActive (irq : IRQ) : Kernel Bool :=
+partial def isIRQActive (irq : IRQ) : Kernel Bool :=
   liftM ((· != IRQState.IRQInactive)) (getIRQState irq)
 
 /-- Haskell `decodeIRQControlInvocation` -/
-def decodeIRQControlInvocation (label : Word) (args : List Word) (srcSlot : PPtr CTE) (extraCaps : List Capability) : KernelF SyscallError IRQControlInvocation :=
+partial def decodeIRQControlInvocation (label : Word) (args : List Word) (srcSlot : PPtr CTE) (extraCaps : List Capability) : KernelF SyscallError IRQControlInvocation :=
   match (genInvocationType label, args, extraCaps) with
   | (GenInvocationLabels.IRQIssueIRQHandler, irqW :: index :: depth :: _, cnode :: _) => (do
         let _ ← (RISCV64.checkIRQ) irqW
@@ -178,7 +178,7 @@ def decodeIRQControlInvocation (label : Word) (args : List Word) (srcSlot : PPtr
   | _ => liftM IRQControlInvocation.ArchIRQControl ((RISCV64.decodeIRQControlInvocation) label args srcSlot extraCaps)
 
 /-- Haskell `setIRQState` -/
-def setIRQState (irqState : IRQState) (irq : IRQ) : Kernel Unit :=
+partial def setIRQState (irqState : IRQState) (irq : IRQ) : Kernel Unit :=
   do
     let st ← getInterruptState
     let table := InterruptState.intStateIRQTable st
@@ -186,7 +186,7 @@ def setIRQState (irqState : IRQState) (irq : IRQ) : Kernel Unit :=
     doMachineOp (maskInterrupt (irqState == IRQState.IRQInactive) irq)
 
 /-- Haskell `performIRQControl` -/
-def performIRQControl (x0 : IRQControlInvocation) : KernelP Unit :=
+partial def performIRQControl (x0 : IRQControlInvocation) : KernelP Unit :=
   match x0 with
   | (IRQControlInvocation.IssueIRQHandler irq handlerSlot controlSlot) => 
       withoutPreemption (do
@@ -195,7 +195,7 @@ def performIRQControl (x0 : IRQControlInvocation) : KernelP Unit :=
   | (IRQControlInvocation.ArchIRQControl invok) => (RISCV64.performIRQControl) invok
 
 /-- Haskell `decodeIRQHandlerInvocation` -/
-def decodeIRQHandlerInvocation (label : Word) (irq : IRQ) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError IRQHandlerInvocation :=
+partial def decodeIRQHandlerInvocation (label : Word) (irq : IRQ) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError IRQHandlerInvocation :=
   match (genInvocationType label, extraCaps) with
   | (GenInvocationLabels.IRQAckIRQ, _) => pure (IRQHandlerInvocation.AckIRQ irq)
   | (GenInvocationLabels.IRQSetIRQHandler, (cap, slot) :: _) => (match cap with
@@ -206,17 +206,17 @@ def decodeIRQHandlerInvocation (label : Word) (irq : IRQ) (extraCaps : List (Cap
   | _ => throw SyscallError.IllegalOperation
 
 /-- Haskell `toBool` -/
-def toBool (w : Word) : Bool :=
+partial def toBool (w : Word) : Bool :=
   w != 0
 
 /-- Haskell `getIRQSlot` -/
-def getIRQSlot (irq : IRQ) : Kernel (PPtr CTE) :=
+partial def getIRQSlot (irq : IRQ) : Kernel (PPtr CTE) :=
   do
     let node ← liftM InterruptState.intStateIRQNode getInterruptState
     locateSlotBasic node (fromIntegral (fromEnum irq))
 
 /-- Haskell `invokeIRQHandler` -/
-def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
+partial def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
   match x0 with
   | (IRQHandlerInvocation.AckIRQ irq) => (RISCV64.invokeIRQHandler) (IRQHandlerInvocation.AckIRQ irq)
   | (IRQHandlerInvocation.SetIRQHandler irq cap slot) => 
@@ -230,7 +230,7 @@ def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
         cteDeleteOne irqSlot
 
 /-- Haskell `deletingIRQHandler` -/
-def deletingIRQHandler (irq : IRQ) : Kernel Unit :=
+partial def deletingIRQHandler (irq : IRQ) : Kernel Unit :=
   do
     let slot ← getIRQSlot irq
     let cap ← getSlotCap slot
@@ -238,11 +238,11 @@ def deletingIRQHandler (irq : IRQ) : Kernel Unit :=
     cteDeleteOne slot
 
 /-- Haskell `deletedIRQHandler` -/
-def deletedIRQHandler (irq : IRQ) : Kernel Unit :=
+partial def deletedIRQHandler (irq : IRQ) : Kernel Unit :=
   setIRQState IRQState.IRQInactive irq
 
 /-- Haskell `initInterruptController` -/
-def initInterruptController (rootCNCap : Capability) (biCapIRQC : Word) : KernelInit Capability :=
+partial def initInterruptController (rootCNCap : Capability) (biCapIRQC : Word) : KernelInit Capability :=
   do
     let frame ← allocFrame
     let _ ← doKernelOp (do
@@ -259,7 +259,7 @@ def initInterruptController (rootCNCap : Capability) (biCapIRQC : Word) : Kernel
     pure Capability.IRQControlCap
 
 /-- Haskell `handleInterrupt` -/
-def handleInterrupt (irq : IRQ) : Kernel Unit :=
+partial def handleInterrupt (irq : IRQ) : Kernel Unit :=
   do
     if irq > maxIRQ then
       doMachineOp (do
@@ -284,7 +284,7 @@ def handleInterrupt (irq : IRQ) : Kernel Unit :=
         doMachineOp (ackInterrupt irq)
 
 /-- Haskell `maybeHandleInterrupt` -/
-def maybeHandleInterrupt (inKernel : Bool) : Kernel Unit :=
+partial def maybeHandleInterrupt (inKernel : Bool) : Kernel Unit :=
   do
     let maybeIRQ ← doMachineOp (getActiveIRQ inKernel)
     match maybeIRQ with

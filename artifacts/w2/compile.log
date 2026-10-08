@@ -1,69 +1,102 @@
-✔ [4/68] Built Sel4Lean.Spec.HsPrelude (514ms)
 ✔ [5/68] Built Sel4Lean.Spec.Gen.Types (4.8s)
-✔ [6/68] Built Sel4Lean.Spec.Prelude (232ms)
-✔ [7/68] Built Sel4Lean.Spec.PSpaceStorable (357ms)
-✔ [8/68] Built Sel4Lean.Spec.Gen.Mod.Object (335ms)
-⚠ [9/68] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (405ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:18:22: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:18:37: Variable name `newDom` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _newDom
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [10/68] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (406ms)
-✔ [11/68] Built Sel4Lean.Spec.Gen.Mod.Machine (470ms)
-✔ [12/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (445ms)
-⚠ [13/68] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (478ms)
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:18:42: Variable name `ptr` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _ptr
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:18:57: Variable name `bits` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _bits
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [14/68] Built Sel4Lean.Spec.Gen.Mod.Model_Preemption (490ms)
-✔ [15/68] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (475ms)
-✖ [16/68] Building Sel4Lean.Spec.Gen.Mod.Model_Syscall (509ms)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Syscall.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Syscall.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean:25:6: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
-✔ [17/68] Built Sel4Lean.Spec.Gen.Mod.Object_Instances_RISCV64 (433ms)
-✖ [18/68] Building Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (492ms)
+✔ [6/68] Built Sel4Lean.Spec.Prelude (231ms)
+✔ [7/68] Built Sel4Lean.Spec.PSpaceStorable (358ms)
+✔ [8/68] Built Sel4Lean.Spec.Gen.Mod.Object_Instances (346ms)
+✔ [9/68] Built Sel4Lean.Spec.Gen.Mod.Object_Instances_RISCV64 (410ms)
+✖ [10/68] Building Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64 (461ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Object_Structures_RISCV64.lean:75:6: failed to synthesize instance of type class
   HSub Nat Nat ASID
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✔ [19/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (580ms)
-✔ [20/68] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64 (602ms)
-✖ [21/68] Building Sel4Lean.Spec.Gen.Mod.Model_Failures (543ms)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Failures.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Failures.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:30:4: fail to show termination for
-  Sel4Lean.Spec.M.Model_Failures.throw
-with errors
-failed to infer structural recursion:
-Not considering parameter f of Sel4Lean.Spec.M.Model_Failures.throw:
-  it is unchanged in the recursive calls
-Not considering parameter #2 of Sel4Lean.Spec.M.Model_Failures.throw:
-  it is unchanged in the recursive calls
-Not considering parameter a of Sel4Lean.Spec.M.Model_Failures.throw:
-  it is unchanged in the recursive calls
-Not considering parameter #4 of Sel4Lean.Spec.M.Model_Failures.throw:
-  it is unchanged in the recursive calls
-no parameters suitable for structural recursion
+⚠ [11/68] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (447ms)
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:43:26: Variable name `t` is not explicitly referenced.
 
-well-founded recursion cannot be used, `Sel4Lean.Spec.M.Model_Failures.throw` does not take any (non-fixed) arguments
-error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:34:90: type expected, got
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:43:41: Variable name `flags` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _flags
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [12/68] Built Sel4Lean.Spec.Gen.Mod.Machine (495ms)
+✔ [13/68] Built Sel4Lean.Spec.Gen.Mod.Model (432ms)
+✔ [14/68] Built Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64 (427ms)
+✖ [15/68] Building Sel4Lean.Spec.Gen.Mod.Model_Syscall (529ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Syscall.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Syscall.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Syscall.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_Syscall.lean:25:6: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+⚠ [16/68] Built Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64 (457ms)
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:18:30: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain_RISCV64.lean:18:45: Variable name `newDom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _newDom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [17/68] Building Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (524ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:79:5: Type mismatch
+  { val := irq }
+has type
+  RISCV64.IRQ
+but is expected to have type
+  IRQ
+✔ [18/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread_RISCV64 (551ms)
+✔ [19/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware (520ms)
+✔ [20/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (580ms)
+✔ [21/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (548ms)
+✔ [22/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (559ms)
+✖ [23/68] Building Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (610ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:113:38: Application type mismatch: The argument
+  r
+has type
+  RISCV64.Register
+but is expected to have type
+  Register
+in the application
+  RISCV64.getRegister r
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:114:14: Function expected at
+  Word
+but this term has type
+  Type
+
+Note: Expected a function because this term is being applied to the argument
+  w
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:119:28: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
+error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:127:3: typeclass instance problem is stuck
+  IntegralH ?m.5
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `IntegralH` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+✔ [24/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Target (523ms)
+⚠ [25/68] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace_RISCV64 (545ms)
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:18:50: Variable name `ptr` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ptr
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Sel4Lean/Spec/Gen/Mod/Model_PSpace_RISCV64.lean:18:65: Variable name `bits` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bits
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [26/68] Built Sel4Lean.Spec.Gen.Mod.Model_Preemption (579ms)
+✔ [27/68] Built Sel4Lean.Spec.Gen.Mod.Object_Structures (629ms)
+✖ [28/68] Building Sel4Lean.Spec.Gen.Mod.Model_Failures (610ms)
+trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_Failures.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Failures.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_Failures.setup.json --json
+error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:34:98: type expected, got
   (f : KernelF f✝ a)
 error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:55:35: typeclass instance problem is stuck
   Pure ?m.8
@@ -97,46 +130,7 @@ error: Sel4Lean/Spec/Gen/Mod/Model_Failures.lean:75:45: failed to synthesize ins
   LE a
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✖ [22/68] Building Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64 (587ms)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt_RISCV64.lean:79:5: Type mismatch
-  { val := irq }
-has type
-  RISCV64.IRQ
-but is expected to have type
-  IRQ
-⚠ [23/68] Built Sel4Lean.Spec.Gen.Mod.Object_TCB_RISCV64 (489ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:43:18: Variable name `t` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _t
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_TCB_RISCV64.lean:43:33: Variable name `flags` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _flags
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [24/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (539ms)
-✔ [25/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware (682ms)
-✖ [26/68] Building Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet (659ms)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:114:14: Function expected at
-  Word
-but this term has type
-  Type
-
-Note: Expected a function because this term is being applied to the argument
-  w
-error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:119:28: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]`
-error: Sel4Lean/Spec/Gen/Mod/Machine_RegisterSet.lean:127:3: typeclass instance problem is stuck
-  IntegralH ?m.5
-
-Note: Lean will not try to resolve this typeclass instance problem because the type argument to `IntegralH` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
-
-Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
-✖ [27/68] Building Sel4Lean.Spec.Gen.Mod.Model_StateData (679ms)
+✖ [29/68] Building Sel4Lean.Spec.Gen.Mod.Model_StateData (675ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Model_StateData.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_StateData.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Model_StateData.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_StateData.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Model_StateData.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Model_StateData.lean:165:121: Type mismatch
   empty
@@ -144,15 +138,7 @@ has type
   BinaryTree ?m.11
 but is expected to have type
   Word × Word → Prop
-✔ [28/68] Built Sel4Lean.Spec.Gen.Mod.Object_Structures (676ms)
-⚠ [29/68] Built Sel4Lean.Spec.Gen.Mod.Object_Untyped (715ms)
-warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:175:28: Variable name `p` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _p
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [30/68] Built Sel4Lean.Spec.Gen.Mod.Object_Domain (792ms)
+⚠ [30/68] Built Sel4Lean.Spec.Gen.Mod.Object_Domain (709ms)
 warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:72:8: Variable name `i` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -165,20 +151,29 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _v
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:114:46: Variable name `extraCaps` is not explicitly referenced.
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:114:54: Variable name `extraCaps` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _extraCaps
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:130:45: Variable name `extraCaps` is not explicitly referenced.
+warning: Sel4Lean/Spec/Gen/Mod/Object_Domain.lean:130:53: Variable name `extraCaps` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _extraCaps
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [31/68] Built Sel4Lean.Spec.Gen.Mod.Object_Endpoint (776ms)
-✖ [32/68] Building Sel4Lean.Spec.Gen.Mod.Object_Interrupt (806ms)
+✔ [31/68] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (667ms)
+⚠ [32/68] Built Sel4Lean.Spec.Gen.Mod.Object_Untyped (743ms)
+warning: Sel4Lean/Spec/Gen/Mod/Object_Untyped.lean:175:36: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [33/68] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace (783ms)
+✔ [34/68] Built Sel4Lean.Spec.Gen.Mod.Object_Endpoint (768ms)
+✖ [35/68] Building Sel4Lean.Spec.Gen.Mod.Object_Interrupt (804ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_Interrupt.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Object_Interrupt.lean:160:20: Type mismatch
   !?m.9
@@ -192,30 +187,26 @@ has type
   IRQState
 but is expected to have type
   Bool
-✔ [33/68] Built Sel4Lean.Spec.Gen.Mod.Object_Notification (801ms)
-✔ [34/68] Built Sel4Lean.Spec.Gen.Mod.Kernel (365ms)
-✔ [35/68] Built Sel4Lean.Spec.Gen.Mod.Model_PSpace (824ms)
-✖ [36/68] Building Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64 (819ms)
+✖ [36/68] Building Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64 (767ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.setup.json --json
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:84:20: Variable name `newCap` is not explicitly referenced.
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:84:28: Variable name `newCap` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _newCap
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:84:42: Variable name `srcCap` is not explicitly referenced.
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:84:50: Variable name `srcCap` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _srcCap
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:112:21: Variable name `c` is not explicitly referenced.
+warning: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:112:29: Variable name `c` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _c
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:165:94: Unknown identifier `capFBasePtr`
 error: Sel4Lean/Spec/Gen/Mod/Object_ObjectType_RISCV64.lean:177:2: Type mismatch
   decodeRISCVMMUInvocation
 has type
@@ -230,14 +221,21 @@ has type
   Invocation → KernelP (List Word)
 but is expected to have type
   RISCV64.Invocation → KernelP (List Word)
-✔ [37/68] Built Sel4Lean.Spec.Gen.Mod.API_Types_Universal (440ms)
-✔ [38/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (562ms)
-✔ [39/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (522ms)
-✔ [40/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_HiFive (543ms)
-✔ [41/68] Built Sel4Lean.Spec.Gen.Mod.Model (520ms)
-✔ [42/68] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (386ms)
-✔ [43/68] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (409ms)
-✖ [44/68] Building Sel4Lean.Spec.Gen.Mod.API_InvocationLabels (433ms)
+✔ [37/68] Built Sel4Lean.Spec.Gen.Mod.Kernel (379ms)
+✔ [38/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor_RISCV64 (463ms)
+✔ [39/68] Built Sel4Lean.Spec.Gen.Mod.Object (506ms)
+✔ [40/68] Built Sel4Lean.Spec.Gen.Mod.API_Invocation_RISCV64 (399ms)
+✔ [41/68] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (403ms)
+✔ [42/68] Built Sel4Lean.Spec.Gen.Mod.API_Types_Universal (431ms)
+✔ [43/68] Built Sel4Lean.Spec.Gen.Mod.Config (464ms)
+✔ [44/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (476ms)
+✔ [45/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_VSpace (591ms)
+✔ [46/68] Built Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet_RISCV64 (525ms)
+✔ [47/68] Built Sel4Lean.Spec.Gen.Mod.API (379ms)
+✔ [48/68] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (380ms)
+✔ [49/68] Built Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64 (409ms)
+✔ [50/68] Built Sel4Lean.Spec.Gen.Mod.API_Invocation (414ms)
+✖ [51/68] Building Sel4Lean.Spec.Gen.Mod.API_InvocationLabels (453ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.lean:28:12: failed to synthesize instance of type class
   IntegralH InvocationLabel
@@ -247,30 +245,23 @@ error: Sel4Lean/Spec/Gen/Mod/API_InvocationLabels.lean:29:4: failed to synthesiz
   IntegralH InvocationLabel
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✔ [45/68] Built Sel4Lean.Spec.Gen.Mod.API_InvocationLabels_RISCV64 (403ms)
-✔ [46/68] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (498ms)
-✔ [47/68] Built Sel4Lean.Spec.Gen.Mod.Config (504ms)
-✔ [48/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Hypervisor (596ms)
-✔ [49/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64 (620ms)
-✔ [50/68] Built Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64_Spike (509ms)
-✖ [51/68] Building Sel4Lean.Spec.Gen.Mod.Data_Helpers (370ms)
+✔ [52/68] Built Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64 (489ms)
+✔ [53/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_FaultHandler (526ms)
+✖ [54/68] Building Sel4Lean.Spec.Gen.Mod.Data_Helpers (410ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Data_Helpers.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Data_Helpers.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Data_Helpers.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Data_Helpers.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Data_Helpers.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Data_Helpers.lean:27:24: Unknown identifier `range`
 error: Sel4Lean/Spec/Gen/Mod/Data_Helpers.lean:27:2: failed to synthesize instance of type class
   IntegralH i
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✖ [52/68] Building Sel4Lean.Spec.Gen.Mod.Data_WordLib (360ms)
+✖ [55/68] Building Sel4Lean.Spec.Gen.Mod.Data_WordLib (405ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Data_WordLib.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Data_WordLib.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Data_WordLib.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Data_WordLib.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Data_WordLib.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Data_WordLib.lean:38:55: type expected, got
+error: Sel4Lean/Spec/Gen/Mod/Data_WordLib.lean:38:63: type expected, got
   (a : a✝)
 error: Sel4Lean/Spec/Gen/Mod/Data_WordLib.lean:46:2: Unknown identifier `wordSizeCase`
-✔ [53/68] Built Sel4Lean.Spec.Gen.Mod.API (389ms)
-✔ [54/68] Built Sel4Lean.Spec.Gen.Mod.API_Failures (421ms)
-✔ [55/68] Built Sel4Lean.Spec.Gen.Mod.API_Failures_RISCV64 (380ms)
-✔ [56/68] Built Sel4Lean.Spec.Gen.Mod.API_Faults (459ms)
-✔ [57/68] Built Sel4Lean.Spec.Gen.Mod.API_Faults_RISCV64 (445ms)
-✖ [58/68] Building Sel4Lean.Spec.Gen.Mod.API_Types (534ms)
+✔ [56/68] Built Sel4Lean.Spec.Gen.Mod.API_Failures (468ms)
+✔ [57/68] Built Sel4Lean.Spec.Gen.Mod.API_Faults (486ms)
+✖ [58/68] Building Sel4Lean.Spec.Gen.Mod.API_Types (566ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/API_Types.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Types.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/API_Types.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Types.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/API_Types.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/API_Types.lean:111:3: typeclass instance problem is stuck
   IntegralH ?m.5
@@ -285,7 +276,7 @@ numerals are polymorphic in Lean, but the numeral `120` cannot be used in a cont
 due to the absence of the instance above
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✖ [59/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (716ms)
+✖ [59/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo (654ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:115:20: Unknown identifier `value`
 error: Sel4Lean/Spec/Gen/Mod/Kernel_BootInfo.lean:130:8: Type mismatch
@@ -294,7 +285,11 @@ has type
   Serializer Unit
 but is expected to have type
   NondetM ?m.1 ?m.3
-✖ [60/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (914ms)
+✔ [60/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (613ms)
+✔ [61/68] Built Sel4Lean.Spec.Gen.Mod.Object_ObjectType (1.2s)
+✔ [62/68] Built Sel4Lean.Spec.Gen.Mod.Data_BinaryTree (513ms)
+✔ [63/68] Built Sel4Lean.Spec.Gen.Mod.API_Syscall (666ms)
+✖ [64/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_Init (901ms)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_Init.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_Init.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:186:2: typeclass instance problem is stuck, it is often due to metavariables
   MonadLift ?m.9 KernelInit
@@ -388,10 +383,7 @@ error: Sel4Lean/Spec/Gen/Mod/Kernel_Init.lean:403:25: failed to synthesize insta
   HAdd VPtr Nat ?m.126
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✔ [61/68] Built Sel4Lean.Spec.Gen.Mod.Object_ObjectType (1.2s)
-✔ [62/68] Built Sel4Lean.Spec.Gen.Mod.Data_BinaryTree (531ms)
-✔ [63/68] Built Sel4Lean.Spec.Gen.Mod.API_Syscall (739ms)
-✖ [64/68] Building Sel4Lean.Spec.Gen.Mod.Object_CNode (1.4s)
+✖ [65/68] Building Sel4Lean.Spec.Gen.Mod.Object_CNode (1.4s)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_CNode.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_CNode.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_CNode.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_CNode.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_CNode.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:248:42: Application type mismatch: The argument
   ks.gsUntypedZeroRanges
@@ -411,55 +403,8 @@ in the application
   insert r
 error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:317:9: Fields missing: `cteCap`
 error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:402:16: Unknown identifier `cteDelete`
-error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:406:69: Unknown identifier `capZombieNumber`
-error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:418:4: fail to show termination for
-  Sel4Lean.Spec.M.Object_CNode.finaliseSlot
-with errors
-failed to infer structural recursion:
-Not considering parameter slot of Sel4Lean.Spec.M.Object_CNode.finaliseSlot:
-  it is unchanged in the recursive calls
-Not considering parameter exposed of Sel4Lean.Spec.M.Object_CNode.finaliseSlot:
-  it is unchanged in the recursive calls
-no parameters suitable for structural recursion
-
-well-founded recursion cannot be used, `Sel4Lean.Spec.M.Object_CNode.finaliseSlot` does not take any (non-fixed) arguments
-error: Sel4Lean/Spec/Gen/Mod/Object_CNode.lean:494:4: fail to show termination for
-  Sel4Lean.Spec.M.Object_CNode.cteRevoke
-with errors
-failed to infer structural recursion:
-Not considering parameter slot of Sel4Lean.Spec.M.Object_CNode.cteRevoke:
-  it is unchanged in the recursive calls
-no parameters suitable for structural recursion
-
-well-founded recursion cannot be used, `Sel4Lean.Spec.M.Object_CNode.cteRevoke` does not take any (non-fixed) arguments
-✖ [65/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_CSpace (1.0s)
-trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Kernel_CSpace.lean:49:4: fail to show termination for
-  Sel4Lean.Spec.M.Kernel_CSpace.resolveAddressBits
-with errors
-failed to infer structural recursion:
-Cannot use parameter x0:
-  failed to eliminate recursive application
-    resolveAddressBits nextCap capptr bitsLeft
-Cannot use parameter x1:
-  the type CPtr does not have a `.brecOn` recursor
-Cannot use parameter x2:
-  failed to eliminate recursive application
-    resolveAddressBits nextCap capptr bitsLeft
-
-
-Could not find a decreasing measure.
-The basic measures relate at each recursive call as follows:
-(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
-            x0 x1 x2
-1) 70:18-60  ?  =  ≤
-Please use `termination_by` to specify a decreasing measure.
-✖ [66/68] Building Sel4Lean.Spec.Gen.Mod.Object_TCB (1.5s)
+✖ [66/68] Building Sel4Lean.Spec.Gen.Mod.Object_TCB (1.4s)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Object_TCB.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_TCB.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Object_TCB.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_TCB.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Object_TCB.setup.json --json
-error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:293:43: Unknown identifier `capTCBPtr`
-error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:351:43: Unknown identifier `capTCBPtr`
-error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:363:43: Unknown identifier `capTCBPtr`
-error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:376:43: Unknown identifier `capTCBPtr`
 error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:486:29: Application type mismatch: The argument
   f
 has type
@@ -473,8 +418,8 @@ error: Sel4Lean/Spec/Gen/Mod/Object_TCB.lean:669:10: failed to synthesize instan
   Min Word
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
-✔ [67/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread (1.3s)
-✖ [68/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (1.9s)
+✔ [67/68] Built Sel4Lean.Spec.Gen.Mod.Kernel_Thread (1.2s)
+✖ [68/68] Building Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64 (1.3s)
 trace: .> LEAN_PATH=/home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean /home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/ubuntu/c0/sel4-lean/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean -o /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.olean -i /home/ubuntu/c0/sel4-lean/lean/.lake/build/lib/lean/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.ilean -c /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.c --setup /home/ubuntu/c0/sel4-lean/lean/.lake/build/ir/Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.setup.json --json
 error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:212:43: Application type mismatch: The argument
   KernelState.ksArchState
@@ -484,26 +429,7 @@ but is expected to have type
   KernelState → KernelState
 in the application
   riscvKSGlobalPT ∘ KernelState.ksArchState
-error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:284:4: fail to show termination for
-  Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTSlotFromLevel
-with errors
-failed to infer structural recursion:
-Cannot use parameter x0:
-  failed to eliminate recursive application
-    lookupPTSlotFromLevel (level - 1) (getPPtrFromHWPTE pte) vPtr
-Cannot use parameter x1:
-  the type PPtr PTE does not have a `.brecOn` recursor
-Cannot use parameter x2:
-  the type VPtr does not have a `.brecOn` recursor
-
-
-Could not find a decreasing measure.
-The basic measures relate at each recursive call as follows:
-(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
-             x0 x1 x2
-1) 293:12-73  ≤  ?  =
-Please use `termination_by` to specify a decreasing measure.
-warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:302:19: Variable name `thread` is not explicitly referenced.
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:302:27: Variable name `thread` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _thread
@@ -523,29 +449,12 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _pool
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:369:4: fail to show termination for
-  Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTFromLevel
-with errors
-failed to infer structural recursion:
-Not considering parameter vPtr of Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTFromLevel:
-  it is unchanged in the recursive calls
-Not considering parameter targetPtPtr of Sel4Lean.Spec.M.Kernel_VSpace_RISCV64.lookupPTFromLevel:
-  it is unchanged in the recursive calls
-Cannot use parameter level:
-  failed to eliminate recursive application
-    lookupPTFromLevel (level - 1) ptr vPtr targetPtPtr
-Cannot use parameter ptPtr:
-  the type PPtr PTE does not have a `.brecOn` recursor
+warning: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:486:101: Variable name `attr` is not explicitly referenced.
 
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _attr
 
-Could not find a decreasing measure.
-The basic measures relate at each recursive call as follows:
-(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
-            level ptPtr
-1) 382:8-58     ≤     ?
-Please use `termination_by` to specify a decreasing measure.
-error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:488:27: Unknown identifier `capPTMappedAddress`
-error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:498:48: Unknown identifier `capPTBasePtr`
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
 error: Sel4Lean/Spec/Gen/Mod/Kernel_VSpace_RISCV64.lean:537:56: failed to synthesize instance of type class
   HSub Nat Nat ASID
 
@@ -558,11 +467,11 @@ Capability.NullCap
 (Capability.NotificationCap (PPtr.mk (BitVec.ofFin (Fin.mk _ _))) (BitVec.ofFin (Fin.mk _ _)) true false)
 (further cases omitted, increase `set_option match.maxCounterExamples 5` to see more)
 Some required targets logged failures:
-- Sel4Lean.Spec.Gen.Mod.Model_Syscall
 - Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
-- Sel4Lean.Spec.Gen.Mod.Model_Failures
+- Sel4Lean.Spec.Gen.Mod.Model_Syscall
 - Sel4Lean.Spec.Gen.Mod.Object_Interrupt_RISCV64
 - Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
+- Sel4Lean.Spec.Gen.Mod.Model_Failures
 - Sel4Lean.Spec.Gen.Mod.Model_StateData
 - Sel4Lean.Spec.Gen.Mod.Object_Interrupt
 - Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
@@ -573,7 +482,6 @@ Some required targets logged failures:
 - Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
 - Sel4Lean.Spec.Gen.Mod.Kernel_Init
 - Sel4Lean.Spec.Gen.Mod.Object_CNode
-- Sel4Lean.Spec.Gen.Mod.Kernel_CSpace
 - Sel4Lean.Spec.Gen.Mod.Object_TCB
 - Sel4Lean.Spec.Gen.Mod.Kernel_VSpace_RISCV64
 error: build failed

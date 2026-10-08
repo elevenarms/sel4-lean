@@ -99,6 +99,38 @@ def index_decls(root):
     return best
 
 
+_IMPORT_CACHE = {}
+
+
+def module_of(path, root):
+    """`SEL4/Model/StateData/RISCV64.hs` -> `SEL4.Model.StateData.RISCV64`."""
+    return os.path.splitext(os.path.relpath(path, root))[0].replace(os.sep, ".")
+
+
+def unqualified_imports(path):
+    """Modules a file imports without `qualified` (the spec's `TARGET` placeholder is the architecture)."""
+    if path not in _IMPORT_CACHE:
+        src, rn = parse_file(path)
+        mods = set()
+        imps = next((c for c in rn.children if c.type == "imports"), None)
+        for imp in kids(imps) if imps is not None else []:
+            if any(c.type == "qualified" for c in imp.children):
+                continue
+            m = imp.child_by_field_name("module")
+            if m is not None:
+                mods.add(src[m.start_byte:m.end_byte].decode().replace("TARGET", ARCH))
+        _IMPORT_CACHE[path] = mods
+    return _IMPORT_CACHE[path]
+
+
+def arch_scope(path, root, idx, candidates):
+    """Arch types X that an unqualified `X` means in this file (Haskell scoping): those declared in this
+    file or in a module it imports unqualified."""
+    visible = unqualified_imports(path) | {module_of(path, root)}
+    return {x for x in candidates
+            if f"{ARCH}.{x}" in idx and module_of(idx[f"{ARCH}.{x}"][2], root) in visible}
+
+
 class FullTranslator(Translator):
     """Translator with type variables, contexts, qualified library types, newtypes, synonyms."""
 
@@ -110,6 +142,7 @@ class FullTranslator(Translator):
         self.arch_names = set()      # types X with a translated RISCV64.X
         self.arch_names_all = set()  # same, regardless of module (for explicit `Arch.X`)
         self.file_types = set()      # type names declared in the file being translated
+        self.arch_in_scope = set()   # arch types an unqualified name refers to in this file
         self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
         self.arch_calls = set()      # `Arch.f` references seen while translating
         self.constraints = []        # kept class constraints of the current signature
@@ -120,9 +153,9 @@ class FullTranslator(Translator):
         t = n.type
         if t == "name" and self.text(n) in self.current_ctors:
             return f"Sel4Lean.Spec.{self.text(n)}"   # a constructor of this type has the same name
-        if t == "name" and self.in_arch_module and self.text(n) in self.arch_names & self.file_types:
-            # Haskell scoping: unqualified X means the arch X only when declared in this same file;
-            # arch types from other files are reached through a qualifier (Arch.X, ArchInv.X, …)
+        if t == "name" and self.text(n) in self.arch_in_scope:
+            # Haskell scoping: unqualified X means the arch X when declared in this file or in a module
+            # imported unqualified; otherwise arch types are reached through a qualifier (Arch.X, …)
             return f"{ARCH}.{self.text(n)}"
         if t == "variable":
             v = self.text(n)
@@ -211,10 +244,15 @@ class FullTranslator(Translator):
             m = stack.pop()
             if m.type == "record" and ".." in self.text(m):
                 c = m.child_by_field_name("constructor")
-                tname = self.data.ctor_type.get(self.text(c).split(".")[-1]) if c is not None else None
-                if tname:
+                cname = self.text(c).split(".")[-1] if c is not None else None
+                tname = self.data.ctor_type.get(cname) if cname else None
+                if tname:   # only the fields of this constructor
                     for cn, fs, _ in self.data.types[tname]["ctors"]:
-                        out |= {f for f, _ in (fs or [])}
+                        if cn == cname:
+                            out |= {f for f, _ in (fs or [])}
+            if m.type == "field_pattern" and len(kids(m)) == 1:
+                # NamedFieldPuns: `C { f }` (only the field name) binds f; `C { f = p }` binds p instead
+                out.add(self.text(kids(m)[0]).split(".")[-1])
             stack.extend(m.named_children)
         return out
 
@@ -237,7 +275,7 @@ class FullTranslator(Translator):
                 continue
             if m.type == "name":
                 nm = self.text(m)
-                out.add(f"{ARCH}.{nm}" if self.in_arch_module and nm in self.arch_names & self.file_types else nm)
+                out.add(f"{ARCH}.{nm}" if nm in self.arch_in_scope else nm)
             elif m.type == "qualified":
                 base = self.text(m).split(".")[-1]
                 out.add(f"{ARCH}.{base}" if base == self.current_name else base)
@@ -383,6 +421,7 @@ def cmd_types(root, files, emit=True):
         if ARCH in path:
             tr.in_arch_module, tr.arch_names = True, dupes - {name.split(".")[-1]}
             tr.file_types = idx["__file_types__"].get(path, set())
+        tr.arch_in_scope = arch_scope(path, root, idx, dupes - {name.split(".")[-1]})
         refs = tr.type_names(node) - {name, name.split(".")[-1]}
         deps[name] = refs
         for r in sorted(refs):
@@ -532,6 +571,7 @@ def cmd_types(root, files, emit=True):
         if ARCH in path:
             tr.in_arch_module, tr.arch_names = True, dupes
             tr.file_types = idx["__file_types__"].get(path, set())
+        tr.arch_in_scope = arch_scope(path, root, idx, dupes)
         for inst in kids(decls):
             if inst.type != "instance":
                 continue
@@ -611,6 +651,9 @@ def bound_names(tr, node):
     out, stack = set(), [(node, False)]
     while stack:
         m, binding = stack.pop()
+        if m.type == "field_name" and not (m.parent is not None and m.parent.type == "field_pattern"
+                                           and len(kids(m.parent)) == 1):
+            continue   # a record field label (`C { f = p }`), not a binder; only a pun `C { f }` binds f
         if m.type == "variable" and binding:
             out.add(tr.text(m))
         for i, c in enumerate(m.children):
@@ -663,6 +706,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
         tr.arch_names_all = arch_names
         tr.in_arch_module = ARCH in mpath
         tr.file_types = idx["__file_types__"].get(mpath, set())
+        tr.arch_in_scope = arch_scope(mpath, root, idx, arch_names)
         decls = [(n, ns) for n, ns in top_decls(src, rn) if any(d.type in ("function", "bind") for d in ns)]
         local = {n for n, _ in decls}
         tr.local_names = local    # a module's own definitions shadow library name mappings
@@ -696,7 +740,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
         body = dict(decls)
         recursive = {n for n, ns in decls
                      if n in set().union(*(used_names(tr, d) for d in ns if d.type != "signature"))
-                     - set().union(*(bound_names(tr, d) for d in ns if d.type != "signature"))}
+                     - (set().union(*(bound_names(tr, d) for d in ns if d.type != "signature")) - {n})}
         machine = any(os.path.relpath(mpath, root).startswith(p) for p in MACHINE_INTERFACE)
         for n in order:
             if n in PROVIDED:
@@ -738,6 +782,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec"):
                 atr = FullTranslator(sig[0], data)
                 atr.arch_names, atr.arch_names_all, atr.in_arch_module = arch_names, arch_names, True
                 atr.file_types = idx["__file_types__"].get(sig[2], set())
+                atr.arch_in_scope = arch_scope(sig[2], root, idx, arch_names)
                 st = sig_stub(atr, key, sig[1], f"arch: {os.path.relpath(sig[2], root)}")
             if st:
                 stubs[key] = st

@@ -57,21 +57,21 @@ opaque tcbSchedEnqueue : (PPtr TCB) → Kernel Unit
 /-! ## Translated -/
 
 /-- Haskell `receiveBlocked` -/
-def receiveBlocked (st : ThreadState) : Bool :=
+partial def receiveBlocked (st : ThreadState) : Bool :=
   match st with
   | ThreadState.BlockedOnReceive _ _ => true
   | _ => false
 
 /-- Haskell `getNotification` -/
-def getNotification : (PPtr Notification) → Kernel Notification :=
+partial def getNotification : (PPtr Notification) → Kernel Notification :=
   getObject
 
 /-- Haskell `setNotification` -/
-def setNotification : (PPtr Notification) → Notification → Kernel Unit :=
+partial def setNotification : (PPtr Notification) → Notification → Kernel Unit :=
   setObject
 
 /-- Haskell `sendSignal` -/
-def sendSignal (ntfnPtr : PPtr Notification) (badge : Word) : Kernel Unit :=
+partial def sendSignal (ntfnPtr : PPtr Notification) (badge : Word) : Kernel Unit :=
   do
     let nTFN ← getNotification ntfnPtr
     match (Notification.ntfnObj nTFN, Notification.ntfnBoundTCB nTFN) with
@@ -99,11 +99,11 @@ def sendSignal (ntfnPtr : PPtr Notification) (badge : Word) : Kernel Unit :=
           setNotification ntfnPtr ({ nTFN with ntfnObj := NTFN.ActiveNtfn newBadge }))
 
 /-- Haskell `doNBRecvFailedTransfer` -/
-def doNBRecvFailedTransfer (thread : PPtr TCB) : Kernel Unit :=
+partial def doNBRecvFailedTransfer (thread : PPtr TCB) : Kernel Unit :=
   asUser thread (setRegister badgeRegister 0)
 
 /-- Haskell `receiveSignal` -/
-def receiveSignal (thread : PPtr TCB) (cap : Capability) (isBlocking : Bool) : Kernel Unit :=
+partial def receiveSignal (thread : PPtr TCB) (cap : Capability) (isBlocking : Bool) : Kernel Unit :=
   do
     let ntfnPtr := Capability.capNtfnPtr cap
     let ntfn ← getNotification ntfnPtr
@@ -123,7 +123,7 @@ def receiveSignal (thread : PPtr TCB) (cap : Capability) (isBlocking : Bool) : K
           setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn }))
 
 /-- Haskell `cancelAllSignals` -/
-def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
+partial def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let ntfn ← getNotification ntfnPtr
@@ -137,7 +137,7 @@ def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
     | _ => pure ()
 
 /-- Haskell `cancelSignal` -/
-def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
+partial def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
   let isWaiting := fun ntfn =>
     match ntfn with
     | NTFN.WaitingNtfn .. => true
@@ -153,7 +153,7 @@ def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel U
     setThreadState ThreadState.Inactive threadPtr
 
 /-- Haskell `completeSignal` -/
-def completeSignal (ntfnPtr : PPtr Notification) (tcb : PPtr TCB) : Kernel Unit :=
+partial def completeSignal (ntfnPtr : PPtr Notification) (tcb : PPtr TCB) : Kernel Unit :=
   do
     let ntfn ← getNotification ntfnPtr
     match Notification.ntfnObj ntfn with
@@ -163,21 +163,21 @@ def completeSignal (ntfnPtr : PPtr Notification) (tcb : PPtr TCB) : Kernel Unit 
     | _ => failM "tried to complete signal with inactive notification object"
 
 /-- Haskell `bindNotification` -/
-def bindNotification (tcb : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
+partial def bindNotification (tcb : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
   do
     let ntfn ← getNotification ntfnPtr
     let _ ← setNotification ntfnPtr ({ ntfn with ntfnBoundTCB := some tcb })
     setBoundNotification (some ntfnPtr) tcb
 
 /-- Haskell `doUnbindNotification` -/
-def doUnbindNotification (ntfnPtr : PPtr Notification) (ntfn : Notification) (tcbptr : PPtr TCB) : Kernel Unit :=
+partial def doUnbindNotification (ntfnPtr : PPtr Notification) (ntfn : Notification) (tcbptr : PPtr TCB) : Kernel Unit :=
   do
     let ntfn' := { ntfn with ntfnBoundTCB := none }
     let _ ← setNotification ntfnPtr ntfn'
     setBoundNotification none tcbptr
 
 /-- Haskell `unbindNotification` -/
-def unbindNotification (tcb : PPtr TCB) : Kernel Unit :=
+partial def unbindNotification (tcb : PPtr TCB) : Kernel Unit :=
   do
     let ntfnPtr ← getBoundNotification tcb
     match ntfnPtr with
@@ -187,7 +187,7 @@ def unbindNotification (tcb : PPtr TCB) : Kernel Unit :=
     | none => pure ()
 
 /-- Haskell `unbindMaybeNotification` -/
-def unbindMaybeNotification (ntfnPtr : PPtr Notification) : Kernel Unit :=
+partial def unbindMaybeNotification (ntfnPtr : PPtr Notification) : Kernel Unit :=
   do
     let ntfn ← getNotification ntfnPtr
     match Notification.ntfnBoundTCB ntfn with

@@ -49,67 +49,67 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 /-! ## Translated -/
 
 /-- Haskell `biCapNull` -/
-def biCapNull : Word :=
+partial def biCapNull : Word :=
   0
 
 /-- Haskell `itASID` -/
-def itASID : ASID :=
+partial def itASID : ASID :=
   1
 
 /-- Haskell `biCapITTCB` -/
-def biCapITTCB : Word :=
+partial def biCapITTCB : Word :=
   1
 
 /-- Haskell `biCapITCNode` -/
-def biCapITCNode : Word :=
+partial def biCapITCNode : Word :=
   2
 
 /-- Haskell `biCapITPD` -/
-def biCapITPD : Word :=
+partial def biCapITPD : Word :=
   3
 
 /-- Haskell `biCapIRQControl` -/
-def biCapIRQControl : Word :=
+partial def biCapIRQControl : Word :=
   4
 
 /-- Haskell `biCapASIDControl` -/
-def biCapASIDControl : Word :=
+partial def biCapASIDControl : Word :=
   5
 
 /-- Haskell `biCapITASIDPool` -/
-def biCapITASIDPool : Word :=
+partial def biCapITASIDPool : Word :=
   6
 
 /-- Haskell `biCapIOPort` -/
-def biCapIOPort : Word :=
+partial def biCapIOPort : Word :=
   7
 
 /-- Haskell `biCapIOSpace` -/
-def biCapIOSpace : Word :=
+partial def biCapIOSpace : Word :=
   8
 
 /-- Haskell `biCapBIFrame` -/
-def biCapBIFrame : Word :=
+partial def biCapBIFrame : Word :=
   9
 
 /-- Haskell `biCapITIPCBuf` -/
-def biCapITIPCBuf : Word :=
+partial def biCapITIPCBuf : Word :=
   10
 
 /-- Haskell `biCapDynStart` -/
-def biCapDynStart : Word :=
+partial def biCapDynStart : Word :=
   11
 
 /-- Haskell `biFrameSizeBits` -/
-def biFrameSizeBits : Nat :=
+partial def biFrameSizeBits : Nat :=
   pageBits
 
 /-- Haskell `nopBIFrameData` -/
-def nopBIFrameData : BIFrameData :=
+partial def nopBIFrameData : BIFrameData :=
   { bifNodeID := 0, bifNumNodes := 0, bifNumIOPTLevels := 0, bifIPCBufVPtr := 0, bifNullCaps := [], bifSharedFrameCaps := [], bifUIFrameCaps := [], bifUIPDCaps := [], bifUIPTCaps := [], bifUntypedObjCaps := [], bifUntypedObjPAddrs := [], bifUntypedObjSizeBits := [], bifUntypedObjIsDeviceList := [], bifITCNodeSizeBits := fromIntegral rootCNodeSize, bifNumDeviceRegions := 0, bifDeviceRegions := [] : BIFrameData }
 
 /-- Haskell `serializeByte` -/
-def serializeByte (input : Word) : Serializer Unit :=
+partial def serializeByte (input : Word) : Serializer Unit :=
   do
     let ptr ← gets SerialData.ptrCursor
     let byte ← gets value
@@ -123,28 +123,28 @@ def serializeByte (input : Word) : Serializer Unit :=
       modify (fun st => { st with ptrCursor := ptr + 1, value := value })
 
 /-- Haskell `serializeStore` -/
-def serializeStore (value : Word) (intsize : Nat) : Serializer Unit :=
+partial def serializeStore (value : Word) (intsize : Nat) : Serializer Unit :=
   do
     forM_H (enumFromToH 0 (intsize - 1)) (fun size => do
         let byte ← pure ((value >>> (8 * size)) &&& ((bit 8) - 1))
         serializeByte byte)
 
 /-- Haskell `paddingTo` -/
-def paddingTo (pptr : PPtr Word) : Serializer Unit :=
+partial def paddingTo (pptr : PPtr Word) : Serializer Unit :=
   do
     let ptr ← gets SerialData.ptrCursor
     (flip mapM_) (enumFromToH ptr (pptr - 1)) (fun _ => serializeByte 0)
 
 /-- Haskell `maxBIUntypedCaps` -/
-def maxBIUntypedCaps : Word :=
+partial def maxBIUntypedCaps : Word :=
   167
 
 /-- Haskell `maxBIDeviceRegions` -/
-def maxBIDeviceRegions : Word :=
+partial def maxBIDeviceRegions : Word :=
   200
 
 /-- Haskell `serialBIDeviceRegion` -/
-def serialBIDeviceRegion (biDeviceRegion : BIDeviceRegion) : Serializer Unit :=
+partial def serialBIDeviceRegion (biDeviceRegion : BIDeviceRegion) : Serializer Unit :=
   do
     let _ ← serializeStore (PAddr.fromPAddr (BIDeviceRegion.bidrBasePAddr biDeviceRegion)) 4
     let _ ← serializeStore (fromIntegral (BIDeviceRegion.bidrFrameSizeBits biDeviceRegion)) 4
@@ -156,7 +156,7 @@ def serialBIDeviceRegion (biDeviceRegion : BIDeviceRegion) : Serializer Unit :=
     pure ()
 
 /-- Haskell `syncBIFrame` -/
-def syncBIFrame : KernelInit Unit :=
+partial def syncBIFrame : KernelInit Unit :=
   do
     let frameData ← gets InitData.initBootInfo
     let frame ← gets InitData.initBootInfoFrame

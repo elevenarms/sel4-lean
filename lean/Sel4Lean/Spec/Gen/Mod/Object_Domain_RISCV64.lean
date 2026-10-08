@@ -15,7 +15,7 @@ noncomputable section
 /-! ## Translated -/
 
 /-- Haskell `prepareSetDomain` -/
-def prepareSetDomain (t : PPtr TCB) (newDom : Domain) : Kernel Unit :=
+partial def prepareSetDomain (t : PPtr TCB) (newDom : Domain) : Kernel Unit :=
   pure ()
 
 end

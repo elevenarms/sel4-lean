@@ -34,19 +34,19 @@ opaque ptBits : Nat
 /-! ## Translated -/
 
 /-- Haskell `fromAPIType` -/
-def fromAPIType :=
+partial def fromAPIType :=
   ObjectType.APIObjectType
 
 /-- Haskell `pageType` -/
-def pageType :=
+partial def pageType :=
   ObjectType.SmallPageObject
 
 /-- Haskell `tcbBlockSizeBits` -/
-def tcbBlockSizeBits : Nat :=
+partial def tcbBlockSizeBits : Nat :=
   10
 
 /-- Haskell `apiGetObjectSize` -/
-def apiGetObjectSize (x0 : APIObjectType) (x1 : Nat) : Nat :=
+partial def apiGetObjectSize (x0 : APIObjectType) (x1 : Nat) : Nat :=
   match x0, x1 with
   | APIObjectType.Untyped, size => size
   | APIObjectType.TCBObject, _ => tcbBlockSizeBits
@@ -55,7 +55,7 @@ def apiGetObjectSize (x0 : APIObjectType) (x1 : Nat) : Nat :=
   | APIObjectType.CapTableObject, size => cteSizeBits + size
 
 /-- Haskell `getObjectSize` -/
-def getObjectSize (x0 : ObjectType) (x1 : Nat) : Nat :=
+partial def getObjectSize (x0 : ObjectType) (x1 : Nat) : Nat :=
   match x0, x1 with
   | ObjectType.PageTableObject, _ => ptBits
   | ObjectType.SmallPageObject, _ => pageBitsForSize VMPageSize.RISCVSmallPage
@@ -64,7 +64,7 @@ def getObjectSize (x0 : ObjectType) (x1 : Nat) : Nat :=
   | (ObjectType.APIObjectType apiObjectType), size => apiGetObjectSize apiObjectType size
 
 /-- Haskell `isFrameType` -/
-def isFrameType (x0 : ObjectType) : Bool :=
+partial def isFrameType (x0 : ObjectType) : Bool :=
   match x0 with
   | ObjectType.SmallPageObject => true
   | ObjectType.LargePageObject => true

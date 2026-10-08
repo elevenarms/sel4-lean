@@ -118,21 +118,21 @@ opaque threadSet : (TCB → TCB) → (PPtr TCB) → Kernel Unit
 /-! ## Translated -/
 
 /-- Haskell `getEndpoint` -/
-def getEndpoint : (PPtr Endpoint) → Kernel Endpoint :=
+partial def getEndpoint : (PPtr Endpoint) → Kernel Endpoint :=
   getObject
 
 /-- Haskell `setEndpoint` -/
-def setEndpoint : (PPtr Endpoint) → Endpoint → Kernel Unit :=
+partial def setEndpoint : (PPtr Endpoint) → Endpoint → Kernel Unit :=
   setObject
 
 /-- Haskell `isActive` -/
-def isActive (x0 : Notification) : Bool :=
+partial def isActive (x0 : Notification) : Bool :=
   match x0 with
   | (Notification.NTFN (NTFN.ActiveNtfn _) _) => true
   | _ => false
 
 /-- Haskell `receiveIPC` -/
-def receiveIPC (x0 : PPtr TCB) (x1 : Capability) (x2 : Bool) : Kernel Unit :=
+partial def receiveIPC (x0 : PPtr TCB) (x1 : Capability) (x2 : Bool) : Kernel Unit :=
   match x0, x1, x2 with
   | thread, cap@(Capability.EndpointCap ..), isBlocking => 
       do
@@ -176,7 +176,7 @@ def receiveIPC (x0 : PPtr TCB) (x1 : Capability) (x2 : Bool) : Kernel Unit :=
   | _, _, _ => failM "receiveIPC: invalid cap"
 
 /-- Haskell `replyFromKernel` -/
-def replyFromKernel (x0 : PPtr TCB) (x1 : Word × (List Word)) : Kernel Unit :=
+partial def replyFromKernel (x0 : PPtr TCB) (x1 : Word × (List Word)) : Kernel Unit :=
   match x0, x1 with
   | thread, (resultLabel, resultData) => 
       do
@@ -187,7 +187,7 @@ def replyFromKernel (x0 : PPtr TCB) (x1 : Word × (List Word)) : Kernel Unit :=
         setMessageInfo thread msgInfo
 
 /-- Haskell `cancelIPC` -/
-def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
+partial def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
   let replyIPCCancel := do
       let _ ← threadSet (fun tcb => { tcb with tcbFault := none }) tptr
       let slot ← getThreadReplySlot tptr
@@ -220,7 +220,7 @@ def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
     | _ => pure ()
 
 /-- Haskell `cancelAllIPC` -/
-def cancelAllIPC (epptr : PPtr Endpoint) : Kernel Unit :=
+partial def cancelAllIPC (epptr : PPtr Endpoint) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let ep ← getEndpoint epptr
@@ -234,7 +234,7 @@ def cancelAllIPC (epptr : PPtr Endpoint) : Kernel Unit :=
           rescheduleRequired)
 
 /-- Haskell `cancelBadgedSends` -/
-def cancelBadgedSends (epptr : PPtr Endpoint) (badge : Word) : Kernel Unit :=
+partial def cancelBadgedSends (epptr : PPtr Endpoint) (badge : Word) : Kernel Unit :=
   do
     let _ ← stateAssertH ksReadyQueues_asrt ""
     let ep ← getEndpoint epptr

@@ -115,7 +115,7 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 /-! ## Translated -/
 
 /-- Haskell `fromPAddr` -/
-def fromPAddr :=
+partial def fromPAddr :=
   RISCV64.fromPAddr
 
 end
