@@ -4,7 +4,7 @@
 ✔ API_Faults
 ✔ API_Faults_RISCV64
 ✔ API_Invocation
-✖ API_InvocationLabels
+✔ API_InvocationLabels
 ✔ API_InvocationLabels_RISCV64
 ✔ API_Invocation_RISCV64
 ✔ API_Syscall
@@ -50,7 +50,7 @@
 ✔ Object_Instances
 ✔ Object_Instances_RISCV64
 ✔ Object_Interrupt
-✖ Object_Interrupt_RISCV64
+✔ Object_Interrupt_RISCV64
 ✔ Object_Notification
 ✔ Object_ObjectType
 ✔ Object_ObjectType_RISCV64

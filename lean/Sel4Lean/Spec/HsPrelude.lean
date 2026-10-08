@@ -229,7 +229,9 @@ abbrev zipWithM {m : Type → Type} [Monad m] {α β γ : Type} (f : α → β �
     m (List γ) := mapM (fun p => f p.1 p.2) (xs.zip ys)
 abbrev foldM {m : Type → Type} [Monad m] {α β : Type} (f : β → α → m β) (z : β) (xs : List α) : m β :=
   xs.foldlM f z
-abbrev lift {m n : Type → Type} [MonadLift m n] {α : Type} (x : m α) : n α := MonadLift.monadLift x
+/-- Haskell `lift`; transitive (`MonadLiftT`), since e.g. boot code lifts `Kernel` through
+`ExceptT InitFailure (StateT InitData Kernel)`. -/
+abbrev lift {m n : Type → Type} [MonadLiftT m n] {α : Type} (x : m α) : n α := MonadLiftT.monadLift x
 abbrev seqH {m : Type → Type} [Monad m] {α β : Type} (f : m (α → β)) (x : m α) : m β := f <*> x
 
 end Sel4Lean.Spec

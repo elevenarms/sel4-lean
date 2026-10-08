@@ -4,6 +4,7 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
 import Sel4Lean.Spec.Gen.Mod.Object_CNode
 import Sel4Lean.Spec.Gen.Mod.Machine_RegisterSet
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
@@ -27,6 +28,7 @@ noncomputable section
 
 /-! ## Definitions from imported modules -/
 
+abbrev genInvocationType := @Sel4Lean.Spec.M.API_InvocationLabels.genInvocationType
 abbrev messageInfoFromWord := @Sel4Lean.Spec.M.API_Types.messageInfoFromWord
 abbrev msgMaxLength := @Sel4Lean.Spec.M.API_Types.msgMaxLength
 abbrev wordFromMessageInfo := @Sel4Lean.Spec.M.API_Types.wordFromMessageInfo
@@ -48,7 +50,6 @@ abbrev cteDelete := @Sel4Lean.Spec.M.Object_CNode.cteDelete
 abbrev cteDeleteOne := @Sel4Lean.Spec.M.Object_CNode.cteDeleteOne
 abbrev cteInsert := @Sel4Lean.Spec.M.Object_CNode.cteInsert
 abbrev deriveCap := @Sel4Lean.Spec.M.Object_CNode.deriveCap
-abbrev genInvocationType := @Sel4Lean.Spec.M.Object_CNode.genInvocationType
 abbrev getCTE := @Sel4Lean.Spec.M.Object_CNode.getCTE
 abbrev getCurThread := @Sel4Lean.Spec.M.Object_CNode.getCurThread
 abbrev getObject := @Sel4Lean.Spec.M.Object_CNode.getObject

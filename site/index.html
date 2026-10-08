@@ -234,7 +234,9 @@ html { scroll-behavior: smooth; }
             Honest number: <b>30 of 58 modules compile, holding 18% of the functions</b>. The big modules still trip on monad stacks and type classes. <span class="hood">(w2)</span></div></li>
           <li><time>Oct 8</time><div>W2 grind: <b>49 of 61 modules compile, holding 57% of the translatable function bodies</b>, including <code>Model/PSpace</code> (<code>getObject</code>/<code>setObject</code>) on a hand-translated <code>PSpaceStorable</code> class.
             Two silent bugs caught on the way, both of which compiled: guards were dropped (<code>f x | c = a | otherwise = b</code> became <code>a</code>), and 58 non-recursive functions were marked <code>partial</code>. Both fixed, with regression tests. Hardware operations are opaque by design, as in l4v. <span class="hood">(w2)</span></div></li>
-          <li><time>next</time><div class="dim">W2: generated modules import each other instead of stubbing; then the last 12 modules. W1: <code>corres</code> automation.</div></li>
+          <li><time>Oct 8</time><div>W2: generated modules now <b>import each other</b>, in Haskell&rsquo;s own import order, so definitions link to real definitions instead of stubs (479 names; stubs down from 647 to 260).
+            <b>59 of 61 modules compile</b>, holding <b>98% of the translatable function bodies</b> outside boot code. The two left are boot code, which the refinement proof doesn&rsquo;t cover either. <span class="hood">(w2)</span></div></li>
+          <li><time>next</time><div class="dim">W3: model the machine state, replace the approximations (<code>asUser</code>, map/set listings), and run the Lean model side by side with the Haskell one. W1: <code>corres</code> automation.</div></li>
         </ol>
       </section>
 
@@ -508,8 +510,9 @@ example :
           <thead><tr><th>measure</th><th class="n">now</th><th>what it means</th></tr></thead>
           <tbody>
             <tr><td>data types translated</td><td class="n">93</td><td>every type in the RISCV64 spec, incl. <code>KernelState</code>; compiles</td></tr>
-            <tr><td>functions translated</td><td class="n">679 / 695</td><td>Lean text produced (97.7%)</td></tr>
-            <tr class="hi"><td>modules compiling</td><td class="n">49 / 61</td><td>57% of translatable function bodies; 99 hardware functions opaque by design</td></tr>
+            <tr><td>functions translated</td><td class="n">680 / 693</td><td>Lean text produced (98.1%)</td></tr>
+            <tr class="hi"><td>modules compiling</td><td class="n">59 / 61</td><td>98% of translatable bodies outside boot code; 99 hardware functions opaque by design</td></tr>
+            <tr><td>names linked across modules</td><td class="n">479</td><td>real definitions via imports; 260 stubs left</td></tr>
             <tr><td>generated <code>*_inv</code> lemmas</td><td class="n">12</td><td>one <code>crunch</code> command over the notifications module</td></tr>
           </tbody>
         </table>
@@ -548,7 +551,7 @@ example :
         <ul class="check">
           <li><span class="ok">[x]</span> W1 <code>wp</code>, <code>wpsimp</code>, <code>crunch</code></li>
           <li><span class="todo">[ ]</span> W1 <code>corres</code> automation</li>
-          <li><span class="todo">[~]</span> W2 translator at spec scale (49/61 modules)</li>
+          <li><span class="ok">[x]</span> W2 translator at spec scale (59/61 modules; boot code deferred)</li>
           <li><span class="todo">[~]</span> W3 kernel state model (types done)</li>
           <li><span class="todo">[ ]</span> W4 proofs: AInvs, Refine</li>
         </ul>

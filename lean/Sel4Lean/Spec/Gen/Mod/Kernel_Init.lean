@@ -243,7 +243,7 @@ def allocRegion (bits : Nat) : KernelInit PAddr :=
     ((r == b) || (q == t)) && ((t - b) ≥ s)
   do
     let freeMem ← noInitFailure (gets InitData.initFreeMemory)
-    match break isAlignedUsable freeMem with
+    match «break» isAlignedUsable freeMem with
     | (small, r :: rest) => (do
           let (b, t) := Region.fromRegion r
           let (result, region) := if (align b) == b then
@@ -252,7 +252,7 @@ def allocRegion (bits : Nat) : KernelInit PAddr :=
               (t - s, Region.Region ((b, t - s)))
           let _ ← noInitFailure (modify (fun st => { st with initFreeMemory := small ++ ([region] ++ rest) }))
           pure (addrFromPPtr result))
-    | (_, []) => (match break isUsable freeMem with
+    | (_, []) => (match «break» isUsable freeMem with
         | (small, r' :: rest) => (do
               let (b, t) := Region.fromRegion r'
               let result := align b

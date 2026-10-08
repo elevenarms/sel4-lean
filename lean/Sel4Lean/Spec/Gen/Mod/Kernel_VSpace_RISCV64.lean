@@ -12,6 +12,7 @@ import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.API_Types
 import Sel4Lean.Spec.Gen.Mod.Model_StateData
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
 import Sel4Lean.Spec.Gen.Mod.Model_Preemption
 
@@ -24,6 +25,7 @@ noncomputable section
 
 /-! ## Definitions from imported modules -/
 
+abbrev invocationType := @Sel4Lean.Spec.M.API_InvocationLabels.invocationType
 abbrev ptrFromPAddr := @Sel4Lean.Spec.M.API_Types.ptrFromPAddr
 abbrev rightsFromWord := @Sel4Lean.Spec.M.API_Types.rightsFromWord
 abbrev addrFromKPPtr := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.addrFromKPPtr
@@ -85,9 +87,6 @@ opaque getThreadBufferSlot : (PPtr TCB) → Kernel (PPtr CTE)
 
 -- external: SEL4/Object/TCB.lhs
 opaque getThreadVSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
-
--- external: SEL4/API/InvocationLabels.lhs
-opaque invocationType : Word → InvocationLabel
 
 -- external: SEL4/Object/CNode.lhs
 opaque isFinalCapability : CTE → Kernel Bool

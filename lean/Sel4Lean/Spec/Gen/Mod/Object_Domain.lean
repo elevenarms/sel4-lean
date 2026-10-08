@@ -8,6 +8,7 @@ import Sel4Lean.Spec.Gen.Mod.Config
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
 import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
 import Sel4Lean.Spec.Gen.Mod.Object_Domain_RISCV64
 
 set_option match.ignoreUnusedAlts true
@@ -19,6 +20,7 @@ noncomputable section
 
 /-! ## Definitions from imported modules -/
 
+abbrev genInvocationType := @Sel4Lean.Spec.M.API_InvocationLabels.genInvocationType
 abbrev numDomains := @Sel4Lean.Spec.M.Config.numDomains
 abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
 abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
@@ -32,9 +34,6 @@ abbrev timeArgLen := @Sel4Lean.Spec.M.Object_Structures_RISCV64.timeArgLen
 abbrev RISCV64.prepareSetDomain := @Sel4Lean.Spec.M.Object_Domain_RISCV64.prepareSetDomain
 
 /-! ## Stubs (from Haskell signatures) -/
-
--- external: SEL4/API/InvocationLabels.lhs
-opaque genInvocationType : Word → GenInvocationLabels
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit

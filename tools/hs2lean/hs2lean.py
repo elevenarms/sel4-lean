@@ -102,7 +102,10 @@ NAME = {
 }
 TYPE = {"Maybe": "Option", "Bool": "Bool", "Word": "Word", "Int": "Int", "Integer": "Int"}
 LEAN_KEYWORDS = {"at", "by", "do", "else", "end", "for", "from", "fun", "have", "if", "in", "let",
-                 "match", "open", "then", "with", "where", "show", "from", "λ", "Type", "Prop"}
+                 "match", "open", "then", "with", "where", "show", "from", "λ", "Type", "Prop",
+                 "break", "continue", "return", "mut", "unless", "try", "catch", "finally", "instance",
+                 "structure", "class", "inductive", "theorem", "def", "namespace", "section", "variable",
+                 "universe", "deriving", "calc", "suffices", "obtain", "termination_by", "decreasing_by"}
 
 
 class DataInfo:

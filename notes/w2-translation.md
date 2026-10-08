@@ -9,9 +9,9 @@ Status: **in progress** (2026-10-08).
 | Data types translated (closure of all modules) | **91+**, 1 opaque (`CallbackData` has no constructors in Haskell either) | `Spec/Gen/Types.lean`, compiles |
 | Functions translated to Lean text | **680 / 693 (98.1%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
 | Machine-interface functions | **99**, opaque **by design**: the Haskell bodies are the simulator's (IO/FFI); l4v's Isabelle also treats machine operations as opaque (`MachineOps.thy`) | `full.py` `MACHINE_INTERFACE` |
-| Modules whose generated Lean compiles | **57 / 61**; 56 of them import each other's definitions | `artifacts/w2/compile-status.txt` |
-| Translated bodies in compiling modules | **529 / 594 non-machine functions (89.1%)** |
-| Names linked to real definitions in other modules | **469** (stubs left: 270, from 647 before imports) | aliases in each generated module | the honest number |
+| Modules whose generated Lean compiles | **59 / 61**; 58 of them import each other's definitions. The 2 failing are boot code | `artifacts/w2/compile-status.txt` |
+| Translated bodies in compiling modules | **538 / 594 non-machine functions (90.6%)**; **98.0%** excluding boot code (538 / 549) |
+| Names linked to real definitions in other modules | **479** (stubs left: 260, from 647 before imports) | aliases in each generated module | the honest number |
 | `partial def` | 18: 16 self-recursive + one mutually recursive group (`Object/CNode` delete/finalise) | TODO(W4): termination proofs |
 
 Translation coverage is not compile coverage. A module compiles only when every function in it does, so
@@ -110,8 +110,11 @@ Done: **modules import each other.** A single pass in Haskell's import order (no
 RISCV64) generates and builds each module; it imports definitions only from modules already built in that
 pass, and falls back to stub-only if the import version fails. Arch functions without signatures borrow the
 generic signature, read in the arch file's scope. Imported names are local `abbrev` aliases (an `open` clashed with Lean's own `throw`); mutually recursive
-functions go in `mutual` blocks. Remaining: 4 modules: `Kernel/Init` and `Kernel/BootInfo` (boot code),
-`API/InvocationLabels` (its Haskell `Enum` instance's `toEnum` refers to itself), `Object/Interrupt/RISCV64`. Earlier list: type mismatches around monad stacks (`KernelF`, `KernelInit`,
+functions go in `mutual` blocks. Constructors are scoped separately from types (a re-export `type IRQ = Platform.IRQ` brings the type but not
+the constructor). `InvocationLabel`'s Haskell `toEnum` calls itself at the same type in one branch (an infinite
+loop): that branch is modelled as bottom (`default`), with a comment. **Remaining: `Kernel/Init` and
+`Kernel/BootInfo`**, deferred: boot code is outside the refinement walk targets (`Refine` starts from an
+initialised kernel), and it needs Haskell's loop library (`break`) and untyped `PPtr ()` casts. Earlier list: type mismatches around monad stacks (`KernelF`, `KernelInit`,
 `MachineMonad` vs `Kernel`), typeclass methods with no top-level signature (`makeObject`, `loadObject` from
 `PSpaceStorable`), `show`, `liftIO`, `maxBound`/`minBound`, and numeric literal typing. Target the large
 modules one at a time, since they hold most of the functions.

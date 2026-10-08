@@ -6,8 +6,9 @@
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.API_Types
 import Sel4Lean.Spec.Gen.Mod.Object_ObjectType
-import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
 import Sel4Lean.Spec.Gen.Mod.Object_Endpoint
 import Sel4Lean.Spec.Gen.Mod.Model_Preemption
 import Sel4Lean.Spec.Gen.Mod.Object_ObjectType_RISCV64
@@ -24,6 +25,7 @@ noncomputable section
 
 /-! ## Definitions from imported modules -/
 
+abbrev genInvocationType := @Sel4Lean.Spec.M.API_InvocationLabels.genInvocationType
 abbrev allRights := @Sel4Lean.Spec.M.API_Types.allRights
 abbrev getObjectSize := @Sel4Lean.Spec.M.API_Types.getObjectSize
 abbrev msgMaxExtraCaps := @Sel4Lean.Spec.M.API_Types.msgMaxExtraCaps
@@ -37,7 +39,6 @@ abbrev preemptionPoint := @Sel4Lean.Spec.M.Model_Preemption.preemptionPoint
 abbrev cancelBadgedSends := @Sel4Lean.Spec.M.Object_Endpoint.cancelBadgedSends
 abbrev getObject := @Sel4Lean.Spec.M.Object_Endpoint.getObject
 abbrev setObject := @Sel4Lean.Spec.M.Object_Endpoint.setObject
-abbrev genInvocationType := @Sel4Lean.Spec.M.Object_Interrupt.genInvocationType
 abbrev lookupTargetSlot := @Sel4Lean.Spec.M.Object_Interrupt.lookupTargetSlot
 abbrev throw := @Sel4Lean.Spec.M.Object_Interrupt.throw
 abbrev withoutFailure := @Sel4Lean.Spec.M.Object_Interrupt.withoutFailure

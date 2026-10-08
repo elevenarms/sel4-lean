@@ -6,7 +6,8 @@ The end goal is a Lean theorem that seL4's C implementation refines its abstract
 **Status: crawl closed (2026-10-08), walk under way.** Decision: re-prove in Lean, following l4v's proofs.
 The Isabelle reference passes on our hardware; Lean has l4v's monad, Hoare logic, `corres`, and `wp`/`wpsimp`/`crunch`
 tactics; `cancelSignal_corres` is proved over generated code. At spec scale, all 91 RISCV64 data types and 94.9% of
-the 695 functions translate, and 49 of 61 generated modules compile (57% of translatable function bodies)
+the functions translate, and 59 of 61 generated modules compile, importing each other's definitions (98% of
+translatable function bodies outside boot code)
 ([W2 notes](notes/w2-translation.md)). See [ROADMAP.md](ROADMAP.md).
 
 ## The idea

@@ -4,6 +4,11 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
+import Sel4Lean.Spec.Gen.Mod.Model_Failures
+import Sel4Lean.Spec.Gen.Mod.Model_Preemption
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware_RISCV64
 
 set_option match.ignoreUnusedAlts true
 
@@ -12,13 +17,20 @@ open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev invocationType := @Sel4Lean.Spec.M.API_InvocationLabels.invocationType
+abbrev maxIRQ := @Sel4Lean.Spec.M.Machine_Hardware.maxIRQ
+abbrev throw := @Sel4Lean.Spec.M.Model_Failures.throw
+abbrev withoutFailure := @Sel4Lean.Spec.M.Model_Failures.withoutFailure
+abbrev withoutPreemption := @Sel4Lean.Spec.M.Model_Preemption.withoutPreemption
+
+/-! ## RISCV64 definitions from imported modules -/
+
+abbrev RISCV64.plic_complete_claim := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.plic_complete_claim
+abbrev RISCV64.setIRQTrigger := @Sel4Lean.Spec.M.Machine_Hardware_RISCV64.setIRQTrigger
+
 /-! ## Stubs (from Haskell signatures) -/
-
--- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.plic_complete_claim : IRQ → MachineMonad Unit
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
@@ -29,9 +41,6 @@ opaque decodeIRQControlInvocation : Word → (List Word) → (PPtr CTE) → (Lis
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 
--- external: SEL4/API/InvocationLabels.lhs
-opaque invocationType : Word → InvocationLabel
-
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
 opaque irqInvalid : RISCV64.IRQ
 
@@ -41,23 +50,11 @@ opaque isIRQActive : IRQ → Kernel Bool
 -- external: SEL4/Kernel/CSpace.lhs
 opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
 
--- external: SEL4/Machine/Hardware.lhs
-opaque maxIRQ : IRQ
-
 -- local, not translated: pattern: apply at line 49: 'ArchInv.IssueIRQHandler (IRQ irq) destSlot srcSlot t
 opaque performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque setIRQState : IRQState → IRQ → Kernel Unit
-
--- external: SEL4/Model/Failures.lhs
-opaque throw {t_f : Type} {t_a : Type} [Inhabited t_f] [Inhabited t_a] : t_f → KernelF t_f t_a
-
--- external: SEL4/Model/Failures.lhs
-opaque withoutFailure {t_a : Type} {t_f : Type} [Inhabited t_a] [Inhabited t_f] : (Kernel t_a) → KernelF t_f t_a
-
--- external: SEL4/Model/Preemption.lhs
-opaque withoutPreemption {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelP t_a
 
 /-! ## Unresolved (no stub possible)
   error: no signature found
@@ -75,7 +72,7 @@ def checkIRQ (irqW : Word) : KernelF SyscallError Unit :=
 /-- Haskell `plic_complete_claim` -/
 def plic_complete_claim (x0 : IRQ) : MachineMonad Unit :=
   match x0 with
-  | (RISCV64.IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
+  | (IRQ.IRQ irq) => (RISCV64.plic_complete_claim) irq
 
 /-- Haskell `invokeIRQHandler` -/
 def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=

@@ -7,6 +7,7 @@ import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Object_Structures
 import Sel4Lean.Spec.Gen.Mod.Model_Failures
 import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.API_InvocationLabels
 import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
 import Sel4Lean.Spec.Gen.Mod.Config
 import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
@@ -22,6 +23,7 @@ noncomputable section
 
 /-! ## Definitions from imported modules -/
 
+abbrev genInvocationType := @Sel4Lean.Spec.M.API_InvocationLabels.genInvocationType
 abbrev fromAPIType := @Sel4Lean.Spec.M.API_Types.fromAPIType
 abbrev getObjectSize := @Sel4Lean.Spec.M.API_Types.getObjectSize
 abbrev isFrameType := @Sel4Lean.Spec.M.API_Types.isFrameType
@@ -52,9 +54,6 @@ opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureNoChildren : (PPtr CTE) → KernelF SyscallError Unit
-
--- external: SEL4/API/InvocationLabels.lhs
-opaque genInvocationType : Word → GenInvocationLabels
 
 -- external: SEL4/Object/CNode.lhs
 opaque getSlotCap : (PPtr CTE) → Kernel Capability

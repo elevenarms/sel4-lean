@@ -230,6 +230,15 @@ def arch_scope(path, root, idx, candidates):
             if f"{ARCH}.{x}" in idx and ({module_of(f, root) for f in files.get(x, ())} & visible)}
 
 
+def arch_ctor_scope(path, root, idx, candidates):
+    """Arch types whose *constructors* an unqualified name means: only if the module with the actual
+    data/newtype declaration is visible. A re-export `type IRQ = Platform.IRQ` brings the type, not `IRQ`'s
+    constructor (so in Object/Interrupt/RISCV64.hs the type IRQ is the arch one but the constructor is generic)."""
+    visible = unqualified_imports(path) | {module_of(path, root)}
+    return {x for x in candidates
+            if f"{ARCH}.{x}" in idx and module_of(idx[f"{ARCH}.{x}"][2], root) in visible}
+
+
 class FullTranslator(Translator):
     """Translator with type variables, contexts, qualified library types, newtypes, synonyms."""
 
@@ -242,6 +251,7 @@ class FullTranslator(Translator):
         self.arch_names_all = set()  # same, regardless of module (for explicit `Arch.X`)
         self.file_types = set()      # type names declared in the file being translated
         self.arch_in_scope = set()   # arch types an unqualified name refers to in this file
+        self.arch_ctor_in_scope = set()  # arch types whose constructors are in scope unqualified
         self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
         self.arch_calls = set()      # `Arch.f` references seen while translating
         self.constraints = []        # kept class constraints of the current signature
@@ -320,8 +330,12 @@ class FullTranslator(Translator):
         return super().e(n, ind)
 
     def ctor(self, name):
-        if self.in_arch_module and name in self.data.arch_ctor_type:
-            return f"{self.data.arch_ctor_type[name]}.{name}"
+        at = self.data.arch_ctor_type.get(name)
+        if at is not None and at.split(".", 1)[1] in self.arch_ctor_in_scope:
+            return f"{at}.{name}"
+        if at is not None and self.data.ctor_type.get(name) == at:
+            # only an arch type has this constructor: no ambiguity
+            return f"{at}.{name}"
         return super().ctor(name)
 
     def emit_function(self, name, nodes, sig_override=None):
@@ -525,6 +539,7 @@ def cmd_types(root, files, emit=True):
             tr.in_arch_module, tr.arch_names = True, dupes - {name.split(".")[-1]}
             tr.file_types = idx["__file_types__"].get(path, set())
         tr.arch_in_scope = arch_scope(path, root, idx, dupes - {name.split(".")[-1]})
+        tr.arch_ctor_in_scope = arch_ctor_scope(path, root, idx, dupes)
         refs = tr.type_names(node) - {name, name.split(".")[-1]}
         deps[name] = refs
         for r in sorted(refs):
@@ -675,6 +690,7 @@ def cmd_types(root, files, emit=True):
             tr.in_arch_module, tr.arch_names = True, dupes
             tr.file_types = idx["__file_types__"].get(path, set())
         tr.arch_in_scope = arch_scope(path, root, idx, dupes)
+        tr.arch_ctor_in_scope = arch_ctor_scope(path, root, idx, dupes)
         for inst in kids(decls):
             if inst.type != "instance":
                 continue
@@ -703,8 +719,7 @@ def cmd_types(root, files, emit=True):
                     def self_ref(e):
                         txt = tr.text(e)
                         return re.search(r"then toEnum n\b|= toEnum n$", txt, re.M) is not None
-                    if any(self_ref(e) for e in methods.get("toEnum", [])):
-                        raise Unsupported("toEnum refers to itself (non-terminating in Haskell)")
+                    loops = any(self_ref(e) for e in methods.get("toEnum", []))
                     print(f"-- from {os.path.relpath(path, root)}")
                     for m, (dom, cod) in (("fromEnum", (tn, "Nat")), ("toEnum", ("Nat", tn))):
                         eqs = methods[m]
@@ -723,7 +738,14 @@ def cmd_types(root, files, emit=True):
                             if wh is not None:
                                 lines += [lb for lb in (tr.local_bind(b, 6) for b in tr.ordered_binds(kids(wh))) if lb]
                             lines.append(tr.rhs(e, 6, last=(e == eqs[-1])))
-                            print(f"  | {tr.pat(p0)} =>\n      " + "\n      ".join(lines))
+                            body_txt = "\n      ".join(lines)
+                            if m == "toEnum" and loops:
+                                # Haskell calls toEnum at this same type here: an infinite loop, i.e. bottom,
+                                # which this translation models as `default` (as `error`/`undefined`)
+                                body_txt = re.sub(r"then\n(\s*)toEnum n\b",
+                                                  r"then\n\1default  -- Haskell: `toEnum n` at this type, non-terminating (bottom)",
+                                                  body_txt)
+                            print(f"  | {tr.pat(p0)} =>\n      " + body_txt)
                     h = tn.replace(".", "_")
                     print(f"instance : IntegralH {tn} := ⟨fun x => (fromEnumH_{h} x : Int), "
                           f"fun i => toEnumH_{h} i.toNat⟩\n")
@@ -816,6 +838,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
         tr.in_arch_module = ARCH in mpath
         tr.file_types = idx["__file_types__"].get(mpath, set())
         tr.arch_in_scope = arch_scope(mpath, root, idx, arch_names)
+        tr.arch_ctor_in_scope = arch_ctor_scope(mpath, root, idx, arch_names)
         decls = [(n, ns) for n, ns in top_decls(src, rn) if any(d.type in ("function", "bind") for d in ns)]
         local = {n for n, _ in decls}
         tr.local_names = local    # a module's own definitions shadow library name mappings

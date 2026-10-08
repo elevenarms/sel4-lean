@@ -145,31 +145,16 @@ hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque), 0 extern
   unresolved maxBound: no signature found
   unresolved otherwise: no signature found
   unresolved toEnum: no signature found
-hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 2/2 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 5 unresolved
-  unresolved fromEnum: no signature found
-  unresolved fromIntegral: no signature found
-  unresolved maxBound: no signature found
-  unresolved otherwise: no signature found
-  unresolved toEnum: no signature found
-hs2lean imports: 4 modules, 4 names, 2 arch aliases
-hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque), 7 external stubs, 4 unresolved
+hs2lean imports: 5 modules, 5 names, 2 arch aliases
+hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque), 6 external stubs, 4 unresolved
   failed decodeIRQControlInvocation: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
   failed performIRQControl: pattern: apply at line 49: 'ArchInv.IssueIRQHandler (IRQ irq) destSlot srcSlot trigger'
   unresolved error: no signature found
   unresolved fromEnum: no signature found
   unresolved fromIntegral: no signature found
   unresolved toEnum: no signature found
-hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 7/9 functions translated (0 partial, 0 machine-opaque), 13 external stubs, 4 unresolved
-  failed decodeIRQControlInvocation: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
-  failed performIRQControl: pattern: apply at line 49: 'ArchInv.IssueIRQHandler (IRQ irq) destSlot srcSlot trigger'
-  unresolved error: no signature found
-  unresolved fromEnum: no signature found
-  unresolved fromIntegral: no signature found
-  unresolved toEnum: no signature found
-hs2lean imports: 9 modules, 18 names, 0 arch aliases
-hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque), 20 external stubs, 12 unresolved
+hs2lean imports: 8 modules, 23 names, 7 arch aliases
+hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque), 8 external stubs, 12 unresolved
   unresolved bit: no signature found
   unresolved const: no signature found
   unresolved fromEnum: no signature found
@@ -196,8 +181,8 @@ hs2lean module: 14/14 functions translated (0 partial, 0 machine-opaque), 38 ext
   unresolved shiftL: no signature found
   unresolved show: no signature found
   unresolved toEnum: no signature found
-hs2lean imports: 8 modules, 19 names, 0 arch aliases
-hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque), 8 external stubs, 13 unresolved
+hs2lean imports: 9 modules, 20 names, 0 arch aliases
+hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque), 7 external stubs, 13 unresolved
   failed resetUntypedCap: arithmetic sequence form: arithmetic_sequence at line 190: '[capPtr cap, capPtr cap + (1 `shiftL` resetChunkBits) ..\n  
   unresolved bit: no signature found
   unresolved complement: no signature found
@@ -214,8 +199,8 @@ hs2lean module: 6/7 functions translated (0 partial, 0 machine-opaque), 8 extern
   unresolved toEnum: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 1/1 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
-hs2lean imports: 5 modules, 7 names, 1 arch aliases
-hs2lean module: 9/9 functions translated (1 partial, 0 machine-opaque), 3 external stubs, 7 unresolved
+hs2lean imports: 6 modules, 8 names, 1 arch aliases
+hs2lean module: 9/9 functions translated (1 partial, 0 machine-opaque), 2 external stubs, 7 unresolved
   unresolved fromIntegral: no signature found
   unresolved fst: no signature found
   unresolved gets: no signature found
@@ -223,8 +208,8 @@ hs2lean module: 9/9 functions translated (1 partial, 0 machine-opaque), 3 extern
   unresolved length: no signature found
   unresolved modify: no signature found
   unresolved null: no signature found
-hs2lean imports: 10 modules, 35 names, 0 arch aliases
-hs2lean module: 51/53 functions translated (2 partial, 0 machine-opaque), 13 external stubs, 22 unresolved
+hs2lean imports: 11 modules, 36 names, 0 arch aliases
+hs2lean module: 51/53 functions translated (2 partial, 0 machine-opaque), 12 external stubs, 22 unresolved
   failed decodeRISCVASIDControlInvocation: guards that fall through to the next equation: alternative at line 447: 'UntypedCap { capIsDevice = False } | capBlockSi
   failed performPageTableInvocation: arithmetic sequence form: arithmetic_sequence at line 520: '[ptr, ptr + bit pteBits .. ptr + bit ptBits - 1]'
   unresolved assocs: no signature found
@@ -270,7 +255,7 @@ hs2lean module: 16/16 functions translated (0 partial, 0 machine-opaque), 7 exte
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
   unresolved undefined: no signature found
-hs2lean imports: 10 modules, 37 names, 0 arch aliases
+hs2lean imports: 11 modules, 37 names, 0 arch aliases
 hs2lean module: 42/43 functions translated (4 partial, 0 machine-opaque), 4 external stubs, 13 unresolved
   failed isMDBParentOf: guards that fall through to the next equation: alternative at line 657: 'EndpointCap { capEPBadge = badge } | badge /= 0
   unresolved const: no signature found
@@ -288,7 +273,7 @@ hs2lean module: 42/43 functions translated (4 partial, 0 machine-opaque), 4 exte
   unresolved zipWithM_: no signature found
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 6/6 functions translated (0 partial, 0 machine-opaque), 0 external stubs, 0 unresolved
-hs2lean imports: 13 modules, 56 names, 6 arch aliases
+hs2lean imports: 14 modules, 56 names, 6 arch aliases
 hs2lean module: 42/43 functions translated (0 partial, 0 machine-opaque), 5 external stubs, 22 unresolved
   failed getExtraCPtrs: arithmetic sequence form: arithmetic_sequence at line 675: '[1, 2 .. count]'
   unresolved complement: no signature found

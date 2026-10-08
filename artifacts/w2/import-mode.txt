@@ -29,6 +29,8 @@ imports Object_Instances
 imports Object_Notification
 imports Object_Endpoint
 imports API_InvocationLabels_RISCV64
+imports API_InvocationLabels
+imports Object_Interrupt_RISCV64
 stubs Object_Interrupt
 imports Object_Untyped
 imports Object_Domain_RISCV64
