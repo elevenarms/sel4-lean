@@ -15,11 +15,8 @@ noncomputable section
 -- external: SEL4/Kernel/Init.lhs
 opaque doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque pageBits : Nat
@@ -120,7 +117,7 @@ def serializeByte (input : Word) : Serializer Unit :=
     let value ← pure ((input <<< (mod4 * 8)) ||| (fromIntegral byte))
     if (ptr &&& 3) == 3 then
       do
-        lift (storeWordVM ((ptr >>> 2) <<< 2) SerialData.value)
+        let _ ← lift (storeWordVM ((ptr >>> 2) <<< 2) SerialData.value)
         modify (fun st => { st with ptrCursor := ptr + 1, value := 0 })
     else
       modify (fun st => { st with ptrCursor := ptr + 1, value := SerialData.value })
@@ -149,13 +146,13 @@ def maxBIDeviceRegions : Word :=
 /-- Haskell `serialBIDeviceRegion` -/
 def serialBIDeviceRegion (biDeviceRegion : BIDeviceRegion) : Serializer Unit :=
   do
-    serializeStore (PAddr.fromPAddr (BIDeviceRegion.bidrBasePAddr biDeviceRegion)) 4
-    serializeStore (fromIntegral (BIDeviceRegion.bidrFrameSizeBits biDeviceRegion)) 4
+    let _ ← serializeStore (PAddr.fromPAddr (BIDeviceRegion.bidrBasePAddr biDeviceRegion)) 4
+    let _ ← serializeStore (fromIntegral (BIDeviceRegion.bidrFrameSizeBits biDeviceRegion)) 4
     let slotRegion ← pure (BIDeviceRegion.bidrFrameCaps biDeviceRegion)
     let (a, b) := match slotRegion with
       | SlotRegion.SlotRegion (a, b) => (a, b)
-    serializeStore a 4
-    serializeStore b 4
+    let _ ← serializeStore a 4
+    let _ ← serializeStore b 4
     pure ()
 
 /-- Haskell `syncBIFrame` -/
@@ -164,40 +161,40 @@ def syncBIFrame : KernelInit Unit :=
     let frameData ← gets InitData.initBootInfo
     let frame ← gets InitData.initBootInfoFrame
     doKernelOp (doMachineOp (do
-      (flip runStateT) ({ ptrCursor := ptrFromPAddr frame, value := 0 : SerialData }) (do
-        serializeStore (fromIntegral (BIFrameData.bifNodeID frameData)) 4
-        serializeStore (fromIntegral (BIFrameData.bifNumNodes frameData)) 4
-        serializeStore (fromIntegral (BIFrameData.bifNumIOPTLevels frameData)) 4
-        serializeStore (fromIntegral (VPtr.fromVPtr (BIFrameData.bifIPCBufVPtr frameData))) 4
-        let serializeRange := fun ls => if ls == [] then
-              do
-                serializeStore 0 4
-                serializeStore 0 4
-            else
-              do
-                serializeStore (head ls) 4
-                serializeStore (1 + (last ls)) 4
-        serializeRange (BIFrameData.bifNullCaps frameData)
-        serializeRange (BIFrameData.bifSharedFrameCaps frameData)
-        serializeRange (BIFrameData.bifUIFrameCaps frameData)
-        serializeRange (BIFrameData.bifUIPDCaps frameData)
-        serializeRange (BIFrameData.bifUIPTCaps frameData)
-        serializeRange (BIFrameData.bifUntypedObjCaps frameData)
-        let ptr ← gets SerialData.ptrCursor
-        let ptr ← pure (ptr + (PPtr.mk (maxBIUntypedCaps <<< 2)))
-        let untypedAddrs ← pure (BIFrameData.bifUntypedObjPAddrs frameData)
-        (flip mapM_) untypedAddrs (fun addr => do
-            serializeStore (PAddr.fromPAddr addr) 4)
-        paddingTo ptr
-        let ptr ← pure (ptr + (PPtr.mk maxBIUntypedCaps))
-        let untypedSizeBits ← pure (BIFrameData.bifUntypedObjSizeBits frameData)
-        (flip mapM_) untypedSizeBits (fun bits => do
-            serializeStore (fromIntegral bits) 1)
-        paddingTo ptr
-        serializeStore (fromIntegral (BIFrameData.bifITCNodeSizeBits frameData)) 1
-        serializeStore (fromIntegral (BIFrameData.bifNumDeviceRegions frameData)) 4
-        (flip mapM_) (BIFrameData.bifDeviceRegions frameData) (fun region => do
-            serialBIDeviceRegion region))
+      let _ ← (flip runStateT) ({ ptrCursor := ptrFromPAddr frame, value := 0 : SerialData }) (do
+                let _ ← serializeStore (fromIntegral (BIFrameData.bifNodeID frameData)) 4
+                let _ ← serializeStore (fromIntegral (BIFrameData.bifNumNodes frameData)) 4
+                let _ ← serializeStore (fromIntegral (BIFrameData.bifNumIOPTLevels frameData)) 4
+                let _ ← serializeStore (fromIntegral (VPtr.fromVPtr (BIFrameData.bifIPCBufVPtr frameData))) 4
+                let serializeRange := fun ls => if ls == [] then
+                      do
+                        let _ ← serializeStore 0 4
+                        serializeStore 0 4
+                    else
+                      do
+                        let _ ← serializeStore (head ls) 4
+                        serializeStore (1 + (last ls)) 4
+                let _ ← serializeRange (BIFrameData.bifNullCaps frameData)
+                let _ ← serializeRange (BIFrameData.bifSharedFrameCaps frameData)
+                let _ ← serializeRange (BIFrameData.bifUIFrameCaps frameData)
+                let _ ← serializeRange (BIFrameData.bifUIPDCaps frameData)
+                let _ ← serializeRange (BIFrameData.bifUIPTCaps frameData)
+                let _ ← serializeRange (BIFrameData.bifUntypedObjCaps frameData)
+                let ptr ← gets SerialData.ptrCursor
+                let ptr ← pure (ptr + (PPtr.mk (maxBIUntypedCaps <<< 2)))
+                let untypedAddrs ← pure (BIFrameData.bifUntypedObjPAddrs frameData)
+                let _ ← (flip mapM_) untypedAddrs (fun addr => do
+                            serializeStore (PAddr.fromPAddr addr) 4)
+                let _ ← paddingTo ptr
+                let ptr ← pure (ptr + (PPtr.mk maxBIUntypedCaps))
+                let untypedSizeBits ← pure (BIFrameData.bifUntypedObjSizeBits frameData)
+                let _ ← (flip mapM_) untypedSizeBits (fun bits => do
+                            serializeStore (fromIntegral bits) 1)
+                let _ ← paddingTo ptr
+                let _ ← serializeStore (fromIntegral (BIFrameData.bifITCNodeSizeBits frameData)) 1
+                let _ ← serializeStore (fromIntegral (BIFrameData.bifNumDeviceRegions frameData)) 4
+                (flip mapM_) (BIFrameData.bifDeviceRegions frameData) (fun region => do
+                    serialBIDeviceRegion region))
       pure ()))
 
 end

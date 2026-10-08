@@ -79,7 +79,7 @@ opaque lookupExtraCaps : (PPtr TCB) → (Option (PPtr Word)) → MessageInfo →
 opaque lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque maybeHandleInterrupt : Bool → Kernel Unit
@@ -143,13 +143,13 @@ def handleInvocation (isCall : Bool) (isBlocking : Bool) : KernelP Unit :=
       pure ((slot, cap, extracaps, buffer))) (fun fault => whenH isBlocking (handleFault thread fault)) (fun (slot, cap, extracaps, buffer) => do
         let args ← withoutFailure (getMRs thread buffer info)
         decodeInvocation (MessageInfo.msgLabel info) args ptr slot cap extracaps) (fun err => whenH isCall (replyFromKernel thread (msgFromSyscallError err))) (fun oper => do
-        withoutPreemption (setThreadState ThreadState.Restart thread)
+        let _ ← withoutPreemption (setThreadState ThreadState.Restart thread)
         let reply ← performInvocation isBlocking isCall oper
         withoutPreemption (do
           let state ← getThreadState thread
           match state with
           | ThreadState.Restart => (do
-                whenH isCall (replyFromKernel thread ((0, reply)))
+                let _ ← whenH isCall (replyFromKernel thread ((0, reply)))
                 setThreadState ThreadState.Running thread)
           | _ => pure ()))
 
@@ -162,21 +162,21 @@ def handleRecv (isBlocking : Bool) : Kernel Unit :=
   do
     let thread ← getCurThread
     let epCPtr ← asUser thread (liftM CPtr.CPtr (getRegister capRegister))
-    catchFailure (capFaultOnFailure epCPtr true (do
-      let epCap ← lookupCap thread epCPtr
-      match CNodeInvocation.epCap with
-      | Capability.EndpointCap _ _ _ true _ _ => (do
-            withoutFailure (do
-              deleteCallerCap thread
-              receiveIPC thread CNodeInvocation.epCap isBlocking))
-      | Capability.NotificationCap ntfnPtr _ _ true => (do
-            let ntfn ← withoutFailure (getNotification ntfnPtr)
-            let boundTCB ← pure (Notification.ntfnBoundTCB ntfn)
-            if (boundTCB == (some thread)) || (boundTCB == none) then
-              withoutFailure (receiveSignal thread CNodeInvocation.epCap isBlocking)
-            else
-              throw (LookupFailure.MissingCapability 0))
-      | _ => throw (LookupFailure.MissingCapability 0))) (handleFault thread)
+    let _ ← catchFailure (capFaultOnFailure epCPtr true (do
+              let epCap ← lookupCap thread epCPtr
+              match CNodeInvocation.epCap with
+              | Capability.EndpointCap _ _ _ true _ _ => (do
+                    withoutFailure (do
+                      let _ ← deleteCallerCap thread
+                      receiveIPC thread CNodeInvocation.epCap isBlocking))
+              | Capability.NotificationCap ntfnPtr _ _ true => (do
+                    let ntfn ← withoutFailure (getNotification ntfnPtr)
+                    let boundTCB ← pure (Notification.ntfnBoundTCB ntfn)
+                    if (boundTCB == (some thread)) || (boundTCB == none) then
+                      withoutFailure (receiveSignal thread CNodeInvocation.epCap isBlocking)
+                    else
+                      throw (LookupFailure.MissingCapability 0))
+              | _ => throw (LookupFailure.MissingCapability 0))) (handleFault thread)
     pure ()
 
 /-- Haskell `handleReply` -/
@@ -187,7 +187,7 @@ def handleReply : Kernel Unit :=
     let callerCap ← getSlotCap callerSlot
     match callerCap with
     | Capability.ReplyCap caller false canGrant => (do
-          assertH (caller != thread) "handleReply: caller must not be the current thread"
+          let _ ← assertH (caller != thread) "handleReply: caller must not be the current thread"
           doReplyTransfer thread caller callerSlot canGrant)
     | Capability.NullCap => pure ()
     | _ => failM "handleReply: invalid caller cap"
@@ -200,8 +200,8 @@ def handleSend : Bool → KernelP Unit :=
 def handleYield : Kernel Unit :=
   do
     let thread ← getCurThread
-    tcbSchedDequeue thread
-    tcbSchedAppend thread
+    let _ ← tcbSchedDequeue thread
+    let _ ← tcbSchedAppend thread
     rescheduleRequired
 
 /-- Haskell `handleEvent` -/
@@ -215,7 +215,7 @@ def handleEvent (x0 : Event) : KernelP Unit :=
       | Syscall.SysRecv => withoutPreemption (handleRecv true)
       | Syscall.SysReply => withoutPreemption handleReply
       | Syscall.SysReplyRecv => withoutPreemption (do
-            handleReply
+            let _ ← handleReply
             handleRecv true)
       | Syscall.SysYield => withoutPreemption handleYield
       | Syscall.SysNBRecv => withoutPreemption (handleRecv false)
@@ -223,17 +223,17 @@ def handleEvent (x0 : Event) : KernelP Unit :=
   | (Event.UnknownSyscall n) => 
       withoutPreemption (do
         let thread ← getCurThread
-        handleFault thread (Fault.UnknownSyscallException (fromIntegral n))
+        let _ ← handleFault thread (Fault.UnknownSyscallException (fromIntegral n))
         pure ())
   | (Event.UserLevelFault w1 w2) => 
       withoutPreemption (do
         let thread ← getCurThread
-        handleFault thread (Fault.UserException (w1 &&& (mask 32)) (w2 &&& (mask 28)))
+        let _ ← handleFault thread (Fault.UserException (w1 &&& (mask 32)) (w2 &&& (mask 28)))
         pure ())
   | (Event.VMFaultEvent faultType) => 
       withoutPreemption (do
         let thread ← getCurThread
-        catchFailure (handleVMFault thread faultType) (handleFault thread)
+        let _ ← catchFailure (handleVMFault thread faultType) (handleFault thread)
         pure ())
   | (Event.HypervisorEvent hypType) => 
       withoutPreemption (do

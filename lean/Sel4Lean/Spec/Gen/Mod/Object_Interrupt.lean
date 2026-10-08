@@ -16,7 +16,7 @@ noncomputable section
 opaque RISCV64.checkIRQ : RISCV64.Word → KernelF SyscallError Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
+opaque RISCV64.decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
 opaque RISCV64.handleReservedIRQ : RISCV64.IRQ → Kernel Unit
@@ -31,7 +31,7 @@ opaque RISCV64.invokeIRQHandler : IRQHandlerInvocation → Kernel Unit
 opaque RISCV64.maskIrqSignal : RISCV64.IRQ → Kernel Unit
 
 -- arch: SEL4/Object/Interrupt/RISCV64.hs
-opaque RISCV64.performIRQControl : IRQControlInvocation → KernelP Unit
+opaque RISCV64.performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque ackInterrupt : IRQ → MachineMonad Unit
@@ -57,14 +57,11 @@ opaque debugPrint : String → MachineMonad Unit
 -- external: SEL4/Kernel/Init.lhs
 opaque doKernelOp {a : Type} [Inhabited a] : (Kernel a) → KernelInit a
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 
 -- external: Data/Helpers.hs
-opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] : (i → a) → (i → a)
+opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [BoundedH i] : (i → a) → (i → a)
 
 -- external: SEL4/API/InvocationLabels.lhs
 opaque genInvocationType : Word → GenInvocationLabels
@@ -170,12 +167,12 @@ def isIRQActive (irq : IRQ) : Kernel Bool :=
 def decodeIRQControlInvocation (label : Word) (args : List Word) (srcSlot : PPtr CTE) (extraCaps : List Capability) : KernelF SyscallError IRQControlInvocation :=
   match (genInvocationType label, args, extraCaps) with
   | (GenInvocationLabels.IRQIssueIRQHandler, irqW :: index :: depth :: _, cnode :: _) => (do
-        (RISCV64.checkIRQ) irqW
+        let _ ← (RISCV64.checkIRQ) irqW
         let irq := (toEnum (fromIntegral irqW) : IRQ)
         let irqActive ← withoutFailure (isIRQActive irq)
-        whenH irqActive (throw SyscallError.RevokeFirst)
+        let _ ← whenH irqActive (throw SyscallError.RevokeFirst)
         let destSlot ← lookupTargetSlot cnode (CPtr.CPtr index) (fromIntegral depth)
-        ensureEmptySlot destSlot
+        let _ ← ensureEmptySlot destSlot
         pure (IRQControlInvocation.IssueIRQHandler irq destSlot srcSlot))
   | (GenInvocationLabels.IRQIssueIRQHandler, _, _) => throw SyscallError.TruncatedMessage
   | _ => liftM IRQControlInvocation.ArchIRQControl ((RISCV64.decodeIRQControlInvocation) label args srcSlot extraCaps)
@@ -185,7 +182,7 @@ def setIRQState (irqState : IRQState) (irq : IRQ) : Kernel Unit :=
   do
     let st ← getInterruptState
     let table := InterruptState.intStateIRQTable st
-    setInterruptState ({ st with intStateIRQTable := arrayUpdH table ([(irq, irqState)]) })
+    let _ ← setInterruptState ({ st with intStateIRQTable := arrayUpdH table ([(irq, irqState)]) })
     doMachineOp (maskInterrupt (irqState == IRQState.IRQInactive) irq)
 
 /-- Haskell `performIRQControl` -/
@@ -193,7 +190,7 @@ def performIRQControl (x0 : IRQControlInvocation) : KernelP Unit :=
   match x0 with
   | (IRQControlInvocation.IssueIRQHandler irq handlerSlot controlSlot) => 
       withoutPreemption (do
-        setIRQState (IRQState.IRQSignal) irq
+        let _ ← setIRQState (IRQState.IRQSignal) irq
         cteInsert (Capability.IRQHandlerCap irq) controlSlot handlerSlot)
   | (IRQControlInvocation.ArchIRQControl invok) => (RISCV64.performIRQControl) invok
 
@@ -225,7 +222,7 @@ def invokeIRQHandler (x0 : IRQHandlerInvocation) : Kernel Unit :=
   | (IRQHandlerInvocation.SetIRQHandler irq cap slot) => 
       do
         let irqSlot ← getIRQSlot irq
-        cteDeleteOne irqSlot
+        let _ ← cteDeleteOne irqSlot
         cteInsert cap slot irqSlot
   | (IRQHandlerInvocation.ClearIRQHandler irq) => 
       do
@@ -237,7 +234,7 @@ def deletingIRQHandler (irq : IRQ) : Kernel Unit :=
   do
     let slot ← getIRQSlot irq
     let cap ← getSlotCap slot
-    assertH ((isNotificationCap cap) || (isNullCap cap)) "Cap in IRQ handler slot should be Notification or Null."
+    let _ ← assertH ((isNotificationCap cap) || (isNullCap cap)) "Cap in IRQ handler slot should be Notification or Null."
     cteDeleteOne slot
 
 /-- Haskell `deletedIRQHandler` -/
@@ -248,17 +245,17 @@ def deletedIRQHandler (irq : IRQ) : Kernel Unit :=
 def initInterruptController (rootCNCap : Capability) (biCapIRQC : Word) : KernelInit Capability :=
   do
     let frame ← allocFrame
-    doKernelOp (do
-      assertH (((length (enumFromToH minBound ((maxBound : IRQ)))) <<< (objBits ((makeObject : CTE)))) ≤ (bit pageBits)) "Interrupt vector slots must fit in one frame"
-      placeNewObject (ptrFromPAddr frame) ((makeObject : CTE)) (pageBits - (objBits ((makeObject : CTE))))
-      doMachineOp (mapM_ (maskInterrupt true) (enumFromToH minBound maxBound))
-      let irqTable := funArray (const IRQState.IRQInactive)
-      setInterruptState (InterruptState.InterruptState (ptrFromPAddr frame) irqTable)
-      let timerIRQ ← doMachineOp configureTimer
-      setIRQState IRQState.IRQTimer timerIRQ
-      RISCV64.initInterruptController
-      let slot ← locateSlotCap rootCNCap biCapIRQC
-      insertInitCap slot Capability.IRQControlCap)
+    let _ ← doKernelOp (do
+              let _ ← assertH (((length (enumFromToH minBound ((maxBound : IRQ)))) <<< (objBits ((makeObject : CTE)))) ≤ (bit pageBits)) "Interrupt vector slots must fit in one frame"
+              let _ ← placeNewObject (ptrFromPAddr frame) ((makeObject : CTE)) (pageBits - (objBits ((makeObject : CTE))))
+              let _ ← doMachineOp (mapM_ (maskInterrupt true) (enumFromToH minBound maxBound))
+              let irqTable := funArray (const IRQState.IRQInactive)
+              let _ ← setInterruptState (InterruptState.InterruptState (ptrFromPAddr frame) irqTable)
+              let timerIRQ ← doMachineOp configureTimer
+              let _ ← setIRQState IRQState.IRQTimer timerIRQ
+              let _ ← RISCV64.initInterruptController
+              let slot ← locateSlotCap rootCNCap biCapIRQC
+              insertInitCap slot Capability.IRQControlCap)
     pure Capability.IRQControlCap
 
 /-- Haskell `handleInterrupt` -/
@@ -266,24 +263,24 @@ def handleInterrupt (irq : IRQ) : Kernel Unit :=
   do
     if irq > maxIRQ then
       doMachineOp (do
-        maskInterrupt true irq
+        let _ ← maskInterrupt true irq
         ackInterrupt irq)
     else
       do
         let st ← getIRQState irq
-        match st with
-        | IRQState.IRQSignal => (do
-              let slot ← getIRQSlot irq
-              let cap ← getSlotCap slot
-              match cap with
-              | Capability.NotificationCap _ _ true _ => sendSignal (Capability.capNtfnPtr cap) (Capability.capNtfnBadge cap)
-              | _ => doMachineOp (debugPrint ("Undelivered interrupt: " ++ («show» irq)))
-              (RISCV64.maskIrqSignal) irq)
-        | IRQState.IRQTimer => (do
-              timerTick
-              doMachineOp resetTimer)
-        | IRQState.IRQReserved => (RISCV64.handleReservedIRQ) irq
-        | IRQState.IRQInactive => failM ("Received disabled IRQ " ++ («show» irq))
+        let _ ← match st with
+                | IRQState.IRQSignal => (do
+                      let slot ← getIRQSlot irq
+                      let cap ← getSlotCap slot
+                      let _ ← match cap with
+                              | Capability.NotificationCap _ _ true _ => sendSignal (Capability.capNtfnPtr cap) (Capability.capNtfnBadge cap)
+                              | _ => doMachineOp (debugPrint ("Undelivered interrupt: " ++ («show» irq)))
+                      (RISCV64.maskIrqSignal) irq)
+                | IRQState.IRQTimer => (do
+                      let _ ← timerTick
+                      doMachineOp resetTimer)
+                | IRQState.IRQReserved => (RISCV64.handleReservedIRQ) irq
+                | IRQState.IRQInactive => failM ("Received disabled IRQ " ++ («show» irq))
         doMachineOp (ackInterrupt irq)
 
 /-- Haskell `maybeHandleInterrupt` -/

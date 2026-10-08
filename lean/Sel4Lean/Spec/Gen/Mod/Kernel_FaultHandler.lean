@@ -24,9 +24,6 @@ opaque catchFailure {f : Type} {a : Type} [Inhabited f] [Inhabited a] : (KernelF
 -- external: SEL4/Machine/Hardware.lhs
 opaque debugPrint : String → MachineMonad Unit
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque getRestartPC : UserMonad Word
 
@@ -63,7 +60,7 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-- Haskell `handleDoubleFault` -/
 def handleDoubleFault (tptr : PPtr TCB) (ex1 : Fault) (ex2 : Fault) : Kernel Unit :=
   do
-    setThreadState ThreadState.Inactive tptr
+    let _ ← setThreadState ThreadState.Inactive tptr
     let faultPC ← asUser tptr getRestartPC
     let errmsg := "Caught fault " ++ ((«show» ex2) ++ ("\nwhile trying to handle fault " ++ ((«show» ex1) ++ ("\nin thread " ++ ((«show» tptr) ++ ("\nat address " ++ («show» faultPC)))))))
     doMachineOp (debugPrint errmsg)

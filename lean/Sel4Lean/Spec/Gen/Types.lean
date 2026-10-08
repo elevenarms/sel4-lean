@@ -34,6 +34,8 @@ instance : LE ASID := ⟨fun a b => a.fromASID ≤ b.fromASID⟩
 instance : LT ASID := ⟨fun a b => a.fromASID < b.fromASID⟩
 instance (a b : ASID) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromASID ≤ b.fromASID))
 instance (a b : ASID) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromASID < b.fromASID))
+instance : BoundedH ASID := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH ASID := ⟨fun a i => BitsH.testBitB a.fromASID i, fun a => ⟨BitsH.complementB a.fromASID⟩, fun a => BitsH.finiteBitSizeB a.fromASID⟩
 instance : AndOp ASID := ⟨fun a b => ⟨a.fromASID &&& b.fromASID⟩⟩
 instance : OrOp ASID := ⟨fun a b => ⟨a.fromASID ||| b.fromASID⟩⟩
 instance : HShiftLeft ASID Nat ASID := ⟨fun a k => ⟨a.fromASID <<< k⟩⟩
@@ -64,6 +66,7 @@ inductive VMRights where
 def VMRights.toIdx : _root_.Sel4Lean.Spec.VMRights → Int | .VMKernelOnly => 0 | .VMReadOnly => 1 | .VMReadWrite => 2
 def VMRights.ofIdx : Nat → _root_.Sel4Lean.Spec.VMRights | 0 => .VMKernelOnly | 1 => .VMReadOnly | 2 => .VMReadWrite | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.VMRights := ⟨VMRights.toIdx, fun i => VMRights.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.VMRights := ⟨.VMKernelOnly, .VMReadWrite⟩
 
 -- from SEL4/Machine/Hardware/RISCV64.hs
 /-- Haskell `data PTE` -/
@@ -134,6 +137,7 @@ structure ASIDPool where
   val : (ASID → (Option (PPtr PTE)))
   deriving Inhabited
 
+noncomputable instance : DecidableEq ASIDPool := Classical.typeDecidableEq ASIDPool
 
 -- from SEL4/Machine/Hardware/RISCV64.hs
 /-- Haskell `data VMPageSize` -/
@@ -146,6 +150,7 @@ inductive VMPageSize where
 def VMPageSize.toIdx : _root_.Sel4Lean.Spec.VMPageSize → Int | .RISCVSmallPage => 0 | .RISCVLargePage => 1 | .RISCVHugePage => 2
 def VMPageSize.ofIdx : Nat → _root_.Sel4Lean.Spec.VMPageSize | 0 => .RISCVSmallPage | 1 => .RISCVLargePage | 2 => .RISCVHugePage | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.VMPageSize := ⟨VMPageSize.toIdx, fun i => VMPageSize.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.VMPageSize := ⟨.RISCVSmallPage, .RISCVHugePage⟩
 
 -- from SEL4/Machine/RegisterSet.lhs
 /-- Haskell `newtype VPtr = VPtr …` -/
@@ -161,6 +166,8 @@ instance : LE VPtr := ⟨fun a b => a.fromVPtr ≤ b.fromVPtr⟩
 instance : LT VPtr := ⟨fun a b => a.fromVPtr < b.fromVPtr⟩
 instance (a b : VPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromVPtr ≤ b.fromVPtr))
 instance (a b : VPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromVPtr < b.fromVPtr))
+instance : BoundedH VPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH VPtr := ⟨fun a i => BitsH.testBitB a.fromVPtr i, fun a => ⟨BitsH.complementB a.fromVPtr⟩, fun a => BitsH.finiteBitSizeB a.fromVPtr⟩
 instance : AndOp VPtr := ⟨fun a b => ⟨a.fromVPtr &&& b.fromVPtr⟩⟩
 instance : OrOp VPtr := ⟨fun a b => ⟨a.fromVPtr ||| b.fromVPtr⟩⟩
 instance : HShiftLeft VPtr Nat VPtr := ⟨fun a k => ⟨a.fromVPtr <<< k⟩⟩
@@ -266,6 +273,38 @@ def ArchCapability.set_capPTMappedAddress (x : ArchCapability) (v : Option (ASID
   match x with
   | .PageTableCap a0 _ => .PageTableCap a0 v
   | x => x
+noncomputable instance : DecidableEq ArchCapability := Classical.typeDecidableEq ArchCapability
+
+-- from SEL4/API/Failures/RISCV64.hs
+/-- Haskell `data ArchFault = VMFault { … }` -/
+structure ArchFault where
+  VMFault ::
+  vmFaultAddress : VPtr
+  vmFaultArchData : List RISCV64.Word
+  deriving Inhabited, DecidableEq
+
+-- from SEL4/API/Types.lhs
+/-- Haskell `newtype CPtr = CPtr …` -/
+structure CPtr where
+  CPtr ::
+  fromCPtr : Word
+  deriving Inhabited, DecidableEq
+instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
+instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
+instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
+instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
+instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
+instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
+instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
+instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
+instance : BoundedH CPtr := ⟨⟨BoundedH.minB⟩, ⟨BoundedH.maxB⟩⟩
+instance : BitsH CPtr := ⟨fun a i => BitsH.testBitB a.fromCPtr i, fun a => ⟨BitsH.complementB a.fromCPtr⟩, fun a => BitsH.finiteBitSizeB a.fromCPtr⟩
+instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
+instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
+instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
+instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
+instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
+
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data LookupFailure` -/
@@ -335,35 +374,6 @@ def LookupFailure.set_guardMismatchGuardSize (x : LookupFailure) (v : Nat) : Loo
   match x with
   | .GuardMismatch a0 a1 _ => .GuardMismatch a0 a1 v
   | x => x
-
--- from SEL4/API/Types.lhs
-/-- Haskell `newtype CPtr = CPtr …` -/
-structure CPtr where
-  CPtr ::
-  fromCPtr : Word
-  deriving Inhabited, DecidableEq
-instance {n : Nat} : OfNat CPtr n := ⟨⟨OfNat.ofNat n⟩⟩
-instance : Add CPtr := ⟨fun a b => ⟨a.fromCPtr + b.fromCPtr⟩⟩
-instance : Sub CPtr := ⟨fun a b => ⟨a.fromCPtr - b.fromCPtr⟩⟩
-instance : Mul CPtr := ⟨fun a b => ⟨a.fromCPtr * b.fromCPtr⟩⟩
-instance : LE CPtr := ⟨fun a b => a.fromCPtr ≤ b.fromCPtr⟩
-instance : LT CPtr := ⟨fun a b => a.fromCPtr < b.fromCPtr⟩
-instance (a b : CPtr) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.fromCPtr ≤ b.fromCPtr))
-instance (a b : CPtr) : Decidable (a < b) := inferInstanceAs (Decidable (a.fromCPtr < b.fromCPtr))
-instance : AndOp CPtr := ⟨fun a b => ⟨a.fromCPtr &&& b.fromCPtr⟩⟩
-instance : OrOp CPtr := ⟨fun a b => ⟨a.fromCPtr ||| b.fromCPtr⟩⟩
-instance : HShiftLeft CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr <<< k⟩⟩
-instance : HShiftRight CPtr Nat CPtr := ⟨fun a k => ⟨a.fromCPtr >>> k⟩⟩
-instance : IntegralH CPtr := ⟨fun a => IntegralH.toInt a.fromCPtr, fun i => ⟨IntegralH.ofInt i⟩⟩
-
-
--- from SEL4/API/Failures/RISCV64.hs
-/-- Haskell `data ArchFault = VMFault { … }` -/
-structure ArchFault where
-  VMFault ::
-  vmFaultAddress : VPtr
-  vmFaultArchData : List RISCV64.Word
-  deriving Inhabited, DecidableEq
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data Fault` -/
@@ -445,16 +455,16 @@ def Fault.set_archFault (x : Fault) (v : Sel4Lean.Spec.ArchFault) : Fault :=
   | x => x
 
 -- from SEL4/API/Types.lhs
+/-- Haskell `type Priority` -/
+abbrev Priority := BitVec 8
+
+-- from SEL4/API/Types.lhs
 /-- Haskell `type Domain` -/
 abbrev Domain := BitVec 8
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `type TcbFlags` -/
 abbrev TcbFlags := Word
-
--- from SEL4/API/Types.lhs
-/-- Haskell `type Priority` -/
-abbrev Priority := BitVec 8
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data RISCV64.Register` -/
@@ -499,6 +509,7 @@ inductive RISCV64.Register where
 def RISCV64.Register.toIdx : _root_.Sel4Lean.Spec.RISCV64.Register → Int | .LR => 0 | .SP => 1 | .GP => 2 | .S0 => 3 | .S1 => 4 | .S2 => 5 | .S3 => 6 | .S4 => 7 | .S5 => 8 | .S6 => 9 | .S7 => 10 | .S8 => 11 | .S9 => 12 | .S10 => 13 | .S11 => 14 | .A0 => 15 | .A1 => 16 | .A2 => 17 | .A3 => 18 | .A4 => 19 | .A5 => 20 | .A6 => 21 | .A7 => 22 | .T0 => 23 | .T1 => 24 | .T2 => 25 | .T3 => 26 | .T4 => 27 | .T5 => 28 | .T6 => 29 | .TP => 30 | .SCAUSE => 31 | .SSTATUS => 32 | .FaultIP => 33 | .NextIP => 34
 def RISCV64.Register.ofIdx : Nat → _root_.Sel4Lean.Spec.RISCV64.Register | 0 => .LR | 1 => .SP | 2 => .GP | 3 => .S0 | 4 => .S1 | 5 => .S2 | 6 => .S3 | 7 => .S4 | 8 => .S5 | 9 => .S6 | 10 => .S7 | 11 => .S8 | 12 => .S9 | 13 => .S10 | 14 => .S11 | 15 => .A0 | 16 => .A1 | 17 => .A2 | 18 => .A3 | 19 => .A4 | 20 => .A5 | 21 => .A6 | 22 => .A7 | 23 => .T0 | 24 => .T1 | 25 => .T2 | 26 => .T3 | 27 => .T4 | 28 => .T5 | 29 => .T6 | 30 => .TP | 31 => .SCAUSE | 32 => .SSTATUS | 33 => .FaultIP | 34 => .NextIP | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨RISCV64.Register.toIdx, fun i => RISCV64.Register.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.RISCV64.Register := ⟨.LR, .NextIP⟩
 
 -- from SEL4/Machine/RegisterSet/RISCV64.hs
 /-- Haskell `data UserContext = UC { … }` -/
@@ -507,6 +518,7 @@ structure UserContext where
   fromUC : (RISCV64.Register → RISCV64.Word)
   deriving Inhabited
 
+noncomputable instance : DecidableEq UserContext := Classical.typeDecidableEq UserContext
 
 -- from SEL4/Object/Structures/RISCV64.hs
 /-- Haskell `data ArchTCB = ArchThread { … }` -/
@@ -515,6 +527,7 @@ structure ArchTCB where
   atcbContext : UserContext
   deriving Inhabited
 
+noncomputable instance : DecidableEq ArchTCB := Classical.typeDecidableEq ArchTCB
 
 -- from SEL4/Machine/Hardware/RISCV64/HiFive.hs
 /-- Haskell `newtype RISCV64.IRQ = IRQ …` -/
@@ -648,6 +661,14 @@ deriving instance Inhabited for MDBNode
 deriving instance Inhabited for CTE
 deriving instance Inhabited for Notification
 deriving instance Inhabited for TCB
+noncomputable instance : DecidableEq MDBNode := Classical.typeDecidableEq MDBNode
+noncomputable instance : DecidableEq CTE := Classical.typeDecidableEq CTE
+noncomputable instance : DecidableEq NTFN := Classical.typeDecidableEq NTFN
+noncomputable instance : DecidableEq Notification := Classical.typeDecidableEq Notification
+noncomputable instance : DecidableEq ThreadState := Classical.typeDecidableEq ThreadState
+noncomputable instance : DecidableEq TCB := Classical.typeDecidableEq TCB
+noncomputable instance : DecidableEq Endpoint := Classical.typeDecidableEq Endpoint
+noncomputable instance : DecidableEq Capability := Classical.typeDecidableEq Capability
 
 /-- Haskell selector `ntfnMsgIdentifier` (partial in Haskell; `default` elsewhere, like Isabelle). -/
 def NTFN.ntfnMsgIdentifier : NTFN → Word
@@ -1014,6 +1035,7 @@ inductive ArchKernelObject where
   | KOPTE (a0 : PTE)
   deriving Inhabited
 
+noncomputable instance : DecidableEq ArchKernelObject := Classical.typeDecidableEq ArchKernelObject
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data KernelObject` -/
@@ -1028,6 +1050,7 @@ inductive KernelObject where
   | KOArch (a0 : ArchKernelObject)
   deriving Inhabited
 
+noncomputable instance : DecidableEq KernelObject := Classical.typeDecidableEq KernelObject
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data SchedulerAction` -/
@@ -1046,6 +1069,7 @@ def SchedulerAction.set_schActTarget (x : SchedulerAction) (v : PPtr TCB) : Sche
   match x with
   | .SwitchToThread _ => .SwitchToThread v
   | x => x
+noncomputable instance : DecidableEq SchedulerAction := Classical.typeDecidableEq SchedulerAction
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data IRQState` -/
@@ -1059,6 +1083,7 @@ inductive IRQState where
 def IRQState.toIdx : _root_.Sel4Lean.Spec.IRQState → Int | .IRQInactive => 0 | .IRQSignal => 1 | .IRQTimer => 2 | .IRQReserved => 3
 def IRQState.ofIdx : Nat → _root_.Sel4Lean.Spec.IRQState | 0 => .IRQInactive | 1 => .IRQSignal | 2 => .IRQTimer | 3 => .IRQReserved | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.IRQState := ⟨IRQState.toIdx, fun i => IRQState.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.IRQState := ⟨.IRQInactive, .IRQReserved⟩
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data InterruptState = InterruptState { … }` -/
@@ -1068,6 +1093,7 @@ structure InterruptState where
   intStateIRQTable : (IRQ → IRQState)
   deriving Inhabited
 
+noncomputable instance : DecidableEq InterruptState := Classical.typeDecidableEq InterruptState
 
 -- from SEL4/API/Types.lhs
 /-- Haskell `type DomainDuration` -/
@@ -1086,6 +1112,7 @@ inductive UserData where
 def UserData.toIdx : _root_.Sel4Lean.Spec.UserData → Int | .UserData => 0
 def UserData.ofIdx : Nat → _root_.Sel4Lean.Spec.UserData | 0 => .UserData | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.UserData := ⟨UserData.toIdx, fun i => UserData.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.UserData := ⟨.UserData, .UserData⟩
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data UserDataDevice` -/
@@ -1096,6 +1123,7 @@ inductive UserDataDevice where
 def UserDataDevice.toIdx : _root_.Sel4Lean.Spec.UserDataDevice → Int | .UserDataDevice => 0
 def UserDataDevice.ofIdx : Nat → _root_.Sel4Lean.Spec.UserDataDevice | 0 => .UserDataDevice | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.UserDataDevice := ⟨UserDataDevice.toIdx, fun i => UserDataDevice.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.UserDataDevice := ⟨.UserDataDevice, .UserDataDevice⟩
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data TcbQueue = TcbQueue { … }` -/
@@ -1105,6 +1133,7 @@ structure TcbQueue where
   tcbQueueEnd : Option (PPtr TCB)
   deriving Inhabited
 
+noncomputable instance : DecidableEq TcbQueue := Classical.typeDecidableEq TcbQueue
 
 -- from SEL4/Object/Structures.lhs
 /-- Haskell `data TcbFlag` -/
@@ -1115,6 +1144,7 @@ inductive TcbFlag where
 def TcbFlag.toIdx : _root_.Sel4Lean.Spec.TcbFlag → Int | .FpuDisabled => 0
 def TcbFlag.ofIdx : Nat → _root_.Sel4Lean.Spec.TcbFlag | 0 => .FpuDisabled | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.TcbFlag := ⟨TcbFlag.toIdx, fun i => TcbFlag.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.TcbFlag := ⟨.FpuDisabled, .FpuDisabled⟩
 
 -- from SEL4/Model/PSpace.lhs
 /-- Haskell `newtype PSpace = PSpace …` -/
@@ -1123,6 +1153,7 @@ structure PSpace where
   psMap : (Word → Option KernelObject)
   deriving Inhabited
 
+noncomputable instance : DecidableEq PSpace := Classical.typeDecidableEq PSpace
 
 -- from SEL4/Model/StateData/RISCV64.hs
 /-- Haskell `data RISCVVSpaceRegionUse` -/
@@ -1137,6 +1168,7 @@ inductive RISCVVSpaceRegionUse where
 def RISCVVSpaceRegionUse.toIdx : _root_.Sel4Lean.Spec.RISCVVSpaceRegionUse → Int | .RISCVVSpaceUserRegion => 0 | .RISCVVSpaceInvalidRegion => 1 | .RISCVVSpaceKernelWindow => 2 | .RISCVVSpaceKernelELFWindow => 3 | .RISCVVSpaceDeviceWindow => 4
 def RISCVVSpaceRegionUse.ofIdx : Nat → _root_.Sel4Lean.Spec.RISCVVSpaceRegionUse | 0 => .RISCVVSpaceUserRegion | 1 => .RISCVVSpaceInvalidRegion | 2 => .RISCVVSpaceKernelWindow | 3 => .RISCVVSpaceKernelELFWindow | 4 => .RISCVVSpaceDeviceWindow | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.RISCVVSpaceRegionUse := ⟨RISCVVSpaceRegionUse.toIdx, fun i => RISCVVSpaceRegionUse.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.RISCVVSpaceRegionUse := ⟨.RISCVVSpaceUserRegion, .RISCVVSpaceDeviceWindow⟩
 
 -- from SEL4/Model/StateData/RISCV64.hs
 /-- Haskell `data RISCV64.KernelState = RISCVKernelState { … }` -/
@@ -1147,6 +1179,7 @@ structure RISCV64.KernelState where
   riscvKSKernelVSpace : (PPtr RISCV64.Word) → RISCVVSpaceRegionUse
   deriving Inhabited
 
+noncomputable instance : DecidableEq RISCV64.KernelState := Classical.typeDecidableEq RISCV64.KernelState
 
 -- from SEL4/Model/StateData.lhs
 /-- Haskell `type ReadyQueue` -/
@@ -1180,6 +1213,7 @@ structure KernelState where
   ksArchState : RISCV64.KernelState
   deriving Inhabited
 
+noncomputable instance : DecidableEq KernelState := Classical.typeDecidableEq KernelState
 
 -- from SEL4/Model/StateData.lhs
 /-- Haskell `type Kernel = StateT KernelState MachineMonad`, modelled as l4v's Isabelle
@@ -1225,6 +1259,7 @@ inductive InitFailure where
 def InitFailure.toIdx : _root_.Sel4Lean.Spec.InitFailure → Int | .IFailure => 0
 def InitFailure.ofIdx : Nat → _root_.Sel4Lean.Spec.InitFailure | 0 => .IFailure | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.InitFailure := ⟨InitFailure.toIdx, fun i => InitFailure.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.InitFailure := ⟨.IFailure, .IFailure⟩
 
 -- from SEL4/API/Failures.lhs
 /-- Haskell `data SyscallError` -/
@@ -1416,6 +1451,7 @@ def CNodeInvocation.set_epCap (x : CNodeInvocation) (v : Capability) : CNodeInvo
   match x with
   | .CancelBadgedSends _ => .CancelBadgedSends v
   | x => x
+noncomputable instance : DecidableEq CNodeInvocation := Classical.typeDecidableEq CNodeInvocation
 
 -- from SEL4/API/Invocation.lhs
 /-- Haskell `data DomainInvocation` -/
@@ -1468,6 +1504,7 @@ def DomainInvocation.set_domDuration (x : DomainInvocation) (v : DomainDuration)
   match x with
   | .InvokeDomainScheduleConfigure a0 a1 _ => .InvokeDomainScheduleConfigure a0 a1 v
   | x => x
+noncomputable instance : DecidableEq DomainInvocation := Classical.typeDecidableEq DomainInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data RISCV64.IRQControlInvocation = IssueIRQHandler { … }` -/
@@ -1479,6 +1516,7 @@ structure RISCV64.IRQControlInvocation where
   issueHandlerTrigger : Bool
   deriving Inhabited
 
+noncomputable instance : DecidableEq RISCV64.IRQControlInvocation := Classical.typeDecidableEq RISCV64.IRQControlInvocation
 
 -- from SEL4/API/Invocation.lhs
 /-- Haskell `data IRQControlInvocation` -/
@@ -1526,6 +1564,7 @@ def IRQControlInvocation.set_issueHandlerControllerSlot (x : IRQControlInvocatio
   match x with
   | .IssueIRQHandler a0 a1 _ => .IssueIRQHandler a0 a1 v
   | x => x
+noncomputable instance : DecidableEq IRQControlInvocation := Classical.typeDecidableEq IRQControlInvocation
 
 -- from SEL4/API/Invocation.lhs
 /-- Haskell `data IRQHandlerInvocation` -/
@@ -1566,6 +1605,7 @@ def IRQHandlerInvocation.set_setIRQHandlerSlot (x : IRQHandlerInvocation) (v : P
   match x with
   | .SetIRQHandler a0 a1 _ => .SetIRQHandler a0 a1 v
   | x => x
+noncomputable instance : DecidableEq IRQHandlerInvocation := Classical.typeDecidableEq IRQHandlerInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data ASIDControlInvocation = MakePool { … }` -/
@@ -1577,6 +1617,7 @@ structure ASIDControlInvocation where
   makePoolBase : ASID
   deriving Inhabited
 
+noncomputable instance : DecidableEq ASIDControlInvocation := Classical.typeDecidableEq ASIDControlInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data ASIDPoolInvocation = Assign { … }` -/
@@ -1587,6 +1628,7 @@ structure ASIDPoolInvocation where
   assignASIDCTSlot : PPtr CTE
   deriving Inhabited
 
+noncomputable instance : DecidableEq ASIDPoolInvocation := Classical.typeDecidableEq ASIDPoolInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data PageInvocation` -/
@@ -1655,6 +1697,7 @@ def PageInvocation.set_pageUnmapCapSlot (x : PageInvocation) (v : PPtr CTE) : Pa
   match x with
   | .PageUnmap a0 _ => .PageUnmap a0 v
   | x => x
+noncomputable instance : DecidableEq PageInvocation := Classical.typeDecidableEq PageInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data PageTableInvocation` -/
@@ -1722,6 +1765,7 @@ def PageTableInvocation.set_ptMapPTSlot (x : PageTableInvocation) (v : PPtr PTE)
   match x with
   | .PageTableMap a0 a1 a2 _ => .PageTableMap a0 a1 a2 v
   | x => x
+noncomputable instance : DecidableEq PageTableInvocation := Classical.typeDecidableEq PageTableInvocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data RISCV64.Invocation` -/
@@ -1732,6 +1776,7 @@ inductive RISCV64.Invocation where
   | InvokeASIDPool (a0 : ASIDPoolInvocation)
   deriving Inhabited
 
+noncomputable instance : DecidableEq RISCV64.Invocation := Classical.typeDecidableEq RISCV64.Invocation
 
 -- from SEL4/API/Invocation/RISCV64.hs
 /-- Haskell `data CopyRegisterSets` -/
@@ -1742,6 +1787,7 @@ inductive CopyRegisterSets where
 def CopyRegisterSets.toIdx : _root_.Sel4Lean.Spec.CopyRegisterSets → Int | .RISCVNoExtraRegisters => 0
 def CopyRegisterSets.ofIdx : Nat → _root_.Sel4Lean.Spec.CopyRegisterSets | 0 => .RISCVNoExtraRegisters | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.CopyRegisterSets := ⟨CopyRegisterSets.toIdx, fun i => CopyRegisterSets.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.CopyRegisterSets := ⟨.RISCVNoExtraRegisters, .RISCVNoExtraRegisters⟩
 
 -- from SEL4/API/Invocation.lhs
 /-- Haskell `data TCBInvocation` -/
@@ -2076,6 +2122,7 @@ def TCBInvocation.set_setFlagsSet (x : TCBInvocation) (v : Word) : TCBInvocation
   match x with
   | .SetFlags a0 a1 _ => .SetFlags a0 a1 v
   | x => x
+noncomputable instance : DecidableEq TCBInvocation := Classical.typeDecidableEq TCBInvocation
 
 -- from SEL4/API/Types/Universal.lhs
 /-- Haskell `data APIObjectType` -/
@@ -2090,6 +2137,7 @@ inductive APIObjectType where
 def APIObjectType.toIdx : _root_.Sel4Lean.Spec.APIObjectType → Int | .Untyped => 0 | .TCBObject => 1 | .EndpointObject => 2 | .NotificationObject => 3 | .CapTableObject => 4
 def APIObjectType.ofIdx : Nat → _root_.Sel4Lean.Spec.APIObjectType | 0 => .Untyped | 1 => .TCBObject | 2 => .EndpointObject | 3 => .NotificationObject | 4 => .CapTableObject | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.APIObjectType := ⟨APIObjectType.toIdx, fun i => APIObjectType.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.APIObjectType := ⟨.Untyped, .CapTableObject⟩
 
 -- from SEL4/API/Types/RISCV64.hs
 /-- Haskell `data ObjectType` -/
@@ -2115,6 +2163,7 @@ structure UntypedInvocation where
   retypeIsDevice : Bool
   deriving Inhabited
 
+noncomputable instance : DecidableEq UntypedInvocation := Classical.typeDecidableEq UntypedInvocation
 
 -- from SEL4/API/Invocation.lhs
 /-- Haskell `data Invocation` -/
@@ -2131,6 +2180,7 @@ inductive Invocation where
   | InvokeArchObject (a0 : RISCV64.Invocation)
   deriving Inhabited
 
+noncomputable instance : DecidableEq Invocation := Classical.typeDecidableEq Invocation
 
 -- from SEL4/API/InvocationLabels.lhs
 /-- Haskell `data GenInvocationLabels` -/
@@ -2173,6 +2223,7 @@ inductive GenInvocationLabels where
 def GenInvocationLabels.toIdx : _root_.Sel4Lean.Spec.GenInvocationLabels → Int | .InvalidInvocation => 0 | .UntypedRetype => 1 | .TCBReadRegisters => 2 | .TCBWriteRegisters => 3 | .TCBCopyRegisters => 4 | .TCBConfigure => 5 | .TCBSetPriority => 6 | .TCBSetMCPriority => 7 | .TCBSetSchedParams => 8 | .TCBSetIPCBuffer => 9 | .TCBSetSpace => 10 | .TCBSuspend => 11 | .TCBResume => 12 | .TCBBindNotification => 13 | .TCBUnbindNotification => 14 | .TCBSetTLSBase => 15 | .TCBSetFlags => 16 | .CNodeRevoke => 17 | .CNodeDelete => 18 | .CNodeCancelBadgedSends => 19 | .CNodeCopy => 20 | .CNodeMint => 21 | .CNodeMove => 22 | .CNodeMutate => 23 | .CNodeRotate => 24 | .CNodeSaveCaller => 25 | .IRQIssueIRQHandler => 26 | .IRQAckIRQ => 27 | .IRQSetIRQHandler => 28 | .IRQClearIRQHandler => 29 | .DomainSetSet => 30 | .DomainScheduleConfigure => 31 | .DomainScheduleSetStart => 32
 def GenInvocationLabels.ofIdx : Nat → _root_.Sel4Lean.Spec.GenInvocationLabels | 0 => .InvalidInvocation | 1 => .UntypedRetype | 2 => .TCBReadRegisters | 3 => .TCBWriteRegisters | 4 => .TCBCopyRegisters | 5 => .TCBConfigure | 6 => .TCBSetPriority | 7 => .TCBSetMCPriority | 8 => .TCBSetSchedParams | 9 => .TCBSetIPCBuffer | 10 => .TCBSetSpace | 11 => .TCBSuspend | 12 => .TCBResume | 13 => .TCBBindNotification | 14 => .TCBUnbindNotification | 15 => .TCBSetTLSBase | 16 => .TCBSetFlags | 17 => .CNodeRevoke | 18 => .CNodeDelete | 19 => .CNodeCancelBadgedSends | 20 => .CNodeCopy | 21 => .CNodeMint | 22 => .CNodeMove | 23 => .CNodeMutate | 24 => .CNodeRotate | 25 => .CNodeSaveCaller | 26 => .IRQIssueIRQHandler | 27 => .IRQAckIRQ | 28 => .IRQSetIRQHandler | 29 => .IRQClearIRQHandler | 30 => .DomainSetSet | 31 => .DomainScheduleConfigure | 32 => .DomainScheduleSetStart | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.GenInvocationLabels := ⟨GenInvocationLabels.toIdx, fun i => GenInvocationLabels.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.GenInvocationLabels := ⟨.InvalidInvocation, .DomainScheduleSetStart⟩
 
 -- from SEL4/API/InvocationLabels/RISCV64.hs
 /-- Haskell `data ArchInvocationLabel` -/
@@ -2190,6 +2241,7 @@ inductive ArchInvocationLabel where
 def ArchInvocationLabel.toIdx : _root_.Sel4Lean.Spec.ArchInvocationLabel → Int | .RISCVPageTableMap => 0 | .RISCVPageTableUnmap => 1 | .RISCVPageMap => 2 | .RISCVPageUnmap => 3 | .RISCVPageGetAddress => 4 | .RISCVASIDControlMakePool => 5 | .RISCVASIDPoolAssign => 6 | .RISCVIRQIssueIRQHandler => 7
 def ArchInvocationLabel.ofIdx : Nat → _root_.Sel4Lean.Spec.ArchInvocationLabel | 0 => .RISCVPageTableMap | 1 => .RISCVPageTableUnmap | 2 => .RISCVPageMap | 3 => .RISCVPageUnmap | 4 => .RISCVPageGetAddress | 5 => .RISCVASIDControlMakePool | 6 => .RISCVASIDPoolAssign | 7 => .RISCVIRQIssueIRQHandler | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.ArchInvocationLabel := ⟨ArchInvocationLabel.toIdx, fun i => ArchInvocationLabel.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.ArchInvocationLabel := ⟨.RISCVPageTableMap, .RISCVIRQIssueIRQHandler⟩
 
 -- from SEL4/API/InvocationLabels.lhs
 /-- Haskell `data InvocationLabel` -/
@@ -2207,6 +2259,7 @@ inductive HypFaultType where
 def HypFaultType.toIdx : _root_.Sel4Lean.Spec.HypFaultType → Int | .RISCVNoHypFaults => 0
 def HypFaultType.ofIdx : Nat → _root_.Sel4Lean.Spec.HypFaultType | 0 => .RISCVNoHypFaults | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.HypFaultType := ⟨HypFaultType.toIdx, fun i => HypFaultType.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.HypFaultType := ⟨.RISCVNoHypFaults, .RISCVNoHypFaults⟩
 
 -- from SEL4/API/Syscall.lhs
 /-- Haskell `data Syscall` -/
@@ -2224,6 +2277,7 @@ inductive Syscall where
 def Syscall.toIdx : _root_.Sel4Lean.Spec.Syscall → Int | .SysCall => 0 | .SysReplyRecv => 1 | .SysSend => 2 | .SysNBSend => 3 | .SysRecv => 4 | .SysReply => 5 | .SysYield => 6 | .SysNBRecv => 7
 def Syscall.ofIdx : Nat → _root_.Sel4Lean.Spec.Syscall | 0 => .SysCall | 1 => .SysReplyRecv | 2 => .SysSend | 3 => .SysNBSend | 4 => .SysRecv | 5 => .SysReply | 6 => .SysYield | 7 => .SysNBRecv | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.Syscall := ⟨Syscall.toIdx, fun i => Syscall.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.Syscall := ⟨.SysCall, .SysNBRecv⟩
 
 -- from SEL4/Machine/Hardware/RISCV64.hs
 /-- Haskell `data VMFaultType` -/
@@ -2239,6 +2293,7 @@ inductive VMFaultType where
 def VMFaultType.toIdx : _root_.Sel4Lean.Spec.VMFaultType → Int | .RISCVInstructionAccessFault => 0 | .RISCVLoadAccessFault => 1 | .RISCVStoreAccessFault => 2 | .RISCVInstructionPageFault => 3 | .RISCVLoadPageFault => 4 | .RISCVStorePageFault => 5
 def VMFaultType.ofIdx : Nat → _root_.Sel4Lean.Spec.VMFaultType | 0 => .RISCVInstructionAccessFault | 1 => .RISCVLoadAccessFault | 2 => .RISCVStoreAccessFault | 3 => .RISCVInstructionPageFault | 4 => .RISCVLoadPageFault | 5 => .RISCVStorePageFault | _ => default
 instance : IntegralH _root_.Sel4Lean.Spec.VMFaultType := ⟨VMFaultType.toIdx, fun i => VMFaultType.ofIdx i.toNat⟩
+instance : BoundedH _root_.Sel4Lean.Spec.VMFaultType := ⟨.RISCVInstructionAccessFault, .RISCVStorePageFault⟩
 
 -- from SEL4/API/Syscall.lhs
 /-- Haskell `data Event` -/
@@ -2348,12 +2403,13 @@ structure SerialData where
   deriving Inhabited, DecidableEq
 
 -- from SEL4/Machine/Hardware/RISCV64.hs
-/-- Haskell `type MachineData` -/
-abbrev MachineData := PtrH CallbackData
-
--- from SEL4/Machine/Hardware/RISCV64.hs
-/-- Haskell `type MachineMonad` -/
-abbrev MachineMonad := ReaderT MachineData IO
+/-- Haskell `type MachineMonad = ReaderT MachineData IO` (simulator), modelled as l4v's
+Isabelle `machine_monad = (machine_state, 'a) nondet_monad`; the machine state is opaque
+for now (TODO(W3)) -/
+opaque MachineStateImpl : NonemptyType
+def MachineState : Type := MachineStateImpl.type
+instance : Nonempty MachineState := MachineStateImpl.property
+abbrev MachineMonad := Sel4Lean.NondetM MachineState
 
 -- from SEL4/Kernel/BootInfo.lhs
 /-- Haskell `type Serializer` -/
@@ -2366,6 +2422,10 @@ abbrev KernelInitState := StateT InitData Kernel
 -- from SEL4/Kernel/Init.lhs
 /-- Haskell `type KernelInit` -/
 abbrev KernelInit := ExceptT InitFailure KernelInitState
+
+-- from SEL4/Machine/Hardware/RISCV64.hs
+/-- Haskell `type MachineData` -/
+abbrev MachineData := PtrH CallbackData
 
 -- from SEL4/Machine/Hardware/RISCV64.hs
 /-- Haskell `data VMAttributes = VMAttributes { … }` -/

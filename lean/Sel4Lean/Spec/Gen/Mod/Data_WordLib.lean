@@ -46,7 +46,7 @@ def wordRadix : Nat :=
   wordSizeCase 5 6
 
 /-- Haskell `countTrailingZeros` -/
-def countTrailingZeros {b : Type} [Inhabited b] (w : b) : Nat :=
+def countTrailingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (map (testBit w)))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 end

@@ -78,12 +78,12 @@ def handleFaultReply (x0 : Fault) (x1 : PPtr TCB) (x2 : Word) (x3 : List Word) :
   | (Fault.UnknownSyscallException _), thread, label, msg => 
       do
         let b ← getSanitiseRegisterInfo thread
-        asUser thread (zipWithM_ (fun r v => setRegister r (sanitiseRegister b r v)) syscallMessage msg)
+        let _ ← asUser thread (zipWithM_ (fun r v => setRegister r (sanitiseRegister b r v)) syscallMessage msg)
         pure (label == 0)
   | (Fault.UserException _ _), thread, label, msg => 
       do
         let b ← getSanitiseRegisterInfo thread
-        asUser thread (zipWithM_ (fun r v => setRegister r (sanitiseRegister b r v)) exceptionMessage msg)
+        let _ ← asUser thread (zipWithM_ (fun r v => setRegister r (sanitiseRegister b r v)) exceptionMessage msg)
         pure (label == 0)
   | (Fault.ArchFault af), thread, label, msg => handleArchFaultReply af thread label msg
 

@@ -12,23 +12,158 @@ noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ackInterrupt : RISCV64.IRQ → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque allowRead : VMRights → Bool
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque allowWrite : VMRights → Bool
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque clearMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque clearMemoryVM : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque configureTimer : MachineMonad RISCV64.IRQ
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque debugPrint : String → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque freeMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque fromPAddr : PAddr → RISCV64.Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getDeviceRegions : MachineMonad (List (PAddr × PAddr))
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word)))
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
+
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque getRegister : Register → UserMonad Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getVMRights : Bool → Bool → VMRights
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque hwASIDFlush : (BitVec 64) → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque initIRQController : MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque initMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque kernelELFBase : VPtr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque kernelELFPAddrBase : PAddr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque loadWord : (PPtr RISCV64.Word) → MachineMonad RISCV64.Word
 
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
 opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO Word
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque paddrBase : PAddr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pageBits : Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pageBitsForSize : VMPageSize → Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pageColourBits : Nat
 
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
 opaque physBase : PAddr
 
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque plic_complete_claim : RISCV64.IRQ → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pptrBase : VPtr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pptrTop : VPtr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pptrUserTop : VPtr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ptBits : Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ptTranslationBits : Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pteBits : Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque read_stval : MachineMonad RISCV64.Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque resetTimer : MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
+
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque setRegister : Register → Word → UserMonad Unit
 
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque setVSpaceRoot : PAddr → (BitVec 64) → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque sfence : MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque storeWord : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
+
 -- external: SEL4/Machine/Hardware/RISCV64/HiFive.hs
 opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque storeWordVM : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque vmFaultTypeFSR : VMFaultType → RISCV64.Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque vmRightsFromBits : RISCV64.Word → VMRights
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque vmRightsToBits : VMRights → RISCV64.Word
 
 /-! ## Unresolved (no stub possible)
   error: no signature found
@@ -43,107 +178,13 @@ opaque storeWordCallback : (PtrH CallbackData) → PAddr → Word → IO Unit
 def toPAddr :=
   PAddr.PAddr
 
-/-- Haskell `vmFaultTypeFSR` -/
-def vmFaultTypeFSR (f : VMFaultType) : RISCV64.Word :=
-  match f with
-  | VMFaultType.RISCVInstructionAccessFault => 1
-  | VMFaultType.RISCVLoadAccessFault => 5
-  | VMFaultType.RISCVStoreAccessFault => 7
-  | VMFaultType.RISCVInstructionPageFault => 12
-  | VMFaultType.RISCVLoadPageFault => 13
-  | VMFaultType.RISCVStorePageFault => 15
-
-/-- Haskell `fromPAddr` -/
-def fromPAddr : PAddr → RISCV64.Word :=
-  PAddr.fromPAddr
-
-/-- Haskell `paddrBase` -/
-def paddrBase : PAddr :=
-  (PAddr.PAddr) 0x0
-
-/-- Haskell `pptrBase` -/
-def pptrBase : VPtr :=
-  VPtr.VPtr 0xFFFFFFC000000000
-
-/-- Haskell `pptrTop` -/
-def pptrTop : VPtr :=
-  VPtr.VPtr 0xFFFFFFFF80000000
-
-/-- Haskell `kernelELFPAddrBase` -/
-def kernelELFPAddrBase : PAddr :=
-  physBase
-
-/-- Haskell `kernelELFBase` -/
-def kernelELFBase : VPtr :=
-  VPtr.VPtr ((VPtr.fromVPtr pptrTop) + ((PAddr.fromPAddr kernelELFPAddrBase) &&& (mask 30)))
-
-/-- Haskell `pptrUserTop` -/
-def pptrUserTop : VPtr :=
-  pptrBase
-
 /-- Haskell `pptrBaseOffset` -/
 def pptrBaseOffset :=
   (VPtr.fromVPtr pptrBase) - (PAddr.fromPAddr paddrBase)
 
-/-- Haskell `ptrFromPAddr` -/
-def ptrFromPAddr {a : Type} [Inhabited a] (addr : PAddr) : PPtr a :=
-  PPtr.mk ((PAddr.fromPAddr addr) + pptrBaseOffset)
-
-/-- Haskell `addrFromPPtr` -/
-def addrFromPPtr {a : Type} [Inhabited a] (addr : PPtr a) : PAddr :=
-  toPAddr ((PPtr.ptr addr) - pptrBaseOffset)
-
 /-- Haskell `kernelELFBaseOffset` -/
 def kernelELFBaseOffset :=
   (VPtr.fromVPtr kernelELFBase) - (PAddr.fromPAddr kernelELFPAddrBase)
-
-/-- Haskell `addrFromKPPtr` -/
-def addrFromKPPtr {a : Type} [Inhabited a] (x0 : PPtr a) : PAddr :=
-  match x0 with
-  | (PPtr.mk addr) => toPAddr (addr - kernelELFBaseOffset)
-
-/-- Haskell `pageBits` -/
-def pageBits : Nat :=
-  12
-
-/-- Haskell `ptTranslationBits` -/
-def ptTranslationBits : Nat :=
-  9
-
-/-- Haskell `pteBits` -/
-def pteBits : Nat :=
-  3
-
-/-- Haskell `ptBits` -/
-def ptBits : Nat :=
-  ptTranslationBits + pteBits
-
-/-- Haskell `pageBitsForSize` -/
-def pageBitsForSize (x0 : VMPageSize) : Nat :=
-  match x0 with
-  | VMPageSize.RISCVSmallPage => pageBits
-  | VMPageSize.RISCVLargePage => pageBits + ptTranslationBits
-  | VMPageSize.RISCVHugePage => (pageBits + ptTranslationBits) + ptTranslationBits
-
-/-- Haskell `configureTimer` -/
-def configureTimer : MachineMonad RISCV64.IRQ :=
-  do
-    let cbptr ← read
-    liftIO ((configureTimer) cbptr)
-
-/-- Haskell `resetTimer` -/
-def resetTimer : MachineMonad Unit :=
-  do
-    let cbptr ← read
-    liftIO ((resetTimer) cbptr)
-
-/-- Haskell `initIRQController` -/
-def initIRQController : MachineMonad Unit :=
-  error "Unimplemented - boot code"
-
-/-- Haskell `setIRQTrigger` -/
-def setIRQTrigger (irq : RISCV64.IRQ) (trigger : Bool) : MachineMonad Unit :=
-  error "Unimplemented - machine op"
 
 /-- Haskell `getRestartPC` -/
 def getRestartPC :=
@@ -152,137 +193,6 @@ def getRestartPC :=
 /-- Haskell `setNextPC` -/
 def setNextPC :=
   setRegister (Register.Register (RISCV64.Register.NextIP))
-
-/-- Haskell `clearMemory` -/
-def clearMemory (ptr : PPtr RISCV64.Word) (byteLength : Nat) : MachineMonad Unit :=
-  error "Unimplemented -- machine op"
-
-/-- Haskell `initMemory` -/
-def initMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit :=
-  clearMemory
-
-/-- Haskell `freeMemory` -/
-def freeMemory (x0 : PPtr RISCV64.Word) (x1 : Nat) : MachineMonad Unit :=
-  match x0, x1 with
-  | _, _ => pure ()
-
-/-- Haskell `clearMemoryVM` -/
-def clearMemoryVM (ptr : PPtr RISCV64.Word) (bits : Nat) : MachineMonad Unit :=
-  error "Unimplemented -- machine op"
-
-/-- Haskell `setVSpaceRoot` -/
-def setVSpaceRoot (addr : PAddr) (asid : BitVec 64) : MachineMonad Unit :=
-  error "Unimplemented - machine op"
-
-/-- Haskell `sfence` -/
-def sfence : MachineMonad Unit :=
-  error "Unimplemented - machine op"
-
-/-- Haskell `hwASIDFlush` -/
-def hwASIDFlush (asid : BitVec 64) : MachineMonad Unit :=
-  error "unimplemented - machine op"
-
-/-- Haskell `vmRightsToBits` -/
-def vmRightsToBits (x0 : VMRights) : RISCV64.Word :=
-  match x0 with
-  | VMRights.VMKernelOnly => 1
-  | VMRights.VMReadOnly => 2
-  | VMRights.VMReadWrite => 3
-
-/-- Haskell `allowWrite` -/
-def allowWrite (x0 : VMRights) : Bool :=
-  match x0 with
-  | VMRights.VMKernelOnly => false
-  | VMRights.VMReadOnly => false
-  | VMRights.VMReadWrite => true
-
-/-- Haskell `allowRead` -/
-def allowRead (x0 : VMRights) : Bool :=
-  match x0 with
-  | VMRights.VMKernelOnly => false
-  | VMRights.VMReadOnly => true
-  | VMRights.VMReadWrite => true
-
-/-- Haskell `getVMRights` -/
-def getVMRights (x0 : Bool) (x1 : Bool) : VMRights :=
-  match x0, x1 with
-  | true, true => VMRights.VMReadWrite
-  | false, true => VMRights.VMReadOnly
-  | _, _ => VMRights.VMKernelOnly
-
-/-- Haskell `vmRightsFromBits` -/
-def vmRightsFromBits (rw : RISCV64.Word) : VMRights :=
-  getVMRights (testBit rw 1) (testBit rw 0)
-
-/-- Haskell `pageColourBits` -/
-def pageColourBits : Nat :=
-  pageColourBits
-
-/-- Haskell `getMemoryRegions` -/
-def getMemoryRegions : MachineMonad (List (PAddr × PAddr)) :=
-  do
-    let cpbtr ← read
-    liftIO ((getMemoryRegions) cpbtr)
-
-/-- Haskell `getDeviceRegions` -/
-def getDeviceRegions : MachineMonad (List (PAddr × PAddr)) :=
-  do
-    let cbptr ← read
-    liftIO ((getDeviceRegions) cbptr)
-
-/-- Haskell `getKernelDevices` -/
-def getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word))) :=
-  do
-    let cbptr ← read
-    liftIO ((getKernelDevices) cbptr)
-
-/-- Haskell `storeWord` -/
-def storeWord (ptr : PPtr RISCV64.Word) (val : RISCV64.Word) : MachineMonad Unit :=
-  do
-    let cbptr ← read
-    liftIO ((storeWordCallback) cbptr (addrFromPPtr ptr) val)
-
-/-- Haskell `storeWordVM` -/
-def storeWordVM (ptr : PPtr RISCV64.Word) (val : RISCV64.Word) : MachineMonad Unit :=
-  storeWord ptr val
-
-/-- Haskell `loadWord` -/
-def loadWord (ptr : PPtr RISCV64.Word) : MachineMonad RISCV64.Word :=
-  do
-    let cbptr ← read
-    liftIO ((loadWordCallback) cbptr (addrFromPPtr ptr))
-
-/-- Haskell `getActiveIRQ` -/
-def getActiveIRQ (x0 : Bool) : MachineMonad (Option RISCV64.IRQ) :=
-  match x0 with
-  | _ => 
-      do
-        let cbptr ← read
-        liftIO ((getActiveIRQ) cbptr)
-
-/-- Haskell `ackInterrupt` -/
-def ackInterrupt (irq : RISCV64.IRQ) : MachineMonad Unit :=
-  do
-    let cbptr ← read
-    liftIO ((ackInterrupt) cbptr irq)
-
-/-- Haskell `maskInterrupt` -/
-def maskInterrupt (maskI : Bool) (irq : RISCV64.IRQ) : MachineMonad Unit :=
-  do
-    let cbptr ← read
-    liftIO ((maskInterrupt) cbptr maskI irq)
-
-/-- Haskell `debugPrint` -/
-def debugPrint (str : String) : MachineMonad Unit :=
-  liftIO (putStrLn str)
-
-/-- Haskell `read_stval` -/
-def read_stval : MachineMonad RISCV64.Word :=
-  error "Unimplemented - machine op"
-
-/-- Haskell `plic_complete_claim` -/
-def plic_complete_claim : RISCV64.IRQ → MachineMonad Unit :=
-  error "Unimplemented - machine op"
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware_RISCV64

@@ -28,7 +28,7 @@ opaque RISCV64.cteGuardBits : Nat
 opaque RISCV64.cteRightsBits : Nat
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation
+opaque RISCV64.decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.deriveCap : (PPtr CTE) → ArchCapability → KernelF SyscallError Capability
@@ -49,13 +49,19 @@ opaque RISCV64.isPhysicalCap : ArchCapability → Bool
 opaque RISCV64.maskCapRights : CapRights → ArchCapability → Capability
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
-opaque RISCV64.performInvocation : Invocation → KernelP (List RISCV64.Word)
+opaque RISCV64.performInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word)
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.postCapDeletion : ArchCapability → Kernel Unit
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.prepareThreadDelete : (PPtr TCB) → Kernel Unit
+
+-- arch: SEL4/Object/ObjectType/RISCV64.hs
+opaque RISCV64.sameObjectAs : ArchCapability → ArchCapability → Bool
+
+-- arch: SEL4/Object/ObjectType/RISCV64.hs
+opaque RISCV64.sameRegionAs : ArchCapability → ArchCapability → Bool
 
 -- arch: SEL4/Object/ObjectType/RISCV64.hs
 opaque RISCV64.updateCapData : Bool → RISCV64.Word → ArchCapability → Capability
@@ -133,7 +139,7 @@ opaque isIRQControlCap : Capability → Bool
 opaque isIRQControlCapDescendant : ArchCapability → Bool
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque performIRQControl : IRQControlInvocation → KernelP Unit
@@ -196,7 +202,7 @@ def deriveCap (x0 : PPtr CTE) (x1 : Capability) : KernelF SyscallError Capabilit
   | _, Capability.IRQControlCap => pure Capability.NullCap
   | slot, cap@(Capability.UntypedCap ..) => 
       do
-        ensureNoChildren slot
+        let _ ← ensureNoChildren slot
         pure cap
   | _, (Capability.ReplyCap ..) => pure Capability.NullCap
   | slot, (Capability.ArchObjectCap cap) => (RISCV64.deriveCap) slot cap
@@ -217,13 +223,13 @@ def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability �
   match x0, x1, x2 with
   | (Capability.EndpointCap ptr _ _ _ _ _), final, _ => 
       do
-        whenH final (cancelAllIPC ptr)
+        let _ ← whenH final (cancelAllIPC ptr)
         pure ((Capability.NullCap, Capability.NullCap))
   | (Capability.NotificationCap ptr _ _ _), final, _ => 
       do
-        whenH final (do
-          unbindMaybeNotification ptr
-          cancelAllSignals ptr)
+        let _ ← whenH final (do
+                  let _ ← unbindMaybeNotification ptr
+                  cancelAllSignals ptr)
         pure ((Capability.NullCap, Capability.NullCap))
   | (Capability.ReplyCap ..), _, _ => pure ((Capability.NullCap, Capability.NullCap))
   | Capability.NullCap, _, _ => pure ((Capability.NullCap, Capability.NullCap))
@@ -233,15 +239,15 @@ def finaliseCap (x0 : Capability) (x1 : Bool) (x2 : Bool) : Kernel (Capability �
   | (Capability.ThreadCap tcb), true, _ => 
       do
         let cte_ptr ← getThreadCSpaceRoot tcb
-        unbindNotification tcb
-        suspend tcb
-        (RISCV64.prepareThreadDelete) tcb
+        let _ ← unbindNotification tcb
+        let _ ← suspend tcb
+        let _ ← (RISCV64.prepareThreadDelete) tcb
         pure ((Capability.Zombie cte_ptr ZombieType.ZombieTCB 5, Capability.NullCap))
   | z@(Capability.Zombie ..), true, _ => pure ((z, Capability.NullCap))
   | (Capability.ArchObjectCap cap), final, _ => (RISCV64.finaliseCap) cap final
   | cap@(Capability.IRQHandlerCap irq), true, _ => 
       do
-        deletingIRQHandler irq
+        let _ ← deletingIRQHandler irq
         pure ((Capability.NullCap, cap))
   | (Capability.Zombie ..), false, _ => failM "Finalising a non-final zombie cap"
   | _, _, _ => pure ((Capability.NullCap, Capability.NullCap))
@@ -322,7 +328,7 @@ def sameRegionAs (x0 : Capability) (x1 : Capability) : Bool :=
   | Capability.IRQControlCap, (Capability.IRQHandlerCap ..) => true
   | Capability.IRQControlCap, (Capability.ArchObjectCap b) => (RISCV64.isIRQControlCapDescendant) b
   | (Capability.IRQHandlerCap a), (Capability.IRQHandlerCap b) => a == b
-  | (Capability.ArchObjectCap a), (Capability.ArchObjectCap b) => Arch.sameRegionAs a b
+  | (Capability.ArchObjectCap a), (Capability.ArchObjectCap b) => RISCV64.sameRegionAs a b
   | _, _ => false
 
 /-- Haskell `sameObjectAs` -/
@@ -330,7 +336,7 @@ def sameObjectAs (x0 : Capability) (x1 : Capability) : Bool :=
   match x0, x1 with
   | (Capability.UntypedCap ..), _ => false
   | Capability.IRQControlCap, _ => false
-  | (Capability.ArchObjectCap a), (Capability.ArchObjectCap b) => Arch.sameObjectAs a b
+  | (Capability.ArchObjectCap a), (Capability.ArchObjectCap b) => RISCV64.sameObjectAs a b
   | a, b => sameRegionAs a b
 
 /-- Haskell `badgeBits` -/
@@ -386,17 +392,17 @@ def createObject (t : ObjectType) (regionBase : PPtr Unit) (userSize : Nat) (isD
   match toAPIType t with
   | some APIObjectType.TCBObject => (do
         let curdom ← curDomain
-        placeNewObject regionBase ({ ((makeObject : TCB)) with tcbDomain := curdom }) 0
+        let _ ← placeNewObject regionBase ({ ((makeObject : TCB)) with tcbDomain := curdom }) 0
         pure (Capability.ThreadCap (PPtr.mk (PPtr.ptr regionBase))))
   | some APIObjectType.EndpointObject => (do
-        placeNewObject regionBase ((makeObject : Endpoint)) 0
+        let _ ← placeNewObject regionBase ((makeObject : Endpoint)) 0
         pure (Capability.EndpointCap (PPtr.mk (PPtr.ptr regionBase)) 0 true true true true))
   | some APIObjectType.NotificationObject => (do
-        placeNewObject (PPtr.mk (PPtr.ptr regionBase)) ((makeObject : Notification)) 0
+        let _ ← placeNewObject (PPtr.mk (PPtr.ptr regionBase)) ((makeObject : Notification)) 0
         pure (Capability.NotificationCap (PPtr.mk (PPtr.ptr regionBase)) 0 true true))
   | some APIObjectType.CapTableObject => (do
-        placeNewObject (PPtr.mk (PPtr.ptr regionBase)) ((makeObject : CTE)) userSize
-        modify (fun ks => { ks with gsCNodes := funupd (KernelState.gsCNodes ks) (PPtr.ptr regionBase) (some userSize) })
+        let _ ← placeNewObject (PPtr.mk (PPtr.ptr regionBase)) ((makeObject : CTE)) userSize
+        let _ ← modify (fun ks => { ks with gsCNodes := funupd (KernelState.gsCNodes ks) (PPtr.ptr regionBase) (some userSize) })
         pure (Capability.CNodeCap (PPtr.mk (PPtr.ptr regionBase)) userSize 0 0))
   | some APIObjectType.Untyped => pure (Capability.UntypedCap isDevice (PPtr.mk (PPtr.ptr regionBase)) userSize 0)
   | none => (do
@@ -427,38 +433,38 @@ def performInvocation (x0 : Bool) (x1 : Bool) (x2 : Invocation) : KernelP (List 
   match x0, x1, x2 with
   | _, _, (Invocation.InvokeUntyped invok) => 
       do
-        invokeUntyped invok
+        let _ ← invokeUntyped invok
         pure []
   | block, call, (Invocation.InvokeEndpoint ep badge canGrant canGrantReply) => 
       withoutPreemption (do
         let thread ← getCurThread
-        sendIPC block call badge canGrant canGrantReply thread ep
+        let _ ← sendIPC block call badge canGrant canGrantReply thread ep
         pure [])
   | _, _, (Invocation.InvokeNotification ep badge) => 
       do
-        withoutPreemption (sendSignal ep badge)
+        let _ ← withoutPreemption (sendSignal ep badge)
         pure []
   | _, _, (Invocation.InvokeReply thread slot canGrant) => 
       withoutPreemption (do
         let sender ← getCurThread
-        doReplyTransfer sender thread slot canGrant
+        let _ ← doReplyTransfer sender thread slot canGrant
         pure [])
   | _, _, (Invocation.InvokeTCB invok) => invokeTCB invok
   | _, _, (Invocation.InvokeDomain invok) => 
       do
-        withoutPreemption (invokeDomain invok)
+        let _ ← withoutPreemption (invokeDomain invok)
         pure []
   | _, _, (Invocation.InvokeCNode invok) => 
       do
-        invokeCNode invok
+        let _ ← invokeCNode invok
         pure []
   | _, _, (Invocation.InvokeIRQControl invok) => 
       do
-        performIRQControl invok
+        let _ ← performIRQControl invok
         pure []
   | _, _, (Invocation.InvokeIRQHandler invok) => 
       do
-        withoutPreemption (invokeIRQHandler invok)
+        let _ ← withoutPreemption (invokeIRQHandler invok)
         pure []
   | _, _, (Invocation.InvokeArchObject invok) => (RISCV64.performInvocation) invok
 

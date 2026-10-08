@@ -12,11 +12,20 @@ noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- arch: SEL4/API/Types.lhs
+opaque RISCV64.fromAPIType : APIObjectType → ObjectType
+
 -- arch: SEL4/API/Types/RISCV64.hs
 opaque RISCV64.getObjectSize : ObjectType → Nat → Nat
 
 -- arch: SEL4/API/Types/RISCV64.hs
 opaque RISCV64.isFrameType : ObjectType → Bool
+
+-- arch: SEL4/API/Types.lhs
+opaque RISCV64.pageType : ObjectType
+
+-- arch: SEL4/API/Types.lhs
+opaque RISCV64.toAPIType : ObjectType → Option APIObjectType
 
 -- external: SEL4/Machine/Hardware.lhs
 opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
@@ -25,9 +34,6 @@ opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
 opaque wordSizeCase {a : Type} [Inhabited a] : a → a → a
 
 /-! ## Unresolved (no stub possible)
-  RISCV64.fromAPIType: no RISCV64 signature
-  RISCV64.pageType: no RISCV64 signature
-  RISCV64.toAPIType: no RISCV64 signature
   bit: no signature found
   shiftL: no signature found
   shiftR: no signature found
@@ -101,11 +107,11 @@ def msgLengthBits : Nat :=
   7
 
 /-- Haskell `msgMaxExtraCaps` -/
-def msgMaxExtraCaps {a : Type} [Inhabited a] : a :=
+def msgMaxExtraCaps {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
   (bit msgExtraCapBits) - 1
 
 /-- Haskell `msgMaxLength` -/
-def msgMaxLength {a : Type} [Inhabited a] : a :=
+def msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a :=
   120
 
 /-- Haskell `messageInfoFromWord` -/

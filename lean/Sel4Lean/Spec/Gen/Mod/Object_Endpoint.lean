@@ -147,28 +147,28 @@ def receiveIPC (x0 : PPtr TCB) (x1 : Capability) (x2 : Bool) : Kernel Unit :=
           match ep with
           | Endpoint.IdleEP => (match isBlocking with
               | true => (do
-                    setThreadState (ThreadState.BlockedOnReceive epptr recvCanGrant) thread
+                    let _ ← setThreadState (ThreadState.BlockedOnReceive epptr recvCanGrant) thread
                     setEndpoint epptr (Endpoint.RecvEP [thread]))
               | false => doNBRecvFailedTransfer thread)
           | Endpoint.RecvEP queue => (match isBlocking with
               | true => (do
-                    setThreadState (ThreadState.BlockedOnReceive epptr recvCanGrant) thread
+                    let _ ← setThreadState (ThreadState.BlockedOnReceive epptr recvCanGrant) thread
                     setEndpoint epptr (Endpoint.RecvEP (queue ++ [thread])))
               | false => doNBRecvFailedTransfer thread)
           | Endpoint.SendEP (sender :: queue) => (do
-                setEndpoint epptr (match queue with
-                | [] => Endpoint.IdleEP
-                | _ => Endpoint.SendEP queue)
+                let _ ← setEndpoint epptr (match queue with
+                        | [] => Endpoint.IdleEP
+                        | _ => Endpoint.SendEP queue)
                 let senderState ← getThreadState sender
-                assertH (isSend senderState) "TCB in send endpoint queue must be blocked on send"
+                let _ ← assertH (isSend senderState) "TCB in send endpoint queue must be blocked on send"
                 let badge := ThreadState.blockingIPCBadge senderState
                 let canGrant := ThreadState.blockingIPCCanGrant senderState
                 let canGrantReply := ThreadState.blockingIPCCanGrantReply senderState
-                doIPCTransfer sender (some epptr) badge canGrant thread
+                let _ ← doIPCTransfer sender (some epptr) badge canGrant thread
                 let call := ThreadState.blockingIPCIsCall senderState
                 match (call, canGrant || canGrantReply) with
                 | (false, _) => (do
-                      setThreadState ThreadState.Running sender
+                      let _ ← setThreadState ThreadState.Running sender
                       possibleSwitchTo sender)
                 | (_, true) => setupCallerCap sender thread recvCanGrant
                 | _ => setThreadState ThreadState.Inactive sender)
@@ -181,7 +181,7 @@ def replyFromKernel (x0 : PPtr TCB) (x1 : Word × (List Word)) : Kernel Unit :=
   | thread, (resultLabel, resultData) => 
       do
         let destIPCBuffer ← lookupIPCBuffer true thread
-        asUser thread (setRegister badgeRegister 0)
+        let _ ← asUser thread (setRegister badgeRegister 0)
         let len ← setMRs thread destIPCBuffer resultData
         let msgInfo := { msgLength := len, msgExtraCaps := 0, msgCapsUnwrapped := 0, msgLabel := resultLabel : MessageInfo }
         setMessageInfo thread msgInfo
@@ -189,22 +189,22 @@ def replyFromKernel (x0 : PPtr TCB) (x1 : Word × (List Word)) : Kernel Unit :=
 /-- Haskell `cancelIPC` -/
 def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
   let replyIPCCancel := do
-      threadSet (fun tcb => { tcb with tcbFault := none }) tptr
+      let _ ← threadSet (fun tcb => { tcb with tcbFault := none }) tptr
       let slot ← getThreadReplySlot tptr
       let callerCap ← liftM (MDBNode.mdbNext ∘ CTE.cteMDBNode) (getCTE slot)
       whenH (callerCap != nullPointer) (do
-        stateAssertH (capHasProperty callerCap (fun cap => (isReplyCap cap) && (not (Capability.capReplyMaster cap)))) "replyIPCCancel: expected a reply cap"
+        let _ ← stateAssertH (capHasProperty callerCap (fun cap => (isReplyCap cap) && (not (Capability.capReplyMaster cap)))) "replyIPCCancel: expected a reply cap"
         cteDeleteOne callerCap)
   let blockedIPCCancel := fun state =>
     do
       let epptr := ThreadState.blockingObject state
       let ep ← getEndpoint epptr
-      assertH (not (isIdle ep)) "blockedIPCCancel: endpoint must not be idle"
+      let _ ← assertH (not (isIdle ep)) "blockedIPCCancel: endpoint must not be idle"
       let queue' := deleteH tptr (Endpoint.epQueue ep)
       let ep' ← match queue' with
         | [] => pure Endpoint.IdleEP
         | _ => pure (Endpoint.set_epQueue ep queue')
-      setEndpoint epptr ep'
+      let _ ← setEndpoint epptr ep'
       setThreadState ThreadState.Inactive tptr
   let isIdle := fun ep =>
     match ep with
@@ -222,40 +222,40 @@ def cancelIPC (tptr : PPtr TCB) : Kernel Unit :=
 /-- Haskell `cancelAllIPC` -/
 def cancelAllIPC (epptr : PPtr Endpoint) : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ksReadyQueues_asrt ""
     let ep ← getEndpoint epptr
     match ep with
     | Endpoint.IdleEP => pure ()
     | _ => (do
-          setEndpoint epptr Endpoint.IdleEP
-          forM_H (Endpoint.epQueue ep) (fun t => do
-              setThreadState ThreadState.Restart t
-              tcbSchedEnqueue t)
+          let _ ← setEndpoint epptr Endpoint.IdleEP
+          let _ ← forM_H (Endpoint.epQueue ep) (fun t => do
+                      let _ ← setThreadState ThreadState.Restart t
+                      tcbSchedEnqueue t)
           rescheduleRequired)
 
 /-- Haskell `cancelBadgedSends` -/
 def cancelBadgedSends (epptr : PPtr Endpoint) (badge : Word) : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ksReadyQueues_asrt ""
     let ep ← getEndpoint epptr
     match ep with
     | Endpoint.IdleEP => pure ()
     | Endpoint.RecvEP .. => pure ()
     | Endpoint.SendEP queue => (do
-          setEndpoint epptr Endpoint.IdleEP
+          let _ ← setEndpoint epptr Endpoint.IdleEP
           let queue' ← (flip filterM queue) (fun t => do
                 let st ← getThreadState t
                 if (ThreadState.blockingIPCBadge st) == badge then
                   do
-                    setThreadState ThreadState.Restart t
-                    tcbSchedEnqueue t
+                    let _ ← setThreadState ThreadState.Restart t
+                    let _ ← tcbSchedEnqueue t
                     pure false
                 else
                   pure true)
           let ep' ← match queue' with
             | [] => pure Endpoint.IdleEP
             | _ => pure (Endpoint.SendEP queue')
-          setEndpoint epptr ep'
+          let _ ← setEndpoint epptr ep'
           rescheduleRequired)
 
 end

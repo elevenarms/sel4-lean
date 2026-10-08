@@ -24,9 +24,6 @@ opaque createNewObjects : ObjectType → (PPtr CTE) → (List (PPtr CTE)) → (P
 -- external: SEL4/Model/PSpace.lhs
 opaque deleteObjects {a : Type} [Inhabited a] : (PPtr a) → Nat → Kernel Unit
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
 
@@ -61,7 +58,7 @@ opaque locateSlotCap : Capability → Word → Kernel (PPtr CTE)
 opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (PPtr CTE)
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Object/Structures/RISCV64.hs
 opaque maxUntypedSizeBits : Nat
@@ -73,7 +70,7 @@ opaque minUntypedSizeBits : Nat
 opaque preemptionPoint : KernelP Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] : a → b → b → KernelF SyscallError Unit
+opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] [IntegralH a] [IntegralH b] : a → b → b → KernelF SyscallError Unit
 
 -- external: SEL4/Config.lhs
 opaque resetChunkBits : Nat
@@ -126,15 +123,15 @@ def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : C
   match x0, x1, x2, x3, x4 with
   | label, (newTypeW :: userObjSizeW :: nodeIndexW :: nodeDepthW :: nodeOffset :: nodeWindow :: _), slot, cap, (rootCap :: _) => 
       do
-        unlessH ((genInvocationType label) == GenInvocationLabels.UntypedRetype) (throw SyscallError.IllegalOperation)
-        whenH ((fromIntegral newTypeW) > (fromEnum ((maxBound : ObjectType)))) (throw (SyscallError.InvalidArgument 0))
+        let _ ← unlessH ((genInvocationType label) == GenInvocationLabels.UntypedRetype) (throw SyscallError.IllegalOperation)
+        let _ ← whenH ((fromIntegral newTypeW) > (fromEnum ((maxBound : ObjectType)))) (throw (SyscallError.InvalidArgument 0))
         let newType := (toEnum (fromIntegral newTypeW) : ObjectType)
         let userObjSize := fromIntegral userObjSizeW
         let objectSize := getObjectSize newType userObjSize
-        unlessH (userObjSize < wordBits) (throw (SyscallError.RangeError 0 (fromIntegral maxUntypedSizeBits)))
-        rangeCheck objectSize 0 maxUntypedSizeBits
-        whenH ((newType == (fromAPIType APIObjectType.CapTableObject)) && (userObjSize == 0)) (throw (SyscallError.InvalidArgument 1))
-        whenH ((newType == (fromAPIType APIObjectType.Untyped)) && (userObjSize < minUntypedSizeBits)) (throw (SyscallError.InvalidArgument 1))
+        let _ ← unlessH (userObjSize < wordBits) (throw (SyscallError.RangeError 0 (fromIntegral maxUntypedSizeBits)))
+        let _ ← rangeCheck objectSize 0 maxUntypedSizeBits
+        let _ ← whenH ((newType == (fromAPIType APIObjectType.CapTableObject)) && (userObjSize == 0)) (throw (SyscallError.InvalidArgument 1))
+        let _ ← whenH ((newType == (fromAPIType APIObjectType.Untyped)) && (userObjSize < minUntypedSizeBits)) (throw (SyscallError.InvalidArgument 1))
         let nodeIndex := CPtr.CPtr nodeIndexW
         let nodeDepth := fromIntegral nodeDepthW
         let nodeCap ← if nodeDepth == 0 then
@@ -143,17 +140,17 @@ def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : C
             do
               let nodeSlot ← lookupTargetSlot rootCap nodeIndex nodeDepth
               withoutFailure (getSlotCap nodeSlot)
-        match nodeCap with
-        | Capability.CNodeCap .. => pure ()
-        | _ => throw (SyscallError.FailedLookup false (LookupFailure.MissingCapability nodeDepth))
+        let _ ← match nodeCap with
+                | Capability.CNodeCap .. => pure ()
+                | _ => throw (SyscallError.FailedLookup false (LookupFailure.MissingCapability nodeDepth))
         let nodeSize := 1 <<< (Capability.capCNodeBits nodeCap)
-        rangeCheck nodeOffset 0 (nodeSize - 1)
-        rangeCheck nodeWindow 1 retypeFanOutLimit
-        rangeCheck nodeWindow 1 (nodeSize - nodeOffset)
+        let _ ← rangeCheck nodeOffset 0 (nodeSize - 1)
+        let _ ← rangeCheck nodeWindow 1 retypeFanOutLimit
+        let _ ← rangeCheck nodeWindow 1 (nodeSize - nodeOffset)
         let slots ← withoutFailure (mapM (locateSlotCap nodeCap) (enumFromToH nodeOffset ((nodeOffset + nodeWindow) - 1)))
-        mapM_ ensureEmptySlot slots
+        let _ ← mapM_ ensureEmptySlot slots
         let reset ← withoutFailure (constOnFailure false (do
-            ensureNoChildren slot
+            let _ ← ensureNoChildren slot
             pure true))
         let freeIndex := if reset then
             0
@@ -162,10 +159,10 @@ def decodeUntypedInvocation (x0 : Word) (x1 : List Word) (x2 : PPtr CTE) (x3 : C
         let freeRef := getFreeRef (Capability.capPtr cap) freeIndex
         let untypedFreeBytes := (bit (Capability.capBlockSize cap)) - freeIndex
         let maxCount := untypedFreeBytes >>> objectSize
-        whenH ((fromIntegral maxCount) < nodeWindow) (throw (SyscallError.NotEnoughMemory (fromIntegral untypedFreeBytes)))
+        let _ ← whenH ((fromIntegral maxCount) < nodeWindow) (throw (SyscallError.NotEnoughMemory (fromIntegral untypedFreeBytes)))
         let notFrame := not (isFrameType newType)
         let isDevice := Capability.capIsDevice cap
-        whenH (isDevice && (notFrame && (newType != (fromAPIType APIObjectType.Untyped)))) (throw (SyscallError.InvalidArgument 1))
+        let _ ← whenH (isDevice && (notFrame && (newType != (fromAPIType APIObjectType.Untyped)))) (throw (SyscallError.InvalidArgument 1))
         let alignedFreeRef := PPtr.mk (alignUp (PPtr.ptr freeRef) objectSize)
         pure ({ retypeSource := slot, retypeResetUntyped := reset, retypeRegionBase := Capability.capPtr cap, retypeFreeRegionBase := alignedFreeRef, retypeNewType := newType, retypeNewSizeBits := userObjSize, retypeSlots := slots, retypeIsDevice := isDevice : UntypedInvocation })
   | label, _, _, _, _ => 
@@ -193,15 +190,15 @@ def invokeUntyped (x0 : UntypedInvocation) : KernelP Unit :=
   match x0 with
   | (UntypedInvocation.Retype srcSlot reset base retypeBase newType userSize destSlots isDev) => 
       do
-        whenH reset (resetUntypedCap srcSlot)
+        let _ ← whenH reset (resetUntypedCap srcSlot)
         withoutPreemption (do
           let totalObjectSize := (length destSlots) <<< (getObjectSize newType userSize)
           let inRange := fun x => ((PPtr.ptr retypeBase) ≤ x) && (x ≤ (((PPtr.ptr retypeBase) + (fromIntegral totalObjectSize)) - 1))
-          stateAssertH (fun s => not (cNodeOverlap (KernelState.gsCNodes s) inRange)) "CNodes present in region to be retyped."
-          stateAssertH (fun s => not (archOverlap s inRange)) "Arch specific non-overlap requirements."
-          assertH (canonicalAddressAssert retypeBase) "Canonical ptr required on some architectures"
+          let _ ← stateAssertH (fun s => not (cNodeOverlap (KernelState.gsCNodes s) inRange)) "CNodes present in region to be retyped."
+          let _ ← stateAssertH (fun s => not (archOverlap s inRange)) "Arch specific non-overlap requirements."
+          let _ ← assertH (canonicalAddressAssert retypeBase) "Canonical ptr required on some architectures"
           let freeRef := retypeBase + (PPtr.mk (fromIntegral totalObjectSize))
-          updateFreeIndex srcSlot (getFreeIndex base freeRef)
+          let _ ← updateFreeIndex srcSlot (getFreeIndex base freeRef)
           createNewObjects newType srcSlot destSlots retypeBase userSize isDev)
 
 end

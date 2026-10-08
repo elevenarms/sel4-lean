@@ -31,7 +31,7 @@ opaque deleteASIDPool : ASID → (PPtr ASIDPool) → Kernel Unit
 opaque findVSpaceForASID : ASID → KernelF LookupFailure (PPtr PTE)
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Kernel/VSpace/RISCV64.hs
 opaque maskVMRights : VMRights → CapRights → VMRights
@@ -117,20 +117,20 @@ def finaliseCap (x0 : ArchCapability) (x1 : Bool) : Kernel (Capability × Capabi
   match x0, x1 with
   | (ArchCapability.ASIDPoolCap ptr b), true => 
       do
-        deleteASIDPool b ptr
+        let _ ← deleteASIDPool b ptr
         pure ((Capability.NullCap, Capability.NullCap))
   | (ArchCapability.PageTableCap pte (some (asid, vptr))), true => 
       do
-        catchFailure (do
-          let vroot ← findVSpaceForASID asid
-          if vroot == pte then
-            withoutFailure (deleteASID asid pte)
-          else
-            throw LookupFailure.InvalidRoot) (fun _ => unmapPageTable asid vptr pte)
+        let _ ← catchFailure (do
+                  let vroot ← findVSpaceForASID asid
+                  if vroot == pte then
+                    withoutFailure (deleteASID asid pte)
+                  else
+                    throw LookupFailure.InvalidRoot) (fun _ => unmapPageTable asid vptr pte)
         pure ((Capability.NullCap, Capability.NullCap))
   | (ArchCapability.FrameCap ptr _ s _ (some (asid, v))), _ => 
       do
-        unmapPage s asid v ptr
+        let _ ← unmapPage s asid v ptr
         pure ((Capability.NullCap, Capability.NullCap))
   | _, _ => pure ((Capability.NullCap, Capability.NullCap))
 
@@ -173,11 +173,11 @@ def placeNewDataObject (regionBase : PPtr Unit) (sz : Nat) (isDevice : Bool) : K
     placeNewObject regionBase UserData.UserData sz
 
 /-- Haskell `decodeInvocation` -/
-def decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError Invocation :=
+def decodeInvocation : RISCV64.Word → (List RISCV64.Word) → CPtr → (PPtr CTE) → ArchCapability → (List (Capability × (PPtr CTE))) → KernelF SyscallError RISCV64.Invocation :=
   decodeRISCVMMUInvocation
 
 /-- Haskell `performInvocation` -/
-def performInvocation : Invocation → KernelP (List RISCV64.Word) :=
+def performInvocation : RISCV64.Invocation → KernelP (List RISCV64.Word) :=
   performRISCVMMUInvocation
 
 /-- Haskell `capUntypedPtr` -/

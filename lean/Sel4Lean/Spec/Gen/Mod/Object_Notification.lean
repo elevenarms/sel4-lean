@@ -79,19 +79,19 @@ def sendSignal (ntfnPtr : PPtr Notification) (badge : Word) : Kernel Unit :=
           let state ← getThreadState tcb
           if receiveBlocked state then
             do
-              cancelIPC tcb
-              setThreadState ThreadState.Running tcb
-              asUser tcb (setRegister badgeRegister badge)
+              let _ ← cancelIPC tcb
+              let _ ← setThreadState ThreadState.Running tcb
+              let _ ← asUser tcb (setRegister badgeRegister badge)
               possibleSwitchTo tcb
           else
             setNotification ntfnPtr ({ nTFN with ntfnObj := NTFN.ActiveNtfn badge }))
     | (NTFN.IdleNtfn, none) => setNotification ntfnPtr ({ nTFN with ntfnObj := NTFN.ActiveNtfn badge })
     | (NTFN.WaitingNtfn (dest :: queue), _) => (do
-          setNotification ntfnPtr ({ nTFN with ntfnObj := match queue with
-              | [] => NTFN.IdleNtfn
-              | _ => NTFN.WaitingNtfn queue })
-          setThreadState ThreadState.Running dest
-          asUser dest (setRegister badgeRegister badge)
+          let _ ← setNotification ntfnPtr ({ nTFN with ntfnObj := match queue with
+                      | [] => NTFN.IdleNtfn
+                      | _ => NTFN.WaitingNtfn queue })
+          let _ ← setThreadState ThreadState.Running dest
+          let _ ← asUser dest (setRegister badgeRegister badge)
           possibleSwitchTo dest)
     | (NTFN.WaitingNtfn [], _) => failM "WaitingNtfn Notification must have non-empty queue"
     | (NTFN.ActiveNtfn badge', _) => (do
@@ -110,29 +110,29 @@ def receiveSignal (thread : PPtr TCB) (cap : Capability) (isBlocking : Bool) : K
     match Notification.ntfnObj ntfn with
     | NTFN.IdleNtfn => (match isBlocking with
         | true => (do
-              setThreadState (ThreadState.BlockedOnNotification ntfnPtr) thread
+              let _ ← setThreadState (ThreadState.BlockedOnNotification ntfnPtr) thread
               setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.WaitingNtfn ([thread]) }))
         | false => doNBRecvFailedTransfer thread)
     | NTFN.WaitingNtfn queue => (match isBlocking with
         | true => (do
-              setThreadState (ThreadState.BlockedOnNotification ntfnPtr) thread
+              let _ ← setThreadState (ThreadState.BlockedOnNotification ntfnPtr) thread
               setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.WaitingNtfn (queue ++ [thread]) }))
         | false => doNBRecvFailedTransfer thread)
     | NTFN.ActiveNtfn badge => (do
-          asUser thread (setRegister badgeRegister badge)
+          let _ ← asUser thread (setRegister badgeRegister badge)
           setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn }))
 
 /-- Haskell `cancelAllSignals` -/
 def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ksReadyQueues_asrt ""
     let ntfn ← getNotification ntfnPtr
     match Notification.ntfnObj ntfn with
     | NTFN.WaitingNtfn queue => (do
-          setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn })
-          forM_H queue (fun t => do
-              setThreadState ThreadState.Restart t
-              tcbSchedEnqueue t)
+          let _ ← setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn })
+          let _ ← forM_H queue (fun t => do
+                      let _ ← setThreadState ThreadState.Restart t
+                      tcbSchedEnqueue t)
           rescheduleRequired)
     | _ => pure ()
 
@@ -144,12 +144,12 @@ def cancelSignal (threadPtr : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel U
     | _ => false
   do
     let ntfn ← getNotification ntfnPtr
-    assertH (isWaiting (Notification.ntfnObj ntfn)) "cancelSignal: notification object must be waiting"
+    let _ ← assertH (isWaiting (Notification.ntfnObj ntfn)) "cancelSignal: notification object must be waiting"
     let queue' := deleteH threadPtr (NTFN.ntfnQueue (Notification.ntfnObj ntfn))
     let ntfn' ← match queue' with
       | [] => pure NTFN.IdleNtfn
       | _ => pure (NTFN.set_ntfnQueue (Notification.ntfnObj ntfn) queue')
-    setNotification ntfnPtr ({ ntfn with ntfnObj := ntfn' })
+    let _ ← setNotification ntfnPtr ({ ntfn with ntfnObj := ntfn' })
     setThreadState ThreadState.Inactive threadPtr
 
 /-- Haskell `completeSignal` -/
@@ -158,7 +158,7 @@ def completeSignal (ntfnPtr : PPtr Notification) (tcb : PPtr TCB) : Kernel Unit 
     let ntfn ← getNotification ntfnPtr
     match Notification.ntfnObj ntfn with
     | NTFN.ActiveNtfn badge => (do
-          asUser tcb (setRegister badgeRegister badge)
+          let _ ← asUser tcb (setRegister badgeRegister badge)
           setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn }))
     | _ => failM "tried to complete signal with inactive notification object"
 
@@ -166,14 +166,14 @@ def completeSignal (ntfnPtr : PPtr Notification) (tcb : PPtr TCB) : Kernel Unit 
 def bindNotification (tcb : PPtr TCB) (ntfnPtr : PPtr Notification) : Kernel Unit :=
   do
     let ntfn ← getNotification ntfnPtr
-    setNotification ntfnPtr ({ ntfn with ntfnBoundTCB := some tcb })
+    let _ ← setNotification ntfnPtr ({ ntfn with ntfnBoundTCB := some tcb })
     setBoundNotification (some ntfnPtr) tcb
 
 /-- Haskell `doUnbindNotification` -/
 def doUnbindNotification (ntfnPtr : PPtr Notification) (ntfn : Notification) (tcbptr : PPtr TCB) : Kernel Unit :=
   do
     let ntfn' := { ntfn with ntfnBoundTCB := none }
-    setNotification ntfnPtr ntfn'
+    let _ ← setNotification ntfnPtr ntfn'
     setBoundNotification none tcbptr
 
 /-- Haskell `unbindNotification` -/

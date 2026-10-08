@@ -12,68 +12,50 @@ noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ackInterrupt : (PtrH CallbackData) → RISCV64.IRQ → IO Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque configureTimer : (PtrH CallbackData) → IO RISCV64.IRQ
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getActiveIRQ : (PtrH CallbackData) → IO (Option RISCV64.IRQ)
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getDeviceRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getKernelDevices : (PtrH CallbackData) → IO (List (PAddr × (PPtr RISCV64.Word)))
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getMemoryRegions : (PtrH CallbackData) → IO (List (PAddr × PAddr))
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque irqInvalid : RISCV64.IRQ
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque loadWordCallback : (PtrH CallbackData) → PAddr → IO RISCV64.Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque maskInterrupt : (PtrH CallbackData) → Bool → RISCV64.IRQ → IO Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pageColourBits : Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque physBase : PAddr
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque resetTimer : (PtrH CallbackData) → IO Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque storeWordCallback : (PtrH CallbackData) → PAddr → RISCV64.Word → IO Unit
+
 /-! ## Unresolved (no stub possible)
   error: no signature found
 -/
 
 /-! ## Translated -/
-
-/-- Haskell `physBase` -/
-def physBase : PAddr :=
-  PAddr.PAddr 0x80000000
-
-/-- Haskell `pageColourBits` -/
-def pageColourBits : Nat :=
-  error "unused on this architecture"
-
-/-- Haskell `irqInvalid` -/
-def irqInvalid : RISCV64.IRQ :=
-  RISCV64.IRQ.IRQ 0
-
-/-- Haskell `getMemoryRegions` -/
-def getMemoryRegions (x0 : PtrH CallbackData) : IO (List (PAddr × PAddr)) :=
-  match x0 with
-  | _ => error "unimplemented"
-
-/-- Haskell `getDeviceRegions` -/
-def getDeviceRegions (x0 : PtrH CallbackData) : IO (List (PAddr × PAddr)) :=
-  match x0 with
-  | _ => error "unimplemented"
-
-/-- Haskell `getKernelDevices` -/
-def getKernelDevices (x0 : PtrH CallbackData) : IO (List (PAddr × (PPtr RISCV64.Word))) :=
-  match x0 with
-  | _ => error "unimplemented"
-
-/-- Haskell `maskInterrupt` -/
-def maskInterrupt (x0 : PtrH CallbackData) (x1 : Bool) (x2 : RISCV64.IRQ) : IO Unit :=
-  match x0, x1, x2 with
-  | env, mask, (RISCV64.IRQ.IRQ irq) => error "unimplemented"
-
-/-- Haskell `loadWordCallback` -/
-def loadWordCallback : (PtrH CallbackData) → PAddr → IO RISCV64.Word :=
-  error "unimplemented"
-
-/-- Haskell `storeWordCallback` -/
-def storeWordCallback : (PtrH CallbackData) → PAddr → RISCV64.Word → IO Unit :=
-  error "unimplemented"
-
-/-- Haskell `getActiveIRQ` -/
-def getActiveIRQ : (PtrH CallbackData) → IO (Option RISCV64.IRQ) :=
-  error "unimplemented"
-
-/-- Haskell `ackInterrupt` -/
-def ackInterrupt (x0 : PtrH CallbackData) (x1 : RISCV64.IRQ) : IO Unit :=
-  match x0, x1 with
-  | _, _ => error "unimplemented"
-
-/-- Haskell `configureTimer` -/
-def configureTimer (env : PtrH CallbackData) : IO RISCV64.IRQ :=
-  error "unimplemented"
-
-/-- Haskell `resetTimer` -/
-def resetTimer (env : PtrH CallbackData) : IO Unit :=
-  error "unimplemented"
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware_RISCV64_HiFive

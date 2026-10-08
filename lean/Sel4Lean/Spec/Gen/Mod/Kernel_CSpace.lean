@@ -25,10 +25,10 @@ opaque locateSlotCap : Capability → Word → Kernel (PPtr CTE)
 opaque lookupErrorOnFailure {a : Type} [Inhabited a] : Bool → (KernelF LookupFailure a) → KernelF SyscallError a
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Model/Failures.lhs
-opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] : a → b → b → KernelF SyscallError Unit
+opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] [IntegralH a] [IntegralH b] : a → b → b → KernelF SyscallError Unit
 
 -- external: SEL4/Model/Failures.lhs
 opaque throw {f : Type} {a : Type} [Inhabited f] [Inhabited a] : f → KernelF f a
@@ -53,12 +53,12 @@ def resolveAddressBits (x0 : Capability) (x1 : CPtr) (x2 : Nat) : KernelF Lookup
         let radixBits := Capability.capCNodeBits nodeCap
         let guardBits := Capability.capCNodeGuardSize nodeCap
         let levelBits := radixBits + guardBits
-        assertH (levelBits != 0) "All CNodes must resolve bits"
+        let _ ← assertH (levelBits != 0) "All CNodes must resolve bits"
         let offset := ((CPtr.fromCPtr capptr) >>> (bits - levelBits)) &&& (mask radixBits)
         let slot ← withoutFailure (locateSlotCap nodeCap offset)
         let guard := ((CPtr.fromCPtr capptr) >>> (bits - guardBits)) &&& (mask guardBits)
-        unlessH ((guardBits ≤ bits) && (guard == (Capability.capCNodeGuard nodeCap))) (throw (LookupFailure.GuardMismatch bits (Capability.capCNodeGuard nodeCap) guardBits))
-        whenH (levelBits > bits) (throw (LookupFailure.DepthMismatch bits levelBits))
+        let _ ← unlessH ((guardBits ≤ bits) && (guard == (Capability.capCNodeGuard nodeCap))) (throw (LookupFailure.GuardMismatch bits (Capability.capCNodeGuard nodeCap) guardBits))
+        let _ ← whenH (levelBits > bits) (throw (LookupFailure.DepthMismatch bits levelBits))
         let bitsLeft := bits - levelBits
         if bitsLeft == 0 then
           pure ((slot, 0))
@@ -96,7 +96,7 @@ def lookupSlotForCNodeOp (x0 : Bool) (x1 : Capability) (x2 : CPtr) (x3 : Nat) : 
   match x0, x1, x2, x3 with
   | isSource, root@(Capability.CNodeCap ..), capptr, depth => 
       do
-        rangeCheck depth 1 (finiteBitSize capptr)
+        let _ ← rangeCheck depth 1 (finiteBitSize capptr)
         lookupErrorOnFailure isSource (do
           let result ← resolveAddressBits root capptr depth
           match result with

@@ -22,13 +22,13 @@
 ✔ Kernel_Hypervisor
 ✔ Kernel_Hypervisor_RISCV64
 ✖ Kernel_Init
-✖ Kernel_Thread
+✔ Kernel_Thread
 ✔ Kernel_Thread_RISCV64
-✖ Kernel_VSpace
+✔ Kernel_VSpace
 ✖ Kernel_VSpace_RISCV64
 ✔ Machine
-✖ Machine_Hardware
-✖ Machine_Hardware_RISCV64
+✔ Machine_Hardware
+✔ Machine_Hardware_RISCV64
 ✔ Machine_Hardware_RISCV64_HiFive
 ✔ Machine_Hardware_RISCV64_Spike
 ✖ Machine_RegisterSet
@@ -44,7 +44,7 @@
 ✖ Model_Syscall
 ✔ Object
 ✖ Object_CNode
-✖ Object_Domain
+✔ Object_Domain
 ✔ Object_Domain_RISCV64
 ✖ Object_Endpoint
 ✔ Object_Instances
@@ -53,7 +53,7 @@
 ✖ Object_Interrupt_RISCV64
 ✔ Object_Notification
 ✖ Object_ObjectType
-✔ Object_ObjectType_RISCV64
+✖ Object_ObjectType_RISCV64
 ✔ Object_Structures
 ✖ Object_Structures_RISCV64
 ✖ Object_TCB

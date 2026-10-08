@@ -81,7 +81,7 @@ def stateAssert (f : KernelState → Bool) (e : String) : Kernel Unit :=
 /-- Haskell `setCurThread` -/
 def setCurThread (tptr : PPtr TCB) : Kernel Unit :=
   do
-    stateAssertH idleThreadNotQueued "the idle thread cannot be in the ready queues"
+    let _ ← stateAssertH idleThreadNotQueued "the idle thread cannot be in the ready queues"
     modify (fun ks => { ks with ksCurThread := tptr })
 
 /-- Haskell `ready_qs_runnable` -/
@@ -134,7 +134,7 @@ def modifyWorkUnits (f : Word → Word) : Kernel Unit :=
   modify (fun ks => { ks with ksWorkUnitsCompleted := f (KernelState.ksWorkUnitsCompleted ks) })
 
 /-- Haskell `modifyArchState` -/
-def modifyArchState (f : KernelState → KernelState) : Kernel Unit :=
+def modifyArchState (f : RISCV64.KernelState → RISCV64.KernelState) : Kernel Unit :=
   modify (fun s => { s with ksArchState := f (KernelState.ksArchState s) })
 
 /-- Haskell `curDomain` -/
@@ -164,10 +164,6 @@ def newKernelState (data_start : PAddr) : KernelState × (List PAddr) :=
   let state' := { ksPSpace := newPSpace, gsUserPages := fun _ => none, gsCNodes := fun _ => none, gsUntypedZeroRanges := empty, ksDomScheduleIdx := 0, ksDomScheduleStart := 0, ksDomSchedule := [(0, 15), (2, 42), (1, 73)], ksCurDomain := 0, ksDomainTime := 15, ksReadyQueues := funPartialArray (const emptyQueue) (((0, 0), (fromIntegral numDomains, maxPriority))), ksReadyQueuesL1Bitmap := funPartialArray (const 0) ((0, fromIntegral numDomains)), ksReadyQueuesL2Bitmap := funPartialArray (const 0) (((0, 0), (fromIntegral numDomains, l2BitmapSize))), ksCurThread := error "No initial thread", ksIdleThread := error "Idle thread has not been created", ksSchedulerAction := error "scheduler action has not been set", ksInterruptState := error "Interrupt controller is uninitialised", ksWorkUnitsCompleted := 0, ksArchState := archState : KernelState }
   let (archState, frames) := (RISCV64.newKernelState) data_start
   (state', frames)
-
-/-- Haskell `doMachineOp` -/
-def doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a :=
-  lift
 
 /-- Haskell `capHasProperty` -/
 def capHasProperty (x0 : PPtr CTE) (x1 : Capability → Bool) : KernelState → Bool :=

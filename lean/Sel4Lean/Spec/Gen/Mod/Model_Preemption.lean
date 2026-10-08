@@ -12,9 +12,6 @@ noncomputable section
 
 /-! ## Stubs (from Haskell signatures) -/
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque getActiveIRQ : Bool → MachineMonad (Option IRQ)
 
@@ -44,10 +41,10 @@ def workUnitsLimit :=
 /-- Haskell `preemptionPoint` -/
 def preemptionPoint : KernelP Unit :=
   do
-    lift (modifyWorkUnits (((· + ·)) 1))
+    let _ ← lift (modifyWorkUnits (((· + ·)) 1))
     let workUnits ← lift getWorkUnits
     whenH (workUnitsLimit ≤ workUnits) (do
-      lift (setWorkUnits 0)
+      let _ ← lift (setWorkUnits 0)
       let preempt ← lift (doMachineOp (getActiveIRQ true))
       match preempt with
       | some irq => throw irq

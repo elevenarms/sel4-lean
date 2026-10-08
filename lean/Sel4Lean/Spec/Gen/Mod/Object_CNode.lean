@@ -88,10 +88,10 @@ opaque maskCapRights : CapRights → Capability → Capability
 opaque maxFreeIndex : Nat → Nat
 
 -- external: SEL4/API/Types.lhs
-opaque msgMaxExtraCaps {a : Type} [Inhabited a] : a
+opaque msgMaxExtraCaps {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a
 
 -- external: SEL4/API/Types.lhs
-opaque msgMaxLength {a : Type} [Inhabited a] : a
+opaque msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a
 
 -- external: SEL4/Object/Structures.lhs
 opaque nullMDBNode : MDBNode
@@ -175,14 +175,14 @@ def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability) (x3 : L
   | label, (index :: bits :: args), cap@(Capability.CNodeCap ..), extraCaps => 
       do
         let inv := genInvocationType label
-        unlessH (elem inv (enumFromToH GenInvocationLabels.CNodeRevoke GenInvocationLabels.CNodeSaveCaller)) (throw SyscallError.IllegalOperation)
+        let _ ← unlessH (elem inv (enumFromToH GenInvocationLabels.CNodeRevoke GenInvocationLabels.CNodeSaveCaller)) (throw SyscallError.IllegalOperation)
         let destSlot ← lookupTargetSlot cap (CPtr.CPtr index) (fromIntegral bits)
         match (elem inv (enumFromToH GenInvocationLabels.CNodeCopy GenInvocationLabels.CNodeMutate), inv, args, extraCaps) with
         | (true, _, srcIndex :: srcDepth :: args, srcRootCap :: _) => (do
-              ensureEmptySlot destSlot
+              let _ ← ensureEmptySlot destSlot
               let srcSlot ← lookupSourceSlot srcRootCap (CPtr.CPtr srcIndex) (fromIntegral srcDepth)
               let srcCTE ← withoutFailure (getCTE srcSlot)
-              whenH (isNullCap (CTE.cteCap srcCTE)) (throw (SyscallError.FailedLookup true (LookupFailure.MissingCapability (fromIntegral srcDepth))))
+              let _ ← whenH (isNullCap (CTE.cteCap srcCTE)) (throw (SyscallError.FailedLookup true (LookupFailure.MissingCapability (fromIntegral srcDepth))))
               let (rights, capData) ← match (inv, args) with
                 | (GenInvocationLabels.CNodeCopy, rights :: _) => pure ((rightsFromWord rights, none))
                 | (GenInvocationLabels.CNodeMint, rights :: newData :: _) => pure ((rightsFromWord rights, some newData))
@@ -197,7 +197,7 @@ def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability) (x3 : L
                   deriveCap srcSlot) (match capData with
                 | some w => updateCapData isMove w srcCap
                 | none => srcCap)
-              whenH (isNullCap newCap) (throw SyscallError.IllegalOperation)
+              let _ ← whenH (isNullCap newCap) (throw SyscallError.IllegalOperation)
               pure ((if isMove then
                 CNodeInvocation.Move
               else
@@ -205,25 +205,25 @@ def decodeCNodeInvocation (x0 : Word) (x1 : List Word) (x2 : Capability) (x3 : L
         | (_, GenInvocationLabels.CNodeRevoke, _, _) => pure (CNodeInvocation.Revoke destSlot)
         | (_, GenInvocationLabels.CNodeDelete, _, _) => pure (CNodeInvocation.Delete destSlot)
         | (_, GenInvocationLabels.CNodeSaveCaller, _, _) => (do
-              ensureEmptySlot destSlot
+              let _ ← ensureEmptySlot destSlot
               pure (CNodeInvocation.SaveCaller destSlot))
         | (_, GenInvocationLabels.CNodeCancelBadgedSends, _, _) => (do
               let cte ← withoutFailure (getCTE destSlot)
-              unlessH (hasCancelSendRights (CTE.cteCap cte)) (throw SyscallError.IllegalOperation)
+              let _ ← unlessH (hasCancelSendRights (CTE.cteCap cte)) (throw SyscallError.IllegalOperation)
               pure (CNodeInvocation.CancelBadgedSends (CTE.cteCap cte)))
         | (_, GenInvocationLabels.CNodeRotate, pivotNewData :: pivotIndex :: pivotDepth :: srcNewData :: srcIndex :: srcDepth :: _, pivotRootCap :: srcRootCap :: _) => (do
               let srcSlot ← lookupSourceSlot srcRootCap (CPtr.CPtr srcIndex) (fromIntegral srcDepth)
               let pivotSlot ← lookupPivotSlot pivotRootCap (CPtr.CPtr pivotIndex) (fromIntegral pivotDepth)
-              whenH ((CNodeInvocation.pivotSlot == srcSlot) || (CNodeInvocation.pivotSlot == destSlot)) (throw SyscallError.IllegalOperation)
-              unlessH (srcSlot == destSlot) (ensureEmptySlot destSlot)
+              let _ ← whenH ((CNodeInvocation.pivotSlot == srcSlot) || (CNodeInvocation.pivotSlot == destSlot)) (throw SyscallError.IllegalOperation)
+              let _ ← unlessH (srcSlot == destSlot) (ensureEmptySlot destSlot)
               let srcCap ← withoutFailure (liftM CTE.cteCap (getCTE srcSlot))
-              whenH (isNullCap srcCap) (throw (SyscallError.FailedLookup true (LookupFailure.MissingCapability (fromIntegral srcDepth))))
+              let _ ← whenH (isNullCap srcCap) (throw (SyscallError.FailedLookup true (LookupFailure.MissingCapability (fromIntegral srcDepth))))
               let pivotCap ← withoutFailure (liftM CTE.cteCap (getCTE CNodeInvocation.pivotSlot))
-              whenH (isNullCap pivotCap) (throw (SyscallError.FailedLookup false (LookupFailure.MissingCapability (fromIntegral pivotDepth))))
+              let _ ← whenH (isNullCap pivotCap) (throw (SyscallError.FailedLookup false (LookupFailure.MissingCapability (fromIntegral pivotDepth))))
               let newSrcCap := updateCapData true srcNewData srcCap
               let newPivotCap := updateCapData true pivotNewData pivotCap
-              whenH (isNullCap newSrcCap) (throw SyscallError.IllegalOperation)
-              whenH (isNullCap newPivotCap) (throw SyscallError.IllegalOperation)
+              let _ ← whenH (isNullCap newSrcCap) (throw SyscallError.IllegalOperation)
+              let _ ← whenH (isNullCap newPivotCap) (throw SyscallError.IllegalOperation)
               pure (CNodeInvocation.Rotate newSrcCap newPivotCap srcSlot CNodeInvocation.pivotSlot destSlot))
         | _ => throw SyscallError.TruncatedMessage
   | label, _, (Capability.CNodeCap ..), _ => 
@@ -243,9 +243,9 @@ def getSlotCap (ptr : PPtr CTE) : Kernel Capability :=
 def updateTrackedFreeIndex (slot : PPtr CTE) (idx : Nat) : Kernel Unit :=
   do
     let cap ← getSlotCap slot
-    modify (fun ks => { ks with gsUntypedZeroRanges := match untypedZeroRange cap with
-          | none => KernelState.gsUntypedZeroRanges ks
-          | some r => (deleteH) r (KernelState.gsUntypedZeroRanges ks) })
+    let _ ← modify (fun ks => { ks with gsUntypedZeroRanges := match untypedZeroRange cap with
+                  | none => KernelState.gsUntypedZeroRanges ks
+                  | some r => (deleteH) r (KernelState.gsUntypedZeroRanges ks) })
     modify (fun ks => { ks with gsUntypedZeroRanges := match untypedZeroRange (Capability.set_capFreeIndex cap idx) with
           | none => KernelState.gsUntypedZeroRanges ks
           | some r => (insert) r (KernelState.gsUntypedZeroRanges ks) })
@@ -283,7 +283,7 @@ def updateMDB (x0 : PPtr CTE) (x1 : MDBNode → MDBNode) : Kernel Unit :=
 /-- Haskell `emptySlot` -/
 def emptySlot (slot : PPtr CTE) (info : Capability) : Kernel Unit :=
   do
-    clearUntypedFreeIndex slot
+    let _ ← clearUntypedFreeIndex slot
     let newCTE ← getCTE slot
     let mdbNode := CTE.cteMDBNode newCTE
     let prev := MDBNode.mdbPrev mdbNode
@@ -291,10 +291,10 @@ def emptySlot (slot : PPtr CTE) (info : Capability) : Kernel Unit :=
     match CTE.cteCap newCTE with
     | Capability.NullCap => pure ()
     | _ => (do
-          updateMDB prev (fun mdb => { mdb with mdbNext := next })
-          updateMDB next (fun mdb => { mdb with mdbPrev := prev, mdbFirstBadged := (MDBNode.mdbFirstBadged mdb) || (MDBNode.mdbFirstBadged mdbNode) })
-          updateCap slot Capability.NullCap
-          updateMDB slot (const nullMDBNode)
+          let _ ← updateMDB prev (fun mdb => { mdb with mdbNext := next })
+          let _ ← updateMDB next (fun mdb => { mdb with mdbPrev := prev, mdbFirstBadged := (MDBNode.mdbFirstBadged mdb) || (MDBNode.mdbFirstBadged mdbNode) })
+          let _ ← updateCap slot Capability.NullCap
+          let _ ← updateMDB slot (const nullMDBNode)
           postCapDeletion info)
 
 /-- Haskell `capCyclicZombie` -/
@@ -336,16 +336,16 @@ def isFinalCapability (x0 : CTE) : Kernel Bool :=
 def cteSwap (cap1 : Capability) (slot1 : PPtr CTE) (cap2 : Capability) (slot2 : PPtr CTE) : Kernel Unit :=
   do
     let cte1 ← getCTE slot1
-    updateCap slot1 cap2
-    updateCap slot2 cap1
+    let _ ← updateCap slot1 cap2
+    let _ ← updateCap slot2 cap1
     let mdb1 := CTE.cteMDBNode cte1
-    updateMDB (MDBNode.mdbPrev mdb1) (fun m => { m with mdbNext := slot2 })
-    updateMDB (MDBNode.mdbNext mdb1) (fun m => { m with mdbPrev := slot2 })
+    let _ ← updateMDB (MDBNode.mdbPrev mdb1) (fun m => { m with mdbNext := slot2 })
+    let _ ← updateMDB (MDBNode.mdbNext mdb1) (fun m => { m with mdbPrev := slot2 })
     let cte2 ← getCTE slot2
     let mdb2 := CTE.cteMDBNode cte2
-    updateMDB slot1 (const mdb2)
-    updateMDB slot2 (const mdb1)
-    updateMDB (MDBNode.mdbPrev mdb2) (fun m => { m with mdbNext := slot1 })
+    let _ ← updateMDB slot1 (const mdb2)
+    let _ ← updateMDB slot2 (const mdb1)
+    let _ ← updateMDB (MDBNode.mdbPrev mdb2) (fun m => { m with mdbNext := slot1 })
     updateMDB (MDBNode.mdbNext mdb2) (fun m => { m with mdbPrev := slot1 })
 
 /-- Haskell `capSwapForDelete` -/
@@ -364,9 +364,9 @@ def locateSlotBasic (cnode : PPtr CTE) (offset : Word) : Kernel (PPtr CTE) :=
 /-- Haskell `locateSlotCNode` -/
 def locateSlotCNode (cnode : PPtr CTE) (bits : Nat) (offset : Word) : Kernel (PPtr CTE) :=
   do
-    flip stateAssertH "locateSlotCNode: must be in CNode" (fun s => match KernelState.gsCNodes s (PPtr.ptr cnode) with
-      | none => false
-      | some n => (n == bits) && (offset < (2 ^ n)))
+    let _ ← flip stateAssertH "locateSlotCNode: must be in CNode" (fun s => match KernelState.gsCNodes s (PPtr.ptr cnode) with
+              | none => false
+              | some n => (n == bits) && (offset < (2 ^ n)))
     locateSlotBasic cnode offset
 
 /-- Haskell `locateSlotTCB` -/
@@ -390,23 +390,23 @@ def reduceZombie (x0 : Capability) (x1 : PPtr CTE) (x2 : Bool) : KernelP Unit :=
   | (Capability.Zombie _ _ 0), _, _ => failM "reduceZombie expected unremovable Zombie"
   | (Capability.Zombie ptr _ _), slot, false => 
       do
-        assertH (ptr != slot) "Cyclic zombie passed to unexposed reduceZombie."
+        let _ ← assertH (ptr != slot) "Cyclic zombie passed to unexposed reduceZombie."
         let capAtPtr ← withoutPreemption (liftM CTE.cteCap (getCTE ptr))
-        match capAtPtr with
-        | (Capability.Zombie ptr2 _ _) => assertH (ptr2 != ptr) "Moving self-referential Zombie aside."
-        | _ => pure ()
+        let _ ← match capAtPtr with
+                | (Capability.Zombie ptr2 _ _) => assertH (ptr2 != ptr) "Moving self-referential Zombie aside."
+                | _ => pure ()
         withoutPreemption (capSwapForDelete ptr slot)
   | z@(Capability.Zombie ptr _ n), slot, true => 
       do
         let endSlot ← withoutPreemption (locateSlotCap z (fromIntegral (n - 1)))
-        cteDelete endSlot false
+        let _ ← cteDelete endSlot false
         let ourCTE ← withoutPreemption (getCTE slot)
         match CTE.cteCap ourCTE with
         | Capability.NullCap => pure ()
         | c2@(Capability.Zombie ptr2 _ _) => (if (ptr == ptr2) && (((Capability.capZombieNumber c2) == n) && ((Capability.capZombieType z) == (Capability.capZombieType c2))) then
               withoutPreemption (do
                 let endCTE ← getCTE endSlot
-                assertH (isNullCap (CTE.cteCap endCTE)) "Expected cteDelete to clear slot or overwrite existing."
+                let _ ← assertH (isNullCap (CTE.cteCap endCTE)) "Expected cteDelete to clear slot or overwrite existing."
                 let newCap := Capability.set_capZombieNumber z (n - 1)
                 updateCap slot newCap)
             else
@@ -429,13 +429,13 @@ def finaliseSlot (slot : PPtr CTE) (exposed : Bool) : KernelP (Bool × Capabilit
         else
           if (not exposed) && (capCyclicZombie remainder slot) then
             do
-              withoutPreemption (updateCap slot remainder)
+              let _ ← withoutPreemption (updateCap slot remainder)
               pure ((false, Capability.NullCap))
           else
             do
-              withoutPreemption (updateCap slot remainder)
-              reduceZombie remainder slot exposed
-              preemptionPoint
+              let _ ← withoutPreemption (updateCap slot remainder)
+              let _ ← reduceZombie remainder slot exposed
+              let _ ← preemptionPoint
               finaliseSlot slot exposed
 
 /-- Haskell `cteDelete` -/
@@ -460,34 +460,34 @@ def setUntypedCapAsFull (srcCap : Capability) (newCap : Capability) (srcSlot : P
 /-- Haskell `cteInsert` -/
 def cteInsert (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : Kernel Unit :=
   do
-    stateAssertH archMDBAssertions "architecture dependent MDB assertions must hold"
+    let _ ← stateAssertH archMDBAssertions "architecture dependent MDB assertions must hold"
     let srcCTE ← getCTE srcSlot
     let srcMDB := CTE.cteMDBNode srcCTE
     let srcCap := CTE.cteCap srcCTE
     let newCapIsRevocable := isCapRevocable newCap srcCap
     let newMDB := { srcMDB with mdbPrev := srcSlot, mdbRevocable := newCapIsRevocable, mdbFirstBadged := newCapIsRevocable }
     let oldCTE ← getCTE destSlot
-    assertH (isNullCap (CTE.cteCap oldCTE)) "cteInsert to non-empty destination"
-    assertH (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "cteInsert: mdb entry must be empty"
-    setUntypedCapAsFull srcCap newCap srcSlot
-    updateCap destSlot newCap
-    updateMDB destSlot (const newMDB)
-    updateMDB srcSlot (fun m => { m with mdbNext := destSlot })
+    let _ ← assertH (isNullCap (CTE.cteCap oldCTE)) "cteInsert to non-empty destination"
+    let _ ← assertH (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "cteInsert: mdb entry must be empty"
+    let _ ← setUntypedCapAsFull srcCap newCap srcSlot
+    let _ ← updateCap destSlot newCap
+    let _ ← updateMDB destSlot (const newMDB)
+    let _ ← updateMDB srcSlot (fun m => { m with mdbNext := destSlot })
     updateMDB (MDBNode.mdbNext newMDB) (fun m => { m with mdbPrev := destSlot })
 
 /-- Haskell `cteMove` -/
 def cteMove (newCap : Capability) (srcSlot : PPtr CTE) (destSlot : PPtr CTE) : Kernel Unit :=
   do
     let oldCTE ← getCTE destSlot
-    assertH (isNullCap (CTE.cteCap oldCTE)) "cteMove to non-empty destination"
-    assertH (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "cteMove: mdb entry must be empty"
+    let _ ← assertH (isNullCap (CTE.cteCap oldCTE)) "cteMove to non-empty destination"
+    let _ ← assertH (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "cteMove: mdb entry must be empty"
     let cte ← getCTE srcSlot
     let mdb := CTE.cteMDBNode cte
-    updateCap destSlot newCap
-    updateCap srcSlot Capability.NullCap
-    updateMDB destSlot (const mdb)
-    updateMDB srcSlot (const nullMDBNode)
-    updateMDB (MDBNode.mdbPrev mdb) (fun m => { m with mdbNext := destSlot })
+    let _ ← updateCap destSlot newCap
+    let _ ← updateCap srcSlot Capability.NullCap
+    let _ ← updateMDB destSlot (const mdb)
+    let _ ← updateMDB srcSlot (const nullMDBNode)
+    let _ ← updateMDB (MDBNode.mdbPrev mdb) (fun m => { m with mdbNext := destSlot })
     updateMDB (MDBNode.mdbNext mdb) (fun m => { m with mdbPrev := destSlot })
 
 /-- Haskell `cteRevoke` -/
@@ -498,8 +498,8 @@ def cteRevoke (slot : PPtr CTE) : KernelP Unit :=
     unlessH ((isNullCap (CTE.cteCap cte)) || (nextPtr == nullPointer)) (do
       let nextCTE ← withoutPreemption (getCTE nextPtr)
       whenH (isMDBParentOf cte nextCTE) (do
-        cteDelete nextPtr true
-        preemptionPoint
+        let _ ← cteDelete nextPtr true
+        let _ ← preemptionPoint
         cteRevoke slot))
 
 /-- Haskell `invokeCNode` -/
@@ -516,7 +516,7 @@ def invokeCNode (x0 : CNodeInvocation) : KernelP Unit :=
         cteSwap cap1 slot1 cap2 slot2
       else
         do
-          cteMove cap2 slot2 slot3
+          let _ ← cteMove cap2 slot2 slot3
           cteMove cap1 slot1 slot2)
   | (CNodeInvocation.SaveCaller destSlot) => 
       withoutPreemption (do
@@ -535,7 +535,7 @@ def cteDeleteOne (slot : PPtr CTE) : Kernel Unit :=
     unlessH (isNullCap (CTE.cteCap cte)) (do
       let final ← isFinalCapability cte
       let (remainder, info) ← finaliseCap (CTE.cteCap cte) final true
-      assertH ((capRemovable remainder slot) && (isNullCap info)) "cteDeleteOne: cap should be removable"
+      let _ ← assertH ((capRemovable remainder slot) && (isNullCap info)) "cteDeleteOne: cap should be removable"
       emptySlot slot Capability.NullCap)
 
 /-- Haskell `updateNewFreeIndex` -/
@@ -551,10 +551,10 @@ def insertNewCap (parent : PPtr CTE) (slot : PPtr CTE) (cap : Capability) : Kern
   do
     let next ← liftM (MDBNode.mdbNext ∘ CTE.cteMDBNode) (getCTE parent)
     let oldCTE ← getCTE slot
-    assertH ((isNullCap (CTE.cteCap oldCTE)) && (((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer))) "insertNewCap: slot and mdb entry must be empty"
-    setCTE slot (CTE.CTE cap (MDBNode.MDB next parent true true))
-    updateMDB next (fun m => { m with mdbPrev := slot })
-    updateMDB parent (fun m => { m with mdbNext := slot })
+    let _ ← assertH ((isNullCap (CTE.cteCap oldCTE)) && (((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer))) "insertNewCap: slot and mdb entry must be empty"
+    let _ ← setCTE slot (CTE.CTE cap (MDBNode.MDB next parent true true))
+    let _ ← updateMDB next (fun m => { m with mdbPrev := slot })
+    let _ ← updateMDB parent (fun m => { m with mdbNext := slot })
     updateNewFreeIndex slot
 
 /-- Haskell `createNewObjects` -/
@@ -569,10 +569,10 @@ def createNewObjects (newType : ObjectType) (srcSlot : PPtr CTE) (destSlots : Li
 def insertInitCap (slot : PPtr CTE) (cap : Capability) : Kernel Unit :=
   do
     let oldCTE ← getCTE slot
-    assertH (isNullCap (CTE.cteCap oldCTE)) "insertInitCap: slot must be empty"
-    assertH (not (isNullCap cap)) "insertInitCap: cannot insert null"
-    assertH (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "insertInitCap: mdb entry must be empty"
-    updateCap slot cap
+    let _ ← assertH (isNullCap (CTE.cteCap oldCTE)) "insertInitCap: slot must be empty"
+    let _ ← assertH (not (isNullCap cap)) "insertInitCap: cannot insert null"
+    let _ ← assertH (((MDBNode.mdbPrev (CTE.cteMDBNode oldCTE)) == nullPointer) && ((MDBNode.mdbNext (CTE.cteMDBNode oldCTE)) == nullPointer)) "insertInitCap: mdb entry must be empty"
+    let _ ← updateCap slot cap
     updateMDB slot (const ({ nullMDBNode with mdbRevocable := true, mdbFirstBadged := true }))
 
 /-- Haskell `noReplyCapsFor` -/
@@ -586,7 +586,7 @@ def setupReplyMaster (thread : PPtr TCB) : Kernel Unit :=
     let slot ← locateSlotTCB thread tcbReplySlot
     let oldCTE ← getCTE slot
     whenH (isNullCap (CTE.cteCap oldCTE)) (do
-      stateAssertH (noReplyCapsFor thread) "setupReplyMaster: reply master must not exist"
+      let _ ← stateAssertH (noReplyCapsFor thread) "setupReplyMaster: reply master must not exist"
       let cap := Capability.ReplyCap thread true true
       let mdb := { nullMDBNode with mdbRevocable := true, mdbFirstBadged := true }
       setCTE slot (CTE.CTE cap mdb))
@@ -594,7 +594,7 @@ def setupReplyMaster (thread : PPtr TCB) : Kernel Unit :=
 /-- Haskell `updateFreeIndex` -/
 def updateFreeIndex (slot : PPtr CTE) (idx : Nat) : Kernel Unit :=
   do
-    updateTrackedFreeIndex slot idx
+    let _ ← updateTrackedFreeIndex slot idx
     let cap ← getSlotCap slot
     updateCap slot (Capability.set_capFreeIndex cap idx)
 
@@ -651,7 +651,7 @@ def getReceiveSlots (x0 : PPtr TCB) (x1 : Option (PPtr Word)) : Kernel (List (PP
           let cnode ← unifyFailure (lookupCap thread cptr)
           let slot ← unifyFailure (lookupTargetSlot cnode (CapTransfer.ctReceiveIndex ct) (CapTransfer.ctReceiveDepth ct))
           let cte ← withoutFailure (getCTE slot)
-          unlessH (isNullCap (CTE.cteCap cte)) (throw ())
+          let _ ← unlessH (isNullCap (CTE.cteCap cte)) (throw ())
           pure [slot])
   | _, none => pure []
 

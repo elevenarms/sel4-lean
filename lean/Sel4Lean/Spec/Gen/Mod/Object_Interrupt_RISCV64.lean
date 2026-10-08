@@ -22,10 +22,7 @@ opaque RISCV64.setIRQTrigger : RISCV64.IRQ → Bool → MachineMonad Unit
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
 -- local, not translated: pattern: qualified at line 33: 'ArchLabels.RISCVIRQIssueIRQHandler'
-opaque decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError IRQControlInvocation
-
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
+opaque decodeIRQControlInvocation : RISCV64.Word → (List RISCV64.Word) → (PPtr CTE) → (List Capability) → KernelF SyscallError RISCV64.IRQControlInvocation
 
 -- external: SEL4/Object/CNode.lhs
 opaque ensureEmptySlot : (PPtr CTE) → KernelF SyscallError Unit
@@ -46,7 +43,7 @@ opaque lookupTargetSlot : Capability → CPtr → Nat → KernelF SyscallError (
 opaque maxIRQ : IRQ
 
 -- local, not translated: pattern: apply at line 49: 'ArchInv.IssueIRQHandler (IRQ irq) destSlot srcSlot t
-opaque performIRQControl : IRQControlInvocation → KernelP Unit
+opaque performIRQControl : RISCV64.IRQControlInvocation → KernelP Unit
 
 -- external: SEL4/Object/Interrupt.lhs
 opaque setIRQState : IRQState → IRQ → Kernel Unit

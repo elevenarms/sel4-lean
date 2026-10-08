@@ -7,9 +7,10 @@ Status: **in progress** (2026-10-08).
 | Metric | Value | Source |
 |---|---|---|
 | Data types translated (closure of all modules) | **91+**, 1 opaque (`CallbackData` has no constructors in Haskell either) | `Spec/Gen/Types.lean`, compiles |
-| Functions translated to Lean text | **680 / 696 (97.7%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
-| Modules whose generated Lean compiles | **34 / 61**, incl. `Model/PSpace` (`getObject`, `setObject`) | `artifacts/w2/compile-status.txt` |
-| Functions in compiling modules | **172 / 696 (24.7%)** | the honest number |
+| Functions translated to Lean text | **679 / 695 (97.7%)** (incl. `Data/` helper modules) | `artifacts/w2/coverage.tsv` |
+| Machine-interface functions | **99**, opaque **by design**: the Haskell bodies are the simulator's (IO/FFI); l4v's Isabelle also treats machine operations as opaque (`MachineOps.thy`) | `full.py` `MACHINE_INTERFACE` |
+| Modules whose generated Lean compiles | **38 / 61** | `artifacts/w2/compile-status.txt` |
+| Translated bodies in compiling modules | **209 / 596 non-machine functions (35.1%)** | the honest number |
 
 Translation coverage is not compile coverage. A module compiles only when every function in it does, so
 the large modules (`Kernel/Init`, `Kernel/VSpace/RISCV64`, `Model/PSpace`, `Object/CNode`, `Object/TCB`,
@@ -53,6 +54,14 @@ through one guard-aware path (`rhs()` in `hs2lean.py`): if-chains, `otherwise` a
 when the last equation's guards all fail, and a refusal (not an approximation) when guards would fall through
 to a later equation. `test_hs2lean.py` has regression tests. Lesson: "compiles" is not "correct", and the
 side-by-side tests (W3) matter.
+
+## Machine interface (as l4v)
+
+`MachineMonad` is `ReaderT MachineData IO` in Haskell (the simulator). Following l4v's Isabelle
+(`machine_monad = (machine_state, 'a) nondet_monad`), it is `NondetM MachineState` here, with `MachineState`
+opaque for now, and machine operations are opaque stubs from their signatures. `doMachineOp` is a
+placeholder: l4v lifts machine operations through `ksMachineState`, a field the Haskell `KernelState`
+lacks (TODO(W3): model the machine state).
 
 ## Hand-written layer
 

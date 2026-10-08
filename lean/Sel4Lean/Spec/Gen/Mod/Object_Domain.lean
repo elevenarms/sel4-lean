@@ -63,7 +63,7 @@ opaque withoutFailure {a : Type} {f : Type} [Inhabited a] [Inhabited f] : (Kerne
 /-- Haskell `domainSet` -/
 def domainSet (thread : PPtr TCB) (domain : Domain) : Kernel Unit :=
   do
-    (RISCV64.prepareSetDomain) thread domain
+    let _ ← (RISCV64.prepareSetDomain) thread domain
     setDomain thread domain
 
 /-- Haskell `listUpdate` -/
@@ -83,11 +83,11 @@ def domainScheduleConfigure (index : Nat) (domain : Domain) (duration : DomainDu
 /-- Haskell `domainSetStart` -/
 def domainSetStart (start : Nat) : Kernel Unit :=
   do
-    modify (fun s => { s with ksDomScheduleStart := start })
-    modify (fun s => { s with ksDomainTime := 0 })
+    let _ ← modify (fun s => { s with ksDomScheduleStart := start })
+    let _ ← modify (fun s => { s with ksDomainTime := 0 })
     let schedule ← gets KernelState.ksDomSchedule
     let before_end_index ← pure ((length schedule) - 2)
-    modify (fun s => { s with ksDomScheduleIdx := before_end_index })
+    let _ ← modify (fun s => { s with ksDomScheduleIdx := before_end_index })
     rescheduleRequired
 
 /-- Haskell `invokeDomain` -/
@@ -102,10 +102,10 @@ def decodeDomainSet (args : List Word) (extraCaps : List (Capability × (PPtr CT
   do
     let domain ← match args with
       | (x :: _) => (do
-            whenH ((fromIntegral x) ≥ numDomains) (throw (SyscallError.InvalidArgument 0))
+            let _ ← whenH ((fromIntegral x) ≥ numDomains) (throw (SyscallError.InvalidArgument 0))
             pure (fromIntegral x))
       | _ => throw SyscallError.TruncatedMessage
-    whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
+    let _ ← whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
     match fst (head extraCaps) with
     | Capability.ThreadCap ptr => pure (DomainInvocation.InvokeDomainSet ptr domain)
     | _ => throw (SyscallError.InvalidArgument 1)
@@ -113,27 +113,27 @@ def decodeDomainSet (args : List Word) (extraCaps : List (Capability × (PPtr CT
 /-- Haskell `decodeDomainConfigure` -/
 def decodeDomainConfigure (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
   do
-    whenH ((length args) < (2 + timeArgLen)) (throw SyscallError.TruncatedMessage)
+    let _ ← whenH ((length args) < (2 + timeArgLen)) (throw SyscallError.TruncatedMessage)
     let index ← pure (fromIntegral (listIndexH args 0))
     let domain ← pure (listIndexH args 1)
     let duration ← pure (parseTimeArg 2 args)
     let sched ← withoutFailure (gets KernelState.ksDomSchedule)
-    whenH (index ≥ ((length sched) - 1)) (throw (SyscallError.RangeError 0 (fromIntegral ((length sched) - 2))))
-    whenH ((fromIntegral domain) ≥ numDomains) (throw (SyscallError.RangeError 0 (fromIntegral (numDomains - 1))))
-    whenH (duration > maxDomainDuration) (throw (SyscallError.InvalidArgument 2))
-    whenH ((duration == 0) && (domain != 0)) (throw (SyscallError.InvalidArgument 1))
+    let _ ← whenH (index ≥ ((length sched) - 1)) (throw (SyscallError.RangeError 0 (fromIntegral ((length sched) - 2))))
+    let _ ← whenH ((fromIntegral domain) ≥ numDomains) (throw (SyscallError.RangeError 0 (fromIntegral (numDomains - 1))))
+    let _ ← whenH (duration > maxDomainDuration) (throw (SyscallError.InvalidArgument 2))
+    let _ ← whenH ((duration == 0) && (domain != 0)) (throw (SyscallError.InvalidArgument 1))
     let start ← withoutFailure (gets KernelState.ksDomScheduleStart)
-    whenH ((index == start) && (duration == 0)) (throw (SyscallError.InvalidArgument 2))
+    let _ ← whenH ((index == start) && (duration == 0)) (throw (SyscallError.InvalidArgument 2))
     pure (DomainInvocation.InvokeDomainScheduleConfigure index (fromIntegral domain) duration)
 
 /-- Haskell `decodeDomainSetStart` -/
 def decodeDomainSetStart (args : List Word) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError DomainInvocation :=
   do
-    whenH ((length args) == 0) (throw SyscallError.TruncatedMessage)
+    let _ ← whenH ((length args) == 0) (throw SyscallError.TruncatedMessage)
     let index ← pure (fromIntegral (listIndexH args 0))
     let sched ← withoutFailure (gets KernelState.ksDomSchedule)
-    whenH (index ≥ (length sched)) (throw (SyscallError.RangeError 0 (fromIntegral ((length sched) - 1))))
-    whenH ((listIndexH sched index) == domainEndMarker) (throw (SyscallError.InvalidArgument 0))
+    let _ ← whenH (index ≥ (length sched)) (throw (SyscallError.RangeError 0 (fromIntegral ((length sched) - 1))))
+    let _ ← whenH ((listIndexH sched index) == domainEndMarker) (throw (SyscallError.InvalidArgument 0))
     pure (DomainInvocation.InvokeDomainScheduleSetStart index)
 
 /-- Haskell `decodeDomainInvocation` -/

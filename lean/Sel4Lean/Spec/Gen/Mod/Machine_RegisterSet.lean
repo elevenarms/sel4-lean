@@ -27,6 +27,9 @@ opaque RISCV64.faultRegister : RISCV64.Register
 -- arch: SEL4/Machine/RegisterSet/RISCV64.hs
 opaque RISCV64.frameRegisters : List RISCV64.Register
 
+-- arch: SEL4/Machine/RegisterSet.lhs
+opaque RISCV64.getRegister : RISCV64.Register → UserMonad RISCV64.Word
+
 -- arch: SEL4/Machine/RegisterSet/RISCV64.hs
 opaque RISCV64.gpRegisters : List RISCV64.Register
 
@@ -42,6 +45,9 @@ opaque RISCV64.newContext : UserContext
 -- arch: SEL4/Machine/RegisterSet/RISCV64.hs
 opaque RISCV64.nextInstructionRegister : RISCV64.Register
 
+-- arch: SEL4/Machine/RegisterSet.lhs
+opaque RISCV64.setRegister : RISCV64.Register → RISCV64.Word → UserMonad Unit
+
 -- arch: SEL4/Machine/RegisterSet/RISCV64.hs
 opaque RISCV64.syscallMessage : List RISCV64.Register
 
@@ -49,8 +55,6 @@ opaque RISCV64.syscallMessage : List RISCV64.Register
 opaque RISCV64.tlsBaseRegister : RISCV64.Register
 
 /-! ## Unresolved (no stub possible)
-  RISCV64.getRegister: no RISCV64 signature
-  RISCV64.setRegister: no RISCV64 signature
   bit: no signature found
   map: no signature found
 -/
@@ -119,7 +123,7 @@ def newContext : UserContext :=
   RISCV64.newContext
 
 /-- Haskell `mask` -/
-def mask {w : Type} [Inhabited w] (bits : Nat) : w :=
+def mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] (bits : Nat) : w :=
   (bit bits) - 1
 
 end

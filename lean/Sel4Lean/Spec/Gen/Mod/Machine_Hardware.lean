@@ -13,83 +13,99 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.ackInterrupt : RISCV64.IRQ → MachineMonad Unit
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.clearMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.configureTimer : MachineMonad RISCV64.IRQ
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.debugPrint : String → MachineMonad Unit
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.freeMemory : (PPtr RISCV64.Word) → Nat → MachineMonad Unit
-
--- arch: SEL4/Machine/Hardware/RISCV64.hs
 opaque RISCV64.fromPAddr : PAddr → RISCV64.Word
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.getActiveIRQ : Bool → MachineMonad (Option RISCV64.IRQ)
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ackInterrupt : IRQ → MachineMonad Unit
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.getDeviceRegions : MachineMonad (List (PAddr × PAddr))
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.getKernelDevices : MachineMonad (List (PAddr × (PPtr RISCV64.Word)))
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.getMemoryRegions : MachineMonad (List (PAddr × PAddr))
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque clearMemory : (PPtr Word) → Nat → MachineMonad Unit
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.initIRQController : MachineMonad Unit
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque config_HAVE_FPU : Bool
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.loadWord : (PPtr RISCV64.Word) → MachineMonad RISCV64.Word
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque configureTimer : MachineMonad IRQ
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.maskInterrupt : Bool → RISCV64.IRQ → MachineMonad Unit
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque debugPrint : String → MachineMonad Unit
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.paddrBase : PAddr
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque freeMemory : (PPtr Word) → Nat → MachineMonad Unit
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.pageBits : Nat
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getActiveIRQ : Bool → MachineMonad (Option IRQ)
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.pageColourBits : Nat
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getDeviceRegions : MachineMonad (List (PAddr × PAddr))
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.pptrBase : VPtr
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getKernelDevices : MachineMonad (List (PAddr × (PPtr Word)))
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.resetTimer : MachineMonad Unit
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque getRestartPC : UserMonad Word
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.storeWord : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque initIRQController : MachineMonad Unit
 
--- arch: SEL4/Machine/Hardware/RISCV64.hs
-opaque RISCV64.storeWordVM : (PPtr RISCV64.Word) → RISCV64.Word → MachineMonad Unit
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque initL2Cache : MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque loadWord : (PPtr Word) → MachineMonad Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque maskInterrupt : Bool → IRQ → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque maxIRQ : IRQ
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque minIRQ : IRQ
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque nullPointer {a : Type} [Inhabited a] : PPtr a
 
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque paddrBase : PAddr
 
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pageBits : Nat
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pageColourBits : Nat
+
 -- external: SEL4/Machine/Hardware/RISCV64.hs
 opaque pptrBase : VPtr
 
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque pptrBaseOffset : Word
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque resetTimer : MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque setNextPC : Word → UserMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque storeWord : (PPtr Word) → Word → MachineMonad Unit
+
+-- machine interface: opaque by design (as l4v MachineOps)
+opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
+
 /-! ## Unresolved (no stub possible)
-  RISCV64.getRestartPC: no RISCV64 signature
-  RISCV64.setNextPC: no RISCV64 signature
   error: no signature found
   liftM: no signature found
   maxBound: no signature found
@@ -98,123 +114,9 @@ opaque pptrBase : VPtr
 
 /-! ## Translated -/
 
-/-- Haskell `initL2Cache` -/
-def initL2Cache : MachineMonad Unit :=
-  pure ()
-
 /-- Haskell `fromPAddr` -/
 def fromPAddr :=
   RISCV64.fromPAddr
-
-/-- Haskell `pptrBaseOffset` -/
-def pptrBaseOffset : Word :=
-  (VPtr.fromVPtr (RISCV64.pptrBase)) - (PAddr.fromPAddr (RISCV64.paddrBase))
-
-/-- Haskell `ptrFromPAddr` -/
-def ptrFromPAddr {a : Type} [Inhabited a] : PAddr → PPtr a :=
-  RISCV64.ptrFromPAddr
-
-/-- Haskell `addrFromPPtr` -/
-def addrFromPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr :=
-  RISCV64.addrFromPPtr
-
-/-- Haskell `addrFromKPPtr` -/
-def addrFromKPPtr {a : Type} [Inhabited a] : (PPtr a) → PAddr :=
-  RISCV64.addrFromKPPtr
-
-/-- Haskell `minIRQ` -/
-def minIRQ : IRQ :=
-  minBound
-
-/-- Haskell `maxIRQ` -/
-def maxIRQ : IRQ :=
-  maxBound
-
-/-- Haskell `pageBits` -/
-def pageBits : Nat :=
-  RISCV64.pageBits
-
-/-- Haskell `getMemoryRegions` -/
-def getMemoryRegions : MachineMonad (List (PAddr × PAddr)) :=
-  RISCV64.getMemoryRegions
-
-/-- Haskell `getDeviceRegions` -/
-def getDeviceRegions : MachineMonad (List (PAddr × PAddr)) :=
-  RISCV64.getDeviceRegions
-
-/-- Haskell `getKernelDevices` -/
-def getKernelDevices : MachineMonad (List (PAddr × (PPtr Word))) :=
-  RISCV64.getKernelDevices
-
-/-- Haskell `loadWord` -/
-def loadWord : (PPtr Word) → MachineMonad Word :=
-  RISCV64.loadWord
-
-/-- Haskell `storeWord` -/
-def storeWord : (PPtr Word) → Word → MachineMonad Unit :=
-  RISCV64.storeWord
-
-/-- Haskell `storeWordVM` -/
-def storeWordVM : (PPtr Word) → Word → MachineMonad Unit :=
-  RISCV64.storeWordVM
-
-/-- Haskell `clearMemory` -/
-def clearMemory : (PPtr Word) → Nat → MachineMonad Unit :=
-  RISCV64.clearMemory
-
-/-- Haskell `freeMemory` -/
-def freeMemory : (PPtr Word) → Nat → MachineMonad Unit :=
-  RISCV64.freeMemory
-
-/-- Haskell `pageColourBits` -/
-def pageColourBits : Nat :=
-  RISCV64.pageColourBits
-
-/-- Haskell `getActiveIRQ` -/
-def getActiveIRQ (inPreempt : Bool) : MachineMonad (Option IRQ) :=
-  liftM (liftM IRQ.IRQ) ((RISCV64.getActiveIRQ) inPreempt)
-
-/-- Haskell `maskInterrupt` -/
-def maskInterrupt (x0 : Bool) (x1 : IRQ) : MachineMonad Unit :=
-  match x0, x1 with
-  | mask', (IRQ.IRQ irq) => (RISCV64.maskInterrupt) mask' irq
-
-/-- Haskell `ackInterrupt` -/
-def ackInterrupt (x0 : IRQ) : MachineMonad Unit :=
-  match x0 with
-  | (IRQ.IRQ irq) => (RISCV64.ackInterrupt) irq
-
-/-- Haskell `initIRQController` -/
-def initIRQController : MachineMonad Unit :=
-  RISCV64.initIRQController
-
-/-- Haskell `configureTimer` -/
-def configureTimer : MachineMonad IRQ :=
-  liftM IRQ.IRQ (RISCV64.configureTimer)
-
-/-- Haskell `resetTimer` -/
-def resetTimer : MachineMonad Unit :=
-  RISCV64.resetTimer
-
-/-- Haskell `debugPrint` -/
-def debugPrint : String → MachineMonad Unit :=
-  RISCV64.debugPrint
-
-/-- Haskell `getRestartPC` -/
-def getRestartPC : UserMonad Word :=
-  RISCV64.getRestartPC
-
-/-- Haskell `setNextPC` -/
-def setNextPC : Word → UserMonad Unit :=
-  RISCV64.setNextPC
-
-/-- Haskell `nullPointer` -/
-def nullPointer {a : Type} [Inhabited a] : PPtr a :=
-  PPtr.mk 0
-
-/-- Haskell `config_HAVE_FPU` -/
-def config_HAVE_FPU : Bool :=
-  error "generated from CMake config"
 
 end
 end Sel4Lean.Spec.M.Machine_Hardware

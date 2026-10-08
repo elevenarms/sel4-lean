@@ -13,7 +13,7 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: Data/Helpers.hs
-opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] : (i → a) → (i → a)
+opaque funArray {i : Type} {a : Type} [Inhabited i] [Inhabited a] [BoundedH i] : (i → a) → (i → a)
 
 /-! ## Unresolved (no stub possible)
   const: no signature found

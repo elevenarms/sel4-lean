@@ -63,9 +63,6 @@ opaque createUntypedObject : Capability → Region → KernelInit Unit
 -- external: SEL4/Object/CNode.lhs
 opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/API/Types.lhs
 opaque fromAPIType : APIObjectType → ObjectType
 
@@ -251,7 +248,7 @@ def allocRegion (bits : Nat) : KernelInit PAddr :=
               (b, Region.Region ((b + s, t)))
             else
               (t - s, Region.Region ((b, t - s)))
-          noInitFailure (modify (fun st => { st with initFreeMemory := small ++ ([region] ++ rest) }))
+          let _ ← noInitFailure (modify (fun st => { st with initFreeMemory := small ++ ([region] ++ rest) }))
           pure (addrFromPPtr result))
     | (_, []) => (match break isUsable freeMem with
         | (small, r' :: rest) => (do
@@ -265,7 +262,7 @@ def allocRegion (bits : Nat) : KernelInit PAddr :=
                   []
                 else
                   [Region.Region ((result + s, t))]
-              noInitFailure (modify (fun st => { st with initFreeMemory := small ++ (below ++ (above ++ rest)) }))
+              let _ ← noInitFailure (modify (fun st => { st with initFreeMemory := small ++ (below ++ (above ++ rest)) }))
               pure (addrFromPPtr result))
         | _ => failM "Unable to allocate memory")
 
@@ -292,11 +289,11 @@ def createIdleThread : KernelInit Unit :=
   do
     let paddr ← allocRegion (objBits ((makeObject : TCB)))
     let tcbPPtr := ptrFromPAddr paddr
-    doKernelOp (do
-      placeNewObject tcbPPtr ((makeObject : TCB)) 0
-      modify (fun s => { s with ksIdleThread := tcbPPtr })
-      setCurThread tcbPPtr
-      setSchedulerAction SchedulerAction.ResumeCurrentThread)
+    let _ ← doKernelOp (do
+              let _ ← placeNewObject tcbPPtr ((makeObject : TCB)) 0
+              let _ ← modify (fun s => { s with ksIdleThread := tcbPPtr })
+              let _ ← setCurThread tcbPPtr
+              setSchedulerAction SchedulerAction.ResumeCurrentThread)
     configureIdleThread tcbPPtr
 
 /-- Haskell `createInitialThread` -/
@@ -305,22 +302,22 @@ def createInitialThread (rootCNCap : Capability) (itPDCap : Capability) (ipcBuff
     let tcbBits := objBits ((makeObject : TCB))
     let tcb' ← allocRegion tcbBits
     let tcbPPtr := ptrFromPAddr tcb'
-    doKernelOp (do
-      placeNewObject tcbPPtr initTCB 0
-      let srcSlot ← locateSlotCap rootCNCap biCapITCNode
-      let destSlot ← getThreadCSpaceRoot tcbPPtr
-      cteInsert rootCNCap srcSlot destSlot
-      let srcSlot ← locateSlotCap rootCNCap biCapITPD
-      let destSlot ← getThreadVSpaceRoot tcbPPtr
-      cteInsert itPDCap srcSlot destSlot
-      let srcSlot ← locateSlotCap rootCNCap biCapITIPCBuf
-      let destSlot ← getThreadBufferSlot tcbPPtr
-      cteInsert ipcBufferCap srcSlot destSlot
-      threadSet (fun t => { t with tcbIPCBuffer := ipcBufferVPtr }) tcbPPtr
-      activateInitialThread tcbPPtr entry biFrameVPtr
-      let cap ← pure (Capability.ThreadCap tcbPPtr)
-      let slot ← locateSlotCap rootCNCap biCapITTCB
-      insertInitCap slot cap)
+    let _ ← doKernelOp (do
+              let _ ← placeNewObject tcbPPtr initTCB 0
+              let srcSlot ← locateSlotCap rootCNCap biCapITCNode
+              let destSlot ← getThreadCSpaceRoot tcbPPtr
+              let _ ← cteInsert rootCNCap srcSlot destSlot
+              let srcSlot ← locateSlotCap rootCNCap biCapITPD
+              let destSlot ← getThreadVSpaceRoot tcbPPtr
+              let _ ← cteInsert itPDCap srcSlot destSlot
+              let srcSlot ← locateSlotCap rootCNCap biCapITIPCBuf
+              let destSlot ← getThreadBufferSlot tcbPPtr
+              let _ ← cteInsert ipcBufferCap srcSlot destSlot
+              let _ ← threadSet (fun t => { t with tcbIPCBuffer := ipcBufferVPtr }) tcbPPtr
+              let _ ← activateInitialThread tcbPPtr entry biFrameVPtr
+              let cap ← pure (Capability.ThreadCap tcbPPtr)
+              let slot ← locateSlotCap rootCNCap biCapITTCB
+              insertInitCap slot cap)
     pure ()
 
 /-- Haskell `foldME` -/
@@ -332,9 +329,9 @@ def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelInit Unit 
   do
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let maxSlot ← noInitFailure (gets InitData.initSlotPosMax)
-    whenH (currSlot ≥ maxSlot) (throw InitFailure.IFailure)
+    let _ ← whenH (currSlot ≥ maxSlot) (throw InitFailure.IFailure)
     let slot ← doKernelOp (locateSlotCap rootCNodeCap currSlot)
-    doKernelOp (insertInitCap slot cap)
+    let _ ← doKernelOp (insertInitCap slot cap)
     noInitFailure (modify (fun st => { st with initSlotPosCur := currSlot + 1 }))
 
 /-- Haskell `provideUntypedCap` -/
@@ -343,14 +340,14 @@ def provideUntypedCap (rootCNodeCap : Capability) (isDevice : Bool) (pptr : PAdd
     let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
     let i := currSlot - slotPosBefore
     let untypedObjs ← noInitFailure (gets (BIFrameData.bifUntypedObjPAddrs ∘ InitData.initBootInfo))
-    assertH ((length untypedObjs) == (fromIntegral i)) "Untyped Object List is inconsistent"
+    let _ ← assertH ((length untypedObjs) == (fromIntegral i)) "Untyped Object List is inconsistent"
     let untypedObjs' ← noInitFailure (gets (BIFrameData.bifUntypedObjSizeBits ∘ InitData.initBootInfo))
-    assertH ((length untypedObjs') == (fromIntegral i)) "Untyped Object List is inconsistent"
+    let _ ← assertH ((length untypedObjs') == (fromIntegral i)) "Untyped Object List is inconsistent"
     let untypedDevices ← noInitFailure (gets (BIFrameData.bifUntypedObjIsDeviceList ∘ InitData.initBootInfo))
-    assertH ((length untypedDevices) == (fromIntegral i)) " Untyped Object List is inconsistent"
+    let _ ← assertH ((length untypedDevices) == (fromIntegral i)) " Untyped Object List is inconsistent"
     let bootInfo ← noInitFailure (gets InitData.initBootInfo)
     let bootInfo' := { bootInfo with bifUntypedObjPAddrs := untypedObjs ++ [pptr], bifUntypedObjSizeBits := untypedObjs' ++ [sizeBits], bifUntypedObjIsDeviceList := untypedDevices ++ [isDevice] }
-    noInitFailure (modify (fun st => { st with initBootInfo := bootInfo' }))
+    let _ ← noInitFailure (modify (fun st => { st with initBootInfo := bootInfo' }))
     let size := fromIntegral sizeBits
     provideCap rootCNodeCap (Capability.UntypedCap isDevice (ptrFromPAddr pptr) size (maxFreeIndex size))
 
@@ -370,16 +367,16 @@ def makeRootCNode : KernelInit Capability :=
     let rootCNCap ← doKernelOp (createObject (fromAPIType APIObjectType.CapTableObject) frame levelBits false)
     let rootCNCap ← pure (Capability.set_capCNodeGuardSize rootCNCap (32 - levelBits))
     let slot ← doKernelOp (locateSlotCap rootCNCap biCapITCNode)
-    doKernelOp (insertInitCap slot rootCNCap)
+    let _ ← doKernelOp (insertInitCap slot rootCNCap)
     pure rootCNCap
 
 /-- Haskell `runInit` -/
 def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
   do
     let initData := { initFreeMemory := [], initSlotPosCur := 0, initSlotPosMax := bit (pageBits), initBootInfo := nopBIFrameData, initVPtrOffset := vptr, initBootInfoFrame := 0 : InitData }
-    (flip runStateT) initData (do
-      let result ← ExceptT.run oper
-      either (fun _ => failM "initKernel Fail") pure result)
+    let _ ← (flip runStateT) initData (do
+              let result ← ExceptT.run oper
+              either (fun _ => failM "initKernel Fail") pure result)
     pure ()
 
 /-- Haskell `initKernel` -/
@@ -390,31 +387,31 @@ def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAddr) (ker
     let kfEndPAddr := addrFromPPtr kePPtr
     let (startPPtr, endPPtr) ← pure (Region.fromRegion uiRegion)
     let allMemory ← doMachineOp getMemoryRegions
-    initPSpace (map (fun (s, e) => (ptrFromPAddr s, ptrFromPAddr e)) allMemory)
-    mapM (fun p => reserveFrame (ptrFromPAddr p) true) (kernelFrames ++ bootFrames)
-    initKernelVM
-    initCPU
-    initPlatform
+    let _ ← initPSpace (map (fun (s, e) => (ptrFromPAddr s, ptrFromPAddr e)) allMemory)
+    let _ ← mapM (fun p => reserveFrame (ptrFromPAddr p) true) (kernelFrames ++ bootFrames)
+    let _ ← initKernelVM
+    let _ ← initCPU
+    let _ ← initPlatform
     runInit initOffset (do
       let vptrStart ← vptrFromPPtr startPPtr
       let vptrEnd ← vptrFromPPtr endPPtr
-      initFreemem kfEndPAddr uiRegion
+      let _ ← initFreemem kfEndPAddr uiRegion
       let rootCNCap ← makeRootCNode
-      initInterruptController rootCNCap biCapIRQControl
+      let _ ← initInterruptController rootCNCap biCapIRQControl
       let ipcBufferVPtr := vptrEnd
       let ipcBufferCap ← createIPCBufferFrame rootCNCap ipcBufferVPtr
       let biFrameVPtr := vptrEnd + (1 <<< pageBits)
-      createBIFrame rootCNCap biFrameVPtr 0 1
-      createFramesOfRegion rootCNCap uiRegion true
+      let _ ← createBIFrame rootCNCap biFrameVPtr 0 1
+      let _ ← createFramesOfRegion rootCNCap uiRegion true
       let itPDCap ← createITPDPTs rootCNCap vptrStart biFrameVPtr
-      writeITPDPTs rootCNCap itPDCap
+      let _ ← writeITPDPTs rootCNCap itPDCap
       let itAPCap ← createITASIDPool rootCNCap
-      doKernelOp (writeITASIDPool itAPCap itPDCap)
-      createIdleThread
-      createInitialThread rootCNCap itPDCap ipcBufferCap entry ipcBufferVPtr biFrameVPtr
-      createUntypedObject rootCNCap (Region.Region ((0, 0)))
-      createDeviceFrames rootCNCap
-      finaliseBIFrame
+      let _ ← doKernelOp (writeITASIDPool itAPCap itPDCap)
+      let _ ← createIdleThread
+      let _ ← createInitialThread rootCNCap itPDCap ipcBufferCap entry ipcBufferVPtr biFrameVPtr
+      let _ ← createUntypedObject rootCNCap (Region.Region ((0, 0)))
+      let _ ← createDeviceFrames rootCNCap
+      let _ ← finaliseBIFrame
       syncBIFrame)
 
 /-- Haskell `mapTaskRegions` -/

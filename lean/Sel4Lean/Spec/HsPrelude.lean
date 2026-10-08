@@ -73,9 +73,31 @@ abbrev fromIntegral {α β : Type} [IntegralH α] [IntegralH β] (x : α) : β :
 
 /-- Haskell `bit :: Bits a => Int -> a` (used at words and at Int/Nat). -/
 abbrev bit {α : Type} [IntegralH α] (i : Nat) : α := IntegralH.ofInt ((2 : Int) ^ i)
-abbrev testBit {n : Nat} (x : BitVec n) (i : Nat) : Bool := x.getLsbD i
-abbrev complement {n : Nat} (x : BitVec n) : BitVec n := ~~~x
-abbrev finiteBitSize {n : Nat} (_ : BitVec n) : Nat := n
+/-- Haskell `Bits` / `FiniteBits` (only what the spec uses). -/
+class BitsH (α : Type) where
+  testBitB : α → Nat → Bool
+  complementB : α → α
+  finiteBitSizeB : α → Nat
+
+instance {n : Nat} : BitsH (BitVec n) := ⟨fun x i => x.getLsbD i, fun x => ~~~x, fun _ => n⟩
+/-- Haskell `Int` is 64-bit; it maps to `Nat` here, so bit operations act on its 64-bit pattern. -/
+instance : BitsH Nat :=
+  ⟨fun n i => (BitVec.ofNat 64 n).getLsbD i, fun n => (~~~(BitVec.ofNat 64 n)).toNat, fun _ => 64⟩
+instance {α : Type} : BitsH (Sel4Lean.Exec.PPtr α) :=
+  ⟨fun p i => p.ptr.getLsbD i, fun p => ⟨~~~p.ptr⟩, fun _ => 64⟩
+
+abbrev testBit {α : Type} [BitsH α] (x : α) (i : Nat) : Bool := BitsH.testBitB x i
+abbrev complement {α : Type} [BitsH α] (x : α) : α := BitsH.complementB x
+abbrev finiteBitSize {α : Type} [BitsH α] (x : α) : Nat := BitsH.finiteBitSizeB x
+
+/-- Haskell `Bounded`. -/
+class BoundedH (α : Type) where
+  minB : α
+  maxB : α
+
+instance {n : Nat} : BoundedH (BitVec n) := ⟨0, BitVec.allOnes n⟩
+abbrev minBound {α : Type} [BoundedH α] : α := BoundedH.minB
+abbrev maxBound {α : Type} [BoundedH α] : α := BoundedH.maxB
 abbrev div {α : Type} [Div α] (a b : α) : α := a / b
 abbrev «mod» {α : Type} [Mod α] (a b : α) : α := a % b
 
@@ -99,7 +121,7 @@ abbrev isNothing {α : Type} (o : Option α) : Bool := o.isNone
 /-! ## Lists -/
 
 abbrev map {α β : Type} (f : α → β) (xs : List α) : List β := xs.map f
-abbrev length {α : Type} (xs : List α) : Int := xs.length
+abbrev length {α : Type} (xs : List α) : Nat := xs.length
 abbrev head {α : Type} [Inhabited α] (xs : List α) : α := xs.headD default
 abbrev tail {α : Type} (xs : List α) : List α := xs.tail
 abbrev reverse {α : Type} (xs : List α) : List α := xs.reverse
@@ -130,6 +152,12 @@ abbrev arrayUpdH {ι ε : Type} [BEq ι] (arr : ι → ε) (upds : List (ι × �
     | none => arr i
 
 /-! ## Monads -/
+
+/-- Lean's `get`/`put`/`modify` on the nondeterministic state monad. -/
+instance {σ : Type} : MonadStateOf σ (NondetM σ) where
+  get := NondetM.get
+  set := NondetM.put
+  modifyGet f := NondetM.bind NondetM.get (fun s => let (a, s') := f s; NondetM.bind (NondetM.put s') (fun _ => pure a))
 
 abbrev gets {σ α : Type} (f : σ → α) : NondetM σ α := NondetM.gets f
 abbrev modify {σ : Type} (f : σ → σ) : NondetM σ Unit := NondetM.modify f

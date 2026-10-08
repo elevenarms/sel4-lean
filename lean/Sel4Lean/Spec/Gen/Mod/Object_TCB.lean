@@ -127,7 +127,7 @@ opaque minPriority : Priority
 opaque msgInfoRegister : Register
 
 -- external: SEL4/API/Types.lhs
-opaque msgMaxLength {a : Type} [Inhabited a] : a
+opaque msgMaxLength {a : Type} [Inhabited a] [IntegralH a] [BitsH a] : a
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque msgRegisters : List Register
@@ -145,7 +145,7 @@ opaque postModifyRegisters : (PPtr TCB) → (PPtr TCB) → UserMonad Unit
 opaque postSetFlags : (PPtr TCB) → TcbFlags → Kernel Unit
 
 -- external: SEL4/Model/Failures.lhs
-opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] : a → b → b → KernelF SyscallError Unit
+opaque rangeCheck {a : Type} {b : Type} [Inhabited a] [Inhabited b] [IntegralH a] [IntegralH b] : a → b → b → KernelF SyscallError Unit
 
 -- external: SEL4/Kernel/Thread.lhs
 opaque rescheduleRequired : Kernel Unit
@@ -259,21 +259,21 @@ opaque wordSize : Nat
 /-- Haskell `decodeBindNotification` -/
 def decodeBindNotification (cap : Capability) (extraCaps : List (Capability × (PPtr CTE))) : KernelF SyscallError TCBInvocation :=
   do
-    whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
+    let _ ← whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
     let tcb := Capability.capTCBPtr cap
     let ntfn ← withoutFailure (getBoundNotification tcb)
-    match ntfn with
-    | some _ => throw SyscallError.IllegalOperation
-    | none => pure ()
+    let _ ← match ntfn with
+            | some _ => throw SyscallError.IllegalOperation
+            | none => pure ()
     let (ntfnPtr, rights) ← match fst (head extraCaps) with
       | Capability.NotificationCap ptr _ _ recv => pure ((ptr, recv))
       | _ => throw SyscallError.IllegalOperation
-    whenH (not rights) (throw SyscallError.IllegalOperation)
+    let _ ← whenH (not rights) (throw SyscallError.IllegalOperation)
     let notification ← withoutFailure (getNotification ntfnPtr)
-    match (Notification.ntfnObj notification, Notification.ntfnBoundTCB notification) with
-    | (NTFN.IdleNtfn, none) => pure ()
-    | (NTFN.ActiveNtfn _, none) => pure ()
-    | _ => throw SyscallError.IllegalOperation
+    let _ ← match (Notification.ntfnObj notification, Notification.ntfnBoundTCB notification) with
+            | (NTFN.IdleNtfn, none) => pure ()
+            | (NTFN.ActiveNtfn _, none) => pure ()
+            | _ => throw SyscallError.IllegalOperation
     pure (TCBInvocation.NotificationControl tcb (some ntfnPtr))
 
 /-- Haskell `decodeCopyRegisters` -/
@@ -286,7 +286,7 @@ def decodeCopyRegisters (x0 : List Word) (x1 : Capability) (x2 : List Capability
         let transferFrame := testBit flags 2
         let transferInteger := testBit flags 3
         let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
-        whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
+        let _ ← whenH (null extraCaps) (throw SyscallError.TruncatedMessage)
         let srcTCB ← match head extraCaps with
           | Capability.ThreadCap ptr => pure ptr
           | _ => throw (SyscallError.InvalidCapability 1)
@@ -298,10 +298,10 @@ def decodeReadRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallErro
   match x0, x1 with
   | (flags :: n :: _), cap => 
       do
-        rangeCheck n 1 ((length frameRegisters) + (length gpRegisters))
+        let _ ← rangeCheck n 1 ((length frameRegisters) + (length gpRegisters))
         let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
         let self ← withoutFailure getCurThread
-        whenH ((Capability.capTCBPtr cap) == self) (throw SyscallError.IllegalOperation)
+        let _ ← whenH ((Capability.capTCBPtr cap) == self) (throw SyscallError.IllegalOperation)
         pure (TCBInvocation.ReadRegisters (Capability.capTCBPtr cap) (testBit flags 0) n transferArch)
   | _, _ => throw SyscallError.TruncatedMessage
 
@@ -324,7 +324,7 @@ def decodeSetIPCBuffer (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : 
           else
             do
               let bufferCap' ← deriveCap bufferSlot bufferCap
-              checkValidIPCBuffer ipcBuffer bufferCap'
+              let _ ← checkValidIPCBuffer ipcBuffer bufferCap'
               pure (some ((bufferCap', bufferSlot)))
         pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) slot none none none none none (some ((ipcBuffer, bufferFrame))))
   | _, _, _, _ => throw SyscallError.TruncatedMessage
@@ -347,7 +347,7 @@ def decodeSetMCPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capabilit
         let authTCB ← match authCap with
           | Capability.ThreadCap tcbPtr => pure tcbPtr
           | _ => throw (SyscallError.InvalidCapability 1)
-        checkPrio newMCP authTCB
+        let _ ← checkPrio newMCP authTCB
         pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) none none none none)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
@@ -359,7 +359,7 @@ def decodeSetPriority (x0 : List Word) (x1 : Capability) (x2 : List (Capability 
         let authTCB ← match authCap with
           | Capability.ThreadCap tcbPtr => pure tcbPtr
           | _ => throw (SyscallError.InvalidCapability 1)
-        checkPrio newPrio authTCB
+        let _ ← checkPrio newPrio authTCB
         pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none none (some ((fromIntegral newPrio, authTCB))) none none none)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
@@ -371,8 +371,8 @@ def decodeSetSchedParams (x0 : List Word) (x1 : Capability) (x2 : List (Capabili
         let authTCB ← match authCap with
           | Capability.ThreadCap tcbPtr => pure tcbPtr
           | _ => throw (SyscallError.InvalidCapability 1)
-        checkPrio newMCP authTCB
-        checkPrio newPrio authTCB
+        let _ ← checkPrio newMCP authTCB
+        let _ ← checkPrio newPrio authTCB
         pure (TCBInvocation.ThreadControl (Capability.capTCBPtr cap) 0 none (some ((fromIntegral newMCP, authTCB))) (some ((fromIntegral newPrio, authTCB))) none none none)
   | _, _, _ => throw SyscallError.TruncatedMessage
 
@@ -392,7 +392,7 @@ def decodeSetSpace (x0 : List Word) (x1 : Capability) (x2 : PPtr CTE) (x3 : List
       do
         let canChangeCRoot ← withoutFailure (liftM not (flip bind slotCapLongRunningDelete (getThreadCSpaceRoot (Capability.capTCBPtr cap))))
         let canChangeVRoot ← withoutFailure (liftM not (flip bind slotCapLongRunningDelete (getThreadVSpaceRoot (Capability.capTCBPtr cap))))
-        unlessH (canChangeCRoot && canChangeVRoot) (throw SyscallError.IllegalOperation)
+        let _ ← unlessH (canChangeCRoot && canChangeVRoot) (throw SyscallError.IllegalOperation)
         let (cRootCap, cRootSlot) := cRootArg
         let cRootCap' ← deriveCap cRootSlot (if cRootData == 0 then
             cRootCap
@@ -436,9 +436,9 @@ def decodeUnbindNotification (cap : Capability) : KernelF SyscallError TCBInvoca
   do
     let tcb := Capability.capTCBPtr cap
     let ntfn ← withoutFailure (getBoundNotification tcb)
-    match ntfn with
-    | none => throw SyscallError.IllegalOperation
-    | some _ => pure ()
+    let _ ← match ntfn with
+            | none => throw SyscallError.IllegalOperation
+            | some _ => pure ()
     pure (TCBInvocation.NotificationControl tcb none)
 
 /-- Haskell `decodeWriteRegisters` -/
@@ -446,10 +446,10 @@ def decodeWriteRegisters (x0 : List Word) (x1 : Capability) : KernelF SyscallErr
   match x0, x1 with
   | (flags :: n :: values), cap => 
       do
-        whenH ((genericLength values) < n) (throw SyscallError.TruncatedMessage)
+        let _ ← whenH ((genericLength values) < n) (throw SyscallError.TruncatedMessage)
         let transferArch ← (RISCV64.decodeTransfer) (fromIntegral (flags >>> 8))
         let self ← withoutFailure getCurThread
-        whenH ((Capability.capTCBPtr cap) == self) (throw SyscallError.IllegalOperation)
+        let _ ← whenH ((Capability.capTCBPtr cap) == self) (throw SyscallError.IllegalOperation)
         pure (TCBInvocation.WriteRegisters (Capability.capTCBPtr cap) (testBit flags 0) (genericTake n values) transferArch)
   | _, _ => throw SyscallError.TruncatedMessage
 
@@ -484,7 +484,7 @@ def asUser {a : Type} [Inhabited a] (tptr : PPtr TCB) (f : UserMonad a) : Kernel
   do
     let uc ← threadGet (atcbContextGet ∘ TCB.tcbArch) tptr
     let (a, uc') := runState f uc
-    threadSet (fun tcb => { tcb with tcbArch := atcbContextSet uc' (TCB.tcbArch tcb) }) tptr
+    let _ ← threadSet (fun tcb => { tcb with tcbArch := atcbContextSet uc' (TCB.tcbArch tcb) }) tptr
     pure a
 
 /-- Haskell `assertDerived` -/
@@ -511,8 +511,8 @@ def invokeSetFlags (tcb : PPtr TCB) (flagsClear : Word) (flagsSet : Word) : Kern
   do
     let flags ← threadGet TCB.tcbFlags tcb
     let newFlags := (flags &&& (complement flagsClear)) ||| (flagsSet &&& tcbFlagMask)
-    setFlags tcb newFlags
-    (RISCV64.postSetFlags) tcb newFlags
+    let _ ← setFlags tcb newFlags
+    let _ ← (RISCV64.postSetFlags) tcb newFlags
     pure newFlags
 
 /-- Haskell `sanitiseRegister` -/
@@ -525,88 +525,88 @@ def invokeTCB (x0 : TCBInvocation) : KernelP (List Word) :=
   match x0 with
   | (TCBInvocation.Suspend thread) => 
       withoutPreemption (do
-        suspend thread
+        let _ ← suspend thread
         pure [])
   | (TCBInvocation.Resume thread) => 
       withoutPreemption (do
-        restart thread
+        let _ ← restart thread
         pure [])
   | (TCBInvocation.ThreadControl target slot faultep mcp priority cRoot vRoot buffer) => 
       do
         let tCap := Capability.ThreadCap target
-        withoutPreemption (maybe (pure ()) (fun ep => threadSet (fun t => { t with tcbFaultHandler := ep }) target) faultep)
-        withoutPreemption (maybe (pure ()) (setMCPriority target) (mapMaybe fst mcp))
-        maybe (pure ()) (fun (newCap, srcSlot) => do
-            let rootSlot ← withoutPreemption (getThreadCSpaceRoot target)
-            cteDelete rootSlot true
-            withoutPreemption (checkCapAt newCap srcSlot (checkCapAt tCap slot (assertDerived srcSlot newCap (cteInsert newCap srcSlot rootSlot))))) cRoot
-        maybe (pure ()) (fun (newCap, srcSlot) => do
-            let rootSlot ← withoutPreemption (getThreadVSpaceRoot target)
-            cteDelete rootSlot true
-            withoutPreemption (checkCapAt newCap srcSlot (checkCapAt tCap slot (assertDerived srcSlot newCap (cteInsert newCap srcSlot rootSlot))))) vRoot
-        maybe (pure ()) (fun (ptr, frame) => do
-            let bufferSlot ← withoutPreemption (getThreadBufferSlot target)
-            cteDelete bufferSlot true
-            withoutPreemption (threadSet (fun t => { t with tcbIPCBuffer := ptr }) target)
-            withoutPreemption (match frame with
-            | some (newCap, srcSlot) => checkCapAt newCap srcSlot (checkCapAt tCap slot (assertDerived srcSlot newCap (cteInsert newCap srcSlot bufferSlot)))
-            | none => pure ())
-            let thread ← withoutPreemption getCurThread
-            withoutPreemption (whenH (target == thread) rescheduleRequired)) buffer
-        withoutPreemption (maybe (pure ()) (setPriority target) (mapMaybe fst priority))
+        let _ ← withoutPreemption (maybe (pure ()) (fun ep => threadSet (fun t => { t with tcbFaultHandler := ep }) target) faultep)
+        let _ ← withoutPreemption (maybe (pure ()) (setMCPriority target) (mapMaybe fst mcp))
+        let _ ← maybe (pure ()) (fun (newCap, srcSlot) => do
+                    let rootSlot ← withoutPreemption (getThreadCSpaceRoot target)
+                    let _ ← cteDelete rootSlot true
+                    withoutPreemption (checkCapAt newCap srcSlot (checkCapAt tCap slot (assertDerived srcSlot newCap (cteInsert newCap srcSlot rootSlot))))) cRoot
+        let _ ← maybe (pure ()) (fun (newCap, srcSlot) => do
+                    let rootSlot ← withoutPreemption (getThreadVSpaceRoot target)
+                    let _ ← cteDelete rootSlot true
+                    withoutPreemption (checkCapAt newCap srcSlot (checkCapAt tCap slot (assertDerived srcSlot newCap (cteInsert newCap srcSlot rootSlot))))) vRoot
+        let _ ← maybe (pure ()) (fun (ptr, frame) => do
+                    let bufferSlot ← withoutPreemption (getThreadBufferSlot target)
+                    let _ ← cteDelete bufferSlot true
+                    let _ ← withoutPreemption (threadSet (fun t => { t with tcbIPCBuffer := ptr }) target)
+                    let _ ← withoutPreemption (match frame with
+                            | some (newCap, srcSlot) => checkCapAt newCap srcSlot (checkCapAt tCap slot (assertDerived srcSlot newCap (cteInsert newCap srcSlot bufferSlot)))
+                            | none => pure ())
+                    let thread ← withoutPreemption getCurThread
+                    withoutPreemption (whenH (target == thread) rescheduleRequired)) buffer
+        let _ ← withoutPreemption (maybe (pure ()) (setPriority target) (mapMaybe fst priority))
         pure []
   | (TCBInvocation.CopyRegisters dest src suspendSource resumeTarget transferFrame transferInteger transferArch) => 
       withoutPreemption (do
-        whenH suspendSource (suspend src)
-        whenH resumeTarget (restart dest)
-        whenH transferFrame (do
-          mapM_ (fun r => do
-              let v ← asUser src (getRegister r)
-              asUser dest (setRegister r v)) frameRegisters
-          let pc ← asUser dest getRestartPC
-          asUser dest (setNextPC pc))
-        whenH transferInteger (do
-          mapM_ (fun r => do
-              let v ← asUser src (getRegister r)
-              asUser dest (setRegister r v)) gpRegisters)
+        let _ ← whenH suspendSource (suspend src)
+        let _ ← whenH resumeTarget (restart dest)
+        let _ ← whenH transferFrame (do
+                  let _ ← mapM_ (fun r => do
+                              let v ← asUser src (getRegister r)
+                              asUser dest (setRegister r v)) frameRegisters
+                  let pc ← asUser dest getRestartPC
+                  asUser dest (setNextPC pc))
+        let _ ← whenH transferInteger (do
+                  mapM_ (fun r => do
+                      let v ← asUser src (getRegister r)
+                      asUser dest (setRegister r v)) gpRegisters)
         let thread ← getCurThread
-        asUser dest ((RISCV64.postModifyRegisters) thread dest)
-        whenH (dest == thread) rescheduleRequired
-        (RISCV64.performTransfer) transferArch src dest
+        let _ ← asUser dest ((RISCV64.postModifyRegisters) thread dest)
+        let _ ← whenH (dest == thread) rescheduleRequired
+        let _ ← (RISCV64.performTransfer) transferArch src dest
         pure [])
   | (TCBInvocation.ReadRegisters src suspendSource n arch) => 
       withoutPreemption (do
-        whenH suspendSource (suspend src)
+        let _ ← whenH suspendSource (suspend src)
         let self ← getCurThread
-        (RISCV64.performTransfer) arch src self
+        let _ ← (RISCV64.performTransfer) arch src self
         let regs := genericTake n (frameRegisters ++ gpRegisters)
         asUser src (mapM getRegister regs))
   | (TCBInvocation.WriteRegisters dest resumeTarget values arch) => 
       withoutPreemption (do
         let self ← getCurThread
-        (RISCV64.performTransfer) arch self dest
+        let _ ← (RISCV64.performTransfer) arch self dest
         let t ← getSanitiseRegisterInfo dest
-        asUser dest (do
-          zipWithM (fun r v => setRegister r (sanitiseRegister t r v)) (frameRegisters ++ gpRegisters) values
-          let pc ← getRestartPC
-          setNextPC pc)
-        asUser dest ((RISCV64.postModifyRegisters) self dest)
-        whenH resumeTarget (restart dest)
-        whenH (dest == self) rescheduleRequired
+        let _ ← asUser dest (do
+                  let _ ← zipWithM (fun r v => setRegister r (sanitiseRegister t r v)) (frameRegisters ++ gpRegisters) values
+                  let pc ← getRestartPC
+                  setNextPC pc)
+        let _ ← asUser dest ((RISCV64.postModifyRegisters) self dest)
+        let _ ← whenH resumeTarget (restart dest)
+        let _ ← whenH (dest == self) rescheduleRequired
         pure [])
   | (TCBInvocation.NotificationControl tcb (some ntfnPtr)) => 
       withoutPreemption (do
-        bindNotification tcb ntfnPtr
+        let _ ← bindNotification tcb ntfnPtr
         pure [])
   | (TCBInvocation.NotificationControl tcb none) => 
       withoutPreemption (do
-        unbindNotification tcb
+        let _ ← unbindNotification tcb
         pure [])
   | (TCBInvocation.SetTLSBase tcb tls_base) => 
       withoutPreemption (do
-        asUser tcb (setRegister tlsBaseRegister tls_base)
+        let _ ← asUser tcb (setRegister tlsBaseRegister tls_base)
         let cur ← getCurThread
-        whenH (tcb == cur) rescheduleRequired
+        let _ ← whenH (tcb == cur) rescheduleRequired
         pure [])
   | (TCBInvocation.SetFlags tcb flagsClear flagsSet) => 
       withoutPreemption (do
@@ -635,8 +635,8 @@ def setMRs (thread : PPtr TCB) (buffer : Option (PPtr Word)) (messageData : List
       | none => []
     let msgLength := min (length messageData) ((length hardwareMRs) + (length bufferMRs))
     let mrs := take MessageInfo.msgLength messageData
-    asUser thread (zipWithM_ setRegister hardwareMRs mrs)
-    zipWithM_ storeWordUser bufferMRs (drop (length hardwareMRs) mrs)
+    let _ ← asUser thread (zipWithM_ setRegister hardwareMRs mrs)
+    let _ ← zipWithM_ storeWordUser bufferMRs (drop (length hardwareMRs) mrs)
     pure (fromIntegral MessageInfo.msgLength)
 
 /-- Haskell `getMRs` -/
@@ -658,9 +658,9 @@ def copyMRs (sender : PPtr TCB) (sendBuf : Option (PPtr Word)) (receiver : PPtr 
   do
     let intSize := fromIntegral wordSize
     let hardwareMRs := take (fromIntegral n) msgRegisters
-    forM hardwareMRs (fun r => do
-        let v ← asUser sender (getRegister r)
-        asUser receiver (setRegister r v))
+    let _ ← forM hardwareMRs (fun r => do
+                let v ← asUser sender (getRegister r)
+                asUser receiver (setRegister r v))
     let bufferMRs ← match (sendBuf, recvBuf) with
       | (some sbPtr, some rbPtr) => mapM (fun x => do
               let v ← loadWordUser (sbPtr + (PPtr.mk (x * intSize)))
@@ -705,15 +705,15 @@ def getThreadReplySlot (thread : PPtr TCB) : Kernel (PPtr CTE) :=
 /-- Haskell `setupCallerCap` -/
 def setupCallerCap (sender : PPtr TCB) (receiver : PPtr TCB) (canGrant : Bool) : Kernel Unit :=
   do
-    setThreadState ThreadState.BlockedOnReply sender
+    let _ ← setThreadState ThreadState.BlockedOnReply sender
     let replySlot ← getThreadReplySlot sender
     let masterCTE ← getCTE replySlot
     let masterCap := CTE.cteCap masterCTE
-    assertH ((isReplyCap masterCap) && ((Capability.capReplyMaster masterCap) && ((Capability.capTCBPtr masterCap) == sender))) "Sender must have a valid reply master cap"
-    assertH ((MDBNode.mdbNext (CTE.cteMDBNode masterCTE)) == nullPointer) "Sender must not already have reply cap issued"
+    let _ ← assertH ((isReplyCap masterCap) && ((Capability.capReplyMaster masterCap) && ((Capability.capTCBPtr masterCap) == sender))) "Sender must have a valid reply master cap"
+    let _ ← assertH ((MDBNode.mdbNext (CTE.cteMDBNode masterCTE)) == nullPointer) "Sender must not already have reply cap issued"
     let callerSlot ← getThreadCallerSlot receiver
     let callerCap ← getSlotCap callerSlot
-    assertH (isNullCap callerCap) "Caller cap must not already exist"
+    let _ ← assertH (isNullCap callerCap) "Caller cap must not already exist"
     cteInsert (Capability.ReplyCap sender false canGrant) replySlot callerSlot
 
 /-- Haskell `deleteCallerCap` -/
@@ -721,7 +721,7 @@ def deleteCallerCap (receiver : PPtr TCB) : Kernel Unit :=
   do
     let callerSlot ← getThreadCallerSlot receiver
     let callerCap ← getSlotCap callerSlot
-    assertH ((isReplyCap callerCap) || (isNullCap callerCap)) "Caller cap must be a reply cap"
+    let _ ← assertH ((isReplyCap callerCap) || (isNullCap callerCap)) "Caller cap must be a reply cap"
     cteDeleteOne callerSlot
 
 /-- Haskell `archThreadGet` -/

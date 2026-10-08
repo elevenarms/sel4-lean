@@ -229,6 +229,7 @@ class Translator:
             out.append(f"def {name}.toIdx : {q} → Int {to}")
             out.append(f"def {name}.ofIdx : Nat → {q} {of} | _ => default")
             out.append(f"instance : IntegralH {q} := ⟨{name}.toIdx, fun i => {name}.ofIdx i.toNat⟩")
+            out.append(f"instance : BoundedH {q} := ⟨.{cs[0]}, .{cs[-1]}⟩")
         # Haskell field selectors and record update, per field (fields may be shared by constructors)
         fields_all = {}
         for cname, fields, args in info["ctors"]:
@@ -466,11 +467,16 @@ class Translator:
             parts = [self.render_atom(l, ind), self.render_atom(r, ind)]
             return " ".join(([f] if f else []) + parts)
         if op not in OPERATOR:   # backtick function: a `f` b  ==  f a b
-            return f"{self.var(op)} {self.render_atom(l, ind)} {self.render_atom(r, ind)}"
+            fn = self.backtick_fn(op)
+            return f"{fn} {self.render_atom(l, ind)} {self.render_atom(r, ind)}"
         if op == "$":
             left = self.e(l[1], ind) if l[0] == "leaf" and l[1].type in ("apply", "variable", "constructor") else self.render_atom(l, ind)
             return f"{left} {self.render_atom(r, ind)}"
         return f"{self.render_atom(l, ind)} {OPERATOR[op]} {self.render_atom(r, ind)}"
+
+    def backtick_fn(self, op):
+        """Function used in backticks (a `f` b); full.py routes qualified ones (Arch.f)."""
+        return self.var(op.split(".")[-1])
 
     def render_atom(self, tree, ind):
         if tree[0] == "leaf":
@@ -568,7 +574,11 @@ class Translator:
                 p = self.pat(s.child_by_field_name("pattern"))
                 lines.append(f"let {p} ← {self.e(s.child_by_field_name('expression'), si + 2)}")
             elif s.type == "exp":
-                lines.append(self.e(kids(s)[0], si))
+                # Haskell drops non-Unit results of non-final statements; Lean needs `let _ ←`. The prefix
+                # moves the term 8 columns right, and continuation lines must stay right of the term's start
+                discard = getattr(self, "discard_stmts", False) and s is not stmts[-1]
+                ex = self.e(kids(s)[0], si + 8 if discard else si)
+                lines.append(f"let _ ← {ex}" if discard else ex)
             else:
                 for b in kids(s.child_by_field_name("binds")):
                     lb = self.local_bind(b, si)

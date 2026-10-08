@@ -77,6 +77,18 @@ def updateObject {a σ : Type} [PSpaceStorable a] (val : a) (oldObj : KernelObje
   sizeCheck ptr next (objBits val)
   pure (injectKO val)
 
+/-! ## Machine operations
+
+The Haskell `MachineMonad` is `ReaderT MachineData IO` (the simulator). l4v's Isabelle replaces it with
+`machine_monad = (machine_state, 'a) nondet_monad` and lifts it with `do_machine_op` through
+`ksMachineState`, a field the Haskell `KernelState` does not have. We follow Isabelle: `MachineMonad` is
+generated as `NondetM MachineState` (`full.py`), and `doMachineOp` is a placeholder until the machine state
+is modelled (TODO(W3)).
+-/
+
+/-- Haskell `doMachineOp :: MachineMonad a -> Kernel a` (Model/StateData.lhs); l4v `do_machine_op`. -/
+opaque doMachineOp {α : Type} [Inhabited α] : MachineMonad α → Kernel α
+
 /-! ## Instances (Object/Instances.lhs, Object/Instances/RISCV64.hs) -/
 
 /-- Haskell `nullMDBNode` (Object/Structures.lhs:348). TODO(W2): generated definition, as above. -/

@@ -63,9 +63,6 @@ opaque activateGlobalVSpace : Kernel Unit
 -- external: SEL4/Machine/Hardware.lhs
 opaque configureTimer : MachineMonad IRQ
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: SEL4/Machine/Hardware.lhs
 opaque initIRQController : MachineMonad Unit
 
@@ -84,8 +81,8 @@ def initKernelVM : Kernel Unit :=
 /-- Haskell `initPlatform` -/
 def initPlatform : Kernel Unit :=
   do
-    doMachineOp initIRQController
-    doMachineOp configureTimer
+    let _ ← doMachineOp initIRQController
+    let _ ← doMachineOp configureTimer
     doMachineOp initL2Cache
 
 /-- Haskell `initCPU` -/

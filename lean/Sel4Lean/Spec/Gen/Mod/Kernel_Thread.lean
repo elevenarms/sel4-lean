@@ -142,7 +142,7 @@ opaque lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word))
 opaque makeFaultMessage : Fault → (PPtr TCB) → Kernel (Word × (List Word))
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Model/StateData.lhs
 opaque nextDomain : Kernel Unit
@@ -254,7 +254,7 @@ def isRunnable (thread : PPtr TCB) : Kernel Bool :=
 /-- Haskell `setThreadState` -/
 def setThreadState (st : ThreadState) (tptr : PPtr TCB) : Kernel Unit :=
   do
-    threadSet (fun t => { t with tcbState := st }) tptr
+    let _ ← threadSet (fun t => { t with tcbState := st }) tptr
     let runnable ← isRunnable tptr
     let curThread ← getCurThread
     let action ← getSchedulerAction
@@ -263,7 +263,7 @@ def setThreadState (st : ThreadState) (tptr : PPtr TCB) : Kernel Unit :=
 /-- Haskell `configureIdleThread` -/
 def configureIdleThread (tcb : PPtr TCB) : KernelInit Unit :=
   do
-    (RISCV64.configureIdleThread) tcb
+    let _ ← (RISCV64.configureIdleThread) tcb
     doKernelOp (setThreadState ThreadState.IdleThreadState tcb)
 
 /-- Haskell `getReadyQueuesL2Bitmap` -/
@@ -300,7 +300,7 @@ def removeFromBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
     let l1index := prioToL1Index prio
     let l1indexInverted := invertL1Index l1index
     let l2bit := fromIntegral (((fromIntegral prio) &&& (mask wordRadix) : Word))
-    modifyReadyQueuesL2Bitmap tdom l1indexInverted (fun w => w &&& (complement (bit l2bit)))
+    let _ ← modifyReadyQueuesL2Bitmap tdom l1indexInverted (fun w => w &&& (complement (bit l2bit)))
     let l2 ← getReadyQueuesL2Bitmap tdom l1indexInverted
     whenH (l2 == 0) (modifyReadyQueuesL1Bitmap tdom (fun w => w &&& (complement (bit l1index))))
 
@@ -319,62 +319,62 @@ def tcbQueueRemove (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
     else
       if (TcbQueue.tcbQueueHead queue) == (some tcbPtr) then
         do
-          assertH (afterPtrOpt != none) "the queue is not a singleton"
-          threadSet (fun t => { t with tcbSchedPrev := none }) (fromJust afterPtrOpt)
-          threadSet (fun t => { t with tcbSchedNext := none }) tcbPtr
+          let _ ← assertH (afterPtrOpt != none) "the queue is not a singleton"
+          let _ ← threadSet (fun t => { t with tcbSchedPrev := none }) (fromJust afterPtrOpt)
+          let _ ← threadSet (fun t => { t with tcbSchedNext := none }) tcbPtr
           pure ({ queue with tcbQueueHead := afterPtrOpt })
       else
         if (TcbQueue.tcbQueueEnd queue) == (some tcbPtr) then
           do
-            assertH (beforePtrOpt != none) "the queue is not a singleton"
-            threadSet (fun t => { t with tcbSchedNext := none }) (fromJust beforePtrOpt)
-            threadSet (fun t => { t with tcbSchedPrev := none }) tcbPtr
+            let _ ← assertH (beforePtrOpt != none) "the queue is not a singleton"
+            let _ ← threadSet (fun t => { t with tcbSchedNext := none }) (fromJust beforePtrOpt)
+            let _ ← threadSet (fun t => { t with tcbSchedPrev := none }) tcbPtr
             pure ({ queue with tcbQueueEnd := beforePtrOpt })
         else
           do
-            assertH (afterPtrOpt != none) "the queue is not a singleton"
-            assertH (beforePtrOpt != none) "the queue is not a singleton"
-            threadSet (fun t => { t with tcbSchedNext := afterPtrOpt }) (fromJust beforePtrOpt)
-            threadSet (fun t => { t with tcbSchedPrev := beforePtrOpt }) (fromJust afterPtrOpt)
-            threadSet (fun t => { t with tcbSchedPrev := none }) tcbPtr
-            threadSet (fun t => { t with tcbSchedNext := none }) tcbPtr
+            let _ ← assertH (afterPtrOpt != none) "the queue is not a singleton"
+            let _ ← assertH (beforePtrOpt != none) "the queue is not a singleton"
+            let _ ← threadSet (fun t => { t with tcbSchedNext := afterPtrOpt }) (fromJust beforePtrOpt)
+            let _ ← threadSet (fun t => { t with tcbSchedPrev := beforePtrOpt }) (fromJust afterPtrOpt)
+            let _ ← threadSet (fun t => { t with tcbSchedPrev := none }) tcbPtr
+            let _ ← threadSet (fun t => { t with tcbSchedNext := none }) tcbPtr
             pure queue
 
 /-- Haskell `tcbSchedDequeue` -/
 def tcbSchedDequeue (thread : PPtr TCB) : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ksReadyQueues_asrt ""
     let queued ← threadGet TCB.tcbQueued thread
     whenH queued (do
       let tdom ← threadGet TCB.tcbDomain thread
       let prio ← threadGet TCB.tcbPriority thread
       let queue ← getQueue tdom prio
       let queue' ← tcbQueueRemove queue thread
-      setQueue tdom prio queue'
-      threadSet (fun t => { t with tcbQueued := false }) thread
+      let _ ← setQueue tdom prio queue'
+      let _ ← threadSet (fun t => { t with tcbQueued := false }) thread
       whenH (tcbQueueEmpty queue') (removeFromBitmap tdom prio))
 
 /-- Haskell `switchToThread` -/
 def switchToThread (thread : PPtr TCB) : Kernel Unit :=
   do
     let runnable ← isRunnable thread
-    assertH runnable "thread must be runnable"
-    stateAssertH ksReadyQueues_asrt ""
-    stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
-    (RISCV64.switchToThread) thread
-    tcbSchedDequeue thread
+    let _ ← assertH runnable "thread must be runnable"
+    let _ ← stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
+    let _ ← (RISCV64.switchToThread) thread
+    let _ ← tcbSchedDequeue thread
     setCurThread thread
 
 /-- Haskell `activateInitialThread` -/
 def activateInitialThread (threadPtr : PPtr TCB) (entry : VPtr) (infoPtr : VPtr) : Kernel Unit :=
   do
-    asUser threadPtr (setRegister capRegister (VPtr.fromVPtr infoPtr))
-    asUser threadPtr (setNextPC (VPtr.fromVPtr entry))
-    setupReplyMaster threadPtr
-    setThreadState ThreadState.Running threadPtr
-    setSchedulerAction SchedulerAction.ResumeCurrentThread
+    let _ ← asUser threadPtr (setRegister capRegister (VPtr.fromVPtr infoPtr))
+    let _ ← asUser threadPtr (setNextPC (VPtr.fromVPtr entry))
+    let _ ← setupReplyMaster threadPtr
+    let _ ← setThreadState ThreadState.Running threadPtr
+    let _ ← setSchedulerAction SchedulerAction.ResumeCurrentThread
     let idle ← getIdleThread
-    setCurThread idle
+    let _ ← setCurThread idle
     switchToThread threadPtr
 
 /-- Haskell `activateThread` -/
@@ -386,7 +386,7 @@ def activateThread : Kernel Unit :=
     | ThreadState.Running => pure ()
     | ThreadState.Restart => (do
           let pc ← asUser thread getRestartPC
-          asUser thread (setNextPC pc)
+          let _ ← asUser thread (setNextPC pc)
           setThreadState ThreadState.Running thread)
     | ThreadState.IdleThreadState => (do
           (RISCV64.activateIdleThread) thread)
@@ -411,13 +411,13 @@ def updateRestartPC (tcb : PPtr TCB) : Kernel Unit :=
 /-- Haskell `suspend` -/
 def suspend (target : PPtr TCB) : Kernel Unit :=
   do
-    cancelIPC target
+    let _ ← cancelIPC target
     let state ← getThreadState target
-    if state == ThreadState.Running then
-      updateRestartPC target
-    else
-      pure ()
-    tcbSchedDequeue target
+    let _ ← if state == ThreadState.Running then
+              updateRestartPC target
+            else
+              pure ()
+    let _ ← tcbSchedDequeue target
     setThreadState ThreadState.Inactive target
 
 /-- Haskell `addToBitmap` -/
@@ -426,7 +426,7 @@ def addToBitmap (tdom : Domain) (prio : Priority) : Kernel Unit :=
     let l1index := prioToL1Index prio
     let l1indexInverted := invertL1Index l1index
     let l2bit := fromIntegral (((fromIntegral prio) &&& (mask wordRadix) : Word))
-    modifyReadyQueuesL1Bitmap tdom (fun w => w ||| (bit l1index))
+    let _ ← modifyReadyQueuesL1Bitmap tdom (fun w => w ||| (bit l1index))
     modifyReadyQueuesL2Bitmap tdom l1indexInverted (fun w => w ||| (bit l2bit))
 
 /-- Haskell `tcbQueuePrepend` -/
@@ -436,35 +436,35 @@ def tcbQueuePrepend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
         pure ({ queue with tcbQueueEnd := some tcbPtr })
       else
         do
-          threadSet (fun t => { t with tcbSchedNext := TcbQueue.tcbQueueHead queue }) tcbPtr
-          threadSet (fun t => { t with tcbSchedPrev := some tcbPtr }) (fromJust (TcbQueue.tcbQueueHead queue))
+          let _ ← threadSet (fun t => { t with tcbSchedNext := TcbQueue.tcbQueueHead queue }) tcbPtr
+          let _ ← threadSet (fun t => { t with tcbSchedPrev := some tcbPtr }) (fromJust (TcbQueue.tcbQueueHead queue))
           pure queue
     pure ({ q with tcbQueueHead := some tcbPtr })
 
 /-- Haskell `tcbSchedEnqueue` -/
 def tcbSchedEnqueue (thread : PPtr TCB) : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ksReadyQueues_asrt ""
     let runnable ← isRunnable thread
-    assertH runnable "thread must be runnable"
+    let _ ← assertH runnable "thread must be runnable"
     let queued ← threadGet TCB.tcbQueued thread
     unlessH queued (do
       let tdom ← threadGet TCB.tcbDomain thread
       let prio ← threadGet TCB.tcbPriority thread
       let queue ← getQueue tdom prio
-      whenH (tcbQueueEmpty queue) (addToBitmap tdom prio)
+      let _ ← whenH (tcbQueueEmpty queue) (addToBitmap tdom prio)
       let queue' ← tcbQueuePrepend queue thread
-      setQueue tdom prio queue'
+      let _ ← setQueue tdom prio queue'
       threadSet (fun t => { t with tcbQueued := true }) thread)
 
 /-- Haskell `rescheduleRequired` -/
 def rescheduleRequired : Kernel Unit :=
   do
     let action ← getSchedulerAction
-    match action with
-    | SchedulerAction.SwitchToThread target => (do
-          tcbSchedEnqueue target)
-    | _ => pure ()
+    let _ ← match action with
+            | SchedulerAction.SwitchToThread target => (do
+                  tcbSchedEnqueue target)
+            | _ => pure ()
     setSchedulerAction SchedulerAction.ChooseNewThread
 
 /-- Haskell `possibleSwitchTo` -/
@@ -478,7 +478,7 @@ def possibleSwitchTo (target : PPtr TCB) : Kernel Unit :=
     else
       if action != SchedulerAction.ResumeCurrentThread then
         do
-          rescheduleRequired
+          let _ ← rescheduleRequired
           tcbSchedEnqueue target
       else
         setSchedulerAction (SchedulerAction.SwitchToThread target)
@@ -488,10 +488,10 @@ def restart (target : PPtr TCB) : Kernel Unit :=
   do
     let blocked ← isStopped target
     whenH blocked (do
-      cancelIPC target
-      setupReplyMaster target
-      setThreadState ThreadState.Restart target
-      tcbSchedEnqueue target
+      let _ ← cancelIPC target
+      let _ ← setupReplyMaster target
+      let _ ← setThreadState ThreadState.Restart target
+      let _ ← tcbSchedEnqueue target
       possibleSwitchTo target)
 
 /-- Haskell `doFaultTransfer` -/
@@ -504,7 +504,7 @@ def doFaultTransfer (badge : Word) (sender : PPtr TCB) (receiver : PPtr TCB) (re
     let (faultLabel, faultMsg) ← makeFaultMessage f sender
     let sent ← setMRs receiver receiverIPCBuffer faultMsg
     let msgInfo := { msgLength := sent, msgExtraCaps := 0, msgCapsUnwrapped := 0, msgLabel := faultLabel : MessageInfo }
-    setMessageInfo receiver msgInfo
+    let _ ← setMessageInfo receiver msgInfo
     asUser receiver (setRegister badgeRegister badge)
 
 /-- Haskell `transferCaps` -/
@@ -528,7 +528,7 @@ def doNormalTransfer (sender : PPtr TCB) (sendBuffer : Option (PPtr Word)) (endp
     let msgTransferred ← copyMRs sender sendBuffer receiver receiveBuffer (MessageInfo.msgLength tag)
     let tag' ← transferCaps tag caps endpoint receiver receiveBuffer
     let tag'' := { tag' with msgLength := msgTransferred }
-    setMessageInfo receiver tag''
+    let _ ← setMessageInfo receiver tag''
     asUser receiver (setRegister badgeRegister badge)
 
 /-- Haskell `doIPCTransfer` -/
@@ -547,28 +547,28 @@ def doIPCTransfer (sender : PPtr TCB) (endpoint : Option (PPtr Endpoint)) (badge
 def doReplyTransfer (sender : PPtr TCB) (receiver : PPtr TCB) (slot : PPtr CTE) (grant : Bool) : Kernel Unit :=
   do
     let state ← getThreadState receiver
-    assertH (isReply state) "Reply transfer to a thread that isn't listening"
+    let _ ← assertH (isReply state) "Reply transfer to a thread that isn't listening"
     let mdbNode ← liftM CTE.cteMDBNode (getCTE slot)
-    assertH (((MDBNode.mdbPrev mdbNode) != nullPointer) && ((MDBNode.mdbNext mdbNode) == nullPointer)) "doReplyTransfer: ReplyCap not at end of MDB chain"
+    let _ ← assertH (((MDBNode.mdbPrev mdbNode) != nullPointer) && ((MDBNode.mdbNext mdbNode) == nullPointer)) "doReplyTransfer: ReplyCap not at end of MDB chain"
     let parentCap ← getSlotCap (MDBNode.mdbPrev mdbNode)
-    assertH ((isReplyCap parentCap) && (Capability.capReplyMaster parentCap)) "doReplyTransfer: ReplyCap parent not reply master"
+    let _ ← assertH ((isReplyCap parentCap) && (Capability.capReplyMaster parentCap)) "doReplyTransfer: ReplyCap parent not reply master"
     let fault ← threadGet TCB.tcbFault receiver
     match fault with
     | none => (do
-          doIPCTransfer sender none 0 grant receiver
-          cteDeleteOne slot
-          setThreadState ThreadState.Running receiver
+          let _ ← doIPCTransfer sender none 0 grant receiver
+          let _ ← cteDeleteOne slot
+          let _ ← setThreadState ThreadState.Running receiver
           possibleSwitchTo receiver)
     | some f => (do
-          cteDeleteOne slot
+          let _ ← cteDeleteOne slot
           let tag ← getMessageInfo sender
           let sendBuffer ← lookupIPCBuffer false sender
           let mrs ← getMRs sender sendBuffer tag
           let restart ← handleFaultReply f receiver (MessageInfo.msgLabel tag) mrs
-          threadSet (fun tcb => { tcb with tcbFault := none }) receiver
+          let _ ← threadSet (fun tcb => { tcb with tcbFault := none }) receiver
           if restart then
             do
-              setThreadState ThreadState.Restart receiver
+              let _ ← setThreadState ThreadState.Restart receiver
               possibleSwitchTo receiver
           else
             setThreadState ThreadState.Inactive receiver)
@@ -578,11 +578,11 @@ def l1IndexToPrio (i : Nat) : Priority :=
   (fromIntegral i) <<< wordRadix
 
 /-- Haskell `countLeadingZeros` -/
-def countLeadingZeros {b : Type} [Inhabited b] (w : b) : Nat :=
+def countLeadingZeros {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
   (length ∘ ((takeWhile not) ∘ (reverse ∘ (map (testBit w))))) (enumFromToH 0 ((finiteBitSize w) - 1))
 
 /-- Haskell `wordLog2` -/
-def wordLog2 {b : Type} [Inhabited b] (w : b) : Nat :=
+def wordLog2 {b : Type} [Inhabited b] [BitsH b] (w : b) : Nat :=
   ((finiteBitSize w) - 1) - (countLeadingZeros w)
 
 /-- Haskell `getHighestPrio` -/
@@ -598,16 +598,16 @@ def getHighestPrio (d : Domain) : Kernel Priority :=
 /-- Haskell `switchToIdleThread` -/
 def switchToIdleThread : Kernel Unit :=
   do
-    stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
+    let _ ← stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
     let thread ← getIdleThread
-    RISCV64.switchToIdleThread
+    let _ ← RISCV64.switchToIdleThread
     setCurThread thread
 
 /-- Haskell `chooseThread` -/
 def chooseThread : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
-    stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
+    let _ ← stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ready_qs_runnable "threads in the ready queues are runnable'"
     let curdom ← if numDomains > 1 then
         curDomain
       else
@@ -619,7 +619,7 @@ def chooseThread : Kernel Unit :=
         let queue ← getQueue curdom prio
         let thread := fromJust (TcbQueue.tcbQueueHead queue)
         let runnable ← isRunnable thread
-        assertH runnable "Scheduled a non-runnable thread"
+        let _ ← assertH runnable "Scheduled a non-runnable thread"
         switchToThread thread
     else
       switchToIdleThread
@@ -628,10 +628,10 @@ def chooseThread : Kernel Unit :=
 def scheduleChooseNewThread : Kernel Unit :=
   do
     let domainTime ← getDomainTime
-    whenH (domainTime == 0) (do
-      RISCV64.prepareNextDomain
-      nextDomain)
-    chooseThread
+    let _ ← whenH (domainTime == 0) (do
+              let _ ← RISCV64.prepareNextDomain
+              nextDomain)
+    let _ ← chooseThread
     setSchedulerAction SchedulerAction.ResumeCurrentThread
 
 /-- Haskell `scheduleSwitchThreadFastfail` -/
@@ -659,25 +659,25 @@ def tcbQueueAppend (queue : TcbQueue) (tcbPtr : PPtr TCB) : Kernel TcbQueue :=
         pure ({ queue with tcbQueueHead := some tcbPtr })
       else
         do
-          threadSet (fun t => { t with tcbSchedPrev := TcbQueue.tcbQueueEnd queue }) tcbPtr
-          threadSet (fun t => { t with tcbSchedNext := some tcbPtr }) (fromJust (TcbQueue.tcbQueueEnd queue))
+          let _ ← threadSet (fun t => { t with tcbSchedPrev := TcbQueue.tcbQueueEnd queue }) tcbPtr
+          let _ ← threadSet (fun t => { t with tcbSchedNext := some tcbPtr }) (fromJust (TcbQueue.tcbQueueEnd queue))
           pure queue
     pure ({ q with tcbQueueEnd := some tcbPtr })
 
 /-- Haskell `tcbSchedAppend` -/
 def tcbSchedAppend (thread : PPtr TCB) : Kernel Unit :=
   do
-    stateAssertH ksReadyQueues_asrt ""
+    let _ ← stateAssertH ksReadyQueues_asrt ""
     let runnable ← isRunnable thread
-    assertH runnable "thread must be runnable"
+    let _ ← assertH runnable "thread must be runnable"
     let queued ← threadGet TCB.tcbQueued thread
     unlessH queued (do
       let tdom ← threadGet TCB.tcbDomain thread
       let prio ← threadGet TCB.tcbPriority thread
       let queue ← getQueue tdom prio
-      whenH (tcbQueueEmpty queue) (addToBitmap tdom prio)
+      let _ ← whenH (tcbQueueEmpty queue) (addToBitmap tdom prio)
       let queue' ← tcbQueueAppend queue thread
-      setQueue tdom prio queue'
+      let _ ← setQueue tdom prio queue'
       threadSet (fun t => { t with tcbQueued := true }) thread)
 
 /-- Haskell `schedule` -/
@@ -689,7 +689,7 @@ def schedule : Kernel Unit :=
     | SchedulerAction.ResumeCurrentThread => pure ()
     | SchedulerAction.SwitchToThread candidate => (do
           let wasRunnable ← isRunnable curThread
-          whenH wasRunnable (tcbSchedEnqueue curThread)
+          let _ ← whenH wasRunnable (tcbSchedEnqueue curThread)
           let idleThread ← getIdleThread
           let targetPrio ← threadGet TCB.tcbPriority candidate
           let curPrio ← threadGet TCB.tcbPriority curThread
@@ -698,32 +698,32 @@ def schedule : Kernel Unit :=
           let highest ← isHighestPrio curDom targetPrio
           if fastfail && (not highest) then
             do
-              tcbSchedEnqueue candidate
-              setSchedulerAction SchedulerAction.ChooseNewThread
+              let _ ← tcbSchedEnqueue candidate
+              let _ ← setSchedulerAction SchedulerAction.ChooseNewThread
               scheduleChooseNewThread
           else
             if wasRunnable && (curPrio == targetPrio) then
               do
-                tcbSchedAppend candidate
-                setSchedulerAction SchedulerAction.ChooseNewThread
+                let _ ← tcbSchedAppend candidate
+                let _ ← setSchedulerAction SchedulerAction.ChooseNewThread
                 scheduleChooseNewThread
             else
               do
-                switchToThread candidate
+                let _ ← switchToThread candidate
                 setSchedulerAction SchedulerAction.ResumeCurrentThread)
     | SchedulerAction.ChooseNewThread => (do
           let curRunnable ← isRunnable curThread
-          whenH curRunnable (tcbSchedEnqueue curThread)
+          let _ ← whenH curRunnable (tcbSchedEnqueue curThread)
           scheduleChooseNewThread)
 
 /-- Haskell `setDomain` -/
 def setDomain (tptr : PPtr TCB) (newdom : Domain) : Kernel Unit :=
   do
     let curThread ← getCurThread
-    tcbSchedDequeue tptr
-    threadSet (fun t => { t with tcbDomain := newdom }) tptr
+    let _ ← tcbSchedDequeue tptr
+    let _ ← threadSet (fun t => { t with tcbDomain := newdom }) tptr
     let runnable ← isRunnable tptr
-    whenH runnable (tcbSchedEnqueue tptr)
+    let _ ← whenH runnable (tcbSchedEnqueue tptr)
     whenH (tptr == curThread) rescheduleRequired
 
 /-- Haskell `setFlags` -/
@@ -739,8 +739,8 @@ def setMCPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
 /-- Haskell `setPriority` -/
 def setPriority (tptr : PPtr TCB) (prio : Priority) : Kernel Unit :=
   do
-    tcbSchedDequeue tptr
-    threadSet (fun t => { t with tcbPriority := prio }) tptr
+    let _ ← tcbSchedDequeue tptr
+    let _ ← threadSet (fun t => { t with tcbPriority := prio }) tptr
     let runnable ← isRunnable tptr
     whenH runnable (do
       let curThread ← getCurThread
@@ -762,12 +762,12 @@ def tcbQueueInsert (tcbPtr : PPtr TCB) (afterPtr : PPtr TCB) : Kernel Unit :=
   do
     let tcb ← getObject afterPtr
     let beforePtrOpt ← pure (TCB.tcbSchedPrev tcb)
-    assertH (beforePtrOpt != none) "afterPtr must not be the head of the list"
+    let _ ← assertH (beforePtrOpt != none) "afterPtr must not be the head of the list"
     let beforePtr ← pure (fromJust beforePtrOpt)
-    assertH (beforePtr != afterPtr) "the tcbSchedPrev pointer of a TCB must never point to itself"
-    threadSet (fun t => { t with tcbSchedPrev := some beforePtr }) tcbPtr
-    threadSet (fun t => { t with tcbSchedNext := some afterPtr }) tcbPtr
-    threadSet (fun t => { t with tcbSchedPrev := some tcbPtr }) afterPtr
+    let _ ← assertH (beforePtr != afterPtr) "the tcbSchedPrev pointer of a TCB must never point to itself"
+    let _ ← threadSet (fun t => { t with tcbSchedPrev := some beforePtr }) tcbPtr
+    let _ ← threadSet (fun t => { t with tcbSchedNext := some afterPtr }) tcbPtr
+    let _ ← threadSet (fun t => { t with tcbSchedPrev := some tcbPtr }) afterPtr
     threadSet (fun t => { t with tcbSchedNext := some tcbPtr }) beforePtr
 
 /-- Haskell `timerTick` -/
@@ -775,20 +775,20 @@ def timerTick : Kernel Unit :=
   do
     let thread ← getCurThread
     let state ← getThreadState thread
-    match state with
-    | ThreadState.Running => (do
-          let ts ← threadGet TCB.tcbTimeSlice thread
-          let ts' := ts - 1
-          if ts' > 0 then
-            threadSet (fun t => { t with tcbTimeSlice := ts' }) thread
-          else
-            do
-              threadSet (fun t => { t with tcbTimeSlice := timeSlice }) thread
-              tcbSchedAppend thread
-              rescheduleRequired)
-    | _ => pure ()
+    let _ ← match state with
+            | ThreadState.Running => (do
+                  let ts ← threadGet TCB.tcbTimeSlice thread
+                  let ts' := ts - 1
+                  if ts' > 0 then
+                    threadSet (fun t => { t with tcbTimeSlice := ts' }) thread
+                  else
+                    do
+                      let _ ← threadSet (fun t => { t with tcbTimeSlice := timeSlice }) thread
+                      let _ ← tcbSchedAppend thread
+                      rescheduleRequired)
+            | _ => pure ()
     whenH (numDomains > 1) (do
-      decDomainTime
+      let _ ← decDomainTime
       let domainTime ← getDomainTime
       whenH (domainTime == 0) rescheduleRequired)
 

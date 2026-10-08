@@ -13,7 +13,7 @@ noncomputable section
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Machine/RegisterSet.lhs
 opaque newContext : UserContext

@@ -27,7 +27,7 @@ def funPartialArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] (f : i →
   listArray b ((map f) (range b))
 
 /-- Haskell `funArray` -/
-def funArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] (f : i → a) : (i → a) :=
+def funArray {i : Type} [Inhabited i] {a : Type} [Inhabited a] [BoundedH i] (f : i → a) : (i → a) :=
   funPartialArray f ((minBound, maxBound))
 
 /-- Haskell `mapMaybe` -/

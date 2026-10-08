@@ -18,9 +18,6 @@ opaque RISCV64.deleteGhost {a : Type} [Inhabited a] : (PPtr a) → Nat → Kerne
 -- external: SEL4/Model/PSpace/RISCV64.hs
 opaque deleteGhost {a : Type} [Inhabited a] : (PPtr a) → Nat → Kernel Unit
 
--- external: SEL4/Model/StateData.lhs
-opaque doMachineOp {a : Type} [Inhabited a] : (MachineMonad a) → Kernel a
-
 -- external: Data/BinaryTree.hs
 opaque empty {a : Type} [Inhabited a] : BinaryTree a
 
@@ -37,7 +34,7 @@ opaque kernelObjectTypeName : KernelObject → String
 opaque loadWord : (PPtr Word) → MachineMonad Word
 
 -- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {w : Type} [Inhabited w] : Nat → w
+opaque mask {w : Type} [Inhabited w] [BitsH w] [IntegralH w] : Nat → w
 
 -- external: SEL4/Object/Structures.lhs
 opaque objBitsKO : KernelObject → Nat
@@ -125,13 +122,13 @@ def placeNewObject' (ptr : PPtr Unit) (val : KernelObject) (groupSizeBits : Nat)
   do
     let objSizeBits := objBitsKO val
     let totalBits := objSizeBits + groupSizeBits
-    unlessH (((PPtr.ptr ptr) &&& (mask totalBits)) == 0) (alignError totalBits)
+    let _ ← unlessH (((PPtr.ptr ptr) &&& (mask totalBits)) == 0) (alignError totalBits)
     let ps ← gets KernelState.ksPSpace
     let «end» := (PPtr.ptr ptr) + ((1 <<< totalBits) - 1)
     let (before, _) := lookupAround2 «end» (PSpace.psMap ps)
-    match before with
-    | none => pure ()
-    | some (x, _) => assertH (x < (PPtr.ptr ptr)) "Object creation would destroy an existing object"
+    let _ ← match before with
+            | none => pure ()
+            | some (x, _) => assertH (x < (PPtr.ptr ptr)) "Object creation would destroy an existing object"
     let addresses := map (fun n => (PPtr.ptr ptr) + (n <<< objSizeBits)) (enumFromToH 0 ((1 <<< groupSizeBits) - 1))
     let map' := foldr (fun addr map => (MapH.insert) addr val map) (PSpace.psMap ps) addresses
     let ps' := { ps with psMap := map' }
@@ -171,25 +168,25 @@ def ksASIDMapSafe (x0 : KernelState) : Bool :=
 /-- Haskell `deleteObjects` -/
 def deleteObjects {a : Type} [Inhabited a] (ptr : PPtr a) (bits : Nat) : Kernel Unit :=
   do
-    unlessH (((PPtr.ptr ptr) &&& (mask bits)) == 0) (alignError bits)
-    stateAssertH (deletionIsSafe ptr bits) "Object deletion would leave dangling pointers"
-    stateAssertH (deletionIsSafe_delete_locale ptr bits) "Object deletion would leave dangling pointers"
-    doMachineOp (freeMemory (PPtr.mk (PPtr.ptr ptr)) bits)
+    let _ ← unlessH (((PPtr.ptr ptr) &&& (mask bits)) == 0) (alignError bits)
+    let _ ← stateAssertH (deletionIsSafe ptr bits) "Object deletion would leave dangling pointers"
+    let _ ← stateAssertH (deletionIsSafe_delete_locale ptr bits) "Object deletion would leave dangling pointers"
+    let _ ← doMachineOp (freeMemory (PPtr.mk (PPtr.ptr ptr)) bits)
     let ps ← gets KernelState.ksPSpace
     let inRange := fun x => (x &&& ((-(mask bits)) - 1)) == (PPtr.ptr ptr)
     let map' := deleteRange (PSpace.psMap ps) (PPtr.ptr ptr) bits
     let ps' := { ps with psMap := map' }
-    modify (fun ks => { ks with ksPSpace := ps' })
-    modify (fun ks => { ks with gsUserPages := fun x => if inRange x then
-              none
-            else
-              KernelState.gsUserPages ks x })
-    stateAssertH (fun x => not (cNodePartialOverlap (KernelState.gsCNodes x) inRange)) "Object deletion would split CNodes."
-    modify (fun ks => { ks with gsCNodes := fun x => if inRange x then
-              none
-            else
-              KernelState.gsCNodes ks x })
-    (RISCV64.deleteGhost) ptr bits
+    let _ ← modify (fun ks => { ks with ksPSpace := ps' })
+    let _ ← modify (fun ks => { ks with gsUserPages := fun x => if inRange x then
+                      none
+                    else
+                      KernelState.gsUserPages ks x })
+    let _ ← stateAssertH (fun x => not (cNodePartialOverlap (KernelState.gsCNodes x) inRange)) "Object deletion would split CNodes."
+    let _ ← modify (fun ks => { ks with gsCNodes := fun x => if inRange x then
+                      none
+                    else
+                      KernelState.gsCNodes ks x })
+    let _ ← (RISCV64.deleteGhost) ptr bits
     stateAssertH ksASIDMapSafe "Object deletion would leave dangling PD pointers"
 
 /-- Haskell `reserveFrame` -/
@@ -199,7 +196,7 @@ def reserveFrame {a : Type} [Inhabited a] (ptr : PPtr a) (isKernel : Bool) : Ker
         KernelObject.KOKernelData
       else
         KernelObject.KOUserData
-    placeNewObject' (PPtr.mk (PPtr.ptr ptr)) val 0
+    let _ ← placeNewObject' (PPtr.mk (PPtr.ptr ptr)) val 0
     pure ()
 
 /-- Haskell `pointerInUserData` -/
@@ -210,13 +207,13 @@ def pointerInUserData (x0 : PPtr Word) (x1 : KernelState) : Bool :=
 /-- Haskell `loadWordUser` -/
 def loadWordUser (p : PPtr Word) : Kernel Word :=
   do
-    stateAssertH (pointerInUserData p) "loadWordUser needs a user data page"
+    let _ ← stateAssertH (pointerInUserData p) "loadWordUser needs a user data page"
     doMachineOp (loadWord p)
 
 /-- Haskell `storeWordUser` -/
 def storeWordUser (p : PPtr Word) (w : Word) : Kernel Unit :=
   do
-    stateAssertH (pointerInUserData p) "storeWordUser needs a user data page"
+    let _ ← stateAssertH (pointerInUserData p) "storeWordUser needs a user data page"
     doMachineOp (storeWord p w)
 
 end
