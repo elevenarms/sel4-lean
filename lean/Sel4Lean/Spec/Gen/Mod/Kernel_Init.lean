@@ -4,6 +4,19 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
+import Sel4Lean.Spec.KernelInit
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.API_Types
+import Sel4Lean.Spec.Gen.Mod.Kernel_BootInfo
+import Sel4Lean.Spec.Gen.Mod.Kernel_VSpace
+import Sel4Lean.Spec.Gen.Mod.Object_Interrupt
+import Sel4Lean.Spec.Gen.Mod.Model_PSpace
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Kernel_Thread
+import Sel4Lean.Spec.Gen.Mod.Object_TCB
+import Sel4Lean.Spec.Gen.Mod.Object_CNode
+import Sel4Lean.Spec.Gen.Mod.Config
 
 set_option match.ignoreUnusedAlts true
 
@@ -12,143 +25,75 @@ open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev fromAPIType := @Sel4Lean.Spec.M.API_Types.fromAPIType
+abbrev ptrFromPAddr := @Sel4Lean.Spec.M.API_Types.ptrFromPAddr
+abbrev ptrFromPAddrRegion := @Sel4Lean.Spec.M.API_Types.ptrFromPAddrRegion
+abbrev rootCNodeSize := @Sel4Lean.Spec.M.Config.rootCNodeSize
+abbrev biCapIRQControl := @Sel4Lean.Spec.M.Kernel_BootInfo.biCapIRQControl
+abbrev biCapITCNode := @Sel4Lean.Spec.M.Kernel_BootInfo.biCapITCNode
+abbrev biCapITIPCBuf := @Sel4Lean.Spec.M.Kernel_BootInfo.biCapITIPCBuf
+abbrev biCapITPD := @Sel4Lean.Spec.M.Kernel_BootInfo.biCapITPD
+abbrev biCapITTCB := @Sel4Lean.Spec.M.Kernel_BootInfo.biCapITTCB
+abbrev nopBIFrameData := @Sel4Lean.Spec.M.Kernel_BootInfo.nopBIFrameData
+abbrev syncBIFrame := @Sel4Lean.Spec.M.Kernel_BootInfo.syncBIFrame
+abbrev activateInitialThread := @Sel4Lean.Spec.M.Kernel_Thread.activateInitialThread
+abbrev configureIdleThread := @Sel4Lean.Spec.M.Kernel_Thread.configureIdleThread
+abbrev cteInsert := @Sel4Lean.Spec.M.Kernel_Thread.cteInsert
+abbrev initTCB := @Sel4Lean.Spec.M.Kernel_Thread.initTCB
+abbrev setCurThread := @Sel4Lean.Spec.M.Kernel_Thread.setCurThread
+abbrev setSchedulerAction := @Sel4Lean.Spec.M.Kernel_Thread.setSchedulerAction
+abbrev threadSet := @Sel4Lean.Spec.M.Kernel_Thread.threadSet
+abbrev createBIFrame := @Sel4Lean.Spec.M.Kernel_VSpace.createBIFrame
+abbrev createDeviceFrames := @Sel4Lean.Spec.M.Kernel_VSpace.createDeviceFrames
+abbrev createFramesOfRegion := @Sel4Lean.Spec.M.Kernel_VSpace.createFramesOfRegion
+abbrev createIPCBufferFrame := @Sel4Lean.Spec.M.Kernel_VSpace.createIPCBufferFrame
+abbrev createITASIDPool := @Sel4Lean.Spec.M.Kernel_VSpace.createITASIDPool
+abbrev createITPDPTs := @Sel4Lean.Spec.M.Kernel_VSpace.createITPDPTs
+abbrev initCPU := @Sel4Lean.Spec.M.Kernel_VSpace.initCPU
+abbrev initKernelVM := @Sel4Lean.Spec.M.Kernel_VSpace.initKernelVM
+abbrev initPlatform := @Sel4Lean.Spec.M.Kernel_VSpace.initPlatform
+abbrev vptrFromPPtr := @Sel4Lean.Spec.M.Kernel_VSpace.vptrFromPPtr
+abbrev writeITASIDPool := @Sel4Lean.Spec.M.Kernel_VSpace.writeITASIDPool
+abbrev writeITPDPTs := @Sel4Lean.Spec.M.Kernel_VSpace.writeITPDPTs
+abbrev addrFromPPtr := @Sel4Lean.Spec.M.Machine_Hardware.addrFromPPtr
+abbrev getMemoryRegions := @Sel4Lean.Spec.M.Machine_Hardware.getMemoryRegions
+abbrev initPSpace := @Sel4Lean.Spec.M.Model_PSpace.initPSpace
+abbrev placeNewObject := @Sel4Lean.Spec.M.Model_PSpace.placeNewObject
+abbrev reserveFrame := @Sel4Lean.Spec.M.Model_PSpace.reserveFrame
+abbrev createObject := @Sel4Lean.Spec.M.Object_CNode.createObject
+abbrev insertInitCap := @Sel4Lean.Spec.M.Object_CNode.insertInitCap
+abbrev locateSlotCap := @Sel4Lean.Spec.M.Object_CNode.locateSlotCap
+abbrev initInterruptController := @Sel4Lean.Spec.M.Object_Interrupt.initInterruptController
+abbrev maxFreeIndex := @Sel4Lean.Spec.M.Object_Structures.maxFreeIndex
+abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures.pageBits
+abbrev getThreadBufferSlot := @Sel4Lean.Spec.M.Object_TCB.getThreadBufferSlot
+abbrev getThreadCSpaceRoot := @Sel4Lean.Spec.M.Object_TCB.getThreadCSpaceRoot
+abbrev getThreadVSpaceRoot := @Sel4Lean.Spec.M.Object_TCB.getThreadVSpaceRoot
+
 /-! ## Stubs (from Haskell signatures) -/
 
--- external: SEL4/Kernel/Thread.lhs
-opaque activateInitialThread : (PPtr TCB) → VPtr → VPtr → Kernel Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque biCapIRQControl : Word
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque biCapITCNode : Word
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque biCapITIPCBuf : Word
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque biCapITPD : Word
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque biCapITTCB : Word
-
--- external: SEL4/Kernel/Thread.lhs
-opaque configureIdleThread : (PPtr TCB) → KernelInit Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque createBIFrame : Capability → VPtr → (BitVec 32) → (BitVec 32) → KernelInit Capability
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque createDeviceFrames : Capability → KernelInit Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque createFramesOfRegion : Capability → Region → Bool → KernelInit Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque createIPCBufferFrame : Capability → VPtr → KernelInit Capability
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque createITASIDPool : Capability → KernelInit Capability
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque createITPDPTs : Capability → VPtr → VPtr → KernelInit Capability
-
--- external: SEL4/Object/ObjectType.lhs
-opaque createObject : ObjectType → (PPtr Unit) → Nat → Bool → Kernel Capability
+-- local, not translated: record update of unknown field: record at line 100: 'st { initFreeMemory = small
+opaque allocRegion : Nat → KernelInit PAddr
 
 -- local, not translated: arithmetic sequence form: arithmetic_sequence at line 289: '[regStartPAddr bootM
 opaque createUntypedObject : Capability → Region → KernelInit Unit
 
--- external: SEL4/Object/CNode.lhs
-opaque cteInsert : Capability → (PPtr CTE) → (PPtr CTE) → Kernel Unit
+-- local, not translated: record update of unknown field: record at line 222: 's { initBootInfo = (initBoo
+opaque finaliseBIFrame : KernelInit Unit
 
--- external: SEL4/API/Types.lhs
-opaque fromAPIType : APIObjectType → ObjectType
+-- local, not translated: record update of unknown field: record at line 91: "st { initFreeMemory = map Re
+opaque initFreemem : PAddr → Region → KernelInit Unit
 
--- external: SEL4/Machine/Hardware.lhs
-opaque getMemoryRegions : MachineMonad (List (PAddr × PAddr))
+-- local, not translated: record update of unknown field: record at line 353: 'st { initSlotPosCur = currS
+opaque provideCap : Capability → Capability → KernelInit Unit
 
--- external: SEL4/Object/TCB.lhs
-opaque getThreadBufferSlot : (PPtr TCB) → Kernel (PPtr CTE)
-
--- external: SEL4/Object/TCB.lhs
-opaque getThreadCSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
-
--- external: SEL4/Object/TCB.lhs
-opaque getThreadVSpaceRoot : (PPtr TCB) → Kernel (PPtr CTE)
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque initCPU : Kernel Unit
-
--- external: SEL4/Object/Interrupt.lhs
-opaque initInterruptController : Capability → Word → KernelInit Capability
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque initKernelVM : Kernel Unit
-
--- external: SEL4/Model/PSpace.lhs
-opaque initPSpace : (List ((PPtr Unit) × (PPtr Unit))) → Kernel Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque initPlatform : Kernel Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque insertInitCap : (PPtr CTE) → Capability → Kernel Unit
-
--- external: SEL4/Object/CNode.lhs
-opaque locateSlotCap : Capability → Word → Kernel (PPtr CTE)
-
--- external: SEL4/Object/Structures.lhs
-opaque maxFreeIndex : Nat → Nat
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque nopBIFrameData : BIFrameData
-
--- external: SEL4/Machine/Hardware.lhs
-opaque pageBits : Nat
-
--- external: SEL4/Model/PSpace.lhs
-opaque placeNewObject {t_a : Type} [Inhabited t_a] [PSpaceStorable t_a] : (PPtr Unit) → t_a → Nat → Kernel Unit
-
--- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
-
--- external: SEL4/API/Types.lhs
-opaque ptrFromPAddrRegion : (PAddr × PAddr) → Region
-
--- external: SEL4/Model/PSpace.lhs
-opaque reserveFrame {t_a : Type} [Inhabited t_a] : (PPtr t_a) → Bool → Kernel Unit
-
--- external: SEL4/Config.lhs
-opaque rootCNodeSize : Nat
-
--- external: SEL4/Model/StateData.lhs
-opaque setCurThread : (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Model/StateData.lhs
-opaque setSchedulerAction : SchedulerAction → Kernel Unit
-
--- external: SEL4/Kernel/BootInfo.lhs
-opaque syncBIFrame : KernelInit Unit
-
--- external: SEL4/Object/TCB.lhs
-opaque threadSet : (TCB → TCB) → (PPtr TCB) → Kernel Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque writeITASIDPool : Capability → Capability → Kernel Unit
-
--- external: SEL4/Kernel/VSpace.lhs
-opaque writeITPDPTs : Capability → Capability → KernelInit Unit
+-- local, not translated: record update of unknown field: record at line 369: "st { initBootInfo = bootInf
+opaque provideUntypedCap : Capability → Bool → PAddr → (BitVec 8) → Word → KernelInit Unit
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
-  break: no signature found
   concat: no signature found
   either: no signature found
   finiteBitSize: no signature found
@@ -158,7 +103,12 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
   fst: no signature found
   gets: no signature found
   head: no signature found
-  initTCB: no signature found
+  initBootInfo: no signature found
+  initBootInfoFrame: no signature found
+  initFreeMemory: no signature found
+  initSlotPosCur: no signature found
+  initSlotPosMax: no signature found
+  initVPtrOffset: no signature found
   isAligned: no signature found
   length: no signature found
   lift: no signature found
@@ -183,13 +133,13 @@ opaque writeITPDPTs : Capability → Capability → KernelInit Unit
 
 /-! ## Translated -/
 
-/-- Haskell `doKernelOp` -/
-def doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a :=
-  lift ∘ lift
+/-- Haskell `doKernelOp`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev doKernelOp := @Sel4Lean.Spec.KernelInit.doKernelOp
 
-/-- Haskell `noInitFailure` -/
-def noInitFailure {t_a : Type} [Inhabited t_a] : (KernelInitState t_a) → KernelInit t_a :=
-  lift
+
+/-- Haskell `noInitFailure`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev noInitFailure := @Sel4Lean.Spec.KernelInit.noInitFailure
+
 
 /-- Haskell `minNum4kUntypedObj` -/
 def minNum4kUntypedObj : Nat :=
@@ -210,87 +160,15 @@ def getAPRegion (kernelFrameEnd : PAddr) : KernelInit (List Region) :=
           (s, e)))
     pure (map ptrFromPAddrRegion subRegions)
 
-/-- Haskell `initFreemem` -/
-def initFreemem (kernelFrameEnd : PAddr) (uiRegion : Region) : KernelInit Unit :=
-  do
-    let memRegions ← getAPRegion kernelFrameEnd
-    let region := Region.fromRegion uiRegion
-    let fst' := fst ∘ Region.fromRegion
-    let snd' := snd ∘ Region.fromRegion
-    let subUI := fun r => if ((fst region) ≥ (fst' r)) && ((snd region) ≤ (snd' r)) then
-          [(fst' r, fst region), (snd region, snd' r)]
-        else
-          [(fst' r, snd' r)]
-    let freeRegions := concat (map subUI memRegions)
-    let freeRegions' := take maxNumFreememRegions (freeRegions ++ (if (length freeRegions) < maxNumFreememRegions then
-        replicate (maxNumFreememRegions - (length freeRegions)) ((PPtr.mk 0, PPtr.mk 0))
-      else
-        []))
-    noInitFailure (modify (fun st => { st with initFreeMemory := map Region.Region freeRegions' }))
+/-- Haskell `coverOf`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev coverOf := @Sel4Lean.Spec.KernelInit.coverOf
 
-/-- Haskell `allocRegion` -/
-def allocRegion (bits : Nat) : KernelInit PAddr :=
-  let s := shiftLH 1 bits
-  let align := fun b =>
-    shiftLH ((shiftRH (b - 1) bits) + 1) bits
-  let isUsable := fun reg =>
-    let r := (align ∘ (fst ∘ Region.fromRegion)) reg
-    (r ≥ (fst (Region.fromRegion reg))) && (((r + s) - 1) ≤ (snd (Region.fromRegion reg)))
-  let isAlignedUsable := fun reg =>
-    let b := fst (Region.fromRegion reg)
-    let t := snd (Region.fromRegion reg)
-    let (r, q) := (align b, align t)
-    ((r == b) || (q == t)) && ((t - b) ≥ s)
-  do
-    let freeMem ← noInitFailure (gets InitData.initFreeMemory)
-    match «break» isAlignedUsable freeMem with
-    | (small, r :: rest) => (do
-          let (b, t) := Region.fromRegion r
-          let (result, region) := if (align b) == b then
-              (b, Region.Region ((b + s, t)))
-            else
-              (t - s, Region.Region ((b, t - s)))
-          let _ ← noInitFailure (modify (fun st => { st with initFreeMemory := small ++ ([region] ++ rest) }))
-          pure (addrFromPPtr result))
-    | (_, []) => (match «break» isUsable freeMem with
-        | (small, r' :: rest) => (do
-              let (b, t) := Region.fromRegion r'
-              let result := align b
-              let below := if result == b then
-                  []
-                else
-                  [Region.Region ((b, result))]
-              let above := if (result + s) == t then
-                  []
-                else
-                  [Region.Region ((result + s, t))]
-              let _ ← noInitFailure (modify (fun st => { st with initFreeMemory := small ++ (below ++ (above ++ rest)) }))
-              pure (addrFromPPtr result))
-        | _ => failM "Unable to allocate memory")
-
-/-- Haskell `coverOf` -/
-partial def coverOf (x0 : List Region) : Region :=
-  match x0 with
-  | [] => Region.Region ((0, 0))
-  | [x] => x
-  | (x :: xs) => 
-      let (l, h) := Region.fromRegion x
-      let (ll, hh) := Region.fromRegion (coverOf xs)
-      let ln := if l ≤ ll then
-          l
-        else
-          ll
-      let hn := if h ≤ hh then
-          hh
-        else
-          h
-      Region.Region ((ln, hn))
 
 /-- Haskell `createIdleThread` -/
 def createIdleThread : KernelInit Unit :=
   do
     let paddr ← allocRegion (objBits ((makeObject : TCB)))
-    let tcbPPtr := ptrFromPAddr paddr
+    let tcbPPtr : {t : Type} → PPtr t := ptrFromPAddr paddr
     let _ ← doKernelOp (do
               let _ ← placeNewObject tcbPPtr ((makeObject : TCB)) 0
               let _ ← modify (fun s => { s with ksIdleThread := tcbPPtr })
@@ -303,7 +181,7 @@ def createInitialThread (rootCNCap : Capability) (itPDCap : Capability) (ipcBuff
   do
     let tcbBits := objBits ((makeObject : TCB))
     let tcb' ← allocRegion tcbBits
-    let tcbPPtr := ptrFromPAddr tcb'
+    let tcbPPtr : {t : Type} → PPtr t := ptrFromPAddr tcb'
     let _ ← doKernelOp (do
               let _ ← placeNewObject tcbPPtr initTCB 0
               let srcSlot ← locateSlotCap rootCNCap biCapITCNode
@@ -322,43 +200,9 @@ def createInitialThread (rootCNCap : Capability) (itPDCap : Capability) (ipcBuff
               insertInitCap slot cap)
     pure ()
 
-/-- Haskell `foldME` -/
-def foldME :=
-  foldM
+/-- Haskell `foldME`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev foldME := @Sel4Lean.Spec.foldME
 
-/-- Haskell `provideCap` -/
-def provideCap (rootCNodeCap : Capability) (cap : Capability) : KernelInit Unit :=
-  do
-    let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
-    let maxSlot ← noInitFailure (gets InitData.initSlotPosMax)
-    let _ ← whenH (currSlot ≥ maxSlot) (MonadExcept.throw InitFailure.IFailure)
-    let slot ← doKernelOp (locateSlotCap rootCNodeCap currSlot)
-    let _ ← doKernelOp (insertInitCap slot cap)
-    noInitFailure (modify (fun st => { st with initSlotPosCur := currSlot + 1 }))
-
-/-- Haskell `provideUntypedCap` -/
-def provideUntypedCap (rootCNodeCap : Capability) (isDevice : Bool) (pptr : PAddr) (sizeBits : BitVec 8) (slotPosBefore : Word) : KernelInit Unit :=
-  do
-    let currSlot ← noInitFailure (gets InitData.initSlotPosCur)
-    let i := currSlot - slotPosBefore
-    let untypedObjs ← noInitFailure (gets (BIFrameData.bifUntypedObjPAddrs ∘ InitData.initBootInfo))
-    let _ ← assertG ((length untypedObjs) == (fromIntegral i)) "Untyped Object List is inconsistent"
-    let untypedObjs' ← noInitFailure (gets (BIFrameData.bifUntypedObjSizeBits ∘ InitData.initBootInfo))
-    let _ ← assertG ((length untypedObjs') == (fromIntegral i)) "Untyped Object List is inconsistent"
-    let untypedDevices ← noInitFailure (gets (BIFrameData.bifUntypedObjIsDeviceList ∘ InitData.initBootInfo))
-    let _ ← assertG ((length untypedDevices) == (fromIntegral i)) " Untyped Object List is inconsistent"
-    let bootInfo ← noInitFailure (gets InitData.initBootInfo)
-    let bootInfo' := { bootInfo with bifUntypedObjPAddrs := untypedObjs ++ [pptr], bifUntypedObjSizeBits := untypedObjs' ++ [sizeBits], bifUntypedObjIsDeviceList := untypedDevices ++ [isDevice] }
-    let _ ← noInitFailure (modify (fun st => { st with initBootInfo := bootInfo' }))
-    let size := fromIntegral sizeBits
-    provideCap rootCNodeCap (Capability.UntypedCap isDevice (ptrFromPAddr pptr) size (maxFreeIndex size))
-
-/-- Haskell `finaliseBIFrame` -/
-def finaliseBIFrame : KernelInit Unit :=
-  do
-    let cur ← noInitFailure (gets InitData.initSlotPosCur)
-    let max ← noInitFailure (gets InitData.initSlotPosMax)
-    noInitFailure (modify (fun s => { s with initBootInfo := { (InitData.initBootInfo s) with bifNullCaps := enumFromToH cur (max - 1) } }))
 
 /-- Haskell `makeRootCNode` -/
 def makeRootCNode : KernelInit Capability :=
@@ -372,14 +216,9 @@ def makeRootCNode : KernelInit Capability :=
     let _ ← doKernelOp (insertInitCap slot rootCNCap)
     pure rootCNCap
 
-/-- Haskell `runInit` -/
-def runInit (vptr : VPtr) (oper : KernelInit Unit) : Kernel Unit :=
-  do
-    let initData := { initFreeMemory := [], initSlotPosCur := 0, initSlotPosMax := bit (pageBits), initBootInfo := nopBIFrameData, initVPtrOffset := vptr, initBootInfoFrame := 0 : InitData }
-    let _ ← (flip runStateT) initData (do
-              let result ← ExceptT.run oper
-              either (fun _ => failM "initKernel Fail") pure result)
-    pure ()
+/-- Haskell `runInit`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev runInit := @Sel4Lean.Spec.KernelInit.runInit
+
 
 /-- Haskell `initKernel` -/
 def initKernel (entry : VPtr) (initOffset : VPtr) (initFrames : List PAddr) (kernelFrames : List PAddr) (bootFrames : List PAddr) : Kernel Unit :=

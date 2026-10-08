@@ -65,15 +65,15 @@ def pptrBaseOffset : Word :=
   (VPtr.fromVPtr (RISCV64.pptrBase)) - (PAddr.fromPAddr (RISCV64.paddrBase))
 
 /-- Haskell `ptrFromPAddr` -/
-def ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a :=
+def ptrFromPAddr {t_a : Type} : PAddr → PPtr t_a :=
   RISCV64.ptrFromPAddr
 
 /-- Haskell `addrFromPPtr` -/
-def addrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr :=
+def addrFromPPtr {t_a : Type} : (PPtr t_a) → PAddr :=
   RISCV64.addrFromPPtr
 
 /-- Haskell `addrFromKPPtr` -/
-def addrFromKPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → PAddr :=
+def addrFromKPPtr {t_a : Type} : (PPtr t_a) → PAddr :=
   RISCV64.addrFromKPPtr
 
 /-- Haskell `minIRQ` -/
@@ -163,7 +163,7 @@ def setNextPC : Word → UserMonad Unit :=
   RISCV64.setNextPC
 
 /-- Haskell `nullPointer` -/
-def nullPointer {t_a : Type} [Inhabited t_a] : PPtr t_a :=
+def nullPointer {t_a : Type} : PPtr t_a :=
   PPtr.mk 0
 
 /-- Haskell `config_HAVE_FPU` -/

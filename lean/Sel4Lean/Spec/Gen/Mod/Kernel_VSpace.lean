@@ -107,7 +107,7 @@ def lookupIPCBuffer : Bool → (PPtr TCB) → Kernel (Option (PPtr Word)) :=
   RISCV64.lookupIPCBuffer
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr :=
+def vptrFromPPtr {t_a : Type} : (PPtr t_a) → KernelInit VPtr :=
   RISCV64.vptrFromPPtr
 
 end

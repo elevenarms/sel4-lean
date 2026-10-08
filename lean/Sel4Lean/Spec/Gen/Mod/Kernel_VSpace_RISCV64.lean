@@ -157,7 +157,7 @@ def copyGlobalMappings (newPT : PPtr PTE) : Kernel Unit :=
     let globalPT ← gets (riscvKSGlobalPT ∘ KernelState.ksArchState)
     let base := ptIndex maxPTLevel pptrBase
     let ptSize := shiftLH 1 ptTranslationBits
-    forM_H (enumFromToH base (ptSize - 1)) (fun index => do
+    ForMH.forMH (enumFromToH base (ptSize - 1)) (fun index => do
         let offset := shiftLH (PPtr.mk index) pteBits
         let pte ← getObject (globalPT + offset)
         storePTE (newPT + offset) pte)
@@ -600,7 +600,7 @@ def createDeviceFrames : Capability → KernelInit Unit :=
   error "boot code unimplemented"
 
 /-- Haskell `vptrFromPPtr` -/
-def vptrFromPPtr {t_a : Type} [Inhabited t_a] : (PPtr t_a) → KernelInit VPtr :=
+def vptrFromPPtr {t_a : Type} : (PPtr t_a) → KernelInit VPtr :=
   error "boot code unimplemented"
 
 end

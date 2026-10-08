@@ -33,6 +33,8 @@ instance {α : Type} : DecidableEq (PPtr α) := fun a b =>
 
 -- Haskell derives Num, Ord and Bits for `PPtr`: lift them through the address
 instance {α : Type} {n : Nat} : OfNat (PPtr α) n := ⟨⟨OfNat.ofNat n⟩⟩
+/-- Any pointer is a pointer to "something" (`PPtr ()` in the Haskell; Isabelle has no pointer types). -/
+instance {α : Type} : CoeOut (PPtr α) (PPtr Unit) := ⟨fun p => ⟨p.ptr⟩⟩
 instance {α : Type} : LE (PPtr α) := ⟨fun a b => a.ptr ≤ b.ptr⟩
 instance {α : Type} : LT (PPtr α) := ⟨fun a b => a.ptr < b.ptr⟩
 instance {α : Type} (a b : PPtr α) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.ptr ≤ b.ptr))

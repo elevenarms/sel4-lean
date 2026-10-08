@@ -92,7 +92,7 @@ OPERATOR_APP = {"!": None, "$!": None, "!!": "listIndexH", "//": "arrayUpdH", "=
 # Haskell names -> Lean names (Prelude.lean)
 NAME = {
     "return": "pure", "fail": "failH", "assert": "assertH", "stateAssert": "stateAssertH",
-    "forM_": "forM_H", "delete": "deleteH", "when": "whenH", "unless": "unlessH",
+    "forM_": "forM_H", "delete": "deleteH", "when": "whenH", "unless": "unlessH", "break": "breakH",
     "fromPPtr": "PPtr.ptr", "PPtr": "PPtr.mk",
     # mtl classes -> Lean's monad classes
     "throwError": "MonadExcept.throw", "catchError": "MonadExcept.tryCatch", "runExceptT": "ExceptT.run",
@@ -611,7 +611,22 @@ class Translator:
             self.fail(bad, "do statement")
         lines = []
         si = ind + 2
-        for s in stmts:
+        # Haskell `do` scoping is positional: a name bound by statement j is not in scope in statements
+        # before j (e.g. `byte <- gets value; …; value <- …` uses the selector `value` first)
+        binders_of = getattr(self, "binders_of", None)
+        params = getattr(self, "param_names", None)
+        outer = getattr(self, "bound", set())
+        stmt_binders = []
+        if binders_of is not None and params is not None:
+            for st in stmts:
+                node = st.child_by_field_name("pattern") if st.type == "bind" else (
+                    st.child_by_field_name("binds") if st.type == "let" else None)
+                stmt_binders.append(binders_of(node) if node is not None else set())
+        for i, s in enumerate(stmts):
+            if stmt_binders:
+                before = set().union(*stmt_binders[:i])
+                later = set().union(*stmt_binders[i:]) - before - params
+                self.bound = outer - later
             if s.type == "bind":
                 pn = s.child_by_field_name("pattern")
                 p = self.pat(pn)
@@ -634,6 +649,7 @@ class Translator:
                     lb = self.local_bind(b, si, in_do=True)
                     if lb:
                         lines.append(lb)
+        self.bound = outer
         pad = " " * si
         return "do\n" + "\n".join(pad + l for l in lines)
 

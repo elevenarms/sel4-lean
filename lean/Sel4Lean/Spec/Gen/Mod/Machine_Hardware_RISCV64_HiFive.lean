@@ -4,7 +4,6 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.KernelConfig
 import Sel4Lean.Spec.Platform
 
 set_option match.ignoreUnusedAlts true

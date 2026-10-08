@@ -195,7 +195,7 @@ def cancelAllIPC (epptr : PPtr Endpoint) : Kernel Unit :=
     | Endpoint.IdleEP => pure ()
     | _ => (do
           let _ ← setEndpoint epptr Endpoint.IdleEP
-          let _ ← forM_H (Endpoint.epQueue ep) (fun t => do
+          let _ ← ForMH.forMH (Endpoint.epQueue ep) (fun t => do
                       let _ ← setThreadState ThreadState.Restart t
                       tcbSchedEnqueue t)
           rescheduleRequired)

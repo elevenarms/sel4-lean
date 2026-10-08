@@ -347,13 +347,15 @@ hs2lean module: 7/7 functions translated (0 partial, 0 machine-opaque, 0 l4v mac
 hs2lean imports: 0 modules, 0 names, 0 arch aliases
 hs2lean module: 0/0 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 0 unresolved
 hs2lean imports: 4 modules, 5 names, 0 arch aliases
-hs2lean module: 22/23 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 1 external stubs, 13 unresolved
+hs2lean module: 22/23 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 1 external stubs, 15 unresolved
   failed isAligned: function without a signature: function at line 193: 'isAligned x n = x .&. mask n == 0'
   unresolved bit: no signature found
   unresolved flip: no signature found
   unresolved fromIntegral: no signature found
   unresolved gets: no signature found
   unresolved head: no signature found
+  unresolved initBootInfo: no signature found
+  unresolved initBootInfoFrame: no signature found
   unresolved isAligned: local, not translated, no signature: function without a signature: function at line 193: 'isAlign
   unresolved last: no signature found
   unresolved lift: no signature found
@@ -362,27 +364,15 @@ hs2lean module: 22/23 functions translated (0 partial, 0 machine-opaque, 0 l4v m
   unresolved runStateT: no signature found
   unresolved shiftL: no signature found
   unresolved shiftR: no signature found
-hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 22/23 functions translated (0 partial, 0 machine-opaque, 0 l4v machine ops), 6 external stubs, 13 unresolved
-  failed isAligned: function without a signature: function at line 193: 'isAligned x n = x .&. mask n == 0'
-  unresolved bit: no signature found
-  unresolved flip: no signature found
-  unresolved fromIntegral: no signature found
-  unresolved gets: no signature found
-  unresolved head: no signature found
-  unresolved isAligned: local, not translated, no signature: function without a signature: function at line 193: 'isAlign
-  unresolved last: no signature found
-  unresolved lift: no signature found
-  unresolved mapM_: no signature found
-  unresolved modify: no signature found
-  unresolved runStateT: no signature found
-  unresolved shiftL: no signature found
-  unresolved shiftR: no signature found
-hs2lean imports: 10 modules, 37 names, 0 arch aliases
-hs2lean module: 21/22 functions translated (3 partial, 0 machine-opaque, 0 l4v machine ops), 7 external stubs, 31 unresolved
+hs2lean imports: 11 modules, 44 names, 0 arch aliases
+hs2lean module: 16/22 functions translated (2 partial, 0 machine-opaque, 0 l4v machine ops), 0 external stubs, 36 unresolved
+  failed allocRegion: record update of unknown field: record at line 100: 'st { initFreeMemory = small++ [region] ++rest }'
   failed createUntypedObject: arithmetic sequence form: arithmetic_sequence at line 289: '[regStartPAddr bootMemReuseReg, (regStartPAddr bootMemReuseR
+  failed finaliseBIFrame: record update of unknown field: record at line 222: 's { initBootInfo = (initBootInfo s) {bifNullCaps = [cur .. max - 1]
+  failed initFreemem: record update of unknown field: record at line 91: "st { initFreeMemory = map Region freeRegions' }"
+  failed provideCap: record update of unknown field: record at line 353: 'st { initSlotPosCur = currSlot + 1 }'
+  failed provideUntypedCap: record update of unknown field: record at line 369: "st { initBootInfo = bootInfo' }"
   unresolved bit: no signature found
-  unresolved break: no signature found
   unresolved concat: no signature found
   unresolved either: no signature found
   unresolved finiteBitSize: no signature found
@@ -392,41 +382,12 @@ hs2lean module: 21/22 functions translated (3 partial, 0 machine-opaque, 0 l4v m
   unresolved fst: no signature found
   unresolved gets: no signature found
   unresolved head: no signature found
-  unresolved isAligned: no signature found
-  unresolved length: no signature found
-  unresolved lift: no signature found
-  unresolved liftM: no signature found
-  unresolved map: no signature found
-  unresolved mapM: no signature found
-  unresolved mapM_: no signature found
-  unresolved modify: no signature found
-  unresolved not: no signature found
-  unresolved notElem: no signature found
-  unresolved otherwise: no signature found
-  unresolved replicate: no signature found
-  unresolved runStateT: no signature found
-  unresolved shiftL: no signature found
-  unresolved shiftR: no signature found
-  unresolved show: no signature found
-  unresolved snd: no signature found
-  unresolved tail: no signature found
-  unresolved take: no signature found
-  unresolved undefined: no signature found
-hs2lean imports: 0 modules, 0 names, 0 arch aliases
-hs2lean module: 21/22 functions translated (3 partial, 0 machine-opaque, 0 l4v machine ops), 43 external stubs, 32 unresolved
-  failed createUntypedObject: arithmetic sequence form: arithmetic_sequence at line 289: '[regStartPAddr bootMemReuseReg, (regStartPAddr bootMemReuseR
-  unresolved bit: no signature found
-  unresolved break: no signature found
-  unresolved concat: no signature found
-  unresolved either: no signature found
-  unresolved finiteBitSize: no signature found
-  unresolved flip: no signature found
-  unresolved foldM: no signature found
-  unresolved fromIntegral: no signature found
-  unresolved fst: no signature found
-  unresolved gets: no signature found
-  unresolved head: no signature found
-  unresolved initTCB: no signature found
+  unresolved initBootInfo: no signature found
+  unresolved initBootInfoFrame: no signature found
+  unresolved initFreeMemory: no signature found
+  unresolved initSlotPosCur: no signature found
+  unresolved initSlotPosMax: no signature found
+  unresolved initVPtrOffset: no signature found
   unresolved isAligned: no signature found
   unresolved length: no signature found
   unresolved lift: no signature found

@@ -9,7 +9,7 @@ its declaration anywhere under ROOT_SRC_DIR (RISCV64 variants only), translate t
 import os
 import re
 import sys
-from hs2lean import (Translator, DataInfo, Unsupported, parse_file, top_decls, kids, TYPE)
+from hs2lean import (Translator, DataInfo, Unsupported, parse_file, top_decls, kids, TYPE, NAME)
 
 ARCH = "RISCV64"
 # the platform behind the spec's `PLATFORM` placeholder: l4v builds HiFive (SEL4.cabal, make_spec.sh)
@@ -96,10 +96,28 @@ L4V_OVERRIDES.update({(_HW, n): f"Sel4Lean.Spec.Platform.{n}"                   
                                 "kernelELFBaseOffset", "addrFromKPPtr")})
 L4V_OVERRIDES.update({(f"SEL4/Machine/Hardware/{ARCH}/{PLATFORM}.hs", n): f"Sel4Lean.Spec.Platform.{n}"
                       for n in ("irqInvalid", "pageColourBits")})
+# KernelInitMonad_H / KernelInit_H: l4v's init monad plumbing and unspecified bootinfo constants
+L4V_OVERRIDES.update({("SEL4/Kernel/Init.lhs", n): f"Sel4Lean.Spec.KernelInit.{n}"
+                      for n in ("doKernelOp", "runInit", "noInitFailure", "coverOf")})
+L4V_OVERRIDES[("SEL4/Kernel/Init.lhs", "foldME")] = "Sel4Lean.Spec.foldME"   # lib/Monads Nondet_Monad.thy
+L4V_OVERRIDES.update({("SEL4/Kernel/BootInfo.lhs", n): f"Sel4Lean.Spec.KernelInit.{n}"
+                      for n in ("itASID", "biCapNull", "biCapITTCB", "biCapITCNode", "biCapITPD", "biCapIRQControl",
+                                "biCapASIDControl", "biCapITASIDPool", "biCapIOPort", "biCapIOSpace",
+                                "biCapBIFrame", "biCapITIPCBuf", "biCapDynStart", "biFrameSizeBits",
+                                "nopBIFrameData", "syncBIFrame")})
+# the Lean file defining each override namespace
+OVERRIDE_FILES = {"Sel4Lean.Spec.KernelConfig": "Sel4Lean.Spec.Gen.KernelConfig",
+                  "Sel4Lean.Spec.Platform": "Sel4Lean.Spec.Platform",
+                  "Sel4Lean.Spec.KernelInit": "Sel4Lean.Spec.KernelInit"}
 # Structures_H: the Haskell's hand-written `isNullCap` etc. are replaced by l4v's generated discriminators
 L4V_OVERRIDES.update({("SEL4/Object/Structures.lhs", n): f"Sel4Lean.Spec.{n}"
                       for n in ("isNullCap", "isDomainCap", "isIRQControlCap", "isReplyCap", "isUntypedCap",
                                 "isNotificationCap")})
+
+# functions whose result is `PPtr a` for an `a` fixed only by the use site (let-polymorphism, see local_bind)
+POLY_PTR_RESULT = {"ptrFromPAddr"}
+# `forM_` in any monad (the crawl slice's forM_H is NondetM-only, for its proofs)
+NAME["forM_"] = "ForMH.forMH"
 
 # operations ported from l4v's MachineOps.thy by hand (Spec/MachineOps.lean)
 MACHINE_OPS = {"loadWord", "storeWord", "getMemoryRegions", "storeWordVM", "configureTimer", "initTimer",
@@ -357,6 +375,8 @@ class FullTranslator(Translator):
         self.arch_ctor_in_scope = set()  # arch types whose constructors are in scope unqualified
         self.in_arch_module = False  # in a RISCV64 module, unqualified X means RISCV64.X
         self.l4v_style = True        # l4v's design-spec conventions (discriminators, undefined selectors)
+        self.binders_of = lambda node: bound_names(self, node, node.type != "local_binds")
+        self.param_names = None
         self.arch_calls = set()      # `Arch.f` references seen while translating
         self.platform_calls = set()  # `Platform.f` references (the platform module, e.g. RISCV64/Spike.hs)
         self.constraints = []        # kept class constraints of the current signature
@@ -452,6 +472,11 @@ class FullTranslator(Translator):
                 while m.type == "apply":
                     args.append(m.child_by_field_name("argument"))
                     m = m.child_by_field_name("function")
+                if m.type == "variable" and self.text(m) in POLY_PTR_RESULT and b.child_by_field_name("name"):
+                    # Haskell let-generalises `let p = ptrFromPAddr x` (`PPtr a` for every a); Lean does not,
+                    # so give the binding a polymorphic type and let each use instantiate it
+                    nm = self.ident(self.text(b.child_by_field_name("name")))
+                    return f"let {nm} : {{t : Type}} → PPtr t := {self.e(ex, ind)}"
                 if m.type == "variable" and self.text(m) == "runState" and len(args) == 2:
                     f, st = reversed(args)
                     lhs = (self.pat(b.child_by_field_name("pattern")) if b.child_by_field_name("name") is None
@@ -472,14 +497,34 @@ class FullTranslator(Translator):
         self.constraints, self.hk, self.tyvars = [], set(), []
         body = [d for d in nodes if d.type != "signature"]
         self.bound = set().union(*(bound_names(self, d) for d in body)) | self.wildcard_fields(body)
+        # names in scope throughout the body: parameters and where-bound names (for positional do-scoping)
+        self.param_names = set().union(*(bound_names(self, c, d.field_name_for_child(i) == "patterns")
+                                         for d in body for i, c in enumerate(d.children)
+                                         if d.field_name_for_child(i) in ("patterns", "binds"))) \
+            | self.wildcard_fields(body)
         sig = next((d for d in nodes if d.type == "signature"), None)
         if sig is not None:
             self.ty(sig.child_by_field_name("type"))   # records constraints and higher-kinded vars
         text = super().emit_function(name, nodes, sig_override=sig_override)
         plain = [v for v in self.tyvars if v not in self.hk]
+        header = text.split(":=", 1)[0]
+        # a pointee type variable that occurs only in argument positions: the function cannot depend on it
+        # (Isabelle has no pointer types at all), and Lean could not infer it at calls such as
+        # `reserveFrame (ptrFromPAddr p) True` - erase it to `PPtr Unit` (typed pointers coerce, Exec/Prelude)
+        dline = next((l for l in header.split("\n") if l.startswith(f"def {self.ident(name)} ")), None)
+        if dline is not None and " : " in dline:
+            params, result = dline.rsplit(") : ", 1) if ") : " in dline else dline.split(" : ", 1)
+            for v in list(plain):
+                if phantom_ptr(v, header) and not re.search(rf"(?<![\w.]){re.escape(v)}(?![\w])", result):
+                    new = re.sub(rf"PPtr {re.escape(v)}\b", "PPtr Unit", dline)
+                    text = text.replace(dline, new, 1)
+                    header = header.replace(dline, new, 1)
+                    dline = new
+                    plain.remove(v)
         if self.constraints or self.hk or plain:
             inst = " ".join([f"{{{v} : Type → Type}}" for v in sorted(self.hk)]
-                            + [f"{{{v} : Type}} [Inhabited {v}]" for v in plain]
+                            + [f"{{{v} : Type}}" + ("" if phantom_ptr(v, header) else f" [Inhabited {v}]")
+                               for v in plain]
                             + [f"[{c} {v}]" for c, v in self.constraints])
             text = text.replace(f"\ndef {self.ident(name)} ", f"\ndef {self.ident(name)} {inst} ", 1)
         return text
@@ -644,6 +689,32 @@ def cmd_types(root, files, emit=True):
             out[name] = (MACHINE_STATE_LEAN.format(arch=ARCH), "SEL4/Machine/Hardware/RISCV64.hs")
             order.append(name)
             return
+        if name in ("InitData", "KernelInitState", "KernelInit"):
+            # l4v's init monad (design/skel/KernelInitMonad_H.thy): the kernel state lives *inside* the init
+            # record (`initKernelState`, like `ksMachineState`), instead of Haskell's `StateT InitData Kernel`;
+            # Haskell's `initVPtrOffset` (only used by runInit, which l4v replaces) is not in l4v's record
+            for n in ("InitData", "KernelInitState", "KernelInit"):
+                seen.add(n)
+            for d in ("Region", "BIFrameData", "PAddr", "KernelState", "InitFailure"):
+                visit(d)
+            deps["InitData"] = {"Region", "BIFrameData", "PAddr", "KernelState"}
+            deps["KernelInitState"] = {"InitData"}
+            deps["KernelInit"] = {"KernelInitState", "InitFailure"}
+            out["InitData"] = ("/-- Isabelle `record init_data` (design/skel/KernelInitMonad_H.thy) -/\n"
+                               "structure InitData where\n"
+                               "  initFreeMemory : List Region\n"
+                               "  initSlotPosCur : Word\n"
+                               "  initSlotPosMax : Word\n"
+                               "  initBootInfo : BIFrameData\n"
+                               "  initBootInfoFrame : PAddr\n"
+                               "  initKernelState : KernelState\n"
+                               "  deriving Inhabited", "SEL4/Kernel/Init.lhs")
+            out["KernelInitState"] = ("/-- Isabelle `'a kernel_init_state = (init_data, 'a) nondet_monad` -/\n"
+                                      "abbrev KernelInitState := Sel4Lean.NondetM InitData", "SEL4/Kernel/Init.lhs")
+            out["KernelInit"] = ("/-- Isabelle `'a kernel_init = (init_failure + 'a) kernel_init_state` -/\n"
+                                 "abbrev KernelInit := ExceptT InitFailure KernelInitState", "SEL4/Kernel/Init.lhs")
+            order.extend(["InitData", "KernelInitState", "KernelInit"])
+            return
         if name == "Kernel":
             seen.add(name)
             visit("KernelState")
@@ -704,6 +775,12 @@ def cmd_types(root, files, emit=True):
                 # the default keeps the Haskell model's `KState { … }` constructions (which lack it) valid
                 visit("MachineMonad")
                 deps[name] = deps[name] | {"MachineMonad"}
+                # l4v's record also has `gsMaxObjectSize` (ghost state, used by the invariants)
+                text = text.replace("  gsUntypedZeroRanges : ((Word × Word) → Prop)\n",
+                                    "  gsUntypedZeroRanges : ((Word × Word) → Prop)\n"
+                                    "  /-- not in the Haskell model: l4v's ghost `gsMaxObjectSize` -/\n"
+                                    "  gsMaxObjectSize : Nat := undefinedH\n", 1)
+                assert "gsMaxObjectSize" in text, "KernelState: gsUntypedZeroRanges field not found"
                 text = text.replace("  ksArchState : RISCV64.KernelState\n",
                                     "  ksArchState : RISCV64.KernelState\n"
                                     "  /-- not in the Haskell model: l4v's `ksMachineState` -/\n"
@@ -906,9 +983,10 @@ PRELUDE_NAMES = set()  # filled from hs2lean.NAME at runtime
 BINDER_FIELDS = {"patterns", "pattern"}
 
 
-def bound_names(tr, node):
-    """Variables bound anywhere inside a function (parameters, lambda/do/case patterns, let/where names)."""
-    out, stack = set(), [(node, False)]
+def bound_names(tr, node, binding=False):
+    """Variables bound anywhere inside a function (parameters, lambda/do/case patterns, let/where names).
+    `binding=True` when node is itself a pattern (all its variables are binders)."""
+    out, stack = set(), [(node, binding)]
     while stack:
         m, binding = stack.pop()
         if m.type == "field_name" and not (m.parent is not None and m.parent.type == "field_pattern"
@@ -938,6 +1016,14 @@ def used_names(tr, node):
     return out
 
 
+def phantom_ptr(v, lean_sig):
+    """Does type variable v occur only as a pointer's pointee (`PPtr v`) in this Lean signature? Then no
+    `[Inhabited v]` is needed (`PPtr v` is inhabited for every v), and adding one makes calls that never
+    fix v (Haskell's `reserveFrame :: PPtr a -> …`, unconstrained `a`) ambiguous in Lean."""
+    rest = re.sub(rf"PPtr {re.escape(v)}\b", "", lean_sig)
+    return re.search(rf"(?<![\w.]){re.escape(v)}(?![\w])", rest) is None
+
+
 def sig_stub(tr, name, sig_node, why):
     """`opaque name {a : Type} … : T` from a Haskell signature, or None if the type won't translate."""
     tr.tyvars, tr.constraints, tr.hk = [], [], set()
@@ -946,7 +1032,7 @@ def sig_stub(tr, name, sig_node, why):
     except Unsupported:
         return None
     imp = "".join(f" {{{v} : {'Type → Type' if v in tr.hk else 'Type'}}}" for v in tr.tyvars)
-    inst = "".join(f" [Inhabited {v}]" for v in tr.tyvars if v not in tr.hk)
+    inst = "".join(f" [Inhabited {v}]" for v in tr.tyvars if v not in tr.hk and not phantom_ptr(v, t))
     if tr.hk:   # opaque needs an inhabitant: monad-polymorphic results are inhabited via failure
         inst += "".join(f" [Monad {v}] [MonadFailH {v}]" for v in sorted(tr.hk)
                         if ("Monad", v) not in tr.constraints)
@@ -1051,7 +1137,7 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
                      - (set().union(*(bound_names(tr, d) for d in ns if d.type != "signature")) - {n})}
         machine = any(os.path.relpath(mpath, root).startswith(p) for p in MACHINE_INTERFACE)
         uses_machine_ops = False
-        uses_kernel_config = False
+        override_imports = set()
         for n in order:
             if n in PROVIDED:
                 continue   # hand-written in Spec/PSpaceStorable.lean
@@ -1081,7 +1167,9 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
             if ov is not None:
                 out_defs.append((None, f"/-- Haskell `{n}`: dropped by l4v's skeleton; its Isabelle definition -/\n"
                                        f"abbrev {tr.ident(n)} := @{ov}\n"))
-                uses_kernel_config = True
+                ns = ov.rsplit(".", 1)[0]
+                if ns in OVERRIDE_FILES:
+                    override_imports.add(OVERRIDE_FILES[ns])
                 stats["l4v"] = stats.get("l4v", 0) + 1
                 stats["translated"] += 1
                 continue
@@ -1181,9 +1269,8 @@ def cmd_module(root, type_roots, modules, namespace="Sel4Lean.Spec", compiled=No
         print("import Sel4Lean.Spec.PSpaceInstances")
     if uses_machine_ops:
         print("import Sel4Lean.Spec.MachineOps")
-    if uses_kernel_config:
-        print("import Sel4Lean.Spec.Gen.KernelConfig")
-        print("import Sel4Lean.Spec.Platform")
+    for im in sorted(override_imports):
+        print(f"import {im}")
     for im in imports:
         print(f"import Sel4Lean.Spec.Gen.Mod.{im}")
     # Haskell allows overlapping (unreachable) case alternatives; Lean rejects them unless told not to

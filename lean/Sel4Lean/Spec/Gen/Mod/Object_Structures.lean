@@ -4,8 +4,6 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
-import Sel4Lean.Spec.Gen.KernelConfig
-import Sel4Lean.Spec.Platform
 import Sel4Lean.Spec.Gen.Mod.Object_Structures_RISCV64
 import Sel4Lean.Spec.Gen.Mod.API_Types_Universal
 import Sel4Lean.Spec.Gen.Mod.API_Types_RISCV64

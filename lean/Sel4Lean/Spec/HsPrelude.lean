@@ -187,6 +187,22 @@ def assocs {ι ε : Type} [EnumH ι] (arr : ι → ε) : List (ι × ε) := Enum
 abbrev runState {σ α : Type} (x : StateM σ α) (s : σ) : α × σ := x.run s
 
 abbrev runStateT {σ α : Type} {m : Type → Type} [Monad m] (x : StateT σ m α) (s : σ) : m (α × σ) := x.run s
+/-- Haskell `forM_` in any monad: l4v's `mapM_x` for the nondeterministic monad, else `List.forM`. -/
+class ForMH (m : Type → Type) where
+  forMH {α β : Type} : List α → (α → m β) → m Unit
+instance {σ : Type} : ForMH (NondetM σ) := ⟨fun xs f => NondetM.mapM_x f xs⟩
+instance (priority := low) {m : Type → Type} [Monad m] : ForMH m :=
+  ⟨fun xs f => xs.forM (fun x => do let _ ← f x; pure ())⟩
+
+/-- Isabelle `foldME m a xs ≡ foldr (λp q. q >>=E swp m p) xs (returnOk a)` (lib/Monads/nondet/
+Nondet_Monad.thy). A right fold: the *last* element is processed first. The Haskell (`Init.lhs`:
+`foldME = foldM`) goes left to right; l4v's verified spec, and so this one, goes right to left. -/
+def foldME {M : Type → Type} [Monad M] {α β : Type} (m : β → α → M β) (a : β) (xs : List α) : M β :=
+  xs.foldr (fun p q => q >>= fun b => m b p) (pure a)
+
+/-- Haskell `Data.List.break p xs = (takeWhile (not . p) xs, dropWhile (not . p) xs)`. -/
+abbrev breakH {α : Type} (p : α → Bool) (xs : List α) : List α × List α :=
+  (xs.takeWhile (fun x => !p x), xs.dropWhile (fun x => !p x))
 abbrev foldl' {α β : Type} (f : β → α → β) (z : β) (xs : List α) : β := xs.foldl f z
 abbrev listIndexH {α : Type} [Inhabited α] (xs : List α) (i : Int) : α := xs.getD i.toNat default
 abbrev enumFromToH {α : Type} [IntegralH α] (a b : α) : List α :=

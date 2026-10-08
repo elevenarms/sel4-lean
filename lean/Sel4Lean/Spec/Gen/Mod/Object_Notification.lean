@@ -129,7 +129,7 @@ def cancelAllSignals (ntfnPtr : PPtr Notification) : Kernel Unit :=
     match Notification.ntfnObj ntfn with
     | NTFN.WaitingNtfn queue => (do
           let _ ← setNotification ntfnPtr ({ ntfn with ntfnObj := NTFN.IdleNtfn })
-          let _ ← forM_H queue (fun t => do
+          let _ ← ForMH.forMH queue (fun t => do
                       let _ ← setThreadState ThreadState.Restart t
                       tcbSchedEnqueue t)
           rescheduleRequired)

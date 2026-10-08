@@ -127,12 +127,12 @@ def cNodePartialOverlap (x0 : Word → Option Nat) (x1 : Word → Bool) : Bool :
   | _, _ => false
 
 /-- Haskell `deletionIsSafe` -/
-def deletionIsSafe {t_a : Type} [Inhabited t_a] (x0 : PPtr t_a) (x1 : Nat) (x2 : KernelState) : Bool :=
+def deletionIsSafe (x0 : PPtr Unit) (x1 : Nat) (x2 : KernelState) : Bool :=
   match x0, x1, x2 with
   | _, _, _ => true
 
 /-- Haskell `deletionIsSafe_delete_locale` -/
-def deletionIsSafe_delete_locale {t_a : Type} [Inhabited t_a] (x0 : PPtr t_a) (x1 : Nat) (x2 : KernelState) : Bool :=
+def deletionIsSafe_delete_locale (x0 : PPtr Unit) (x1 : Nat) (x2 : KernelState) : Bool :=
   match x0, x1, x2 with
   | _, _, _ => true
 
@@ -142,7 +142,7 @@ def ksASIDMapSafe (x0 : KernelState) : Bool :=
   | _ => true
 
 /-- Haskell `deleteObjects` -/
-def deleteObjects {t_a : Type} [Inhabited t_a] (ptr : PPtr t_a) (bits : Nat) : Kernel Unit :=
+def deleteObjects (ptr : PPtr Unit) (bits : Nat) : Kernel Unit :=
   do
     let _ ← unlessH (((PPtr.ptr ptr) &&& (mask bits)) == 0) (alignError bits)
     let _ ← stateAssertH (deletionIsSafe ptr bits) "Object deletion would leave dangling pointers"
@@ -166,7 +166,7 @@ def deleteObjects {t_a : Type} [Inhabited t_a] (ptr : PPtr t_a) (bits : Nat) : K
     stateAssertH ksASIDMapSafe "Object deletion would leave dangling PD pointers"
 
 /-- Haskell `reserveFrame` -/
-def reserveFrame {t_a : Type} [Inhabited t_a] (ptr : PPtr t_a) (isKernel : Bool) : Kernel Unit :=
+def reserveFrame (ptr : PPtr Unit) (isKernel : Bool) : Kernel Unit :=
   do
     let val := if isKernel then
         KernelObject.KOKernelData

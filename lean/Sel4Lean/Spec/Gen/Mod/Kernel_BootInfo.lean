@@ -4,6 +4,12 @@
 -/
 
 import Sel4Lean.Spec.PSpaceStorable
+import Sel4Lean.Spec.PSpaceInstances
+import Sel4Lean.Spec.KernelInit
+import Sel4Lean.Spec.Gen.Mod.Object_Structures
+import Sel4Lean.Spec.Gen.Mod.Config
+import Sel4Lean.Spec.Gen.Mod.Machine_Hardware
+import Sel4Lean.Spec.Gen.Mod.API_Types
 
 set_option match.ignoreUnusedAlts true
 
@@ -12,25 +18,18 @@ open Sel4Lean.Spec
 open Sel4Lean.Exec (Word PPtr PtrH failH assertH stateAssertH forM_H deleteH)
 noncomputable section
 
+/-! ## Definitions from imported modules -/
+
+abbrev ptrFromPAddr := @Sel4Lean.Spec.M.API_Types.ptrFromPAddr
+abbrev rootCNodeSize := @Sel4Lean.Spec.M.Config.rootCNodeSize
+abbrev storeWordVM := @Sel4Lean.Spec.M.Machine_Hardware.storeWordVM
+abbrev mask := @Sel4Lean.Spec.M.Object_Structures.mask
+abbrev pageBits := @Sel4Lean.Spec.M.Object_Structures.pageBits
+
 /-! ## Stubs (from Haskell signatures) -/
 
 -- external: SEL4/Kernel/Init.lhs
 opaque doKernelOp {t_a : Type} [Inhabited t_a] : (Kernel t_a) → KernelInit t_a
-
--- external: SEL4/Machine/RegisterSet.lhs
-opaque mask {t_w : Type} [Inhabited t_w] [BitsH t_w] [IntegralH t_w] : Nat → t_w
-
--- external: SEL4/Machine/Hardware.lhs
-opaque pageBits : Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque ptrFromPAddr {t_a : Type} [Inhabited t_a] : PAddr → PPtr t_a
-
--- external: SEL4/Config.lhs
-opaque rootCNodeSize : Nat
-
--- external: SEL4/Machine/Hardware.lhs
-opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
 /-! ## Unresolved (no stub possible)
   bit: no signature found
@@ -38,6 +37,8 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
   fromIntegral: no signature found
   gets: no signature found
   head: no signature found
+  initBootInfo: no signature found
+  initBootInfoFrame: no signature found
   isAligned: local, not translated, no signature: function without a signature: function at line 193: 'isAlign
   last: no signature found
   lift: no signature found
@@ -50,71 +51,71 @@ opaque storeWordVM : (PPtr Word) → Word → MachineMonad Unit
 
 /-! ## Translated -/
 
-/-- Haskell `biCapNull` -/
-def biCapNull : Word :=
-  0
+/-- Haskell `biCapNull`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapNull := @Sel4Lean.Spec.KernelInit.biCapNull
 
-/-- Haskell `itASID` -/
-def itASID : ASID :=
-  1
 
-/-- Haskell `biCapITTCB` -/
-def biCapITTCB : Word :=
-  1
+/-- Haskell `itASID`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev itASID := @Sel4Lean.Spec.KernelInit.itASID
 
-/-- Haskell `biCapITCNode` -/
-def biCapITCNode : Word :=
-  2
 
-/-- Haskell `biCapITPD` -/
-def biCapITPD : Word :=
-  3
+/-- Haskell `biCapITTCB`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapITTCB := @Sel4Lean.Spec.KernelInit.biCapITTCB
 
-/-- Haskell `biCapIRQControl` -/
-def biCapIRQControl : Word :=
-  4
 
-/-- Haskell `biCapASIDControl` -/
-def biCapASIDControl : Word :=
-  5
+/-- Haskell `biCapITCNode`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapITCNode := @Sel4Lean.Spec.KernelInit.biCapITCNode
 
-/-- Haskell `biCapITASIDPool` -/
-def biCapITASIDPool : Word :=
-  6
 
-/-- Haskell `biCapIOPort` -/
-def biCapIOPort : Word :=
-  7
+/-- Haskell `biCapITPD`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapITPD := @Sel4Lean.Spec.KernelInit.biCapITPD
 
-/-- Haskell `biCapIOSpace` -/
-def biCapIOSpace : Word :=
-  8
 
-/-- Haskell `biCapBIFrame` -/
-def biCapBIFrame : Word :=
-  9
+/-- Haskell `biCapIRQControl`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapIRQControl := @Sel4Lean.Spec.KernelInit.biCapIRQControl
 
-/-- Haskell `biCapITIPCBuf` -/
-def biCapITIPCBuf : Word :=
-  10
 
-/-- Haskell `biCapDynStart` -/
-def biCapDynStart : Word :=
-  11
+/-- Haskell `biCapASIDControl`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapASIDControl := @Sel4Lean.Spec.KernelInit.biCapASIDControl
 
-/-- Haskell `biFrameSizeBits` -/
-def biFrameSizeBits : Nat :=
-  pageBits
 
-/-- Haskell `nopBIFrameData` -/
-def nopBIFrameData : BIFrameData :=
-  { bifNodeID := 0, bifNumNodes := 0, bifNumIOPTLevels := 0, bifIPCBufVPtr := 0, bifNullCaps := [], bifSharedFrameCaps := [], bifUIFrameCaps := [], bifUIPDCaps := [], bifUIPTCaps := [], bifUntypedObjCaps := [], bifUntypedObjPAddrs := [], bifUntypedObjSizeBits := [], bifUntypedObjIsDeviceList := [], bifITCNodeSizeBits := fromIntegral rootCNodeSize, bifNumDeviceRegions := 0, bifDeviceRegions := [] : BIFrameData }
+/-- Haskell `biCapITASIDPool`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapITASIDPool := @Sel4Lean.Spec.KernelInit.biCapITASIDPool
+
+
+/-- Haskell `biCapIOPort`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapIOPort := @Sel4Lean.Spec.KernelInit.biCapIOPort
+
+
+/-- Haskell `biCapIOSpace`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapIOSpace := @Sel4Lean.Spec.KernelInit.biCapIOSpace
+
+
+/-- Haskell `biCapBIFrame`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapBIFrame := @Sel4Lean.Spec.KernelInit.biCapBIFrame
+
+
+/-- Haskell `biCapITIPCBuf`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapITIPCBuf := @Sel4Lean.Spec.KernelInit.biCapITIPCBuf
+
+
+/-- Haskell `biCapDynStart`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biCapDynStart := @Sel4Lean.Spec.KernelInit.biCapDynStart
+
+
+/-- Haskell `biFrameSizeBits`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev biFrameSizeBits := @Sel4Lean.Spec.KernelInit.biFrameSizeBits
+
+
+/-- Haskell `nopBIFrameData`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev nopBIFrameData := @Sel4Lean.Spec.KernelInit.nopBIFrameData
+
 
 /-- Haskell `serializeByte` -/
 def serializeByte (input : Word) : Serializer Unit :=
   do
     let ptr ← gets SerialData.ptrCursor
-    let byte ← gets value
+    let byte ← gets SerialData.value
     let mod4 ← pure (fromIntegral (PPtr.ptr (ptr &&& 3)))
     let value ← pure ((shiftLH input (mod4 * 8)) ||| (fromIntegral byte))
     if (ptr &&& 3) == 3 then
@@ -127,7 +128,7 @@ def serializeByte (input : Word) : Serializer Unit :=
 /-- Haskell `serializeStore` -/
 def serializeStore (value : Word) (intsize : Nat) : Serializer Unit :=
   do
-    forM_H (enumFromToH 0 (intsize - 1)) (fun size => do
+    ForMH.forMH (enumFromToH 0 (intsize - 1)) (fun size => do
         let byte ← pure ((shiftRH value (8 * size)) &&& ((bit 8) - 1))
         serializeByte byte)
 
@@ -157,47 +158,9 @@ def serialBIDeviceRegion (biDeviceRegion : BIDeviceRegion) : Serializer Unit :=
     let _ ← serializeStore b 4
     pure ()
 
-/-- Haskell `syncBIFrame` -/
-def syncBIFrame : KernelInit Unit :=
-  do
-    let frameData ← gets InitData.initBootInfo
-    let frame ← gets InitData.initBootInfoFrame
-    doKernelOp (doMachineOp (do
-      let _ ← (flip runStateT) ({ ptrCursor := ptrFromPAddr frame, value := 0 : SerialData }) (do
-                let _ ← serializeStore (fromIntegral (BIFrameData.bifNodeID frameData)) 4
-                let _ ← serializeStore (fromIntegral (BIFrameData.bifNumNodes frameData)) 4
-                let _ ← serializeStore (fromIntegral (BIFrameData.bifNumIOPTLevels frameData)) 4
-                let _ ← serializeStore (fromIntegral (VPtr.fromVPtr (BIFrameData.bifIPCBufVPtr frameData))) 4
-                let serializeRange := fun ls => if ls == [] then
-                      do
-                        let _ ← serializeStore 0 4
-                        serializeStore 0 4
-                    else
-                      do
-                        let _ ← serializeStore (head ls) 4
-                        serializeStore (1 + (last ls)) 4
-                let _ ← serializeRange (BIFrameData.bifNullCaps frameData)
-                let _ ← serializeRange (BIFrameData.bifSharedFrameCaps frameData)
-                let _ ← serializeRange (BIFrameData.bifUIFrameCaps frameData)
-                let _ ← serializeRange (BIFrameData.bifUIPDCaps frameData)
-                let _ ← serializeRange (BIFrameData.bifUIPTCaps frameData)
-                let _ ← serializeRange (BIFrameData.bifUntypedObjCaps frameData)
-                let ptr ← gets SerialData.ptrCursor
-                let ptr ← pure (ptr + (PPtr.mk (shiftLH maxBIUntypedCaps 2)))
-                let untypedAddrs ← pure (BIFrameData.bifUntypedObjPAddrs frameData)
-                let _ ← (flip mapM_) untypedAddrs (fun addr => do
-                            serializeStore (PAddr.fromPAddr addr) 4)
-                let _ ← paddingTo ptr
-                let ptr ← pure (ptr + (PPtr.mk maxBIUntypedCaps))
-                let untypedSizeBits ← pure (BIFrameData.bifUntypedObjSizeBits frameData)
-                let _ ← (flip mapM_) untypedSizeBits (fun bits => do
-                            serializeStore (fromIntegral bits) 1)
-                let _ ← paddingTo ptr
-                let _ ← serializeStore (fromIntegral (BIFrameData.bifITCNodeSizeBits frameData)) 1
-                let _ ← serializeStore (fromIntegral (BIFrameData.bifNumDeviceRegions frameData)) 4
-                (flip mapM_) (BIFrameData.bifDeviceRegions frameData) (fun region => do
-                    serialBIDeviceRegion region))
-      pure ()))
+/-- Haskell `syncBIFrame`: dropped by l4v's skeleton; its Isabelle definition -/
+abbrev syncBIFrame := @Sel4Lean.Spec.KernelInit.syncBIFrame
+
 
 end
 end Sel4Lean.Spec.M.Kernel_BootInfo

@@ -16,12 +16,12 @@
 ✔ Data_Helpers
 ✔ Data_WordLib
 ✔ Kernel
-✖ Kernel_BootInfo
+✔ Kernel_BootInfo
 ✔ Kernel_CSpace
 ✔ Kernel_FaultHandler
 ✔ Kernel_Hypervisor
 ✔ Kernel_Hypervisor_RISCV64
-✖ Kernel_Init
+✔ Kernel_Init
 ✔ Kernel_Thread
 ✔ Kernel_Thread_RISCV64
 ✔ Kernel_VSpace
