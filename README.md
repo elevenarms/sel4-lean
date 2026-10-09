@@ -1,6 +1,7 @@
 # sel4-lean
 
 Porting seL4's formal verification ([l4v](https://github.com/seL4/l4v), Isabelle/HOL) to **Lean 4**.
+Write-up: [seL4, Meet Lean](https://elevenarms.github.io/posts/sel4-meets-lean/).
 The end goal is a Lean theorem that seL4's C implementation refines its abstract specification.
 
 **Status: crawl closed (2026-10-08), walk under way.** Decision: re-prove in Lean, following l4v's proofs.
