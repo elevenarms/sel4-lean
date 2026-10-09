@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: GPL-2.0-only (derived from seL4/l4v, https://github.com/seL4/l4v)
 import Sel4Lean.Spec.PSpaceStorable
 import Sel4Lean.Spec.Gen.Mod.Model_PSpace
 import Sel4Lean.Spec.Gen.Mod.Model_StateData_RISCV64

@@ -1,0 +1,22 @@
+sel4-lean is distributed under two licenses.
+
+1. Code derived from seL4's l4v verification project is licensed under
+   GPL-2.0-only (LICENSES/GPL-2.0-only.txt), the license of the l4v sources
+   it is derived from. These files carry `SPDX-License-Identifier: GPL-2.0-only`
+   and are listed in NOTICE.md:
+     - lean/Sel4Lean/Spec/Gen/, lean/Sel4Lean/Exec/Gen/   (generated from l4v's Haskell spec
+                                                            and Kernel_Config.thy)
+     - hand ports of l4v theories: lean/Sel4Lean/Spec/{MachineOps, Platform,
+       PSpaceStorable, PSpaceInstances, KernelInit, Intermediate, DesignOnly}.lean,
+       lean/Sel4Lean/Abstract/, lean/Sel4Lean/Refine/,
+       lean/Sel4Lean/Exec/{Stubs, ThreadStubs}.lean
+     - artifacts/   (build and test outputs of l4v and of the files above)
+
+2. Everything else (the translators and gates in tools/ and env/, the Lean monad,
+   Hoare-logic, corres and tactic library, tests, scripts, notes and site) is
+   licensed under BSD-2-Clause (LICENSES/BSD-2-Clause.txt). Parts of the Lean
+   library follow l4v's lib/ (Nondet_Monad, Nondet_VCG, Corres_UL), which is
+   itself BSD-2-Clause.
+
+seL4 and l4v are copyright their respective authors (General Dynamics C4 Systems,
+Data61/CSIRO, Proofcraft and contributors); see NOTICE.md.

@@ -81,3 +81,7 @@ logs into `project.log`. Results are committed from the laptop; the remote box h
 
 l4v and seL4 are mostly GPL-2.0 / BSD-2-Clause. Translated definitions and proofs are probably derived works.
 Check before publishing anything derived from them. This repo currently contains only our own scripts and notes.
+
+## License
+
+BSD-2-Clause for original work; GPL-2.0-only for everything derived from seL4's l4v (generated Lean, ports of l4v theories, artifacts). See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).
